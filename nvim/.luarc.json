@@ -1,0 +1,11 @@
+{
+  "diagnostics.disable": ["undefined-field",
+        "duplicate-set-field",
+        "undefined-global"],
+    "diagnostics.globals": [
+        "vim",
+        "describe",
+        "_"
+    ]
+}
+

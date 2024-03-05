@@ -1,0 +1,11 @@
+[[language]]
+name = "lua"
+injection-regex = "lua"
+scope = "source.lua"
+auto-format = true
+file-types = ["lua"]
+shebangs = ["lua"]
+roots = [".luarc.json", ".luacheckrc", ".stylua.toml", "selene.toml", ".git"]
+comment-token = "--"
+indent = { tab-width = 4, unit = "  " }
+language-servers = [ "lua-language-server" ]

@@ -1,0 +1,20 @@
+{
+  "table": {
+    "prefix": "table",
+    "body": ["| $1 | $2 |", "| --- | --- |", "| $3 | $4 |"]
+  },
+  "lua": { "prefix": "lua", "body": ["```lua\n$1\n```"] },
+  "cpp": { "prefix": "cpp", "body": ["```cpp\n$1\n```"] },
+  "c": { "prefix": "c", "body": ["```c\n$1\n```"] },
+  "go": { "prefix": "go", "body": ["```go\n$1\n```"] },
+  "py": { "prefix": "py", "body": ["```python\n$1\n```"] },
+  "js": { "prefix": "js", "body": ["```javascript\n$1\n```"] },
+  "ts": { "prefix": "ts", "body": ["```typescript\n$1\n```"] },
+  "sol": { "prefix": "sol", "body": ["```solidity\n$1\n```"] },
+  "rs": { "prefix": "rust", "body": ["```rust\n$1\n```"] },
+  "css": { "prefix": "css", "body": ["```css\n$1\n```"] },
+  "html": { "prefix": "html", "body": ["```html\n$1\n```"] },
+  "zig": { "prefix": "zig", "body": ["```zig\n$1\n```"] },
+  "check": { "prefix": "check", "body": [""] },
+  "uncheck": { "prefix": "uncheck", "body": [""] }
+}
