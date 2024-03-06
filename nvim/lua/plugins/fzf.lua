@@ -51,6 +51,26 @@ return {
 		local fzf_utils = require("fzf-lua.utils")
 
 		local _mt_cmd_wrapper = fzf_core.mt_cmd_wrapper
+		---Wrap `core.mt_cmd_wrapper()` used in fzf-lua's file and grep providers
+		---to ignore `opts.cwd` when generating the command string because once the
+		---cwd is hard-coded in the command string, `opts.cwd` will be ignored.
+		---
+		---This fixes the bug where `switch_cwd()` does not work if it is used after
+		---`switch_provider()`:
+		---
+		---In `switch_provider()`, `opts.cwd` will be passed the corresponding fzf
+		---provider (file or grep) where it will be compiled in the command string,
+		---which will then be stored in `fzf.config.__resume_data.contents`.
+		---
+		---`switch_cwd()` internally calls the resume action to resume the last
+		---provider and reuse other info in previous fzf session (e.g. last query, etc)
+		---except `opts.cwd`, `opts.fn_selected`, etc. that needs to be changed to
+		---reflect the new cwd.
+		---
+		---Thus if `__resume_data.contents` contains information about the previous
+		---cwd, the new cwd in `opts.cwd` will be ignored and `switch_cwd()` will not
+		---take effect.
+		---@param opts table?
 		function fzf_core.mt_cmd_wrapper(opts)
 			if not opts or not opts.cwd then
 				return _mt_cmd_wrapper(opts)
@@ -321,9 +341,41 @@ return {
 				headers = { "actions" },
 				actions = { ["ctrl-j"] = fzf_actions.arg_search_add },
 			},
+			highlights = {
+				actions = {
+					["default"] = function(selected)
+						vim.defer_fn(function()
+							vim.cmd.hi(selected[1])
+						end, 0)
+					end,
+				},
+			},
+			search_history = {
+				headers = { "actions", "regex_filter" },
+				actions = {
+					["alt-e"] = fzf_actions.search,
+					["ctrl-e"] = false,
+				},
+			},
+			blines = {
+				headers = { "actions" },
+				actions = {
+					["alt-q"] = fzf_actions.buf_sel_to_qf,
+					["alt-o"] = fzf_actions.buf_sel_to_ll,
+					["alt-l"] = false,
+				},
+			},
+			lines = {
+				headers = { "actions" },
+				actions = {
+					["alt-q"] = fzf_actions.buf_sel_to_qf,
+					["alt-o"] = fzf_actions.buf_sel_to_ll,
+					["alt-l"] = false,
+				},
+			},
 			grep = {
 				actions = { ["alt-l"] = fzf_actions.grep_lgrep, ["ctrl-g"] = fzf_actions.toggle_ignore },
-				headers = { "actions", "regex_filter" },
+				headers = { "actions" },
 				input_prompt = "Grep For : ",
 				glob_flag = "--iglob",
 				glob_separator = "%s%-%-",
