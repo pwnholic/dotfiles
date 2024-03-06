@@ -51,25 +51,7 @@ return {
 		local fzf_utils = require("fzf-lua.utils")
 
 		local _mt_cmd_wrapper = fzf_core.mt_cmd_wrapper
-		---Wrap `core.mt_cmd_wrapper()` used in fzf-lua's file and grep providers
-		---to ignore `opts.cwd` when generating the command string because once the
-		---cwd is hard-coded in the command string, `opts.cwd` will be ignored.
-		---
-		---This fixes the bug where `switch_cwd()` does not work if it is used after
-		---`switch_provider()`:
-		---
-		---In `switch_provider()`, `opts.cwd` will be passed the corresponding fzf
-		---provider (file or grep) where it will be compiled in the command string,
-		---which will then be stored in `fzf.config.__resume_data.contents`.
-		---
-		---`switch_cwd()` internally calls the resume action to resume the last
-		---provider and reuse other info in previous fzf session (e.g. last query, etc)
-		---except `opts.cwd`, `opts.fn_selected`, etc. that needs to be changed to
-		---reflect the new cwd.
-		---
-		---Thus if `__resume_data.contents` contains information about the previous
-		---cwd, the new cwd in `opts.cwd` will be ignored and `switch_cwd()` will not
-		---take effect.
+
 		---@param opts table?
 		function fzf_core.mt_cmd_wrapper(opts)
 			if not opts or not opts.cwd then
@@ -127,7 +109,6 @@ return {
 		function fzf_actions.switch_provider()
 			local opts = { query = fzf_config.__resume_data.last_query, cwd = fzf_config.__resume_data.opts.cwd }
 			fzf.builtin({
-				fzf_opts = fzf_opts,
 				actions = {
 					["default"] = function(selected)
 						fzf[selected[1]](opts)
@@ -188,19 +169,18 @@ return {
 			fzf.autocmds({ fzf_opts = { ["--query"] = vim.fn.shellescape(last_query) } })
 		end
 
-		local _diagnostics_workspace = fzf.diagnostics_workspace
 		local _diagnostics_document = fzf.diagnostics_document
 		function fzf.diagnostics_document(opts)
 			return _diagnostics_document(vim.tbl_extend("force", opts or {}, { prompt = "Document Diagnostics> " }))
 		end
+		local _diagnostics_workspace = fzf.diagnostics_workspace
 		function fzf.diagnostics_workspace(opts)
 			return _diagnostics_workspace(vim.tbl_extend("force", opts or {}, { prompt = "Workspace Diagnostics> " }))
 		end
 
 		fzf_actions.arg_add = function(selected, opts)
-			local vimcmd = "argadd"
-			fzf_actions.vimcmd_file(vimcmd, selected, opts)
-			vim.notify("added to args list", 2)
+			fzf_actions.vimcmd_file("argadd", selected, opts)
+			vim.notify("added to args list", 2, { title = "Arg Add" })
 		end
 
 		function fzf_actions.arg_search_add()
@@ -341,6 +321,7 @@ return {
 				headers = { "actions" },
 				actions = { ["ctrl-j"] = fzf_actions.arg_search_add },
 			},
+			colorschemes = { actions = { ["default"] = fzf_actions.colorscheme } },
 			highlights = {
 				actions = {
 					["default"] = function(selected)
@@ -350,12 +331,10 @@ return {
 					end,
 				},
 			},
+			command_history = { actions = { ["alt-e"] = fzf_actions.ex_run, ["ctrl-e"] = false } },
 			search_history = {
 				headers = { "actions", "regex_filter" },
-				actions = {
-					["alt-e"] = fzf_actions.search,
-					["ctrl-e"] = false,
-				},
+				actions = { ["alt-e"] = fzf_actions.search, ["ctrl-e"] = false },
 			},
 			blines = {
 				headers = { "actions" },
@@ -555,7 +534,7 @@ return {
 			enabled = not enabled
 			if enabled then
 				no_preview_opts.files.headers = { "actions", "cwd" }
-				no_preview_opts.grep.headers = { "actions", "regex_filter" }
+				no_preview_opts.grep.headers = { "actions" }
 				fzf_opts_map = no_preview_opts.fzf_opts
 				vim.notify("Disabled FZF preview", 2, { title = "Fzflua" })
 				return fzf.setup(no_preview_opts)
@@ -649,6 +628,8 @@ return {
 		map("n", "<leader>sn", fzfmap("live_grep_native"), { desc = "Native of LG" })
 		map("n", "<leader>sg", fzfmap("live_grep_glob"), { desc = "LG rg --glob" })
 		map("n", "<leader>sa", fzfmap("autocmds"), { desc = "Search Autocmds" })
+		map("n", "<leader>s-", fzfmap("blines"), { desc = "Current Buffer Lines" })
+		map("n", "<leader>s=", fzfmap("lines"), { desc = "Open Buffer Lines" })
 
 		map("n", "<leader>dsc", fzfmap("dap_commands"), { desc = "Command" })
 		map("n", "<leader>dsC", fzfmap("dap_configurations"), { desc = "Configuration" })
@@ -705,6 +686,8 @@ return {
 		"<leader>sn",
 		"<leader>sg",
 		"<leader>sa",
+		"<leader>s-",
+		"<leader>s=",
 
 		"<leader>dsc",
 		"<leader>dsC",

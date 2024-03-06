@@ -669,7 +669,11 @@ return {
 						}) or vim.api.nvim_win_get_config(0).relative ~= "" or vim.api.nvim_buf_get_name(0) == ""
 					end,
 					provider = function()
-						return fmt(" %s %s ", icons.kinds.Folder, vim.fn.expand("%:h"))
+						return fmt(
+							" %s %s ",
+							icons.kinds.Folder,
+							vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.:h")
+						)
 					end,
 					hl = {
 						fg = colors.cyan,

@@ -415,6 +415,7 @@ return {
 
 			vim.keymap.set("n", "<leader>rd", function()
 				require("fzf-lua.core").fzf_exec(rs.list(), {
+					prompt = "Remove Sessions : ",
 					actions = {
 						["default"] = function(select)
 							vim.notify(

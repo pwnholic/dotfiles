@@ -15,16 +15,6 @@ return {
 			end,
 		})
 
-		autocmd("WinNew", {
-			desc = "Record time when a new window is created",
-			group = augroup("SpecialBufHeight"),
-			callback = function()
-				if not vim.w._created then
-					vim.w._created = vim.uv.now()
-				end
-			end,
-		})
-
 		autocmd({ "BufWinEnter", "FileChangedShellPost" }, {
 			pattern = "*",
 			group = augroup("AutoCwd"),
@@ -61,8 +51,6 @@ return {
 			command = "checktime",
 		})
 
-		-- Highlight on yank
-
 		-- Auto create dir when saving a file, in case some intermediate directory does not exist
 		autocmd({ "BufWritePre" }, {
 			group = augroup("AutoCreateDir"),
@@ -86,18 +74,13 @@ return {
 
 		autocmd("BufWinEnter", {
 			group = augroup("FoldRemember"),
-			callback = function(event)
-				if not vim.b[event.buf].view_activated then
-					local filetype = vim.api.nvim_get_option_value("filetype", { buf = event.buf })
-					local buftype = vim.api.nvim_get_option_value("buftype", { buf = event.buf })
-					local ignore_filetypes = { "gitcommit", "gitrebase" }
+			callback = function(info)
+				if not vim.b[info.buf].view_activated then
 					if
-						buftype == ""
-						and filetype
-						and filetype ~= ""
-						and not vim.tbl_contains(ignore_filetypes, filetype)
+						not vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo[info.buf].ft)
+						and vim.bo[info.buf].bt ~= ""
 					then
-						vim.b[event.buf].view_activated = true
+						vim.b[info.buf].view_activated = true
 						vim.cmd.loadview({ mods = { emsg_silent = true } })
 					end
 				end

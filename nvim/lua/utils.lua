@@ -1,9 +1,9 @@
 local M = {}
 
-M.skip_foldexpr = {} ---@type table<number,boolean>
+local skip_foldexpr = {} ---@type table<number,boolean>
 function M.fold_expr()
 	local buf = vim.api.nvim_get_current_buf()
-	if M.skip_foldexpr[buf] then
+	if skip_foldexpr[buf] then
 		return "0"
 	end
 	if vim.bo[buf].buftype ~= "" then
@@ -16,9 +16,9 @@ function M.fold_expr()
 	if ok then
 		return vim.treesitter.foldexpr()
 	end
-	M.skip_foldexpr[buf] = true
+	skip_foldexpr[buf] = true
 	skip_check:start(function()
-		M.skip_foldexpr = {}
+		skip_foldexpr = {}
 		skip_check:stop()
 	end)
 	return "0"

@@ -25,12 +25,12 @@ return {
 		map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width", silent = true })
 
 		-- Move Lines
-		map("n", "<A-d>", "<cmd>m .+1<cr>==", { desc = "Move down", silent = true })
 		map("n", "<A-u>", "<cmd>m .-2<cr>==", { desc = "Move up", silent = true })
 		map("i", "<A-u>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up", silent = true })
+		map("v", "<A-u>", ":m '<-2<cr>gv=gv", { desc = "Move up", silent = true })
 		map("i", "<A-d>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down", silent = true })
 		map("v", "<A-d>", ":m '>+1<cr>gv=gv", { desc = "Move down", silent = true })
-		map("v", "<A-u>", ":m '<-2<cr>gv=gv", { desc = "Move up", silent = true })
+		map("n", "<A-d>", "<cmd>m .+1<cr>==", { desc = "Move down", silent = true })
 
 		-- buffers
 		map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
@@ -50,11 +50,9 @@ return {
 
 		-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 		map("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next search result" })
-		map("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
-		map("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
 		map("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev search result" })
-		map("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
-		map("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+		map({ "x", "o" }, "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+		map({ "x", "o" }, "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
 
 		-- Add undo break-points
 		map("i", ",", ",<c-g>u")
@@ -64,10 +62,9 @@ return {
 		-- save file
 		map({ "i", "v", "n" }, "<C-s>", function()
 			if vim.bo.filetype == "oil" and vim.bo.modified then
-				require("oil").save()
-			else
-				vim.cmd.wall()
+				return require("oil").save()
 			end
+			return vim.cmd.wall()
 		end, { desc = "Save file", silent = true })
 
 		-- better indenting
@@ -177,21 +174,6 @@ return {
         -- auto indent
 		map("n", "i", function() if #vim.fn.getline(".") == 0 then return [["_cc]] else return "i" end end, { expr = true })
 		-- stylua: ignore end
-
-		map("t", [[<C-\>]], function()
-			local bd = require("mini.bufremove").delete
-			if vim.bo.modified then
-				local choice = vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
-				if choice == 1 then -- Yes
-					vim.cmd.write()
-					bd(term.bufnr)
-				elseif choice == 2 then -- No
-					bd(term.bufnr, true)
-				end
-			else
-				bd(term.bufnr)
-			end
-		end, { buffer = true })
 
 		local function diagnostic_goto(next, severity)
 			local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev

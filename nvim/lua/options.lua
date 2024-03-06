@@ -5,7 +5,6 @@ return {
 		opt.swapfile = false
 		opt.scrolloff = 8
 		opt.clipboard = "unnamedplus"
-		opt.foldlevelstart = 99
 		opt.textwidth = 80
 		opt.jumpoptions = "stack"
 		opt.showtabline = 0
@@ -39,9 +38,8 @@ return {
 
 		opt.foldlevel = 99
 		opt.foldlevelstart = 99
-		opt.foldopen = "block,mark,percent,quickfix,search,tag,undo"
-		opt.foldtext = "v:lua.require'utils'.fold_text()"
 		opt.foldmethod = "expr"
+		opt.foldtext = "v:lua.require'utils'.fold_text()"
 		opt.foldexpr = "v:lua.require'utils'.fold_expr()"
 
 		if vim.fn.executable("rg") == 1 then
