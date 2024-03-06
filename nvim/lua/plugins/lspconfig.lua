@@ -237,9 +237,6 @@ return {
 				hide = hide,
 			}
 
-			local lspconfig = require("lspconfig")
-			require("lspconfig.ui.windows").default_options.border = "single"
-
 			local ft_servers = {}
 			for langs, sname in pairs(lang_servers) do
 				ft_servers[langs] = sname
@@ -255,7 +252,7 @@ return {
 						servers = { servers }
 					end
 					for _, server in ipairs(servers) do
-						lspconfig[server].setup(create_lsp_config(server))
+						require("lspconfig")[server].setup(create_lsp_config(server))
 					end
 					ft_servers[ft] = nil
 					vim.api.nvim_exec_autocmds("FileType", { pattern = ft })
