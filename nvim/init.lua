@@ -2,14 +2,13 @@ vim.loader.enable()
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-
 vim.g.loaded_fzf_file_explorer = 1
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.opt.shada = "" -- shada call diakhir
 
-local lazy_path, config_path = string.format("%s/lazy/lazy.nvim", vim.fn.stdpath("data")), vim.fn.stdpath("config") --[[@as string]]
+local lazy_path, config_path = vim.fn.stdpath("data") .. "/lazy/lazy.nvim", vim.fn.stdpath("config") --[[@as string]]
 if not vim.uv.fs_stat(lazy_path) then
 	vim.fn.system({
 		"git",
@@ -52,8 +51,6 @@ require("lazy").setup({
 		},
 	},
 })
-
--- hallo
 
 vim.env.PATH = vim.fn.stdpath("data")
 	.. "/mason/bin"
