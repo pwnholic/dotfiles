@@ -192,7 +192,13 @@ return {
 					},
 				},
 				smart_move = { enabled = true, excluded_filetypes = { "cmp_menu", "cmp_docs", "notify" } },
-				presets = { bottom_search = true, command_palette = true, long_message_to_split = true, inc_rename = false },
+				presets = {
+					bottom_search = true,
+					command_palette = true,
+					long_message_to_split = true,
+					inc_rename = false,
+					lsp_doc_border = true,
+				},
 			})
             -- stylua: ignore start
 			vim.keymap.set({ "n", "s" }, "<c-f>", function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end, { silent = true, expr = true })
@@ -380,7 +386,8 @@ return {
 					hl["@comment.error"] = { bg = c.error, fg = c.black, italic = true, underline = true, bold = true }
 					hl["@comment.hint"] = { bg = c.hint, fg = c.black, italic = true, underline = true, bold = true }
 					hl["@comment.info"] = { bg = c.blue2, fg = c.black, italic = true, underline = true, bold = true }
-					hl["@comment.warning"] = { bg = c.yellow, fg = c.black, italic = true, underline = true, bold = true }
+					hl["@comment.warning"] =
+						{ bg = c.yellow, fg = c.black, italic = true, underline = true, bold = true }
 				end,
 				on_colors = function(c)
 					c.green2 = "#2bff05"

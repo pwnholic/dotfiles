@@ -40,7 +40,11 @@ return {
 			require("toggleterm").setup({
 				open_mapping = [[<C-\>]],
 				autochdir = true,
-				highlights = { Normal = { link = "Normal" }, NormalFloat = { link = "NormalFloat" }, FloatBorder = { link = "Comment" } },
+				highlights = {
+					Normal = { link = "Normal" },
+					NormalFloat = { link = "NormalFloat" },
+					FloatBorder = { link = "Comment" },
+				},
 				shade_terminals = false,
 				start_in_insert = true,
 				insert_mappings = true,
@@ -82,10 +86,12 @@ return {
 									return vim.bo[buf].buftype == "terminal" and buf ~= term.bufnr
 								end)
 								:totable()
-							local win_bufs = vim.iter(vim.api.nvim_list_wins()):map(vim.api.nvim_win_get_buf):fold({}, function(acc, v)
-								acc[v] = v
-								return acc
-							end)
+							local win_bufs = vim.iter(vim.api.nvim_list_wins())
+								:map(vim.api.nvim_win_get_buf)
+								:fold({}, function(acc, v)
+									acc[v] = v
+									return acc
+								end)
 							local target
 							for _, t in ipairs(terms) do
 								target = target or t

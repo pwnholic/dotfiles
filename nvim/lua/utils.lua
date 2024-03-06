@@ -261,7 +261,18 @@ function M.amend_keys(modes, lhs, rhs, opts)
 end
 
 ---List of programs considered as TUI apps
-M.tui = { fzf = true, nvi = true, vim = true, nvim = true, sudo = true, nano = true, helix = true, emacs = true, vimdiff = true, lazygit = true }
+M.tui = {
+	fzf = true,
+	nvi = true,
+	vim = true,
+	nvim = true,
+	sudo = true,
+	nano = true,
+	helix = true,
+	emacs = true,
+	vimdiff = true,
+	lazygit = true,
+}
 
 ---Check if any of the processes in terminal buffer `buf` is a TUI app
 function M.running_tui(buf)

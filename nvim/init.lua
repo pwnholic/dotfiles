@@ -1,4 +1,5 @@
 vim.loader.enable()
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
@@ -10,7 +11,14 @@ vim.opt.shada = "" -- shada call diakhir
 
 local lazy_path, config_path = string.format("%s/lazy/lazy.nvim", vim.fn.stdpath("data")), vim.fn.stdpath("config") --[[@as string]]
 if not vim.uv.fs_stat(lazy_path) then
-	vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazy_path })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazy_path,
+	})
 end
 
 vim.opt.rtp:prepend(lazy_path)
@@ -47,7 +55,10 @@ require("lazy").setup({
 
 -- hallo
 
-vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (vim.uv.os_uname().sysname == "Windows_NT" and ";" or ":") .. vim.env.PATH
+vim.env.PATH = vim.fn.stdpath("data")
+	.. "/mason/bin"
+	.. (vim.uv.os_uname().sysname == "Windows_NT" and ";" or ":")
+	.. vim.env.PATH
 
 vim.api.nvim_create_autocmd("BufReadPre", {
 	once = true,

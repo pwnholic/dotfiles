@@ -1,8 +1,12 @@
 return {
 	{ "Bekaboo/deadcolumn.nvim", event = "BufRead", config = true },
-	{ "chrisgrieser/nvim-early-retirement", event = "BufRead", opts = { retirementAgeMins = 5, notificationOnAutoClose = true } },
 	{ "numToStr/Comment.nvim", event = "BufRead", keys = { "gcc", "gcb", "gc", "gc$" }, config = true },
 	{ "tpope/vim-dadbod", dependencies = { "kristijanhusak/vim-dadbod-ui" }, cmd = "DBUI" },
+	{
+		"chrisgrieser/nvim-early-retirement",
+		event = "BufRead",
+		opts = { retirementAgeMins = 5, notificationOnAutoClose = true },
+	},
 	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble" },
@@ -11,6 +15,7 @@ return {
 			auto_jump = { "lsp_references", "lsp_implementations", "lsp_type_definitions", "lsp_definitions" },
 			track_cursor = true,
 			padding = false,
+			win_config = { border = vim.g.border },
 		},
 		keys = {
             -- stylua: ignore start
@@ -63,7 +68,15 @@ return {
 			return vim.list_extend(mappings, keys)
 		end,
 		opts = {
-			mappings = { add = "gsa", delete = "gsd", find = "gsf", find_left = "gsF", highlight = "gsh", replace = "gsr", update_n_lines = "gsn" },
+			mappings = {
+				add = "gsa",
+				delete = "gsd",
+				find = "gsf",
+				find_left = "gsF",
+				highlight = "gsh",
+				replace = "gsr",
+				update_n_lines = "gsn",
+			},
 		},
 	},
 	{
@@ -84,8 +97,7 @@ return {
 				},
 				default = {
 					display = function(list_item)
-						-- local items = vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
-						return vim.fn.fnamemodify(list_item.value, ":~:.")
+						return vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
 					end,
 				},
 				terminals = {
@@ -140,7 +152,10 @@ return {
 						end
 						-- switch to the buffer if no window was found
 						vim.api.nvim_set_current_buf(items.context.bufnr)
-						Extensions.extensions:emit(Extensions.event_names.NAVIGATE, { list = list, item = items, buffer = items.context.bufnr })
+						Extensions.extensions:emit(
+							Extensions.event_names.NAVIGATE,
+							{ list = list, item = items, buffer = items.context.bufnr }
+						)
 					end,
 				},
 			})
@@ -158,7 +173,7 @@ return {
 				if event == "ADD" then
 					vim.notify(display, vim.log.levels.HINT, { title = titles[event] })
 				elseif event == "REMOVE" then
-					vim.notify(display, vim.log.levels.ERROR, { title = titles[event] })
+					vim.notify(display, vim.log.levels.WARN, { title = titles[event] })
 				else
 					vim.notify(display, vim.log.levels.INFO, { title = titles[event] })
 				end
@@ -169,8 +184,6 @@ return {
 				end
 			end
 
-			---@param list HarpoonList
-			---@param items HarpoonListItem[]
 			local function add_items(list, items)
 				for _, item in ipairs(items) do
 					local exists = false
@@ -186,7 +199,6 @@ return {
 				end
 			end
 
-			---@param list HarpoonList
 			local function add_new_entries(list)
 				if not list.config.prepopulate then
 					return
@@ -342,21 +354,32 @@ return {
 	{
 		"echasnovski/mini.bufremove",
 		keys = {
-            -- stylua: ignore start
 			{
 				"<leader>bd",
 				function()
 					local bd = require("mini.bufremove").delete
 					if vim.bo.modified then
-						local choice = vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
-						if choice == 1 then vim.cmd.write() bd(0)
-						elseif choice == 2 then bd(0, true) end
-					else bd(0) end
+						local choice =
+							vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
+						if choice == 1 then
+							vim.cmd.write()
+							bd(0)
+						elseif choice == 2 then
+							bd(0, true)
+						end
+					else
+						bd(0)
+					end
 				end,
 				desc = "Delete Buffer",
 			},
-			{ "<leader>bD", function() require("mini.bufremove").delete(0, true) end, desc = "Delete Buffer (Force)", },
-			-- stylua: ignore end
+			{
+				"<leader>bD",
+				function()
+					require("mini.bufremove").delete(0, true)
+				end,
+				desc = "Delete Buffer (Force)",
+			},
 		},
 	},
 	{
@@ -390,14 +413,34 @@ return {
 				end
 			end)
 
-            -- stylua: ignore start
+			vim.keymap.set("n", "<leader>rd", function()
+				require("fzf-lua.core").fzf_exec(rs.list(), {
+					actions = {
+						["default"] = function(select)
+							vim.notify(
+								string.format("%d session has been deleted", #select),
+								2,
+								{ title = "Resession" }
+							)
+							for idx = 1, #select do
+								rs.delete(select[idx])
+							end
+						end,
+					},
+				})
+			end, { desc = "Resession Delete" })
+			vim.keymap.set("n", "<leader>rl", function()
+				rs.load(nil, { reset = false })
+			end, { desc = "Resession Load without reset" })
+			vim.keymap.set("n", "ZZ", function()
+				vim.cmd.wall()
+				rs.save("__quicksave__", { notify = false })
+				vim.api.nvim_create_augroup("MySessions", {})
+				vim.cmd.qall()
+			end)
 			vim.keymap.set("n", "<leader>rs", rs.save, { desc = "Resession Save" })
 			vim.keymap.set("n", "<leader>rt", rs.save_tab, { desc = "Resession save Sab" })
 			vim.keymap.set("n", "<leader>ro", rs.load, { desc = "Resession Open" })
-			vim.keymap.set("n", "<leader>rl", function() rs.load(nil, { reset = false }) end, { desc = "Resession Load without reset" })
-			vim.keymap.set("n", "<leader>rd", rs.delete, { desc = "Resession Relete" })
-			vim.keymap.set("n", "ZZ", function() vim.cmd.wall() rs.save("__quicksave__", { notify = false }) vim.api.nvim_create_augroup("MySessions", {}) vim.cmd.qall() end)
-			-- stylua: ignore end
 
 			if vim.tbl_contains(rs.list(), "__quicksave__") then
 				vim.defer_fn(function()

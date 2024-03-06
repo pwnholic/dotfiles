@@ -1,7 +1,10 @@
 return {
 	"rebelot/heirline.nvim",
 	event = "VeryLazy",
-	dependencies = { "SmiteshP/nvim-navic", opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true } },
+	dependencies = {
+		"SmiteshP/nvim-navic",
+		opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true },
+	},
 	config = function()
 		local space, conditions = { provider = " " }, require("heirline.conditions")
 		local fmt, colors = string.format, require("tokyonight.colors").setup()
@@ -110,7 +113,11 @@ return {
 					space,
 					{
 						provider = function(self)
-							return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
+							return fmt(
+								" %s %s ",
+								"",
+								(self.status_dict.head == "" and "main" or self.status_dict.head)
+							)
 						end,
 						hl = { fg = colors.blue2, bg = colors.fg_gutter, bold = true },
 					},
@@ -164,7 +171,8 @@ return {
 					space,
 					{
 						init = function(self)
-							self.icon, self.fg = require("nvim-web-devicons").get_icon_color_by_filetype(vim.bo.filetype)
+							self.icon, self.fg =
+								require("nvim-web-devicons").get_icon_color_by_filetype(vim.bo.filetype)
 						end,
 						provider = function(self)
 							return fmt("%s ", self.icon or "")
@@ -184,20 +192,19 @@ return {
 							end,
 							hl = { fg = colors.cyan, bg = colors.bg_statusline },
 						},
-						space,
 						{
 							condition = function()
 								return vim.bo.modified
 							end,
-							provider = "[+]",
-							hl = { fg = colors.green, bg = colors.bg_statusline },
+							space,
+							{ provider = "[+]", hl = { fg = colors.green, bg = colors.bg_statusline } },
 						},
-						space,
 						{
 							condition = function()
 								return not vim.bo.modifiable or vim.bo.readonly
 							end,
-							provider = " ",
+							space,
+							{ provider = " ", hl = { fg = colors.red, bg = colors.bg_statusline } },
 						},
 					},
 				},
@@ -281,7 +288,8 @@ return {
 				},
 				{
 					condition = function(self)
-						return not conditions.buffer_matches({ filetype = self.filetypes }) and require("lazy.status").has_updates()
+						return not conditions.buffer_matches({ filetype = self.filetypes })
+							and require("lazy.status").has_updates()
 					end,
 					update = {
 						"User",
@@ -427,7 +435,13 @@ return {
 					get_extmarks = function(self, bufnr, lnum)
 						local signs = {}
 
-						local extmarks = vim.api.nvim_buf_get_extmarks(0, bufnr, { lnum - 1, 0 }, { lnum - 1, -1 }, { details = true, type = "sign" })
+						local extmarks = vim.api.nvim_buf_get_extmarks(
+							0,
+							bufnr,
+							{ lnum - 1, 0 },
+							{ lnum - 1, -1 },
+							{ details = true, type = "sign" }
+						)
 						for _, extmark in pairs(extmarks) do
 							-- Exclude gitsigns
 							if extmark[4].ns_id ~= self.git_ns then
@@ -627,7 +641,10 @@ return {
 								},
 							}
 							if #data > 1 and i < #data then
-								table.insert(child, { provider = " --> ", hl = { bg = colors.bg_statusline, fg = colors.red, bold = true } })
+								table.insert(child, {
+									provider = " --> ",
+									hl = { bg = colors.bg_statusline, fg = colors.red, bold = true },
+								})
 							end
 							table.insert(children, child)
 						end
@@ -636,7 +653,12 @@ return {
 					provider = function(self)
 						return self.child:eval()
 					end,
-					hl = { bg = colors.bg_statusline, underline = true, sp = color_util.darken(colors.cyan, 0.7), italic = true },
+					hl = {
+						bg = colors.bg_statusline,
+						underline = true,
+						sp = color_util.darken(colors.cyan, 0.7),
+						italic = true,
+					},
 				},
 				{ provider = "%=" },
 				{
@@ -649,14 +671,23 @@ return {
 					provider = function()
 						return fmt(" %s %s ", icons.kinds.Folder, vim.fn.expand("%:h"))
 					end,
-					hl = { fg = colors.cyan, bg = colors.bg_statusline, underline = true, sp = color_util.darken(colors.cyan, 0.7) },
+					hl = {
+						fg = colors.cyan,
+						bg = colors.bg_statusline,
+						underline = true,
+						sp = color_util.darken(colors.cyan, 0.7),
+					},
 				},
 			},
 			opts = {
 				disable_winbar_cb = function(args)
 					return buf_matches({
 						buftype = buftype,
-						filetype = vim.tbl_deep_extend("force", filetype, { "oil", "mysql", "markdown", "sql", "json", "dbui", "dbout" }),
+						filetype = vim.tbl_deep_extend(
+							"force",
+							filetype,
+							{ "oil", "mysql", "markdown", "sql", "json", "dbui", "dbout" }
+						),
 					}, args.buf)
 				end,
 				colors = colors,

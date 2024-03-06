@@ -1,6 +1,10 @@
 return {
-	{ "windwp/nvim-ts-autotag", config = true, ft = { "html", "javascriptreact", "typescriptreact", "templ", "markdown" } },
 	{ "nvim-treesitter/nvim-treesitter-textobjects", event = "BufRead" },
+	{
+		"windwp/nvim-ts-autotag",
+		config = true,
+		ft = { "html", "javascriptreact", "typescriptreact", "templ", "markdown" },
+	},
 	{
 		"nvim-treesitter/nvim-treesitter",
 		version = false,

@@ -19,7 +19,12 @@ end
 ---Get tmux option value in current pane
 ---@return string tmux pane option value
 local function tmux_get_pane_opt(opt)
-	return (tmux_exec(string.format("display-message -pt %s '#{%s}'", vim.env.TMUX_PANE, vim.fn.escape(opt, "'\\"))):gsub("\n.*", ""))
+	return (
+		tmux_exec(string.format("display-message -pt %s '#{%s}'", vim.env.TMUX_PANE, vim.fn.escape(opt, "'\\"))):gsub(
+			"\n.*",
+			""
+		)
+	)
 end
 
 ---Set tmux option value in current pane

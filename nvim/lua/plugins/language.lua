@@ -208,7 +208,8 @@ return {
 				separate_diagnostic_server = true,
 				publish_diagnostic_on = "insert_leave",
 				expose_as_code_action = "all",
-				tsserver_path = vim.fn.stdpath("data") .. "/mason/packages/typescript-language-server/node_modules/typescript/lib/tsserver.js",
+				tsserver_path = vim.fn.stdpath("data")
+					.. "/mason/packages/typescript-language-server/node_modules/typescript/lib/tsserver.js",
 				tsserver_max_memory = "auto",
 				-- https://github.com/microsoft/TypeScript/blob/v5.0.4/src/server/protocol.ts#L3418
 				tsserver_format_options = {

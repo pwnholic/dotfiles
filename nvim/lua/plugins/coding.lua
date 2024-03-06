@@ -24,7 +24,10 @@ return {
 				keys = function()
 					local function dapui(name)
 						return function()
-							require("dapui").float_element(name, { width = vim.o.columns, height = vim.o.lines, enter = true, position = "center" })
+							require("dapui").float_element(
+								name,
+								{ width = vim.o.columns, height = vim.o.lines, enter = true, position = "center" }
+							)
 						end
 					end
 					return {
@@ -42,8 +45,14 @@ return {
 		config = function()
 			local dap, dapui, icons = require("dap"), require("dapui"), require("icons").dap
 			vim.fn.sign_define("DapBreakpoint", { text = icons.Breakpoint, texthl = "DiagnosticSignHint" })
-			vim.fn.sign_define("DapBreakpointCondition", { text = icons.BreakpointCondition, texthl = "DiagnosticSignInfo" })
-			vim.fn.sign_define("DapBreakpointRejected", { text = icons.BreakpointRejected, texthl = "DiagnosticSignWarn" })
+			vim.fn.sign_define(
+				"DapBreakpointCondition",
+				{ text = icons.BreakpointCondition, texthl = "DiagnosticSignInfo" }
+			)
+			vim.fn.sign_define(
+				"DapBreakpointRejected",
+				{ text = icons.BreakpointRejected, texthl = "DiagnosticSignWarn" }
+			)
 			vim.fn.sign_define("DapLogPoint", { text = icons.LogPoint, texthl = "DiagnosticSignOk" })
 			vim.fn.sign_define("DapStopped", { text = icons.Stopped, texthl = "DiagnosticSignError" })
 			dap.listeners.after.event_initialized["dapui_config"] = function()
@@ -56,7 +65,10 @@ return {
 				require("nvim-dap-virtual-text").refresh()
 			end
 			dap.listeners.before.event_terminated["dapui_config"] = function(event)
-				vim.notify(string.format("program '%s' was terminated.", vim.fn.fnamemodify(event.config.program, ":t")), 2)
+				vim.notify(
+					string.format("program '%s' was terminated.", vim.fn.fnamemodify(event.config.program, ":t")),
+					2
+				)
 				require("nvim-dap-virtual-text").refresh()
 				dapui.close({})
 			end
@@ -76,7 +88,10 @@ return {
 				node2 = {
 					type = "executable",
 					command = "node",
-					args = { require("mason-registry").get_package("node-debug2-adapter"):get_install_path() .. "/out/src/nodeDebug.js" },
+					args = {
+						require("mason-registry").get_package("node-debug2-adapter"):get_install_path()
+							.. "/out/src/nodeDebug.js",
+					},
 				},
 			}
 
@@ -91,7 +106,9 @@ return {
 							local program
 							vim.ui.input({
 								prompt = "Enter path to executable: ",
-								default = require("mason-registry").get_package("codelldb"):get_install_path() .. "/codelldb" or cache.cpp.program,
+								default = require("mason-registry").get_package("codelldb"):get_install_path()
+										.. "/codelldb"
+									or cache.cpp.program,
 								completion = "file",
 							}, function(input)
 								program = input
@@ -105,7 +122,8 @@ return {
 							local fpath_base = vim.fn.expand("%:p:r")
 							vim.ui.input({
 								prompt = "Enter arguments: ",
-								default = cache.cpp.program and cache.cpp.args[cache.cpp.program] or cache.cpp.args[fpath_base],
+								default = cache.cpp.program and cache.cpp.args[cache.cpp.program]
+									or cache.cpp.args[fpath_base],
 								completion = "file",
 							}, function(input)
 								args = input
@@ -217,7 +235,10 @@ return {
 		config = function()
 			require("neotest").setup({
 				adapters = {
-					require("neotest-go")({ experimental = { test_table = true }, args = { "-count=1", "-timeout=60s" } }),
+					require("neotest-go")({
+						experimental = { test_table = true },
+						args = { "-count=1", "-timeout=60s" },
+					}),
 					require("neotest-foundry")({
 						foundryCommand = "forge test",
 						foundryConfig = nil,
@@ -226,7 +247,10 @@ return {
 							return require("directory").get_cwd()
 						end,
 						filterDir = function(name)
-							return not vim.tbl_contains({ "node_modules", "cache", "out", "artifacts", "docs", "doc" }, name)
+							return not vim.tbl_contains(
+								{ "node_modules", "cache", "out", "artifacts", "docs", "doc" },
+								name
+							)
 						end,
 					}),
 				},

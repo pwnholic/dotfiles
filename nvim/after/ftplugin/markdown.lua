@@ -5,10 +5,6 @@ vim.opt_local.formatoptions:append("t")
 vim.opt_local.statuscolumn = "%="
 vim.opt_local.textwidth = 113
 
-vim.bo.sw = 4
-vim.bo.cindent = false
-vim.bo.smartindent = false
-
 local map = vim.keymap.set
 
 map({ "n", "v", "i" }, "<C-CR>", vim.cmd.MkdnEnter, { desc = "Create New Note" })

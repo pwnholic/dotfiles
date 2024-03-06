@@ -36,7 +36,11 @@ return {
 				local buf = info.buf
 				local win = vim.api.nvim_get_current_win()
 				vim.schedule(function()
-					if not vim.api.nvim_buf_is_valid(buf) or not vim.api.nvim_win_is_valid(win) or not vim.api.nvim_win_get_buf(win) == buf then
+					if
+						not vim.api.nvim_buf_is_valid(buf)
+						or not vim.api.nvim_win_is_valid(win)
+						or not vim.api.nvim_win_get_buf(win) == buf
+					then
 						return
 					end
 					vim.api.nvim_win_call(win, function()
@@ -87,7 +91,12 @@ return {
 					local filetype = vim.api.nvim_get_option_value("filetype", { buf = event.buf })
 					local buftype = vim.api.nvim_get_option_value("buftype", { buf = event.buf })
 					local ignore_filetypes = { "gitcommit", "gitrebase" }
-					if buftype == "" and filetype and filetype ~= "" and not vim.tbl_contains(ignore_filetypes, filetype) then
+					if
+						buftype == ""
+						and filetype
+						and filetype ~= ""
+						and not vim.tbl_contains(ignore_filetypes, filetype)
+					then
 						vim.b[event.buf].view_activated = true
 						vim.cmd.loadview({ mods = { emsg_silent = true } })
 					end

@@ -31,7 +31,12 @@ return {
 				end
 				fzf_ui.register(function(_, items)
 					return {
-						winopts = { split = fmt("botright %dnew", math.min(10 + vim.go.ch + (vim.go.ls == 0 and 0 or 1), #items + 2)) },
+						winopts = {
+							split = fmt(
+								"botright %dnew",
+								math.min(10 + vim.go.ch + (vim.go.ls == 0 and 0 or 1), #items + 2)
+							),
+						},
 						fzf_opts = no_preview_fzf_opts,
 					}
 				end)
@@ -69,7 +74,11 @@ return {
 					text = selected[i]:match(":%d+:%d?%d?%d?%d?:?(.*)$"),
 				})
 			end
-			local title = fmt("[FzfLua] %s%s", opts.__INFO and opts.__INFO.cmd .. ": " or "", fzf_utils.resume_get("query", opts) or "")
+			local title = fmt(
+				"[FzfLua] %s%s",
+				opts.__INFO and opts.__INFO.cmd .. ": " or "",
+				fzf_utils.resume_get("query", opts) or ""
+			)
 			if is_loclist then
 				vim.fn.setloclist(0, {}, " ", { nr = "$", items = qf_list, title = title })
 				if type(opts.lopen) == "function" then
@@ -307,7 +316,11 @@ return {
 				ls_cmd = "ls",
 			},
 			autocmds = { actions = { ["ctrl-x"] = { fn = fzf_actions.del_autocmd } }, headers = { "actions" } },
-			args = { files_only = false, headers = { "actions" }, actions = { ["ctrl-j"] = fzf_actions.arg_search_add } },
+			args = {
+				files_only = false,
+				headers = { "actions" },
+				actions = { ["ctrl-j"] = fzf_actions.arg_search_add },
+			},
 			grep = {
 				actions = { ["alt-l"] = fzf_actions.grep_lgrep, ["ctrl-g"] = fzf_actions.toggle_ignore },
 				headers = { "actions", "regex_filter" },
@@ -510,7 +523,11 @@ return {
 			return function()
 				builtin = params.builtin
 				opts = params.opts
-				opts = vim.tbl_extend("force", { cwd = require("directory").get_root(), fzf_opts = fzf_opts_map }, opts or {})
+				opts = vim.tbl_extend(
+					"force",
+					{ cwd = require("directory").get_root(), fzf_opts = fzf_opts_map },
+					opts or {}
+				)
 				fzf[builtin](opts)
 			end
 		end
@@ -521,12 +538,21 @@ return {
 			headers = { "actions", "cwd" },
 			prompt = "Folder : ",
 			find_opts = [[-type d -not -path '*/\.git/*' -printf '%P\n']],
-			fd_opts = fmt([[--color=never --type d --hidden --follow --exclude '{%s}/' --exclude '{%s}/']], ignore_folder, ignore_file),
+			fd_opts = fmt(
+				[[--color=never --type d --hidden --follow --exclude '{%s}/' --exclude '{%s}/']],
+				ignore_folder,
+				ignore_file
+			),
 			rg_opts = fmt([[--color=never --hidden --follow -g '!{%s}/' -g '!{%s}' ]], ignore_folder, ignore_file),
 		}
 
 		map("n", "<C-p>", fzfmap("files"), { desc = "Find Files (root)" })
-		map("n", "<leader>fN", fzfmap("files", vim.tbl_extend("force", note_args, { cwd = note_path })), { desc = "Find Notes Folder (root)" })
+		map(
+			"n",
+			"<leader>fN",
+			fzfmap("files", vim.tbl_extend("force", note_args, { cwd = note_path })),
+			{ desc = "Find Notes Folder (root)" }
+		)
 		map("n", "<leader>fd", fzfmap("files", note_args), { desc = "Find Folder (root)" })
 		map("n", "<leader>fn", fzfmap("files", { cwd = note_path }), { desc = "Find Notes Files (root)" })
 		map("n", "<leader>fB", fzfmap("builtin"), { desc = "Find Builtin" })

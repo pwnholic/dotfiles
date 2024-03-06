@@ -205,7 +205,9 @@ local capabilities = vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_c
 			},
 			contextSupport = true,
 			insertTextMode = 1,
-			completionList = { itemDefaults = { "commitCharacters", "editRange", "insertTextFormat", "insertTextMode", "data" } },
+			completionList = {
+				itemDefaults = { "commitCharacters", "editRange", "insertTextFormat", "insertTextMode", "data" },
+			},
 		},
 	},
 	general = { positionEncodings = { "utf-8" } },
@@ -234,7 +236,12 @@ local function fzflsp(builtin, opts)
 		builtin = params.builtin
 		opts = params.opts
 		opts = vim.tbl_deep_extend("force", {
-			fzf_opts = { ["--info"] = "right", ["--no-preview"] = true, ["--preview-window"] = "hidden", ["--ansi"] = true },
+			fzf_opts = {
+				["--info"] = "right",
+				["--no-preview"] = true,
+				["--preview-window"] = "hidden",
+				["--ansi"] = true,
+			},
 		}, opts or {})
 		require("fzf-lua")[builtin](opts)
 	end

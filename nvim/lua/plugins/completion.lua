@@ -42,7 +42,9 @@ return {
 				local str = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
 				local curr_char = str:sub(col, col)
 				local next_char = str:sub(col + 0, col + 1)
-				return col ~= -1 and curr_char:match("%s") == nil and not vim.tbl_contains({ '"', "'", "", ")", "]" }, next_char)
+				return col ~= -1
+					and curr_char:match("%s") == nil
+					and not vim.tbl_contains({ '"', "'", "", ")", "]" }, next_char)
 			end
 
 			local function follow_indent_line(fb)
@@ -59,16 +61,21 @@ return {
 
 				if vim.fn.strcharpart(current_line, get_indent - 1, col - get_indent + 1):gsub("%s+", "") == "" then
 					if get_indent > 0 and col > get_indent then
-						local new_line = vim.fn.strcharpart(current_line, 0, get_indent) .. vim.fn.strcharpart(current_line, col)
+						local new_line = vim.fn.strcharpart(current_line, 0, get_indent)
+							.. vim.fn.strcharpart(current_line, col)
 						vim.api.nvim_buf_set_lines(0, row - 1, row, true, { new_line })
 						vim.api.nvim_win_set_cursor(0, { row, math.min(get_indent or 0, vim.fn.strcharlen(new_line)) })
 					elseif row > 1 and (get_indent > 0 and col + 1 > get_indent) then
 						local prev_line = vim.api.nvim_buf_get_lines(0, row - 2, row - 1, true)[1]
 						if vim.trim(prev_line) == "" then
 							local prev_indent = ts_indent.get_indent(row - 1) or 0
-							local new_line = vim.fn.strcharpart(current_line, 0, prev_indent) .. vim.fn.strcharpart(current_line, col)
+							local new_line = vim.fn.strcharpart(current_line, 0, prev_indent)
+								.. vim.fn.strcharpart(current_line, col)
 							vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
-							vim.api.nvim_win_set_cursor(0, { row - 1, math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))) })
+							vim.api.nvim_win_set_cursor(
+								0,
+								{ row - 1, math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))) }
+							)
 						else
 							local len = vim.fn.strcharlen(prev_line)
 							local new_line = prev_line .. vim.fn.strcharpart(current_line, col)
@@ -182,7 +189,13 @@ return {
 							elseif has_words_before() then
 								cmp.complete()
 							elseif col < get_indent and line:sub(1, col):gsub("^%s+", "") == "" then
-								vim.api.nvim_buf_set_lines(0, row - 1, row, true, { string.rep(" ", get_indent or 0) .. line:sub(col) })
+								vim.api.nvim_buf_set_lines(
+									0,
+									row - 1,
+									row,
+									true,
+									{ string.rep(" ", get_indent or 0) .. line:sub(col) }
+								)
 								vim.api.nvim_win_set_cursor(0, { row, math.max(0, get_indent) })
 								local client = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })[1]
 								local ctx = {}
@@ -233,7 +246,10 @@ return {
 							end
 						end,
 					},
-					["<C-y>"] = cmp_map(cmp_map.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }), { "i", "c" }),
+					["<C-y>"] = cmp_map(
+						cmp_map.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+						{ "i", "c" }
+					),
 					["<C-p>"] = {
 						["c"] = cmp_map.select_prev_item(),
 						["i"] = function(fb)
@@ -293,7 +309,10 @@ return {
 						entry_filter = function(entry, ctx)
 							if
 								ctx.filetype == "go"
-								and vim.tbl_contains({ "ReadField", "FastRead", "WriteField", "FastWrite" }, entry:get_completion_item().label)
+								and vim.tbl_contains(
+									{ "ReadField", "FastRead", "WriteField", "FastWrite" },
+									entry:get_completion_item().label
+								)
 							then
 								return false
 							end
@@ -345,7 +364,12 @@ return {
 							item.menu_hl_group = "CmpItemKind" .. item.kind
 							item.kind = vim.fn.strcharpart(icons[item.kind] or "", 0, 2)
 						end
-						clamp_item("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), item)
+						clamp_item(
+							"abbr",
+							vim.go.pw,
+							math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
+							item
+						)
 						clamp_item("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), item)
 						return item
 					end,
@@ -357,7 +381,12 @@ return {
 				formatting = {
 					fields = { cmp.ItemField.Abbr },
 					format = function(_, cmp_item)
-						clamp_item("abbr", vim.go.pw, math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), cmp_item)
+						clamp_item(
+							"abbr",
+							vim.go.pw,
+							math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
+							cmp_item
+						)
 						return cmp_item
 					end,
 				},
@@ -368,7 +397,12 @@ return {
 				formatting = {
 					fields = { cmp.ItemField.Abbr },
 					format = function(_, cmp_item)
-						clamp_item("abbr", vim.go.pw, math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), cmp_item)
+						clamp_item(
+							"abbr",
+							vim.go.pw,
+							math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
+							cmp_item
+						)
 						return cmp_item
 					end,
 				},
@@ -379,7 +413,12 @@ return {
 				formatting = {
 					fields = { cmp.ItemField.Abbr },
 					format = function(_, cmp_item)
-						clamp_item("abbr", vim.go.pw, math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), cmp_item)
+						clamp_item(
+							"abbr",
+							vim.go.pw,
+							math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
+							cmp_item
+						)
 						return cmp_item
 					end,
 				},
@@ -453,8 +492,12 @@ return {
 				store_selection_keys = "<Tab>",
 				ext_opts = {
 					[ls_type.choiceNode] = { active = { virt_text = { { "│", "DashboardKey" } } } },
-					[ls_type.insertNode] = { unvisited = { virt_text = { { "│", "Comment" } }, virt_text_pos = "inline" } },
-					[ls_type.exitNode] = { unvisited = { virt_text = { { "│", "Comment" } }, virt_text_pos = "inline" } },
+					[ls_type.insertNode] = {
+						unvisited = { virt_text = { { "│", "Comment" } }, virt_text_pos = "inline" },
+					},
+					[ls_type.exitNode] = {
+						unvisited = { virt_text = { { "│", "Comment" } }, virt_text_pos = "inline" },
+					},
 				},
 				parser_nested_assembler = function(_, snippet)
 					local select = function(snip, no_move)
@@ -471,36 +514,56 @@ return {
 							ls_util.normal_move_on(pos_begin)
 							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("v", true, false, true), "n", true)
 							ls_util.normal_move_before(pos_end)
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("o<C-G>", true, false, true), "n", true)
+							vim.api.nvim_feedkeys(
+								vim.api.nvim_replace_termcodes("o<C-G>", true, false, true),
+								"n",
+								true
+							)
 						end
 					end
-                    -- stylua: ignore start
 					function snippet:jump_into(dir, no_move)
 						if self.active then
 							-- inside snippet, but not selected.
-							if dir == 1 then self:input_leave() return self.next:jump_into(dir, no_move)
-							else select(self, no_move) return self end
+							if dir == 1 then
+								self:input_leave()
+								return self.next:jump_into(dir, no_move)
+							else
+								select(self, no_move)
+								return self
+							end
 						else
 							-- jumping in from outside snippet.
 							self:input_enter()
-							if dir == 1 then select(self, no_move) return self
-							else return self.inner_last:jump_into(dir, no_move) end
+							if dir == 1 then
+								select(self, no_move)
+								return self
+							else
+								return self.inner_last:jump_into(dir, no_move)
+							end
 						end
 					end
 					-- this is called only if the snippet is currently selected.
 					function snippet:jump_from(dir, no_move)
-						if dir == 1 then return self.inner_first:jump_into(dir, no_move)
-						else self:input_leave() return self.prev:jump_into(dir, no_move) end
+						if dir == 1 then
+							return self.inner_first:jump_into(dir, no_move)
+						else
+							self:input_leave()
+							return self.prev:jump_into(dir, no_move)
+						end
 					end
 					return snippet
-					-- stylua: ignore end
 				end,
 			})
 			vim.api.nvim_create_autocmd("InsertLeave", {
 				group = vim.api.nvim_create_augroup("Unlink_Snippet", { clear = true }),
 				desc = "Cancel the snippet session when leaving insert mode",
 				callback = function(args)
-					if ls.session and ls.session.current_nodes[args.buf] and not ls.session.jump_active and not ls.choice_active() then
+					if
+						ls.session
+						and ls.session.current_nodes[args.buf]
+						and not ls.session.jump_active
+						and not ls.choice_active()
+					then
 						ls.unlink_current()
 					end
 				end,
