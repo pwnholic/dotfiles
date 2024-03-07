@@ -84,7 +84,7 @@ return {
 		o.pumblend = 0
 		o.pumheight = 10
 		o.viewoptions = ""
-		o.virtualedit = "onemore"
+		o.virtualedit = "onemore,block"
 		o.whichwrap = "b,h,l"
 
 		g.markdown_recommended_style = 0

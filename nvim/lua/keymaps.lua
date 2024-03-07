@@ -192,5 +192,7 @@ return {
 		map("n", "]i", diagnostic_goto(true, "INFO"), { desc = "Next Info" })
 		map("n", "[h", diagnostic_goto(false, "HINT"), { desc = "Prev Hint" })
 		map("n", "]h", diagnostic_goto(true, "HINT"), { desc = "Next Hint" })
+
+		map("t", "<esc><esc>", [[<C-\><C-n>]])
 	end,
 }

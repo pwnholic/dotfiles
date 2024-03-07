@@ -63,30 +63,6 @@ return {
 			end,
 		})
 
-		autocmd({ "BufWinLeave", "BufWritePost", "WinLeave" }, {
-			group = augroup("FoldRemember"),
-			callback = function(event)
-				if vim.b[event.buf].view_activated then
-					vim.cmd.mkview({ mods = { emsg_silent = true } })
-				end
-			end,
-		})
-
-		autocmd("BufWinEnter", {
-			group = augroup("FoldRemember"),
-			callback = function(info)
-				if not vim.b[info.buf].view_activated then
-					if
-						not vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo[info.buf].ft)
-						and vim.bo[info.buf].bt ~= ""
-					then
-						vim.b[info.buf].view_activated = true
-						vim.cmd.loadview({ mods = { emsg_silent = true } })
-					end
-				end
-			end,
-		})
-
 		autocmd("BufReadPre", {
 			desc = "Set settings for large files.",
 			callback = function(opts)
