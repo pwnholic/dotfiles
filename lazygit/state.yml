@@ -1,6 +1,7 @@
 lastupdatecheck: 0
 recentrepos:
 - /home/user007/.config/nvim
+- /home/user007/dotfiles
 startuppopupversion: 5
 customcommandshistory:
 - q
