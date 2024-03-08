@@ -218,15 +218,6 @@ local capabilities = vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_c
 		snippetTextEdit = true,
 		codeActionGroup = true,
 		ssr = true,
-		commands = {
-			commands = {
-				"rust-analyzer.runSingle",
-				"rust-analyzer.debugSingle",
-				"rust-analyzer.showReferences",
-				"rust-analyzer.gotoLocation",
-				"editor.action.triggerParameterHints",
-			},
-		},
 	},
 })
 

@@ -120,13 +120,13 @@ return {
 		opts = {
 			modules = { maps = false, cmp = true },
 			filetypes = { md = true, rmd = true, markdown = true },
-			create_dirs = true,
+			create_dirs = false,
 			perspective = {
 				priority = "first",
 				fallback = "current",
 				root_tell = false,
 				nvim_wd_heel = false,
-				update = false,
+				update = true,
 			},
 			wrap = true,
 			silent = false,

@@ -179,7 +179,10 @@ local function project_dir(path, patterns)
 	end
 	local dirpath = stat.type == "directory" and path or vim.fs.dirname(path)
 	for _, pattern in ipairs(patterns) do
-		local root = vim.fs.find(pattern, { path = dirpath, upward = true, type = pattern:match("/$") and "directory" or "file" })[1]
+		local root = vim.fs.find(
+			pattern,
+			{ path = dirpath, upward = true, type = pattern:match("/$") and "directory" or "file" }
+		)[1]
 		if root and vim.uv.fs_stat(root) then
 			local dirname = vim.fs.dirname(root)
 			return dirname and vim.uv.fs_realpath(dirname) --[[@as string]]

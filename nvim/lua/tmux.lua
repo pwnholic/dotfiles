@@ -174,7 +174,7 @@ local function setup()
 	tmux_key_fallback("<M-k>", navigate_wrap("k"), tmux_navigate_cond("k"), { desc = "Move to Up Pane" })
 	tmux_key_fallback("<M-l>", navigate_wrap("l"), tmux_navigate_cond("l"), { desc = "Move to Right Pane" })
 
-	tmux_key_fallback("<M-n>", "new-window", _, { desc = "Tmux New Window" })
+	tmux_key_fallback("<M-c>", "new-window", _, { desc = "Tmux New Window" })
 	tmux_key_fallback("<M-s>", [[command-prompt -p "New Session:" "new-session -A -s '%%'"]] , _, { desc = "New Session" })
 
 	tmux_key_fallback("<M-r>", [[command-prompt -I "#W" { rename-window "%%" }]], _, { desc = "Rename Window" })
@@ -187,7 +187,6 @@ local function setup()
 
 	tmux_key_fallback("<M-+>", "confirm 'select-layout tiled'", _, { desc = "Select Layout Tiled" })
 
-	tmux_key_fallback("<M-p>", "last-pane", _, { desc = "Last Pane" })
 	tmux_key_fallback("<M-E>", "swap-pane -U", _, { desc = "Swap Up Pane" })
 	tmux_key_fallback("<M-e>", "swap-pane -D", _, { desc = "Swap Down Pane" })
 	tmux_key_fallback("<M-w>", "choose-tree -Zw", _, { desc = "Tmux Choose Tree" })

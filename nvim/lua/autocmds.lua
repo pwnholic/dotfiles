@@ -15,6 +15,20 @@ return {
 			end,
 		})
 
+		autocmd("TextYankPost", {
+			group = augroup("Hl on yank"),
+			desc = "Highlight on yank",
+			callback = function()
+				vim.highlight.on_yank({ higroup = "LspReferenceText", priority = 250 })
+			end,
+		})
+
+		autocmd({ "BufDelete", "BufWipeout" }, {
+			group = augroup("wshada_on_buf_delete"),
+			desc = "Write to ShaDa when deleting/wiping out buffers",
+			command = "wshada",
+		})
+
 		autocmd({ "BufWinEnter", "FileChangedShellPost" }, {
 			pattern = "*",
 			group = augroup("AutoCwd"),

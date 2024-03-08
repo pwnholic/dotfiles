@@ -135,7 +135,7 @@ return {
 						cmp.config.compare.order,
 					},
 				},
-				performance = { async_budget = 1, max_view_entries = 64 },
+				performance = { debounce = 80, throttle = 50, fetching_timeout = 200 },
 				enabled = function()
 					if
 						vim.tbl_contains({ "prompt" }, vim.bo.buftype)
@@ -154,11 +154,11 @@ return {
 						require("luasnip").lsp_expand(args.body)
 					end,
 				},
-				matching = {
-					disallow_fuzzy_matching = false,
-					disallow_partial_matching = false,
-					disallow_prefix_unmatching = false,
-				},
+				-- matching = {
+				-- 	disallow_fuzzy_matching = false,
+				-- 	disallow_partial_matching = false,
+				-- 	disallow_prefix_unmatching = false,
+				-- },
 				window = {
 					completion = cmp.config.window.bordered({
 						winhighlight = "CmpMenu:CmpMenu,FloatBorder:Comment,CursorLine:PmenuSel",

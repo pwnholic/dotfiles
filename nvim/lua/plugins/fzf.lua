@@ -277,6 +277,8 @@ return {
 				builtin = { ["<F1>"] = "toggle-help" },
 				fzf = {
 					["ctrl-z"] = "abort",
+					["ctrl-c"] = "abort",
+					["esc"] = "abort",
 					["ctrl-u"] = "unix-line-discard",
 					["ctrl-f"] = "half-page-down",
 					["ctrl-b"] = "half-page-up",
@@ -338,6 +340,12 @@ return {
 			},
 			blines = {
 				headers = { "actions" },
+				fzf_opts = {
+					["--delimiter"] = "[:]",
+					["--with-nth"] = "2..",
+					["--tiebreak"] = "index",
+					["--tabstop"] = "1",
+				},
 				actions = {
 					["alt-q"] = fzf_actions.buf_sel_to_qf,
 					["alt-o"] = fzf_actions.buf_sel_to_ll,
@@ -384,6 +392,8 @@ return {
 				color_icons = true,
 				cwd_header = true,
 				cwd_prompt = false,
+				cwd_prompt_shorten_len = 32,
+				cwd_prompt_shorten_val = 1,
 				find_opts = table.concat({
 					"-type",
 					"f",
@@ -421,7 +431,7 @@ return {
 
 				actions = {
 					["ctrl-g"] = fzf_actions.toggle_ignore,
-					["alt-c"] = fzf_actions.switch_cwd,
+					["alt-f"] = fzf_actions.switch_cwd,
 				},
 			},
 			lsp = {
@@ -520,12 +530,6 @@ return {
 					["<S-up>"] = "preview-page-up",
 					["<S-left>"] = "preview-page-reset",
 				},
-				fzf = vim.tbl_extend("force", no_preview_opts.keymap.fzf, {
-					["f3"] = "toggle-preview-wrap",
-					["f4"] = "toggle-preview",
-					["shift-down"] = "preview-page-down",
-					["shift-up"] = "preview-page-up",
-				}),
 			},
 		}
 

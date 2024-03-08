@@ -318,7 +318,7 @@ return {
 			default_file_explorer = true,
 			columns = columns,
 			win_options = {
-				virtualedit = "onemore,block",
+				virtualedit = "block",
 				wrap = false,
 				signcolumn = "no",
 				cursorcolumn = false,

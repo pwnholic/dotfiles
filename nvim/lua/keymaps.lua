@@ -64,8 +64,8 @@ return {
 			if vim.bo.filetype == "oil" and vim.bo.modified then
 				return require("oil").save()
 			end
-			return vim.cmd.wall()
-		end, { desc = "Save file", silent = true })
+			return "<esc>:wall<cr>"
+		end, { desc = "Save file", silent = true, expr = true })
 
 		-- better indenting
 		map("v", "<", "<gv")
@@ -194,5 +194,11 @@ return {
 		map("n", "]h", diagnostic_goto(true, "HINT"), { desc = "Next Hint" })
 
 		map("t", "<esc><esc>", [[<C-\><C-n>]])
+		map("x", "@", function()
+			return ":norm @" .. vim.fn.getcharstr() .. "<cr>"
+		end, { expr = true, silent = true })
+
+		-- format buffer
+		map("n", "gQ", "mzgggqG`z<cmd>delmarks z<cr>zz", { desc = "Format buffer", silent = true })
 	end,
 }
