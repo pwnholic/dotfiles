@@ -355,6 +355,36 @@ return {
 				["gx"] = "actions.open_external",
 				["<CR>"] = "actions.select",
 				["K"] = { mode = { "n", "x" }, desc = "Toggle preview", callback = toggle_preview },
+				["gm"] = {
+					desc = "Generate Random Name for Markdown File",
+					callback = function()
+						local position = vim.api.nvim_win_get_cursor(0)
+						local row, col = position[1], position[2]
+						local replacement = {}
+
+						if vim.api.nvim_get_mode()["mode"] == "n" then
+							math.randomseed(os.time())
+							local len = 7
+							local chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+							local name = ""
+							for _ = 1, len do
+								local ridx = math.random(1, #chars)
+								name = string.format("%s%s", name, string.sub(chars, ridx, ridx))
+							end
+							if string.len(name) > len then
+								string.lower(name:gsub(" ", "_"))
+							end
+							local generate_name = string.format("%s_%s%s.md", os.date("%d%m%Y"), os.date("%S"), name)
+							table.insert(replacement, generate_name)
+
+							vim.api.nvim_buf_set_text(0, row - 1, col - 1, row - 1, col - 1, replacement)
+							vim.api.nvim_win_set_cursor(0, { row, row - 1 })
+							return
+						else
+							vim.notify("genarete name file only work on insert mode", 2, { title = "Oil" })
+						end
+					end,
+				},
 				["gq"] = {
 					desc = "Quit Oil Buffer",
 					callback = function()
