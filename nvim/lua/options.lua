@@ -18,12 +18,7 @@ return {
 		opt.shortmess:append({ W = true, I = true, c = true, C = true })
 		opt.showmode = false
 		opt.sidescrolloff = 8
-		opt.splitbelow = true
-		opt.splitkeep = "screen"
-		opt.splitright = true
 		opt.termguicolors = true
-		opt.undofile = true
-		opt.undolevels = 9999
 		opt.updatetime = 150
 		opt.wildmode = "longest:full,full"
 		opt.winminwidth = 5
@@ -35,6 +30,14 @@ return {
 		opt.visualbell = true
 		opt.cursorcolumn = true
 		opt.guifont = { "Iosevka_NF_Medium", "Symbols_Nerd_Font", "Noto_Color_Emoji" }
+
+		opt.splitbelow = true
+		opt.splitkeep = "screen"
+		opt.splitright = true
+
+		opt.undofile = true
+		opt.undolevels = 9999
+		opt.undodir = vim.fn.stdpath("config") .. "/undodir"
 
 		opt.foldlevel = 99
 		opt.foldlevelstart = 99

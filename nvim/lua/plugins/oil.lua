@@ -381,7 +381,7 @@ return {
 							vim.api.nvim_win_set_cursor(0, { row, row - 1 })
 							return
 						else
-							vim.notify("genarete name file only work on insert mode", 2, { title = "Oil" })
+							return vim.notify("genarete name file only work on insert mode", 2, { title = "Oil" })
 						end
 					end,
 				},

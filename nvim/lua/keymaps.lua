@@ -198,7 +198,6 @@ return {
 			return ":norm @" .. vim.fn.getcharstr() .. "<cr>"
 		end, { expr = true, silent = true })
 
-		-- format buffer
 		map("n", "gQ", "mzgggqG`z<cmd>delmarks z<cr>zz", { desc = "Format buffer", silent = true })
 	end,
 }

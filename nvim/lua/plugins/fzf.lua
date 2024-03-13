@@ -141,16 +141,16 @@ return {
 			end)
 
 			-- Adapted from fzf-lua `core.set_header()` function
-			if opts.cwd_prompt then
-				opts.prompt = vim.fn.fnamemodify(opts.cwd, ":.:~")
-				local shorten_len = tonumber(opts.cwd_prompt_shorten_len)
-				if shorten_len and #opts.prompt >= shorten_len then
-					opts.prompt = fzf_path.shorten(opts.prompt, tonumber(opts.cwd_prompt_shorten_val) or 1)
-				end
-				if not fzf_path.ends_with_separator(opts.prompt) then
-					opts.prompt = opts.prompt .. fzf_path.separator()
-				end
-			end
+			-- if opts.cwd_prompt then
+			-- 	opts.prompt = vim.fn.fnamemodify(opts.cwd, ":.:~")
+			-- 	local shorten_len = tonumber(opts.cwd_prompt_shorten_len)
+			-- 	if shorten_len and #opts.prompt >= shorten_len then
+			-- 		opts.prompt = fzf_path.shorten(opts.prompt, tonumber(opts.cwd_prompt_shorten_val) or 1)
+			-- 	end
+			-- 	if not fzf_path.ends_with_separator(opts.prompt) then
+			-- 		opts.prompt = opts.prompt .. fzf_path.separator()
+			-- 	end
+			-- end
 			if opts.headers then
 				opts = fzf_core.set_header(opts, opts.headers)
 			end
@@ -224,9 +224,9 @@ return {
 		fzf_core.ACTION_DEFINITIONS[fzf_actions.grep_lgrep] = {
 			function(opts)
 				if opts.fn_reload then
-					return "fuzzy search live grep (root)"
+					return "fuzzy lgrep (root)"
 				else
-					return "regex search live grep (root)"
+					return "regex lgrep (root)"
 				end
 			end,
 		}
@@ -278,7 +278,6 @@ return {
 				fzf = {
 					["ctrl-z"] = "abort",
 					["ctrl-c"] = "abort",
-					["esc"] = "abort",
 					["ctrl-u"] = "unix-line-discard",
 					["ctrl-f"] = "half-page-down",
 					["ctrl-b"] = "half-page-up",
@@ -362,7 +361,8 @@ return {
 			},
 			grep = {
 				actions = { ["alt-l"] = fzf_actions.grep_lgrep, ["ctrl-g"] = fzf_actions.toggle_ignore },
-				headers = { "actions" },
+				headers = { "actions", "cwd" },
+				cwd_header = true,
 				input_prompt = "Grep For : ",
 				glob_flag = "--iglob",
 				glob_separator = "%s%-%-",
@@ -392,8 +392,6 @@ return {
 				color_icons = true,
 				cwd_header = true,
 				cwd_prompt = false,
-				cwd_prompt_shorten_len = 32,
-				cwd_prompt_shorten_val = 1,
 				find_opts = table.concat({
 					"-type",
 					"f",
@@ -519,8 +517,7 @@ return {
 				end,
 			},
 			keymap = {
-				builtin = {
-					["<F1>"] = "toggle-help",
+				builtin = vim.tbl_extend("force", no_preview_opts.keymap.builtin, {
 					["<F2>"] = "toggle-fullscreen",
 					["<F3>"] = "toggle-preview-wrap",
 					["<F4>"] = "toggle-preview",
@@ -529,7 +526,7 @@ return {
 					["<S-down>"] = "preview-page-down",
 					["<S-up>"] = "preview-page-up",
 					["<S-left>"] = "preview-page-reset",
-				},
+				}),
 			},
 		}
 
@@ -608,6 +605,7 @@ return {
 		map("n", "<leader>fk", fzfmap("keymaps"), { desc = "Keymaps" })
 		map("n", "<leader>fr", fzfmap("registers"), { desc = "Registers" })
 		map("n", "<leader>fs", fzfmap("spell_suggest"), { desc = "Spell Suggest" })
+		map("n", "<leader>fT", fzfmap("awesome_colorschemes"), { desc = "Awesome Colorschemes" })
 		map("n", "<leader>fF", "<cmd>FzfLua resume<cr>", { desc = "Find Resume" })
 
 		map("n", "<leader>fg", fzfmap("git_files"), { desc = "Git Files" })

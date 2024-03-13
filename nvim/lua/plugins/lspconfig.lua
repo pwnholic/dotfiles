@@ -11,8 +11,8 @@ return {
 						if not err then
 							if vim.startswith(vim.api.nvim_get_mode().mode:lower(), "v") then
 								vim.api.nvim_feedkeys(
-									vim.api.nvim_replace_termcodes("<Esc>", true, false, true),
-									"n",
+                                    vim.api.nvim_replace_termcodes("<Esc>", true, false, true),
+                                    "n",
 									true
 								)
 							end
@@ -20,7 +20,7 @@ return {
 					end)
 				end,
 				mode = "",
-				desc = "Format buffer",
+				desc = "Format Range",
 			},
 		},
 		init = function()
