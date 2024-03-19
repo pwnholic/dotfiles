@@ -165,7 +165,7 @@ return {
 					condition = function()
 						return not buf_matches({
 							buftype = { "prompt", "nofile", "terminal", "help", "quickfix" },
-							filetype = { "fugitive", "qf", "dbui", "dbout", "compilation", "Trouble", "Glance" },
+							filetype = { "fugitive", "qf", "dbui", "dbout", "Trouble" },
 						}) or vim.api.nvim_win_get_config(0).relative ~= "" or vim.api.nvim_buf_get_name(0) == ""
 					end,
 					space,
@@ -214,21 +214,49 @@ return {
 				{ provider = "%=" },
 				{
 					condition = function()
-						return #vim.api.nvim_list_tabpages() >= 2
+						return package.loaded.harpoon and require("harpoon"):list():length() > 1
 					end,
-					require("heirline.utils").make_tablist({
-						provider = function(self)
-							return "%" .. self.tabnr .. "T " .. self.tabpage .. " %T"
-						end,
-						hl = function(self)
-							if self.is_active then
-								return { bg = colors.blue1, bold = true, fg = colors.bg_statusline }
-							else
-								return { bg = colors.fg_gutter }
-							end
-						end,
-					}),
+					space,
+					init = function(self)
+						local children = {}
+						local items = require("harpoon"):list():display()
+						local bufnr = vim.api.nvim_get_current_buf()
+						if not vim.api.nvim_buf_is_valid(bufnr) then
+							return {}
+						end
+						local cur_bufname = vim.api.nvim_buf_get_name(bufnr)
+						for i, path in ipairs(items) do
+							local child = {
+								space,
+								{
+									provider = function()
+										return fmt(" %s ", i)
+									end,
+									hl = function()
+										if
+											(string.len(path) < 75 and path == vim.fn.fnamemodify(cur_bufname, ":~:."))
+											or (
+												string.len(path) > 75
+												and path
+													== vim.fn.pathshorten(vim.fn.fnamemodify(cur_bufname, ":~:."), 3)
+											)
+										then
+											return { bg = colors.blue1, bold = true, fg = colors.black }
+										else
+											return { bg = colors.fg_gutter, fg = colors.cyan }
+										end
+									end,
+								},
+							}
+							table.insert(children, child)
+						end
+						self.child = self:new(children, 1)
+					end,
+					provider = function(self)
+						return self.child:eval()
+					end,
 				},
+
 				{ provider = "%=" },
 				-- RIGHT --
 				{
@@ -581,7 +609,9 @@ return {
 			},
 			winbar = {
 				{
-					condition = package.loaded["nvim-navic"] and require("nvim-navic").is_available(),
+					condition = function()
+						return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+					end,
 					update = "CursorMoved",
 					static = {
 						type_hl = {
@@ -663,38 +693,37 @@ return {
 				{ provider = "%=" },
 				{
 					condition = function()
-						return package.loaded.harpoon and require("harpoon"):list():length() > 1
+						return #vim.api.nvim_list_tabpages() >= 2
 					end,
 					space,
-					{
-						provider = function()
-							local display = require("harpoon"):list():display()
-							local index = {}
-							local bufnr = vim.api.nvim_get_current_buf()
-							if not vim.api.nvim_buf_is_valid(bufnr) then
-								return
-							end
-							for idx, val in ipairs(display) do
-								if val == vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":~:.") then
-									idx = fmt("[ %d ]", idx)
-								end
-								table.insert(index, idx --[[@as string]])
-							end
-							return table.concat(index, " ")
+					require("heirline.utils").make_tablist({
+						provider = function(self)
+							return "%" .. self.tabnr .. "T " .. self.tabpage .. " %T"
 						end,
-						hl = {
-							fg = colors.orange,
-							bg = colors.bg_statusline,
-							bold = true,
-							underline = true,
-							sp = color_util.darken(colors.cyan, 0.7),
-						},
-					},
+						hl = function(self)
+							if self.is_active then
+								return {
+									bg = colors.blue1,
+									bold = true,
+									fg = colors.bg_statusline,
+									underline = true,
+									sp = color_util.darken(colors.cyan, 0.7),
+								}
+							else
+								return {
+									bg = colors.bg_statusline,
+									fg = colors.cyan,
+									underline = true,
+									sp = color_util.darken(colors.cyan, 0.7),
+								}
+							end
+						end,
+					}),
 				},
 				{
 					condition = function()
 						return not buf_matches({
-							buftype = { "prompt", "nofile", "terminal", "help", "quickfix" },
+							buftype = buftype,
 							filetype = { "fugitive", "qf", "dbui", "dbout", "compilation", "Trouble", "Glance" },
 						}) or vim.api.nvim_win_get_config(0).relative ~= "" or vim.api.nvim_buf_get_name(0) == ""
 					end,
