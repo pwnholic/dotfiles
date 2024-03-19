@@ -28,6 +28,7 @@ require("lazy").setup({
 	{ name = "autocmds", main = "autocmds", dir = config_path, event = "VeryLazy", config = true },
 	{ name = "keymaps", main = "keymaps", dir = config_path, event = "VeryLazy", config = true },
 	{ name = "tmux", main = "tmux", dir = config_path, event = "BufRead", config = true },
+	{ name = "buffer", main = "buffer", dir = config_path, event = "BufRead", config = true },
 }, {
 	defaults = { lazy = true, version = "*" },
 	install = { missing = true, colorscheme = { "tokyonight" } },

@@ -36,8 +36,7 @@ return {
 		opt.splitright = true
 
 		opt.undofile = true
-		opt.undolevels = 9999
-		opt.undodir = vim.fn.stdpath("config") .. "/undodir"
+		opt.undolevels = 10000
 
 		opt.foldlevel = 99
 		opt.foldlevelstart = 99

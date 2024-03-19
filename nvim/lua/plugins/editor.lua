@@ -3,11 +3,6 @@ return {
 	{ "numToStr/Comment.nvim", event = "BufRead", keys = { "gcc", "gcb", "gc", "gc$" }, config = true },
 	{ "tpope/vim-dadbod", dependencies = { "kristijanhusak/vim-dadbod-ui" }, cmd = "DBUI" },
 	{
-		"chrisgrieser/nvim-early-retirement",
-		event = "BufRead",
-		opts = { retirementAgeMins = 5, notificationOnAutoClose = true },
-	},
-	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble" },
 		opts = {
@@ -97,8 +92,11 @@ return {
 				},
 				default = {
 					display = function(list_item)
-						-- return vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
-						return vim.fn.fnamemodify(list_item.value, ":~:.")
+						if string.len(list_item.value) > 75 then
+							return vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
+						else
+							return vim.fn.fnamemodify(list_item.value, ":~:.")
+						end
 					end,
 				},
 				terminals = {
@@ -462,5 +460,4 @@ return {
 			})
 		end,
 	},
-	-- { "3rd/image.nvim", ft = "markdown", config = true },
 }
