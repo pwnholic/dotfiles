@@ -1,12 +1,5 @@
-local buf_opts = vim.api.nvim_buf_get_option
-
-local function notify(msg)
-	vim.notify(msg, vim.log.levels.INFO, { title = "Buffer" })
-end
-
 local function buffer_closer(cfg)
-	local timer = vim.loop.new_timer()
-	local checkingIntervalSecs = 30
+	local timer, checkingIntervalSecs = vim.loop.new_timer(), 30
 	timer:start(
 		cfg.retirement_age_mins * 60000,
 		checkingIntervalSecs * 1000,
@@ -22,12 +15,13 @@ local function buffer_closer(cfg)
 				local used_secs_ago = os.time() - buf.lastused -- always 0 for current buffer, therefore it's never closed
 				local recently_used = used_secs_ago < cfg.retirement_age_mins * 60
 
-				local buf_ft = buf_opts(buf.bufnr, "filetype")
+				local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = buf.bufnr })
 				local is_ignored_ft = vim.tbl_contains(cfg.ignored_filetypes, buf_ft)
-				local is_modified = buf_opts(buf.bufnr, "modified")
+				local is_modified = vim.api.nvim_get_option_value("modified", { buf = buf.bufnr })
 				local is_ignored_unsaved_buf = is_modified and cfg.ignore_unsaved_changes_bufs
 
-				local is_ignored_special_buffer = buf_opts(buf.bufnr, "buftype") ~= "" and cfg.ignore_special_buf_types
+				local is_ignored_special_buffer = vim.api.nvim_get_option_value("buftype", { buf = buf.bufnr }) ~= ""
+					and cfg.ignore_special_buf_types
 				local is_ignored_alt_file = (buf.name == vim.fn.expand("#:p")) and cfg.ignore_alt_file
 				local is_ignored_visible_buf = buf.hidden == 0 and buf.loaded == 1 and cfg.ignore_visible_bufs
 				local is_ignored_unloaded_buf = buf.loaded == 0 and cfg.ignore_unloaded_bufs
@@ -54,7 +48,7 @@ local function buffer_closer(cfg)
 				-- close buffer
 				if cfg.notification_on_autoclose then
 					local filename = vim.fs.basename(buf.name)
-					notify(("Auto Closing %q"):format(filename))
+					vim.notify(("Auto Closing %q"):format(filename), vim.log.levels.INFO, { title = "Buffer" })
 				end
 
 				if is_modified and not cfg.ignore_unsaved_changes_bufs then
@@ -85,7 +79,7 @@ local function buffer_closer(cfg)
 					end
 
 					local bufname = vim.api.nvim_buf_get_name(bufnr)
-					local is_special_buffer = buf_opts(bufnr, "buftype") ~= ""
+					local is_special_buffer = vim.api.nvim_get_option_value("buftype", { buf = bufnr }) ~= ""
 					local is_ignored_ft = vim.tbl_contains(cfg.ignored_filetypes, vim.bo[bufnr].ft)
 					local file_exists = vim.loop.fs_stat(bufname) ~= nil
 
@@ -97,7 +91,11 @@ local function buffer_closer(cfg)
 						return
 					end
 
-					notify(("%q does not exist anymore. Closing."):format(vim.fs.basename(bufname)))
+					vim.notify(
+						("%q does not exist anymore. Closing."):format(vim.fs.basename(bufname)),
+						vim.log.levels.INFO,
+						{ title = "Buffer" }
+					)
 					vim.api.nvim_buf_delete(bufnr, { force = false, unload = false })
 				end, 100)
 			end,
