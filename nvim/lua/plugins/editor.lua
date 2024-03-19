@@ -97,7 +97,8 @@ return {
 				},
 				default = {
 					display = function(list_item)
-						return vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
+						-- return vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
+						return vim.fn.fnamemodify(list_item.value, ":~:.")
 					end,
 				},
 				terminals = {
@@ -461,4 +462,5 @@ return {
 			})
 		end,
 	},
+	-- { "3rd/image.nvim", ft = "markdown", config = true },
 }

@@ -33,23 +33,22 @@ return {
 			pattern = "*",
 			group = augroup("AutoCwd"),
 			desc = "Automatically change local current directory.",
-			callback = function(info)
-				if info.file == "" or vim.bo[info.buf].bt ~= "" then
+			callback = function(opts)
+				if opts.file == "" or vim.bo[opts.buf].bt ~= "" then
 					return
 				end
-				local buf = info.buf
-				local win = vim.api.nvim_get_current_win()
+				local current_win = vim.api.nvim_get_current_win()
 				vim.schedule(function()
 					if
-						not vim.api.nvim_buf_is_valid(buf)
-						or not vim.api.nvim_win_is_valid(win)
-						or not vim.api.nvim_win_get_buf(win) == buf
+						not vim.api.nvim_buf_is_valid(opts.buf)
+						or not vim.api.nvim_win_is_valid(current_win)
+						or not vim.api.nvim_win_get_buf(current_win) == opts.buf
 					then
 						return
 					end
-					vim.api.nvim_win_call(win, function()
+					vim.api.nvim_win_call(current_win, function()
 						local current_dir = vim.fn.getcwd(0)
-						local target_dir = require("directory").project_dir(info.file) or vim.fs.dirname(info.file)
+						local target_dir = require("directory").project_dir(opts.file) or vim.fs.dirname(opts.file)
 						local stat = target_dir and vim.uv.fs_stat(target_dir)
 						if stat and stat.type == "directory" and current_dir ~= target_dir then
 							vim.cmd.lcd(target_dir)

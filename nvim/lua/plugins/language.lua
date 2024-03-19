@@ -10,7 +10,6 @@ return {
 			goimport = "goimports",
 			fillstruct = "gopls",
 			gofmt = false,
-			max_line_len = 128,
 			tag_transform = false,
 			tag_options = "",
 			icons = false,

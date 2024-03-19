@@ -333,6 +333,7 @@ return {
 			cleanup_delay_ms = false,
 			delete_to_trash = true,
 			skip_confirm_for_simple_edits = false,
+			experimental_watch_for_changes = true,
 			-- Set to `false` to disable, or "name" to keep it on the file names
 			constrain_cursor = "name",
 			prompt_save_on_select_new_entry = true,

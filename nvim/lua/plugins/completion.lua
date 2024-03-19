@@ -329,7 +329,7 @@ return {
 								"--hidden",
 								"--follow",
 								"--max-filesize",
-								"1M",
+								"2M",
 								"-g",
 								fmt("'!{%s}/'", table.concat(require("directory").ignore_folder, ",")),
 								"-g",

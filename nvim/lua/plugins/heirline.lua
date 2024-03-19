@@ -663,23 +663,56 @@ return {
 				{ provider = "%=" },
 				{
 					condition = function()
+						return package.loaded.harpoon and require("harpoon"):list():length() > 1
+					end,
+					space,
+					{
+						provider = function()
+							local display = require("harpoon"):list():display()
+							local index = {}
+							local bufnr = vim.api.nvim_get_current_buf()
+							if not vim.api.nvim_buf_is_valid(bufnr) then
+								return
+							end
+							for idx, val in ipairs(display) do
+								if val == vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":~:.") then
+									idx = fmt("[ %d ]", idx)
+								end
+								table.insert(index, idx --[[@as string]])
+							end
+							return table.concat(index, " ")
+						end,
+						hl = {
+							fg = colors.orange,
+							bg = colors.bg_statusline,
+							bold = true,
+							underline = true,
+							sp = color_util.darken(colors.cyan, 0.7),
+						},
+					},
+				},
+				{
+					condition = function()
 						return not buf_matches({
 							buftype = { "prompt", "nofile", "terminal", "help", "quickfix" },
 							filetype = { "fugitive", "qf", "dbui", "dbout", "compilation", "Trouble", "Glance" },
 						}) or vim.api.nvim_win_get_config(0).relative ~= "" or vim.api.nvim_buf_get_name(0) == ""
 					end,
-					provider = function()
-						return fmt(
-							" %s %s ",
-							icons.kinds.Folder,
-							vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.:h")
-						)
-					end,
-					hl = {
-						fg = colors.cyan,
-						bg = colors.bg_statusline,
-						underline = true,
-						sp = color_util.darken(colors.cyan, 0.7),
+					space,
+					{
+						provider = function()
+							return fmt(
+								"%s %s ",
+								icons.kinds.Folder,
+								vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.:h")
+							)
+						end,
+						hl = {
+							fg = colors.cyan,
+							bg = colors.bg_statusline,
+							underline = true,
+							sp = color_util.darken(colors.cyan, 0.7),
+						},
 					},
 				},
 			},
