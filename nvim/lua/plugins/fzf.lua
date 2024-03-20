@@ -297,12 +297,6 @@ return {
 			winopts = {
 				split = fmt("botright %dnew", (vim.o.lines * 0.4)),
 				preview = { hidden = "hidden" },
-				on_create = function()
-					vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
-				end,
-				on_close = function()
-					vim.api.nvim_set_hl(0, "StatusLine", { bg = require("tokyonight.colors").setup().bg_statusline })
-				end,
 			},
 
 			-- PROVIDER --
@@ -509,12 +503,6 @@ return {
 						foldmethod = "manual",
 					},
 				},
-				on_create = function()
-					vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
-				end,
-				on_close = function()
-					vim.api.nvim_set_hl(0, "StatusLine", { bg = require("tokyonight.colors").setup().bg_statusline })
-				end,
 			},
 			keymap = {
 				builtin = vim.tbl_extend("force", no_preview_opts.keymap.builtin, {

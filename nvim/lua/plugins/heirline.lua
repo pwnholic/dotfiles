@@ -7,9 +7,38 @@ return {
 	},
 	config = function()
 		local space, conditions = { provider = " " }, require("heirline.conditions")
-		local fmt, colors = string.format, require("tokyonight.colors").setup()
-		local color_util, icons = require("tokyonight.util"), require("icons")
-		local buf_matches = require("heirline.conditions").buffer_matches
+		local fmt, icons = string.format, require("icons")
+		local color_util, colors = require("tokyonight.util"), require("tokyonight.colors").setup()
+
+		local buftype = {
+			"nofile",
+			"terminal",
+			"prompt",
+			"help",
+			"quickfix",
+		}
+		local filetype = {
+			"^harpoon$",
+			"^dashboard$",
+			"^fzf$",
+			"^lazy$",
+			"^lazyterm$",
+			"^netrw$",
+			"^neotest--summary$",
+			"^Trouble$",
+			"^dbui$",
+			"^dbout$",
+		}
+
+		---@param bt table
+		---@param ft table
+		local function buf_matches(bt, ft)
+			if not conditions.buffer_matches({ bufname = { "sh" }, buftype = bt, filetype = ft }) then
+				return true
+			end
+			return false
+		end
+
 		local mode_colors = {
 			n = colors.blue2,
 			i = colors.green,
@@ -25,27 +54,11 @@ return {
 			R = colors.red,
 			t = colors.cyan,
 		}
-		local buftype = {
-			"nofile",
-			"terminal",
-			"prompt",
-			"help",
-			"quickfix",
-		}
-		local filetype = {
-			"^harpoon$",
-			"^dashboard$",
-			"^lazy$",
-			"^lazyterm$",
-			"^netrw$",
-			"^neotest--summary$",
-			"Trouble",
-		}
 
 		require("heirline").setup({
 			statusline = {
 				condition = function()
-					return not buf_matches({ buftype = buftype, filetype = filetype })
+					return buf_matches(buftype, filetype)
 				end,
 				{
 					init = function(self)
@@ -163,10 +176,7 @@ return {
 
 				{
 					condition = function()
-						return not buf_matches({
-							buftype = { "prompt", "nofile", "terminal", "help", "quickfix" },
-							filetype = { "fugitive", "qf", "dbui", "dbout", "Trouble" },
-						}) or vim.api.nvim_win_get_config(0).relative ~= "" or vim.api.nvim_buf_get_name(0) == ""
+						return buf_matches(buftype, filetype)
 					end,
 					space,
 					{
@@ -232,15 +242,14 @@ return {
 									provider = function()
 										return fmt(" %s ", i)
 									end,
+									init = function()
+                                        -- stylua: ignore start
+										self.fullpath = string.len(path) < 75 and path == vim.fn.fnamemodify(cur_bufname, ":~:.")
+										self.shorten_path = string.len(path) > 75 and path == vim.fn.pathshorten(vim.fn.fnamemodify(cur_bufname, ":~:."), 3)
+										-- stylua: ignore end
+									end,
 									hl = function()
-										if
-											(string.len(path) < 75 and path == vim.fn.fnamemodify(cur_bufname, ":~:."))
-											or (
-												string.len(path) > 75
-												and path
-													== vim.fn.pathshorten(vim.fn.fnamemodify(cur_bufname, ":~:."), 3)
-											)
-										then
+										if self.fullpath or self.shorten_path then
 											return { bg = colors.blue1, bold = true, fg = colors.black }
 										else
 											return { bg = colors.fg_gutter, fg = colors.cyan }
@@ -722,10 +731,7 @@ return {
 				},
 				{
 					condition = function()
-						return not buf_matches({
-							buftype = buftype,
-							filetype = { "fugitive", "qf", "dbui", "dbout", "compilation", "Trouble", "Glance" },
-						}) or vim.api.nvim_win_get_config(0).relative ~= "" or vim.api.nvim_buf_get_name(0) == ""
+						return buf_matches(buftype, filetype)
 					end,
 					space,
 					{
@@ -747,13 +753,24 @@ return {
 			},
 			opts = {
 				disable_winbar_cb = function(args)
-					return buf_matches({
+					return conditions.buffer_matches({
 						buftype = buftype,
-						filetype = vim.tbl_deep_extend(
-							"force",
-							filetype,
-							{ "oil", "mysql", "markdown", "sql", "json", "dbui", "dbout" }
-						),
+						filetype = {
+							"^harpoon$",
+							"^dashboard$",
+							"^lazy$",
+							"^lazyterm$",
+							"^netrw$",
+							"^neotest--summary$",
+							"Trouble",
+							"oil",
+							"mysql",
+							"markdown",
+							"sql",
+							"json",
+							"dbui",
+							"dbout",
+						},
 					}, args.buf)
 				end,
 				colors = colors,
