@@ -232,6 +232,7 @@ return {
 	{ "llllvvuu/neotest-foundry", ft = "solidity" },
 	{
 		"nvim-neotest/neotest",
+		dependencies = { "nvim-neotest/nvim-nio", "antoinemadec/FixCursorHold.nvim" },
 		config = function()
 			require("neotest").setup({
 				adapters = {
@@ -384,6 +385,14 @@ return {
 	{
 		"rest-nvim/rest.nvim",
 		keys = { { "<leader>tr", "<Plug>RestNvim<cr>", desc = "Test REST" } },
+		dependencies = {
+			{
+				"vhyrro/luarocks.nvim",
+				config = function()
+					require("luarocks").setup({})
+				end,
+			},
+		},
 		config = function()
 			require("rest-nvim").setup({
 				result_split_horizontal = false,
