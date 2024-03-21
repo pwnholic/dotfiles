@@ -3,6 +3,7 @@ return {
 		"ray-x/go.nvim",
 		ft = { "go", "gomod" },
 		branch = "master",
+		build = ':lua require("go.install").update_all_sync()',
 		dependencies = { "ray-x/guihua.lua", build = "cd lua/fzy && make", branch = "master" },
 		opts = {
 			disables = false,

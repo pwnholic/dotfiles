@@ -1,94 +1,111 @@
 local methods = vim.lsp.protocol.Methods
 
-local function lsp_custom_lightbulb(client, bufnr)
-	local lb_name = "my_custom_lightbulb"
-	local lb_namespace = vim.api.nvim_create_namespace(lb_name)
-	local lb_icon = "💡"
-	local lb_group = vim.api.nvim_create_augroup(lb_name, {})
+local function lsp_custom_code_action(bufnr)
+	local code_action = {}
+	local cfg = {
+		code_action_icon = "💡",
+		delay = 15, -- second
+		sign = true,
+		sign_priority = 40,
+		virtual_text = true,
+	}
 
-	local timer = vim.uv.new_timer()
-	assert(timer, "Timer was not initialized")
+	local sign_name = "MyCustomLightBulb"
+	local sign_group = "MyCodeAction"
 
-	local updated_bufnr = nil
-	local function update_extmark(_bufnr, line)
-		if not _bufnr or not vim.api.nvim_buf_is_valid(_bufnr) then
-			return
+	local need_check_diagnostic = { ["go"] = true, ["python"] = true }
+
+	local function code_action_update_virtual_text(line, actions)
+		local namespace = vim.api.nvim_create_namespace(sign_group)
+		pcall(vim.api.nvim_buf_clear_namespace, 0, namespace, 0, -1)
+		vim.api.nvim_buf_del_extmark(bufnr, namespace, 1)
+		if line then
+			pcall(vim.api.nvim_buf_set_extmark, 0, namespace, line, -1, {
+				virt_text = {
+					{ " " .. cfg.code_action_icon .. string.rep(" ", 2) .. actions[1].title, "CodeActionVirtulText" },
+				},
+				hl_mode = "combine",
+			})
 		end
-		vim.api.nvim_buf_clear_namespace(_bufnr, lb_namespace, 0, -1)
-		if not line or vim.startswith(vim.api.nvim_get_mode().mode, "i") then
-			return
-		end
-		-- Swallow errors.
-		pcall(vim.api.nvim_buf_set_extmark, _bufnr, lb_namespace, line, -1, {
-			virt_text = { { " " .. lb_icon, "DiagnosticSignHint" } },
-			hl_mode = "combine",
-		})
-		updated_bufnr = _bufnr
 	end
 
-	--- Queries the LSP servers for code actions and updates the lightbulb
-	--- accordingly.
-	local function render(_bufnr)
-		local cursor = vim.api.nvim_win_get_cursor(0)[1] - 1
-		local diagnostics = vim.lsp.diagnostic.get_line_diagnostics(_bufnr, cursor)
-		local params = vim.lsp.util.make_range_params()
+	local function code_action_update_sign(line)
+		if vim.tbl_isempty(vim.fn.sign_getdefined(sign_name)) then
+			vim.fn.sign_define(sign_name, { text = cfg.code_action_icon, texthl = "CodeActionVirtulText" })
+		end
+		local winid = vim.api.nvim_get_current_win()
+		if code_action[winid] == nil then
+			code_action[winid] = {}
+		end
+		-- only show code action on the current line, remove all others
+		if code_action[winid].lightbulb_line and code_action[winid].lightbulb_line > 0 then
+			vim.fn.sign_unplace(sign_group, { id = code_action[winid].lightbulb_line, buffer = "%" })
+		end
 
-		params.context = { diagnostics = diagnostics, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Automatic }
-		vim.lsp.buf_request(_bufnr, methods.textDocument_codeAction, params, function(_, res, _)
-			if vim.api.nvim_get_current_buf() ~= _bufnr then
-				return
-			end
-			update_extmark(_bufnr, (res and #res > 0 and cursor) or nil)
-		end)
+		if line then
+			local id =
+				vim.fn.sign_place(line, sign_group, sign_name, "%", { lnum = line + 1, priority = cfg.sign_priority })
+			code_action[winid].lightbulb_line = id
+		end
 	end
 
-	local function update(_bufnr)
-		timer:stop()
-		update_extmark(updated_bufnr)
-		timer:start(100, 0, function()
-			timer:stop()
-			vim.schedule(function()
-				if vim.api.nvim_buf_is_valid(_bufnr) and vim.api.nvim_get_current_buf() == _bufnr then
-					render(_bufnr)
+	local function code_action_render_virtual_text(line, diagnostics)
+		return function(_, actions, _)
+			if actions == nil or type(actions) ~= "table" or vim.tbl_isempty(actions) then
+				-- no actions cleanup
+				if cfg.virtual_text then
+					code_action_update_virtual_text(nil)
 				end
-			end)
-		end)
-	end
+				if cfg.sign then
+					code_action_update_sign(nil)
+				end
+			else
+				if cfg.sign then
+					if need_check_diagnostic[vim.bo.filetype] then
+						if next(diagnostics) == nil then
+							-- no diagnostic, no code action sign..
+							code_action_update_sign(nil)
+						else
+							code_action_update_sign(line)
+						end
+					else
+						code_action_update_sign(line)
+					end
+				end
 
-	if client.supports_method(methods.textDocument_codeAction) then
-		local buf_group_name = lb_name .. tostring(bufnr)
-		local lb_buf_group = vim.api.nvim_create_augroup(buf_group_name, { clear = true })
+				if not cfg.virtual_text then
+					return
+				end
+				if need_check_diagnostic[vim.bo.filetype] and not next(diagnostics) then
+					code_action_update_virtual_text()
+				else
+					code_action_update_virtual_text(line, actions)
+				end
+			end
 
-		if pcall(vim.api.nvim_get_autocmds, { group = buf_group_name, buffer = bufnr }) then
-			return
+			vim.defer_fn(function()
+				if cfg.virtual_text then
+					code_action_update_virtual_text(nil)
+				end
+				if cfg.sign then
+					code_action_update_sign(nil)
+				end
+			end, cfg.delay * 1000)
 		end
-
-		vim.api.nvim_create_autocmd("CursorMoved", {
-			group = lb_buf_group,
-			desc = "Update lightbulb when moving the cursor in normal/visual mode",
-			buffer = bufnr,
-			callback = function()
-				update(bufnr)
-			end,
-		})
-
-		vim.api.nvim_create_autocmd({ "InsertEnter", "BufLeave" }, {
-			group = lb_buf_group,
-			desc = "Update lightbulb when entering insert mode or leaving the buffer",
-			buffer = bufnr,
-			callback = function()
-				update_extmark(bufnr, nil)
-			end,
-		})
 	end
 
-	vim.api.nvim_create_autocmd("LspDetach", {
-		group = lb_group,
-		desc = "Detach code action lightbulb",
-		callback = function(args)
-			pcall(vim.api.nvim_del_augroup_by_name, lb_name .. tostring(args.buf))
-		end,
-	})
+	local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
+	local diagnostics = vim.diagnostic.get(bufnr, { lnum = lnum })
+	local winid = vim.api.nvim_get_current_win()
+
+	code_action[winid] = code_action[winid] or {}
+	code_action[winid].lightbulb_line = code_action[winid].lightbulb_line or 0
+
+	local params = vim.lsp.util.make_range_params()
+	params.context = { diagnostics = diagnostics }
+	local line = params.range.start.line
+	local callback = code_action_render_virtual_text(line, diagnostics)
+	vim.lsp.buf_request(bufnr, methods.textDocument_codeAction, params, callback)
 end
 
 local function lsp_custom_rename()
@@ -133,6 +150,18 @@ local function lsp_custom_utils(client, bufnr)
 		end, { desc = "Toggle inlay hint" })
 	else
 		return vim.notify_once("Method [textDocument/inlayHint] not supported!", 2)
+	end
+
+	if client.server_capabilities.codeActionProvider then
+		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+			group = vim.api.nvim_create_augroup("MyCodeAction", { clear = false }),
+			buffer = bufnr,
+			callback = function()
+				lsp_custom_code_action(bufnr)
+			end,
+		})
+	else
+		return vim.notify_once("Method [textDocument/codeAction] not supported!", 2)
 	end
 
 	if client.server_capabilities.documentSymbolProvider then
@@ -238,7 +267,7 @@ local function fzflsp(builtin, opts)
 	end
 end
 
-local function lsp_keymaps(client, buffer)
+local function lsp_keymaps(client, bufnr)
 	local handler_keys = require("lazy.core.handler.keys")
 	if not handler_keys.resolve then
 		return {}
@@ -255,7 +284,6 @@ local function lsp_keymaps(client, buffer)
 		{ "<leader>gd", fzflsp("lsp_declarations"), desc = "Declaration", has = methods.textDocument_declaration },
 		{ "<leader>gs", fzflsp("lsp_document_symbols"), desc = "Document Symbols", has = methods.textDocument_documentSymbol },
 		{ "<leader>gS", fzflsp("lsp_live_workspace_symbols"), desc = "Workspace Symbols", has = methods.workspace_symbol },
-		{ "<leader>gc", vim.lsp.buf.code_action, desc = "Code Action", has = methods.textDocument_codeAction },
 		{ "<leader>gi", fzflsp("lsp_incoming_calls"), desc = "Incoming Calls", has = methods.callHierarchy_incomingCalls },
 		{ "<leader>go", fzflsp("lsp_outgoing_calls"), desc = "Outgoing Calls", has = methods.callHierarchy_outgoingCalls },
 		{ "<leader>gn", vim.lsp.buf.rename, desc = "Rename Symbol", has = methods.textDocument_rename },
@@ -267,6 +295,22 @@ local function lsp_keymaps(client, buffer)
 		{ "<leader>gq", function() vim.lsp.buf.remove_workspace_folder() vim.notify("Folder has been Removed") end, desc = "Remove Workspace", has = methods.workspace_workspaceFolders },
 		{ "<leader>gw", function() for _, list in pairs(vim.lsp.buf.list_workspace_folders()) do vim.notify(tostring(list), 2, { title = "List Workspace" }) end end, desc = "List Workspace", has = methods.workspace_workspaceFolders },
 		-- stylua: ignore end
+		{ "<leader>gc", vim.lsp.buf.code_action, desc = "Code Action", has = methods.textDocument_codeAction },
+		{
+			"<leader>gC",
+			function()
+				vim.lsp.buf.code_action({
+					context = { diagnostics = vim.lsp.diagnostic.get_line_diagnostics() },
+					range = {
+						start = vim.api.nvim_buf_get_mark(bufnr, "<"),
+						["end"] = vim.api.nvim_buf_get_mark(bufnr, ">"),
+					},
+				})
+			end,
+			desc = "Range Code Action",
+			has = methods.textDocument_codeAction,
+			mode = { "v" },
+		},
 	})
 	for _, keys in pairs(keymaps) do
 		if not keys.has or client.supports_method(keys.has) then
@@ -278,7 +322,7 @@ local function lsp_keymaps(client, buffer)
 			end
 			opts.has = nil
 			opts.silent = opts.silent ~= false
-			opts.buffer = buffer
+			opts.buffer = bufnr
 			vim.keymap.set(keys.mode or "n", keys.lhs, keys.rhs, opts)
 		end
 	end
@@ -292,7 +336,6 @@ return {
 			else
 				lsp_custom_rename()
 				lsp_custom_utils(client, bufnr)
-				lsp_custom_lightbulb(client, bufnr)
 				lsp_keymaps(client, bufnr)
 			end
 		end,

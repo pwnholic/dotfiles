@@ -332,6 +332,7 @@ return {
 				hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
 				hl.LspCodeLensSeparator = { link = "Boolean", default = true }
 				hl.LspInlayHint = { fg = c.comment, underline = true, sp = util.darken(c.purple1, 0.8) }
+				hl.CodeActionVirtulText = { fg = c.orange, bg = c.none, italic = true }
 
 				hl.DiagnosticFloatingError = { link = "DiagnosticError", default = true }
 				hl.DiagnosticFloatingWarn = { link = "DiagnosticWarn", default = true }

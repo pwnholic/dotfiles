@@ -252,7 +252,7 @@ return {
 										if self.fullpath or self.shorten_path then
 											return { bg = colors.blue1, bold = true, fg = colors.black }
 										else
-											return { bg = colors.fg_gutter, fg = colors.cyan }
+											return { bg = colors.fg_gutter, fg = colors.cyan, bold = true }
 										end
 									end,
 								},

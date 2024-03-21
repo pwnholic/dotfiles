@@ -58,7 +58,6 @@ return {
 				if not ok then
 					get_indent = 0
 				end
-
 				if vim.fn.strcharpart(current_line, get_indent - 1, col - get_indent + 1):gsub("%s+", "") == "" then
 					if get_indent > 0 and col > get_indent then
 						local new_line = vim.fn.strcharpart(current_line, 0, get_indent)
