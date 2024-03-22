@@ -8,7 +8,7 @@ return {
 		opts = {
 			disables = false,
 			go = "go",
-			goimport = "goimports",
+			goimports = "goimports",
 			fillstruct = "gopls",
 			gofmt = false,
 			tag_transform = false,

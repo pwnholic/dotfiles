@@ -274,7 +274,7 @@ return {
 				["hl+"] = { "fg", "CmpItemAbbrMatch" },
 			},
 			keymap = {
-				builtin = { ["<F1>"] = "toggle-help" },
+				builtin = { ["<F1>"] = "toggle-help", ["<esc><esc>"] = "abort" },
 				fzf = {
 					["ctrl-z"] = "abort",
 					["ctrl-c"] = "abort",

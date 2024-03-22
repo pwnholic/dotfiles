@@ -1,28 +1,28 @@
 local methods = vim.lsp.protocol.Methods
 
 local function lsp_custom_code_action(bufnr)
-	local code_action = {}
-	local cfg = {
+	local code_action = {
 		code_action_icon = "💡",
-		delay = 15, -- second
+		delay = 30, -- second
 		sign = true,
 		sign_priority = 40,
 		virtual_text = true,
+		sign_name = "MyCustomLightBulb",
+		sign_group = "MyCodeAction",
+		need_check_diagnostic = { ["go"] = true, ["python"] = true },
 	}
 
-	local sign_name = "MyCustomLightBulb"
-	local sign_group = "MyCodeAction"
-
-	local need_check_diagnostic = { ["go"] = true, ["python"] = true }
-
 	local function code_action_update_virtual_text(line, actions)
-		local namespace = vim.api.nvim_create_namespace(sign_group)
+		local namespace = vim.api.nvim_create_namespace(code_action.sign_group)
 		pcall(vim.api.nvim_buf_clear_namespace, 0, namespace, 0, -1)
 		vim.api.nvim_buf_del_extmark(bufnr, namespace, 1)
 		if line then
 			pcall(vim.api.nvim_buf_set_extmark, 0, namespace, line, -1, {
 				virt_text = {
-					{ " " .. cfg.code_action_icon .. string.rep(" ", 2) .. actions[1].title, "CodeActionVirtulText" },
+					{
+						string.rep(" ", 3) .. code_action.code_action_icon .. string.rep(" ", 2) .. actions[1].title,
+						"CodeActionVirtulText",
+					},
 				},
 				hl_mode = "combine",
 			})
@@ -30,8 +30,11 @@ local function lsp_custom_code_action(bufnr)
 	end
 
 	local function code_action_update_sign(line)
-		if vim.tbl_isempty(vim.fn.sign_getdefined(sign_name)) then
-			vim.fn.sign_define(sign_name, { text = cfg.code_action_icon, texthl = "CodeActionVirtulText" })
+		if vim.tbl_isempty(vim.fn.sign_getdefined(code_action.sign_name)) then
+			vim.fn.sign_define(
+				code_action.sign_name,
+				{ text = code_action.code_action_icon, texthl = "CodeActionVirtulText" }
+			)
 		end
 		local winid = vim.api.nvim_get_current_win()
 		if code_action[winid] == nil then
@@ -39,12 +42,17 @@ local function lsp_custom_code_action(bufnr)
 		end
 		-- only show code action on the current line, remove all others
 		if code_action[winid].lightbulb_line and code_action[winid].lightbulb_line > 0 then
-			vim.fn.sign_unplace(sign_group, { id = code_action[winid].lightbulb_line, buffer = "%" })
+			vim.fn.sign_unplace(code_action.sign_group, { id = code_action[winid].lightbulb_line, buffer = "%" })
 		end
 
 		if line then
-			local id =
-				vim.fn.sign_place(line, sign_group, sign_name, "%", { lnum = line + 1, priority = cfg.sign_priority })
+			local id = vim.fn.sign_place(
+				line,
+				code_action.sign_group,
+				code_action.sign_name,
+				"%",
+				{ lnum = line + 1, priority = code_action.sign_priority }
+			)
 			code_action[winid].lightbulb_line = id
 		end
 	end
@@ -53,15 +61,15 @@ local function lsp_custom_code_action(bufnr)
 		return function(_, actions, _)
 			if actions == nil or type(actions) ~= "table" or vim.tbl_isempty(actions) then
 				-- no actions cleanup
-				if cfg.virtual_text then
+				if code_action.virtual_text then
 					code_action_update_virtual_text(nil)
 				end
-				if cfg.sign then
+				if code_action.sign then
 					code_action_update_sign(nil)
 				end
 			else
-				if cfg.sign then
-					if need_check_diagnostic[vim.bo.filetype] then
+				if code_action.sign then
+					if code_action.need_check_diagnostic[vim.bo.filetype] then
 						if next(diagnostics) == nil then
 							-- no diagnostic, no code action sign..
 							code_action_update_sign(nil)
@@ -73,10 +81,10 @@ local function lsp_custom_code_action(bufnr)
 					end
 				end
 
-				if not cfg.virtual_text then
+				if not code_action.virtual_text then
 					return
 				end
-				if need_check_diagnostic[vim.bo.filetype] and not next(diagnostics) then
+				if code_action.need_check_diagnostic[vim.bo.filetype] and not next(diagnostics) then
 					code_action_update_virtual_text()
 				else
 					code_action_update_virtual_text(line, actions)
@@ -84,18 +92,18 @@ local function lsp_custom_code_action(bufnr)
 			end
 
 			vim.defer_fn(function()
-				if cfg.virtual_text then
+				if code_action.virtual_text then
 					code_action_update_virtual_text(nil)
 				end
-				if cfg.sign then
+				if code_action.sign then
 					code_action_update_sign(nil)
 				end
-			end, cfg.delay * 1000)
+			end, code_action.delay * 1000)
 		end
 	end
 
-	local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
-	local diagnostics = vim.diagnostic.get(bufnr, { lnum = lnum })
+	local current_cursor = vim.api.nvim_win_get_cursor(0)[1] - 1
+	local diagnostics = vim.diagnostic.get(bufnr, { lnum = current_cursor })
 	local winid = vim.api.nvim_get_current_win()
 
 	code_action[winid] = code_action[winid] or {}
@@ -105,7 +113,7 @@ local function lsp_custom_code_action(bufnr)
 	params.context = { diagnostics = diagnostics }
 	local line = params.range.start.line
 	local callback = code_action_render_virtual_text(line, diagnostics)
-	vim.lsp.buf_request(bufnr, methods.textDocument_codeAction, params, callback)
+	return vim.lsp.buf_request(bufnr, methods.textDocument_codeAction, params, callback)
 end
 
 local function lsp_custom_rename()

@@ -64,12 +64,13 @@ return {
 					end
 				end,
 				on_create = function(term)
-					vim.bo[term.bufnr].filetype = "terminal"
+					-- vim.bo[term.bufnr].filetype = "terminal"
 					local win
 					vim.keymap.set("t", "<C-h>", "<cmd>wincmd h<cr>", { buffer = term.bufnr })
 					vim.keymap.set("t", "<C-j>", "<cmd>wincmd j<cr>", { buffer = term.bufnr })
 					vim.keymap.set("t", "<C-k>", "<cmd>wincmd k<cr>", { buffer = term.bufnr })
 					vim.keymap.set("t", "<C-l>", "<cmd>wincmd l<cr>", { buffer = term.bufnr })
+					vim.keymap.set("t", "<esc><esc>", [[<C-\><C-n>]], { buffer = term.bufnr })
 
 					vim.api.nvim_create_autocmd("BufEnter", {
 						buffer = term.bufnr,

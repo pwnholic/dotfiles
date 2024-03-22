@@ -180,15 +180,20 @@ return {
 				lua_ls = {
 					settings = {
 						Lua = {
-							-- workspace = { library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false },
-							-- runtime = {
-							-- 	version = "LuaJIT",
-							-- 	path = vim.tbl_extend(
-							-- 		"force",
-							-- 		vim.split(package.path, ";", {}),
-							-- 		{ "lua/?.lua", "lua/?/init.lua" }
-							-- 	),
-							-- },
+							workspace = {
+								library = { vim.env.VIMRUNTIME .. "/lua", vim.uv.cwd() },
+								checkThirdParty = false,
+								maxPreload = 1000,
+								preloadFileSize = 40000,
+							},
+							runtime = {
+								version = "LuaJIT",
+								path = vim.tbl_extend(
+									"force",
+									vim.split(package.path, ";", {}),
+									{ "lua/?.lua", "lua/?/init.lua" }
+								),
+							},
 							completion = { callsnippet = "replace" },
 							diagnostics = { enable = true, globals = { "vim", "describe" } },
 							hint = { enable = true },
