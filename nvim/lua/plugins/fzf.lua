@@ -241,7 +241,7 @@ return {
 
 		fzf_config._action_to_helpstr[fzf_actions.arg_search_add] = "search-and-argadd"
 		fzf_config._action_to_helpstr[fzf_actions.arg_add] = "argadd"
-		fzf_config._action_to_helpstr[fzf_actions.buf_edit_or_qf] = "buf_edit_or_qf"
+		fzf_config._action_to_helpstr[fzf_actions.buf_edit_or_qf] = "buf-edit-or-qf"
 		fzf_config._action_to_helpstr[fzf_actions.del_autocmd] = "delete-autocmd"
 		fzf_config._action_to_helpstr[fzf_actions.switch_provider] = "switch-provider"
 		fzf_config._action_to_helpstr[fzf_actions.switch_cwd] = "change-cwd"
@@ -626,8 +626,6 @@ return {
 		map("n", "<leader>dsb", fzfmap("dap_breakpoints"), { desc = "Breakpoint" })
 		map("n", "<leader>dsv", fzfmap("dap_variables"), { desc = "Active Session Variables" })
 		map("n", "<leader>dsf", fzfmap("dap_frames"), { desc = "Frames" })
-
-		map("n", "<leader>gf", fzfmap("lsp_finder"), { desc = "Lsp Finder" })
 	end,
 	keys = {
 		"<C-p>",
@@ -686,6 +684,5 @@ return {
 		"<leader>dsf",
 
 		"<leader>uz",
-		"<leader>gf",
 	},
 }

@@ -1,6 +1,7 @@
 local M = {}
 
 local skip_foldexpr = {} ---@type table<number,boolean>
+
 function M.fold_expr()
 	local buf = vim.api.nvim_get_current_buf()
 	if skip_foldexpr[buf] then
@@ -115,7 +116,7 @@ function M.close_float_window()
 end
 
 ---Get keymap definition
-function M.get_keys_def(mode, lhs)
+function M.get_keys_definition(mode, lhs)
 	local lhs_keycode = vim.keycode(lhs)
 	for _, map in ipairs(vim.api.nvim_buf_get_keymap(0, mode)) do
 		if vim.keycode(map.lhs) == lhs_keycode then
@@ -195,7 +196,7 @@ end
 function M.amend_keys(modes, lhs, rhs, opts)
 	modes = type(modes) ~= "table" and { modes } or modes --[=[@as string[]]=]
 	for _, mode in ipairs(modes) do
-		local fallback = M.keys_fallback_fn(M.get_keys_def(mode, lhs))
+		local fallback = M.keys_fallback_fn(M.get_keys_definition(mode, lhs))
 		vim.keymap.set(mode, lhs, function()
 			rhs(fallback)
 		end, opts)

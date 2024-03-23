@@ -23,12 +23,6 @@ return {
 			end,
 		})
 
-		autocmd({ "BufDelete", "BufWipeout" }, {
-			group = augroup("wshada_on_buf_delete"),
-			desc = "Write to ShaDa when deleting/wiping out buffers",
-			command = "wshada",
-		})
-
 		autocmd({ "BufWinEnter", "FileChangedShellPost" }, {
 			pattern = "*",
 			group = augroup("AutoCwd"),

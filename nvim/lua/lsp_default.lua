@@ -1,4 +1,6 @@
 local methods = vim.lsp.protocol.Methods
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
 
 local function lsp_custom_code_action(bufnr)
 	local code_action = {
@@ -10,6 +12,7 @@ local function lsp_custom_code_action(bufnr)
 		sign_name = "MyCustomLightBulb",
 		sign_group = "MyCodeAction",
 		need_check_diagnostic = { ["go"] = true, ["python"] = true },
+		hl_group = "CodeActionVirtulText",
 	}
 
 	local function code_action_update_virtual_text(line, actions)
@@ -21,7 +24,7 @@ local function lsp_custom_code_action(bufnr)
 				virt_text = {
 					{
 						string.rep(" ", 3) .. code_action.code_action_icon .. string.rep(" ", 2) .. actions[1].title,
-						"CodeActionVirtulText",
+						code_action.hl_group,
 					},
 				},
 				hl_mode = "combine",
@@ -33,7 +36,7 @@ local function lsp_custom_code_action(bufnr)
 		if vim.tbl_isempty(vim.fn.sign_getdefined(code_action.sign_name)) then
 			vim.fn.sign_define(
 				code_action.sign_name,
-				{ text = code_action.code_action_icon, texthl = "CodeActionVirtulText" }
+				{ text = code_action.code_action_icon, texthl = code_action.hl_group }
 			)
 		end
 		local winid = vim.api.nvim_get_current_win()
@@ -102,44 +105,45 @@ local function lsp_custom_code_action(bufnr)
 		end
 	end
 
-	local current_cursor = vim.api.nvim_win_get_cursor(0)[1] - 1
-	local diagnostics = vim.diagnostic.get(bufnr, { lnum = current_cursor })
-	local winid = vim.api.nvim_get_current_win()
+	local lnum = vim.api.nvim_win_get_cursor(0)[1] - 1
+	local get_diagnostic = vim.diagnostic.get(bufnr, { lnum = lnum })
+	local win_id = vim.api.nvim_get_current_win()
 
-	code_action[winid] = code_action[winid] or {}
-	code_action[winid].lightbulb_line = code_action[winid].lightbulb_line or 0
+	code_action[win_id] = code_action[win_id] or {}
+	code_action[win_id].lightbulb_line = code_action[win_id].lightbulb_line or 0
 
 	local params = vim.lsp.util.make_range_params()
-	params.context = { diagnostics = diagnostics }
+	params.context = { diagnostics = get_diagnostic }
 	local line = params.range.start.line
-	local callback = code_action_render_virtual_text(line, diagnostics)
+	local callback = code_action_render_virtual_text(line, get_diagnostic)
 	return vim.lsp.buf_request(bufnr, methods.textDocument_codeAction, params, callback)
 end
 
 local function lsp_custom_rename()
-	local renameHandler = vim.lsp.handlers[methods.textDocument_rename]
+	local rename_origin = vim.lsp.handlers[methods.textDocument_rename]
 	vim.lsp.handlers[methods.textDocument_rename] = function(err, result, ctx, config)
-		renameHandler(err, result, ctx, config)
+		local rename = rename_origin(err, result, ctx, config)
 		if err or not result then
 			return
 		end
 		local changes = result.changes or result.documentChanges or {}
-		local changedFiles = vim.tbl_keys(changes)
-		changedFiles = vim.tbl_filter(function(file)
+		local changed_files = vim.tbl_keys(changes)
+		changed_files = vim.tbl_filter(function(file)
 			return #changes[file] > 0
-		end, changedFiles)
-		changedFiles = vim.tbl_map(function(file)
+		end, changed_files)
+		changed_files = vim.tbl_map(function(file)
 			return "- " .. vim.fs.basename(file)
-		end, changedFiles)
-		local changeCount = 0
+		end, changed_files)
+		local change_count = 0
 		for _, change in pairs(changes) do
-			changeCount = changeCount + #(change.edits or change)
+			change_count = change_count + #(change.edits or change)
 		end
-		local msg = string.format("%s instance%s", changeCount, (changeCount > 1 and "s" or ""))
-		if #changedFiles > 1 then
-			msg = msg .. (" in %s files:\n"):format(#changedFiles) .. table.concat(changedFiles, "\n")
+		local msg = string.format("%s instance%s", change_count, (change_count > 1 and "s" or ""))
+		if #changed_files > 1 then
+			msg = msg .. (" in %s files:\n"):format(#changed_files) .. table.concat(changed_files, "\n")
 		end
-		return vim.notify_once(string.format("Renamed with LSP %s", msg), 2)
+		vim.notify_once(string.format("Renamed with LSP %s", msg), 2)
+		return rename
 	end
 end
 
@@ -160,9 +164,9 @@ local function lsp_custom_utils(client, bufnr)
 		return vim.notify_once("Method [textDocument/inlayHint] not supported!", 2)
 	end
 
-	if client.server_capabilities.codeActionProvider then
-		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-			group = vim.api.nvim_create_augroup("MyCodeAction", { clear = false }),
+	if client.supports_method(methods.textDocument_codeAction) then
+		autocmd({ "CursorHold", "CursorHoldI" }, {
+			group = augroup("MyCodeAction", { clear = false }),
 			buffer = bufnr,
 			callback = function()
 				lsp_custom_code_action(bufnr)
@@ -172,7 +176,7 @@ local function lsp_custom_utils(client, bufnr)
 		return vim.notify_once("Method [textDocument/codeAction] not supported!", 2)
 	end
 
-	if client.server_capabilities.documentSymbolProvider then
+	if client.supports_method(methods.textDocument_documentSymbol) then
 		vim.g.navic_silence = true
 		require("nvim-navic").attach(client, bufnr)
 	else
@@ -180,9 +184,9 @@ local function lsp_custom_utils(client, bufnr)
 	end
 
 	if client.supports_method(methods.textDocument_codeLens) then
-		vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+		autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
 			buffer = bufnr,
-			group = vim.api.nvim_create_augroup("CodeLensRefersh", { clear = true }),
+			group = augroup("CodeLensRefersh", { clear = true }),
 			callback = vim.lsp.codelens.refresh,
 		})
 	else
@@ -190,15 +194,15 @@ local function lsp_custom_utils(client, bufnr)
 	end
 
 	if client.supports_method(methods.textDocument_documentHighlight) then
-		local cursor_hl_group = vim.api.nvim_create_augroup("cursor_highlights", { clear = true })
-		vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave", "BufEnter" }, {
+		local cursor_hl_group = augroup("cursor_highlights", { clear = true })
+		autocmd({ "CursorHold", "InsertLeave", "BufEnter" }, {
 			group = cursor_hl_group,
 			desc = "Highlight references under the cursor",
 			buffer = bufnr,
 			callback = vim.lsp.buf.document_highlight,
 		})
 
-		vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
+		autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
 			group = cursor_hl_group,
 			desc = "Clear highlight references",
 			buffer = bufnr,
@@ -294,6 +298,7 @@ local function lsp_keymaps(client, bufnr)
 		{ "<leader>gS", fzflsp("lsp_live_workspace_symbols"), desc = "Workspace Symbols", has = methods.workspace_symbol },
 		{ "<leader>gi", fzflsp("lsp_incoming_calls"), desc = "Incoming Calls", has = methods.callHierarchy_incomingCalls },
 		{ "<leader>go", fzflsp("lsp_outgoing_calls"), desc = "Outgoing Calls", has = methods.callHierarchy_outgoingCalls },
+        { "<leader>gf", fzflsp("lsp_finder"),  desc = "Lsp Finder" },
 		{ "<leader>gn", vim.lsp.buf.rename, desc = "Rename Symbol", has = methods.textDocument_rename },
 		{ "K", vim.lsp.buf.hover, desc = "Hover Document", has = methods.textDocument_hover },
 		{ "<C-k>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = { "i" }, has = methods.textDocument_signatureHelp },
@@ -339,12 +344,16 @@ end
 return {
 	default = {
 		on_attach = function(client, bufnr)
-			if vim.b.bigfile or vim.b.midfile then
-				return vim.lsp.buf_detach_client(bufnr, client.id)
+			if not vim.api.nvim_buf_is_loaded(bufnr) then
+				return
 			else
-				lsp_custom_rename()
-				lsp_custom_utils(client, bufnr)
-				lsp_keymaps(client, bufnr)
+				if vim.b.bigfile or vim.b.midfile then
+					return vim.lsp.buf_detach_client(bufnr, client.id)
+				else
+					lsp_custom_rename()
+					lsp_custom_utils(client, bufnr)
+					lsp_keymaps(client, bufnr)
+				end
 			end
 		end,
 		capabilities = capabilities,

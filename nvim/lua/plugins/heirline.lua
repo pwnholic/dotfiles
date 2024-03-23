@@ -198,7 +198,10 @@ return {
 						end,
 						{
 							provider = function()
-								return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t") --[[@as string]]
+								if vim.bo.filetype == "oil" then
+									return vim.fn.expand("%:f")
+								end
+								return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
 							end,
 							hl = { fg = colors.cyan, bg = colors.bg_statusline },
 						},

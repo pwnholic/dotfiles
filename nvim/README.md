@@ -51,14 +51,13 @@ Disk (/): 270G / 465G (59%)
 
 | Language | files | blank | comment | code |
 | -------- | ----- | ----- | ------- | ---- |
-| Lua      | 28    | 293   | 171     | 6284 |
-| JSON     | 11    | 1     | 0       | 908  |
-| Markdown | 1     | 15    | 0       | 49   |
+| Lua      | 29    | 307   | 186     | 6445 |
+| JSON     | 11    | 1     | 0       | 909  |
+| Markdown | 1     | 15    | 0       | 48   |
 | Scheme   | 4     | 14    | 14      | 23   |
-| TOML     | 2     | 2     | 0       | 16   |
-| SUM:     | 46    | 325   | 185     | 7280 |
+| TOML     | 2     | 2     | 0       | 15   |
+| SUM:     | 47    | 339   | 200     | 7440 |
 
 # TODO
 
-- fix heirline lsp attach
-- install nvim-ufo sama image.nvim dan downgrade lua ke versi 5.1
+- fix code action for range

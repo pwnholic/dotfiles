@@ -1,7 +1,6 @@
 ---@alias nvim_direction_t 'h'|'j'|'k'|'l'
 ---@alias tmux_direction_t 'L'|'D'|'U'|'R'
 ---@alias tmux_borderpane_direction_t 'left'|'bottom'|'top'|'right'
-
 ---@return string tmux socket path
 local function tmux_get_socket()
 	return vim.split(vim.env.TMUX, ",")[1]
