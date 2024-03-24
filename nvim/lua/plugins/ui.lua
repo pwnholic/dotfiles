@@ -277,7 +277,7 @@ return {
 
 				hl.Visual = { bg = c.bg_visual, bold = true, italic = true }
 				hl.VisualNOS = { bg = c.bg_visual, bold = true, italic = true }
-				hl.WinBar = { bg = c.bg_statusline, underline = true, sp = util.darken(c.cyan, 0.7) }
+				hl.WinBar = { bg = c.bg_statusline, underline = true, sp = c.blue2 }
 				hl.WinBarNC = { link = "WinBar" }
 				hl.PmenuSel = { bg = util.darken(c.purple, 0.4), bold = true }
 				hl.StatusLine = { bg = c.bg_statusline }
