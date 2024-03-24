@@ -76,28 +76,42 @@ return {
 				vim.b.midfile = false
 				vim.b.bigfile = false
 
-				-- local client = vim.lsp.get_clients({ bufnr = opts.buf })[1]
 				local fname = vim.api.nvim_buf_get_name(opts.buf)
 				if #fname <= 0 then
 					return
 				end
+
 				local size = vim.fn.getfsize(fname) / 1024
 				if not size then
 					return
 				end
 
+				if not vim.api.nvim_buf_is_loaded(opts.buf) then
+					return
+				end
+
+				local function force_to_deattach()
+					for _, client in pairs(vim.lsp.get_clients({ bufnr = opts.buf })) do
+						if client.id > 0 then
+							autocmd("BufReadPost", {
+								buffer = opts.buf,
+								once = true,
+								callback = function()
+									vim.schedule(function()
+										pcall(vim.treesitter.stop, opts.buf)
+										vim.lsp.buf_detach_client(opts.buf, client.id)
+									end)
+									return true
+								end,
+							})
+						end
+					end
+				end
+
 				if size > 1024 then
 					vim.b.midfile = true
-					autocmd("BufReadPost", {
-						buffer = opts.buf,
-						once = true,
-						callback = function()
-							vim.schedule(function()
-								pcall(vim.treesitter.stop, opts.buf)
-							end)
-							return true
-						end,
-					})
+					force_to_deattach()
+					vim.notify(string.format("[ file %dkb ] mid file setup has been loaded", math.floor(size)), 2)
 				end
 				if size > 4800 then
 					vim.b.bigfile = true
@@ -110,14 +124,10 @@ return {
 					vim.opt_local.signcolumn = "no"
 					vim.opt_local.foldcolumn = "0"
 					vim.opt_local.winbar = ""
-					autocmd("BufReadPost", {
-						buffer = opts.buf,
-						once = true,
-						callback = function()
-							vim.opt_local.syntax = ""
-							return true
-						end,
-					})
+					vim.opt_local.number = false
+					vim.opt_local.relativenumber = false
+					force_to_deattach()
+					vim.notify(string.format("[ file %dkb ] big file setup has been loaded", math.floor(size)), 2)
 				end
 			end,
 		})

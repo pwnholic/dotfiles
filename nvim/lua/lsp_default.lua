@@ -347,13 +347,9 @@ return {
 			if not vim.api.nvim_buf_is_loaded(bufnr) then
 				return
 			else
-				if vim.b.bigfile or vim.b.midfile then
-					return vim.lsp.buf_detach_client(bufnr, client.id)
-				else
-					lsp_custom_rename()
-					lsp_custom_utils(client, bufnr)
-					lsp_keymaps(client, bufnr)
-				end
+				lsp_custom_rename()
+				lsp_custom_utils(client, bufnr)
+				lsp_keymaps(client, bufnr)
 			end
 		end,
 		capabilities = capabilities,
