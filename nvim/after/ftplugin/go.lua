@@ -1,4 +1,4 @@
-vim.opt_local.path = { "/usr/include/**", "/usr/local/include/**" }
+vim.opt_local.expandtab = true
 
 local map = vim.keymap.set
 
