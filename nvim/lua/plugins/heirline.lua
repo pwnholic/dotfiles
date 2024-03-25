@@ -2,18 +2,10 @@ local M = { "rebelot/heirline.nvim" }
 
 M.event = "VeryLazy"
 
-M.dependencies = {
-	"SmiteshP/nvim-navic",
-	opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true },
-}
+M.dependencies =
+	{ "SmiteshP/nvim-navic", opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true } }
 
-local buftype = {
-	"nofile",
-	"terminal",
-	"prompt",
-	"help",
-	"quickfix",
-}
+local buftype = { "nofile", "terminal", "prompt", "help", "quickfix" }
 
 local filetype = {
 	"^harpoon$",
