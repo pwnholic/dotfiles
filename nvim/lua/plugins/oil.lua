@@ -1,6 +1,4 @@
-local M = { "stevearc/oil.nvim" }
-
-M.cmd = "Oil"
+local M = { "stevearc/oil.nvim", cmd = "Oil" }
 
 M.keys = { { "<leader>e", "<cmd>Oil<cr>", desc = "File Explorer" } }
 

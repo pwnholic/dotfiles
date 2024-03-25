@@ -1,8 +1,4 @@
-local M = { "ThePrimeagen/harpoon" }
-
-M.dependencies = { "nvim-lua/plenary.nvim" }
-
-M.branch = "harpoon2"
+local M = { "ThePrimeagen/harpoon", dependencies = { "nvim-lua/plenary.nvim" }, branch = "harpoon2" }
 
 M.config = function()
 	local harpoon = require("harpoon")

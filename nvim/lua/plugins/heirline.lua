@@ -1,23 +1,8 @@
-local M = { "rebelot/heirline.nvim" }
+local M = { "rebelot/heirline.nvim", event = "VeryLazy" }
 
-M.event = "VeryLazy"
-
-M.dependencies =
-	{ "SmiteshP/nvim-navic", opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true } }
-
-local buftype = { "nofile", "terminal", "prompt", "help", "quickfix" }
-
-local filetype = {
-	"^harpoon$",
-	"^dashboard$",
-	"^fzf$",
-	"^lazy$",
-	"^lazyterm$",
-	"^netrw$",
-	"^neotest--summary$",
-	"^Trouble$",
-	"^dbui$",
-	"^dbout$",
+M.dependencies = {
+	"SmiteshP/nvim-navic",
+	opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true },
 }
 
 M.config = function()
@@ -26,10 +11,25 @@ M.config = function()
 	local colors = require("tokyonight.colors").setup()
 	local space, align = { provider = " " }, { provider = "%=" }
 
-	---@param bt table
-	---@param ft table
-	local function buf_matches(bt, ft)
-		if not conditions.buffer_matches({ bufname = { "sh" }, buftype = bt, filetype = ft }) then
+	local function buf_matches()
+		if
+			not conditions.buffer_matches({
+				bufname = { "sh" },
+				buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
+				filetype = {
+					"^harpoon$",
+					"^dashboard$",
+					"^fzf$",
+					"^lazy$",
+					"^lazyterm$",
+					"^netrw$",
+					"^neotest--summary$",
+					"^Trouble$",
+					"^dbui$",
+					"^dbout$",
+				},
+			})
+		then
 			return true
 		end
 		return false
@@ -176,9 +176,7 @@ M.config = function()
 	}
 
 	local filename = {
-		condition = function()
-			return buf_matches(buftype, filetype)
-		end,
+		condition = buf_matches,
 		space,
 		{
 			init = function(self)
@@ -595,9 +593,7 @@ M.config = function()
 	}
 
 	local current_path = {
-		condition = function()
-			return buf_matches(buftype, filetype)
-		end,
+		condition = buf_matches,
 		init = mode_cinit,
 		static = { mode_colors = mode_colors },
 		space,
@@ -768,7 +764,8 @@ M.config = function()
 
 	local disable_winbar_cb = function(args)
 		return conditions.buffer_matches({
-			buftype = buftype,
+			bufname = { "sh" },
+			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 			filetype = {
 				"^harpoon$",
 				"^dashboard$",
@@ -792,9 +789,7 @@ M.config = function()
 		winbar = { navic, align, tablist, current_path },
 		opts = { disable_winbar_cb = disable_winbar_cb, colors = colors },
 		statusline = {
-			condition = function()
-				return buf_matches(buftype, filetype)
-			end,
+			condition = buf_matches,
 			vim_mode,
 			git,
 			filename,
@@ -810,9 +805,7 @@ M.config = function()
 			code_ruler,
 		},
 		statuscolumn = {
-			condition = function()
-				return buf_matches(buftype, filetype)
-			end,
+			condition = buf_matches,
 			init = function(self)
 				self.signs = {}
 			end,

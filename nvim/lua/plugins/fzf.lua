@@ -1,5 +1,3 @@
-local M = { "ibhagwan/fzf-lua" }
-
 local ignore_folder = table.concat(require("directory").ignore_folder, ",")
 local ignore_file = table.concat(require("directory").ignore_file, ",")
 local fmt = string.format
@@ -18,9 +16,7 @@ local no_preview_fzf_opts = {
 	["--ansi"] = true,
 }
 
-M.branch = "main"
-
-M.cmd = "FzfLua"
+local M = { "ibhagwan/fzf-lua", branch = "main", cmd = "FzfLua" }
 
 M.init = function()
 	vim.ui.select = function(...)
