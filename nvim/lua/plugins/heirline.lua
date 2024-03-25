@@ -6,14 +6,14 @@ M.dependencies = {
 }
 
 M.config = function()
-	local conditions = require("heirline.conditions")
+	local cond = require("heirline.conditions")
 	local fmt, icons = string.format, require("icons")
-	local colors = require("tokyonight.colors").setup()
+	local c = require("tokyonight.colors").setup()
 	local space, align = { provider = " " }, { provider = "%=" }
 
 	local function buf_matches()
 		if
-			not conditions.buffer_matches({
+			not cond.buffer_matches({
 				bufname = { "sh" },
 				buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 				filetype = {
@@ -36,19 +36,19 @@ M.config = function()
 	end
 
 	local mode_colors = {
-		n = colors.blue2,
-		i = colors.green,
-		v = colors.magenta,
-		V = colors.orange,
-		["\22"] = colors.orange,
-		c = colors.cyan,
-		s = colors.yellow,
-		S = colors.yellow,
-		["\19"] = colors.yellow,
-		r = colors.green,
-		["!"] = colors.red,
-		R = colors.red,
-		t = colors.teal,
+		n = c.blue2,
+		i = c.green,
+		v = c.magenta,
+		V = c.orange,
+		["\22"] = c.red,
+		c = c.cyan,
+		s = c.yellow,
+		S = c.yellow,
+		["\19"] = c.yellow,
+		r = c.green,
+		["!"] = c.red,
+		R = c.red,
+		t = c.teal,
 	}
 
 	vim.api.nvim_create_autocmd("ModeChanged", {
@@ -56,7 +56,7 @@ M.config = function()
 			vim.api.nvim_set_hl(0, "Winbar", {
 				underline = true,
 				sp = mode_colors[vim.fn.mode():sub(1, 1)],
-				bg = colors.bg_statusline,
+				bg = c.bg_statusline,
 				italic = true,
 			})
 		end,
@@ -119,12 +119,12 @@ M.config = function()
 			return fmt("%s%s%s", " %1(", self.mode_names[self.mode], "%) ")
 		end,
 		hl = function(self)
-			return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }
+			return { bg = self.mode_color, fg = c.bg_statusline, bold = true }
 		end,
 	}
 
 	local git = {
-		condition = conditions.is_git_repo,
+		condition = cond.is_git_repo,
 		init = function(self)
 			self.status_dict = vim.b.gitsigns_status_dict
 		end,
@@ -133,7 +133,7 @@ M.config = function()
 			provider = function(self)
 				return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
 			end,
-			hl = { fg = colors.blue2, bg = colors.fg_gutter, bold = true },
+			hl = { fg = c.blue2, bg = c.fg_gutter, bold = true },
 		},
 		space,
 		{
@@ -141,21 +141,21 @@ M.config = function()
 				local count = self.status_dict.added or 0
 				return count > 0 and fmt("%s %d ", icons.git.added, count)
 			end,
-			hl = { fg = colors.green2, bold = true, bg = colors.bg_statusline },
+			hl = { fg = c.green2, bold = true, bg = c.bg_statusline },
 		},
 		{
 			provider = function(self)
 				local count = self.status_dict.removed or 0
 				return count > 0 and fmt("%s %d ", icons.git.removed, count)
 			end,
-			hl = { fg = colors.red, bold = true, bg = colors.bg_statusline },
+			hl = { fg = c.red, bold = true, bg = c.bg_statusline },
 		},
 		{
 			provider = function(self)
 				local count = self.status_dict.changed or 0
 				return count > 0 and fmt("%s %d ", icons.git.modified, count)
 			end,
-			hl = { fg = colors.yellow1, bold = true, bg = colors.bg_statusline },
+			hl = { fg = c.yellow1, bold = true, bg = c.bg_statusline },
 		},
 		on_click = {
 			callback = function()
@@ -186,7 +186,7 @@ M.config = function()
 				return fmt("%s ", self.icon or "")
 			end,
 			hl = function(self)
-				return { fg = self.fg, bg = colors.bg_statusline }
+				return { fg = self.fg, bg = c.bg_statusline }
 			end,
 		},
 		space,
@@ -204,7 +204,7 @@ M.config = function()
 					return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
 				end,
 				hl = function(self)
-					return { bold = true, fg = self.mode_color, bg = colors.bg_statusline }
+					return { bold = true, fg = self.mode_color, bg = c.bg_statusline }
 				end,
 			},
 			{
@@ -212,14 +212,14 @@ M.config = function()
 					return vim.bo.modified
 				end,
 				space,
-				{ provider = "[+]", hl = { fg = colors.green, bg = colors.bg_statusline } },
+				{ provider = "[+]", hl = { fg = c.green, bg = c.bg_statusline } },
 			},
 			{
 				condition = function()
 					return not vim.bo.modifiable or vim.bo.readonly
 				end,
 				space,
-				{ provider = " ", hl = { fg = colors.red, bg = colors.bg_statusline } },
+				{ provider = " ", hl = { fg = c.red, bg = c.bg_statusline } },
 			},
 		},
 	}
@@ -256,9 +256,9 @@ M.config = function()
 						end,
 						hl = function()
 							if self.fullpath or self.shorten_path then
-								return { bg = self.mode_color, bold = true, fg = colors.black }
+								return { bg = self.mode_color, bold = true, fg = c.black }
 							else
-								return { bg = colors.fg_gutter, fg = self.mode_color, bold = true }
+								return { bg = c.fg_gutter, fg = self.mode_color, bold = true }
 							end
 						end,
 					},
@@ -273,7 +273,7 @@ M.config = function()
 	}
 
 	local diagnostics = {
-		condition = conditions.has_diagnostics,
+		condition = cond.has_diagnostics,
 		init = function(self)
 			self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
 			self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
@@ -292,7 +292,7 @@ M.config = function()
 			condition = function(self)
 				return self.errors > 0
 			end,
-			hl = { fg = colors.error, bg = colors.bg_statusline, bold = true },
+			hl = { fg = c.error, bg = c.bg_statusline, bold = true },
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Error, self.errors)
 			end,
@@ -302,7 +302,7 @@ M.config = function()
 			condition = function(self)
 				return self.warnings > 0
 			end,
-			hl = { fg = colors.warning, bg = colors.bg_statusline, bold = true },
+			hl = { fg = c.warning, bg = c.bg_statusline, bold = true },
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Warn, self.warnings)
 			end,
@@ -312,7 +312,7 @@ M.config = function()
 			condition = function(self)
 				return self.hints > 0
 			end,
-			hl = { fg = colors.hint, bg = colors.bg_statusline, bold = true },
+			hl = { fg = c.hint, bg = c.bg_statusline, bold = true },
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Hint, self.hints)
 			end,
@@ -321,7 +321,7 @@ M.config = function()
 			condition = function(self)
 				return self.info > 0
 			end,
-			hl = { fg = colors.info, bg = colors.bg_statusline, bold = true },
+			hl = { fg = c.info, bg = c.bg_statusline, bold = true },
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Info, self.info)
 			end,
@@ -351,12 +351,12 @@ M.config = function()
 			name = "sl_plugins_click",
 		},
 		hl = function(self)
-			return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
+			return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
 		end,
 	}
 
 	local lsp_attach = {
-		condition = conditions.lsp_attached,
+		condition = cond.lsp_attached,
 		static = { lsp_attached = false, server_name = "", mode_colors = mode_colors },
 		init = function(self)
 			self.mode = vim.fn.mode()
@@ -383,7 +383,7 @@ M.config = function()
 					return fmt(" %s ", string.lower(self.server_name))
 				end,
 				hl = function(self)
-					return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
+					return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
 				end,
 			},
 		},
@@ -409,7 +409,7 @@ M.config = function()
 				end
 			end,
 			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
+				return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
 			end,
 		},
 	}
@@ -424,7 +424,7 @@ M.config = function()
 				return fmt(" %s ", require("noice").api.status.command.get())
 			end,
 			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
+				return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
 			end,
 		},
 	}
@@ -439,7 +439,7 @@ M.config = function()
 				return fmt(" %s ", require("noice").api.status.mode.get())
 			end,
 			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
+				return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
 			end,
 		},
 	}
@@ -451,7 +451,7 @@ M.config = function()
 		{
 			provider = " %l:%c:%L ",
 			hl = function(self)
-				return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }
+				return { bg = self.mode_color, fg = c.bg_statusline, bold = true }
 			end,
 			on_click = {
 				callback = function()
@@ -537,7 +537,7 @@ M.config = function()
 				if #data > 1 and i < #data then
 					table.insert(child, {
 						provider = " --> ",
-						hl = { bg = colors.bg_statusline, fg = colors.red, bold = true },
+						hl = { bg = c.bg_statusline, fg = c.red, bold = true },
 					})
 				end
 				table.insert(children, child)
@@ -549,7 +549,7 @@ M.config = function()
 		end,
 		hl = function(self)
 			return {
-				bg = colors.bg_statusline,
+				bg = c.bg_statusline,
 				underline = true,
 				sp = self.mode_color,
 				italic = true,
@@ -575,13 +575,13 @@ M.config = function()
 						return {
 							bg = self.mode_color,
 							bold = true,
-							fg = colors.bg_statusline,
+							fg = c.bg_statusline,
 							underline = true,
 							sp = self.mode_color,
 						}
 					else
 						return {
-							bg = colors.fg_gutter,
+							bg = c.fg_gutter,
 							fg = self.mode_color,
 							underline = true,
 							sp = self.mode_color,
@@ -605,7 +605,7 @@ M.config = function()
 				return {
 					bold = true,
 					fg = self.mode_color,
-					bg = colors.bg_statusline,
+					bg = c.bg_statusline,
 					underline = true,
 					sp = self.mode_color,
 				}
@@ -728,7 +728,7 @@ M.config = function()
 	local stc_get_gitsign = {
 		{
 			condition = function()
-				return conditions.is_git_repo() and vim.v.virtnum == 0
+				return cond.is_git_repo() and vim.v.virtnum == 0
 			end,
 			init = function(self)
 				local extmark = vim.api.nvim_buf_get_extmarks(
@@ -754,7 +754,7 @@ M.config = function()
 		},
 		{
 			condition = function()
-				return not conditions.is_git_repo() or vim.v.virtnum ~= 0
+				return not cond.is_git_repo() or vim.v.virtnum ~= 0
 			end,
 			provider = "",
 			hl = "HeirlineStatusColumn",
@@ -763,7 +763,7 @@ M.config = function()
 	}
 
 	local disable_winbar_cb = function(args)
-		return conditions.buffer_matches({
+		return cond.buffer_matches({
 			bufname = { "sh" },
 			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 			filetype = {
@@ -787,7 +787,7 @@ M.config = function()
 
 	require("heirline").setup({
 		winbar = { navic, align, tablist, current_path },
-		opts = { disable_winbar_cb = disable_winbar_cb, colors = colors },
+		opts = { disable_winbar_cb = disable_winbar_cb, colors = c },
 		statusline = {
 			condition = buf_matches,
 			vim_mode,
