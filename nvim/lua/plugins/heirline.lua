@@ -14,6 +14,7 @@ local buftype = {
 	"help",
 	"quickfix",
 }
+
 local filetype = {
 	"^harpoon$",
 	"^dashboard$",
@@ -28,9 +29,10 @@ local filetype = {
 }
 
 M.config = function()
-	local space, conditions = { provider = " " }, require("heirline.conditions")
-	local fmt, icons, align = string.format, require("icons"), { provider = "%=" }
+	local conditions = require("heirline.conditions")
+	local fmt, icons = string.format, require("icons")
 	local colors = require("tokyonight.colors").setup()
+	local space, align = { provider = " " }, { provider = "%=" }
 
 	---@param bt table
 	---@param ft table
@@ -56,6 +58,17 @@ M.config = function()
 		R = colors.red,
 		t = colors.teal,
 	}
+
+	vim.api.nvim_create_autocmd("ModeChanged", {
+		callback = function()
+			vim.api.nvim_set_hl(0, "Winbar", {
+				underline = true,
+				sp = mode_colors[vim.fn.mode():sub(1, 1)],
+				bg = colors.bg_statusline,
+				italic = true,
+			})
+		end,
+	})
 
 	local mode_cinit = function(self)
 		self.mode = vim.fn.mode()
@@ -111,7 +124,7 @@ M.config = function()
 			mode_colors = mode_colors,
 		},
 		provider = function(self)
-			return string.format("%s%s%s", " %1(", self.mode_names[self.mode], "%) ")
+			return fmt("%s%s%s", " %1(", self.mode_names[self.mode], "%) ")
 		end,
 		hl = function(self)
 			return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }

@@ -5,10 +5,11 @@ local autocmd = vim.api.nvim_create_autocmd
 
 return {
 	setup = function()
-		autocmd("BufReadPost", {
+		autocmd("BufWinEnter", {
 			desc = "Last position jump.",
-			callback = function(info)
-				local ft = vim.bo[info.buf].ft
+			group = vim.api.nvim_create_augroup("LastPost", { clear = false }),
+			callback = function()
+				local ft = vim.bo.filetype
 				if ft ~= "gitcommit" and ft ~= "gitrebase" then
 					vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })
 				end
@@ -189,33 +190,6 @@ return {
 						vim.w._cuc = nil
 					end
 				end
-			end,
-		})
-
-		autocmd("ModeChanged", {
-			callback = function()
-				local colors = require("tokyonight.colors").setup()
-				local mode_colors = {
-					n = colors.blue2,
-					i = colors.green,
-					v = colors.magenta,
-					V = colors.orange,
-					["\22"] = colors.orange,
-					c = colors.cyan,
-					s = colors.yellow,
-					S = colors.yellow,
-					["\19"] = colors.yellow,
-					r = colors.green,
-					["!"] = colors.red,
-					R = colors.red,
-					t = colors.teal,
-				}
-				local mode_color = mode_colors[vim.fn.mode():sub(1, 1)]
-				vim.api.nvim_set_hl(
-					0,
-					"Winbar",
-					{ underline = true, sp = mode_color, bg = colors.bg_statusline, italic = true }
-				)
 			end,
 		})
 	end,
