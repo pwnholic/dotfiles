@@ -8,8 +8,9 @@ M.dependencies = {
 M.config = function()
 	local cond = require("heirline.conditions")
 	local fmt, icons = string.format, require("icons")
-	local c = require("tokyonight.colors").setup()
 	local space, align = { provider = " " }, { provider = "%=" }
+	local c = require("tokyonight.colors").setup()
+	-- local c_util = require("tokyonight.util")
 
 	local function buf_matches()
 		if
@@ -53,12 +54,9 @@ M.config = function()
 
 	vim.api.nvim_create_autocmd("ModeChanged", {
 		callback = function()
-			vim.api.nvim_set_hl(0, "Winbar", {
-				underline = true,
-				sp = mode_colors[vim.fn.mode():sub(1, 1)],
-				bg = c.bg_statusline,
-				italic = true,
-			})
+			local mode_clr = mode_colors[vim.fn.mode():sub(1, 1)]
+			vim.api.nvim_set_hl(0, "Winbar", { underline = true, sp = mode_clr, bg = c.bg_statusline, italic = true })
+			-- vim.api.nvim_set_hl(0, "LineNr", { fg = c_util.darken(mode_clr, 0.7), bg = c.none, bold = true })
 		end,
 	})
 

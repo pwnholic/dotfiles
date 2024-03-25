@@ -29,10 +29,10 @@ return {
 		opts = {
 			log_level = vim.log.levels.TRACE,
 			format_after_save = function(bufnr)
-				if vim.b[bufnr].bigfile or vim.b[bufnr].midfile then
-					return false
+				if not vim.b[bufnr].bigfile then
+					return { timeout_ms = 5000, lsp_fallback = true }
 				end
-				return { timeout_ms = 5000, lsp_fallback = true }
+				return false
 			end,
 			notify_on_error = true,
 			formatters = { injected = { options = { lang_to_formatters = { html = {}, json = { "jq" } } } } },

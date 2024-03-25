@@ -1,6 +1,5 @@
 vim.loader.enable()
 
-vim.F.if_nil()
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 vim.g.loaded_fzf_file_explorer = 1

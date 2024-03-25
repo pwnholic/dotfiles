@@ -4,7 +4,7 @@ local augroup = vim.api.nvim_create_augroup
 
 local function lsp_custom_code_action(bufnr)
 	local code_action = {
-		code_action_icon = "💡",
+		lb_icon = "💡",
 		delay = 30, -- second
 		sign = true,
 		sign_priority = 40,
@@ -23,7 +23,7 @@ local function lsp_custom_code_action(bufnr)
 			pcall(vim.api.nvim_buf_set_extmark, 0, namespace, line, -1, {
 				virt_text = {
 					{
-						string.rep(" ", 3) .. code_action.code_action_icon .. string.rep(" ", 2) .. actions[1].title,
+						string.rep(" ", 3) .. code_action.lb_icon .. string.rep(" ", 2) .. actions[1].title,
 						code_action.hl_group,
 					},
 				},
@@ -34,10 +34,7 @@ local function lsp_custom_code_action(bufnr)
 
 	local function code_action_update_sign(line)
 		if vim.tbl_isempty(vim.fn.sign_getdefined(code_action.sign_name)) then
-			vim.fn.sign_define(
-				code_action.sign_name,
-				{ text = code_action.code_action_icon, texthl = code_action.hl_group }
-			)
+			vim.fn.sign_define(code_action.sign_name, { text = code_action.lb_icon, texthl = code_action.hl_group })
 		end
 		local winid = vim.api.nvim_get_current_win()
 		if code_action[winid] == nil then

@@ -5,13 +5,12 @@ local autocmd = vim.api.nvim_create_autocmd
 
 return {
 	setup = function()
-		autocmd("BufWinEnter", {
+		autocmd("BufReadPost", {
 			desc = "Last position jump.",
 			group = vim.api.nvim_create_augroup("LastPost", { clear = false }),
 			callback = function()
-				local ft = vim.bo.filetype
-				if ft ~= "gitcommit" and ft ~= "gitrebase" then
-					vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })
+				if not vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo.filetype) then
+					return vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })
 				end
 			end,
 		})
@@ -54,10 +53,7 @@ return {
 		})
 
 		-- Check if we need to reload the file when it changed
-		autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-			group = augroup("CheckTime"),
-			command = "checktime",
-		})
+		autocmd({ "FocusGained", "TermClose", "TermLeave" }, { group = augroup("CheckTime"), command = "checktime" })
 
 		-- Auto create dir when saving a file, in case some intermediate directory does not exist
 		autocmd({ "BufWritePre" }, {
@@ -74,7 +70,6 @@ return {
 		autocmd("BufReadPre", {
 			desc = "Set settings for large files.",
 			callback = function(opts)
-				vim.b.midfile = false
 				vim.b.bigfile = false
 
 				local fname = vim.api.nvim_buf_get_name(opts.buf)
@@ -109,11 +104,6 @@ return {
 					end
 				end
 
-				if size > 1024 then
-					vim.b.midfile = true
-					force_to_deattach()
-					vim.notify(string.format("[ file %dkb ] mid file setup has been loaded", math.floor(size)), 2)
-				end
 				if size > 4800 then
 					vim.b.bigfile = true
 					vim.opt_local.spell = false
