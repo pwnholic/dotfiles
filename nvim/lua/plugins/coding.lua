@@ -305,20 +305,19 @@ return {
 		"mfussenegger/nvim-lint",
 		event = "LspAttach",
 		opts = {
-			events = { "BufWritePost" },
 			linters_by_ft = {
 				lua = { "selene" },
 				go = { "golangcilint" },
 			},
 			linters = {
 				selene = {
-					condition = function(ctx)
-						return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+					condition = function()
+						return vim.fs.find({ "selene.toml" }, { path = vim.uv.cwd(), upward = false })[1]
 					end,
 				},
 				golangcilint = {
-					condition = function(ctx)
-						return vim.fs.find({ ".golangci.yml" }, { path = ctx.filename, upward = true })[1]
+					condition = function()
+						return vim.fs.find({ ".golangci.yml" }, { path = vim.uv.cwd(), upward = false })[1]
 					end,
 				},
 			},
@@ -337,7 +336,7 @@ return {
 			lint.linters_by_ft = opts.linters_by_ft
 
 			function M.debounce(ms, fn)
-				local timer = vim.loop.new_timer()
+				local timer = vim.uv.new_timer()
 				return function(...)
 					local argv = { ... }
 					timer:start(ms, 0, function()
@@ -375,7 +374,7 @@ return {
 				end
 			end
 
-			vim.api.nvim_create_autocmd(opts.events, {
+			vim.api.nvim_create_autocmd("BufWritePost", {
 				group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
 				callback = M.debounce(1000, M.lint),
 			})
@@ -385,6 +384,7 @@ return {
 	{
 		"rest-nvim/rest.nvim",
 		keys = { { "<leader>tr", "<Plug>RestNvim<cr>", desc = "Test REST" } },
+		ft = "http",
 		dependencies = {
 			{
 				"vhyrro/luarocks.nvim",

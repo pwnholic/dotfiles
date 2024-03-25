@@ -1,5 +1,5 @@
 local function buffer_closer(cfg)
-	local timer, checkingIntervalSecs = vim.loop.new_timer(), 30
+	local timer, checkingIntervalSecs = vim.uv.new_timer(), 30
 	timer:start(
 		cfg.retirement_age_mins * 60000,
 		checkingIntervalSecs * 1000,
@@ -81,7 +81,7 @@ local function buffer_closer(cfg)
 					local bufname = vim.api.nvim_buf_get_name(bufnr)
 					local is_special_buffer = vim.api.nvim_get_option_value("buftype", { buf = bufnr }) ~= ""
 					local is_ignored_ft = vim.tbl_contains(cfg.ignored_filetypes, vim.bo[bufnr].ft)
-					local file_exists = vim.loop.fs_stat(bufname) ~= nil
+					local file_exists = vim.uv.fs_stat(bufname) ~= nil
 
 					local is_new_buffer = bufname == ""
 					-- prevent the temporary buffers from conform.nvim's "injected"
