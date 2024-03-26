@@ -162,7 +162,7 @@ return {
 
 		local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
         -- stylua: ignore start
-		map("n", "<leader>us", function() utils.toggle_option("spell") end, { desc = "Toggle Spelling" })
+        map("n", "<leader>us", function() utils.toggle_option("spell") end, { desc = "Toggle Spelling" })
 		map("n", "<leader>uw", function() utils.toggle_option("wrap") end, { desc = "Toggle Word Wrap" })
 		map("n", "<leader>uL", function() utils.toggle_option("relativenumber") end, { desc = "Toggle Relative Line Numbers" })
 		map("n", "<leader>ul", function() utils.toggle_number() end, { desc = "Toggle Line Numbers" })
@@ -198,5 +198,17 @@ return {
 		end, { expr = true, silent = true })
 
 		map("n", "gQ", "mzgggqG`z<cmd>delmarks z<cr>zz", { desc = "Format buffer", silent = true })
+
+		local enabled = true
+		map("n", "<leader>um", function()
+			enabled = not enabled
+			if enabled then
+				vim.notify("Disabled Tabline", 2, { title = "Tabline" })
+				vim.opt_local.showtabline = 0
+			else
+				vim.notify("Enabled Tabline", 2, { title = "Tabline" })
+				vim.opt_local.showtabline = 2
+			end
+		end, { desc = "Toggle Tabline" })
 	end,
 }

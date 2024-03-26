@@ -222,54 +222,6 @@ M.config = function()
 		},
 	}
 
-	local harpoon = {
-		condition = function()
-			return package.loaded.harpoon and require("harpoon"):list():length() > 1
-		end,
-		space,
-		static = { mode_colors = mode_colors },
-		init = function(self)
-			local children = {}
-			local items = require("harpoon"):list():display()
-			local bufnr = vim.api.nvim_get_current_buf()
-			if not vim.api.nvim_buf_is_valid(bufnr) then
-				return {}
-			end
-			local cur_bufname = vim.api.nvim_buf_get_name(bufnr)
-
-			self.mode = vim.fn.mode()
-			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
-
-			for i, path in ipairs(items) do
-				local child = {
-					space,
-					{
-						provider = function()
-							return fmt(" %s ", i)
-						end,
-						init = function()
-							self.fullpath = string.len(path) < 75 and path == vim.fn.fnamemodify(cur_bufname, ":~:.")
-							self.shorten_path = string.len(path) > 75
-								and path == vim.fn.pathshorten(vim.fn.fnamemodify(cur_bufname, ":~:."), 3)
-						end,
-						hl = function()
-							if self.fullpath or self.shorten_path then
-								return { bg = self.mode_color, bold = true, fg = c.black }
-							else
-								return { bg = c.fg_gutter, fg = self.mode_color, bold = true }
-							end
-						end,
-					},
-				}
-				table.insert(children, child)
-			end
-			self.child = self:new(children, 1)
-		end,
-		provider = function(self)
-			return self.child:eval()
-		end,
-	}
-
 	local diagnostics = {
 		condition = cond.has_diagnostics,
 		init = function(self)
@@ -714,6 +666,11 @@ M.config = function()
 	}
 
 	local stc_get_lnum = {
+		-- init = mode_cinit,
+		-- static = { mode_colors = mode_colors },
+		-- hl = function(self)
+		-- 	return { fg = self.mode_color, bg = c.none, bold = false }
+		-- end,
 		provider = "%=%4{v:virtnum ? '' : &nu ? (&rnu && v:relnum ? v:relnum : v:lnum) . ' ' : ''}",
 		on_click = {
 			name = "sc_linenumber_click",
@@ -783,16 +740,96 @@ M.config = function()
 		}, args.buf)
 	end
 
+	local harpoon = {
+		condition = function()
+			return package.loaded.harpoon and require("harpoon"):list():length() > 1
+		end,
+		space,
+		static = { mode_colors = mode_colors },
+		init = function(self)
+			local children = {}
+			local items = require("harpoon"):list():display()
+			local bufnr = vim.api.nvim_get_current_buf()
+			if not vim.api.nvim_buf_is_valid(bufnr) then
+				return {}
+			end
+			local cur_bufname = vim.api.nvim_buf_get_name(bufnr)
+
+			self.mode = vim.fn.mode()
+			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
+
+			for i, path in ipairs(items) do
+				local child = {
+					space,
+					{
+						provider = function()
+							return fmt(" %s ", i)
+						end,
+						init = function()
+							self.fullpath = string.len(path) < 75 and path == vim.fn.fnamemodify(cur_bufname, ":~:.")
+							self.shorten_path = string.len(path) > 75
+								and path == vim.fn.pathshorten(vim.fn.fnamemodify(cur_bufname, ":~:."), 3)
+						end,
+						hl = function()
+							if self.fullpath or self.shorten_path then
+								return { bg = self.mode_color, bold = true, fg = c.black }
+							else
+								return { bg = c.fg_gutter, fg = self.mode_color, bold = true }
+							end
+						end,
+					},
+					{
+						space,
+						{
+							provider = function()
+								return fmt(" %s ", vim.fn.fnamemodify(path, ":t"))
+							end,
+							hl = function()
+								if self.fullpath or self.shorten_path then
+									return { bg = self.mode_color, bold = true, fg = c.black }
+								else
+									return { bg = c.fg_gutter, fg = self.mode_color, bold = false }
+								end
+							end,
+						},
+					},
+				}
+				table.insert(children, child)
+			end
+			self.child = self:new(children, 1)
+		end,
+		provider = function(self)
+			return self.child:eval()
+		end,
+	}
+
+	local bufferline = {
+		require("heirline.utils").make_buflist(harpoon, {
+			init = mode_cinit,
+			static = { mode_colors = mode_colors },
+			provider = " ",
+			hl = function(self)
+				return { bold = true, fg = self.mode_color, bg = c.bg_statusline }
+			end,
+		}, {
+			init = mode_cinit,
+			static = { mode_colors = mode_colors },
+			provider = " ",
+			hl = function(self)
+				return { bold = true, fg = self.mode_color, bg = c.bg_statusline }
+			end,
+		}),
+	}
+
 	require("heirline").setup({
-		winbar = { navic, align, tablist, current_path },
 		opts = { disable_winbar_cb = disable_winbar_cb, colors = c },
+		tabline = { bufferline },
+		winbar = { navic, align, tablist, current_path },
 		statusline = {
 			condition = buf_matches,
 			vim_mode,
 			git,
 			filename,
-			align,
-			harpoon,
 			align,
 			diagnostics,
 			plugins_update,
