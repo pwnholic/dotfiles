@@ -161,6 +161,7 @@ return {
 		end, { desc = "Close Non-Visible Buffers" })
 
 		local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
+		local showtabline = vim.o.showtabline > 0 and vim.o.showtabline or 2
         -- stylua: ignore start
         map("n", "<leader>us", function() utils.toggle_option("spell") end, { desc = "Toggle Spelling" })
 		map("n", "<leader>uw", function() utils.toggle_option("wrap") end, { desc = "Toggle Word Wrap" })
@@ -168,6 +169,7 @@ return {
 		map("n", "<leader>ul", function() utils.toggle_number() end, { desc = "Toggle Line Numbers" })
 		map("n", "<leader>ud", function() utils.toggle_diagnostics() end, { desc = "Toggle Diagnostics" })
 		map("n", "<leader>uc", function() utils.toggle_option("conceallevel", false, { 0, conceallevel }) end, { desc = "Toggle Conceal Level" })
+		map("n", "<leader>um", function() utils.toggle_option("showtabline", false, { 0, showtabline }) end, { desc = "Toggle Tabline" })
 		map("n", "<leader>uT", function() if vim.b.ts_highlight then vim.treesitter.stop() else vim.treesitter.start() end end, { desc = "Toggle Treesitter Highlight" })
 		map({ "n", "x" }, "q", function() require("utils").close_float_window() end, { desc = "close floating window" })
 
@@ -198,17 +200,5 @@ return {
 		end, { expr = true, silent = true })
 
 		map("n", "gQ", "mzgggqG`z<cmd>delmarks z<cr>zz", { desc = "Format buffer", silent = true })
-
-		local enabled = true
-		map("n", "<leader>um", function()
-			enabled = not enabled
-			if enabled then
-				vim.notify("Disabled Tabline", 2, { title = "Tabline" })
-				vim.opt_local.showtabline = 0
-			else
-				vim.notify("Enabled Tabline", 2, { title = "Tabline" })
-				vim.opt_local.showtabline = 2
-			end
-		end, { desc = "Toggle Tabline" })
 	end,
 }
