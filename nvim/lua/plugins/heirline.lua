@@ -803,27 +803,9 @@ M.config = function()
 		end,
 	}
 
-	local bufferline = {
-		require("heirline.utils").make_buflist(harpoon, {
-			init = mode_cinit,
-			static = { mode_colors = mode_colors },
-			provider = " ",
-			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = c.bg_statusline }
-			end,
-		}, {
-			init = mode_cinit,
-			static = { mode_colors = mode_colors },
-			provider = " ",
-			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = c.bg_statusline }
-			end,
-		}),
-	}
-
 	require("heirline").setup({
 		opts = { disable_winbar_cb = disable_winbar_cb, colors = c },
-		tabline = { bufferline },
+		tabline = { harpoon },
 		winbar = { navic, align, tablist, current_path },
 		statusline = {
 			condition = buf_matches,
