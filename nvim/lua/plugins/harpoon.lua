@@ -2,8 +2,7 @@ local M = { "ThePrimeagen/harpoon", dependencies = { "nvim-lua/plenary.nvim" }, 
 
 M.config = function()
 	local harpoon = require("harpoon")
-	require("harpoon.config").DEFAULT_LIST = "files"
-	local Extensions = require("harpoon.extensions")
+	local ext = require("harpoon.extensions")
 	harpoon:setup({
 		settings = {
 			save_on_toggle = true,
@@ -73,8 +72,8 @@ M.config = function()
 				end
 				-- switch to the buffer if no window was found
 				vim.api.nvim_set_current_buf(items.context.bufnr)
-				Extensions.extensions:emit(
-					Extensions.event_names.NAVIGATE,
+				ext.extensions:emit(
+					ext.event_names.NAVIGATE,
 					{ list = list, item = items, buffer = items.context.bufnr }
 				)
 			end,
