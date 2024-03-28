@@ -353,7 +353,11 @@ M.config = function()
 			},
 		},
 		grep = {
-			actions = { ["alt-l"] = fzf_actions.grep_lgrep, ["ctrl-g"] = fzf_actions.toggle_ignore },
+			actions = {
+				["alt-i"] = fzf_actions.grep_lgrep,
+				["ctrl-g"] = fzf_actions.toggle_ignore,
+				["alt-f"] = fzf_actions.switch_cwd,
+			},
 			headers = { "actions", "cwd" },
 			cwd_header = true,
 			input_prompt = "Grep For : ",

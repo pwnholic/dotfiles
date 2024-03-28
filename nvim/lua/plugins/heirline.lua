@@ -225,12 +225,15 @@ M.config = function()
 	local diagnostics = {
 		condition = cond.has_diagnostics,
 		init = function(self)
+			self.mode = vim.fn.mode()
+			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
 			self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
 			self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
 			self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
 			self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
 		end,
-		update = { "DiagnosticChanged", "BufEnter" },
+		static = { mode_colors = mode_colors },
+		update = { "DiagnosticChanged", "BufEnter", "ModeChanged" },
 		on_click = {
 			callback = function()
 				require("trouble").toggle({ mode = "document_diagnostics" })
@@ -242,7 +245,9 @@ M.config = function()
 			condition = function(self)
 				return self.errors > 0
 			end,
-			hl = { fg = c.error, bg = c.bg_statusline, bold = true },
+			hl = function(self)
+				return { fg = c.error, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Error, self.errors)
 			end,
@@ -252,7 +257,9 @@ M.config = function()
 			condition = function(self)
 				return self.warnings > 0
 			end,
-			hl = { fg = c.warning, bg = c.bg_statusline, bold = true },
+			hl = function(self)
+				return { fg = c.warning, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Warn, self.warnings)
 			end,
@@ -262,7 +269,9 @@ M.config = function()
 			condition = function(self)
 				return self.hints > 0
 			end,
-			hl = { fg = c.hint, bg = c.bg_statusline, bold = true },
+			hl = function(self)
+				return { fg = c.hint, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Hint, self.hints)
 			end,
@@ -271,7 +280,9 @@ M.config = function()
 			condition = function(self)
 				return self.info > 0
 			end,
-			hl = { fg = c.info, bg = c.bg_statusline, bold = true },
+			hl = function(self)
+				return { fg = c.info, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Info, self.info)
 			end,
@@ -522,20 +533,9 @@ M.config = function()
 				end,
 				hl = function(self)
 					if self.is_active then
-						return {
-							bg = self.mode_color,
-							bold = true,
-							fg = c.bg_statusline,
-							underline = true,
-							sp = self.mode_color,
-						}
+						return { bg = self.mode_color, bold = true, fg = c.bg_statusline }
 					else
-						return {
-							bg = c.fg_gutter,
-							fg = self.mode_color,
-							underline = true,
-							sp = self.mode_color,
-						}
+						return { bg = c.fg_gutter, fg = self.mode_color }
 					end
 				end,
 			},
@@ -740,6 +740,26 @@ M.config = function()
 		}, args.buf)
 	end
 
+	local buflist_cache = {}
+	vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
+		callback = function()
+			vim.schedule(function()
+				local items = require("harpoon"):list():display()
+				for i, v in ipairs(items) do
+					buflist_cache[i] = v
+				end
+				for i = #items + 1, #buflist_cache do
+					buflist_cache[i] = nil
+				end
+				if #buflist_cache > 3 then
+					vim.o.showtabline = 2 -- always
+				elseif vim.o.showtabline ~= 1 then -- don't reset the option if it's already at default value
+					vim.o.showtabline = 1 -- only when #tabpages > 1
+				end
+			end)
+		end,
+	})
+
 	local harpoon = {
 		condition = function()
 			return package.loaded.harpoon and require("harpoon"):list():length() > 1
@@ -760,7 +780,6 @@ M.config = function()
 
 			for i, path in ipairs(items) do
 				local child = {
-					space,
 					{
 						provider = function()
 							return fmt(" %s ", i)
@@ -778,21 +797,20 @@ M.config = function()
 							end
 						end,
 					},
+					space,
 					{
-						space,
-						{
-							provider = function()
-								return fmt(" %s ", vim.fn.fnamemodify(path, ":t"))
-							end,
-							hl = function()
-								if self.fullpath or self.shorten_path then
-									return { bg = self.mode_color, bold = true, fg = c.black }
-								else
-									return { bg = c.fg_gutter, fg = self.mode_color, bold = false }
-								end
-							end,
-						},
+						provider = function()
+							return fmt(" %s ", vim.fn.fnamemodify(path, ":t"))
+						end,
+						hl = function()
+							if self.fullpath or self.shorten_path then
+								return { bg = self.mode_color, bold = true, fg = c.black }
+							else
+								return { bg = c.fg_gutter, fg = self.mode_color, bold = true }
+							end
+						end,
 					},
+					space,
 				}
 				table.insert(children, child)
 			end
@@ -806,14 +824,15 @@ M.config = function()
 	require("heirline").setup({
 		opts = { disable_winbar_cb = disable_winbar_cb, colors = c },
 		tabline = { harpoon },
-		winbar = { navic, align, tablist, current_path },
+		winbar = { navic, align, diagnostics, current_path },
 		statusline = {
 			condition = buf_matches,
 			vim_mode,
 			git,
 			filename,
 			align,
-			diagnostics,
+			tablist,
+			align,
 			plugins_update,
 			lsp_attach,
 			formatters,

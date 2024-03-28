@@ -109,15 +109,15 @@ M.config = function()
 		then
 			local oil_win_height = vim.api.nvim_win_get_height(oil_win)
 			local oil_win_width = vim.api.nvim_win_get_width(oil_win)
-			vim.cmd.new({
-				mods = {
-					vertical = oil_win_width > 6 * oil_win_height,
-				},
-			})
+
+			vim.cmd.new({ mods = { vertical = oil_win_width > 6 * oil_win_height } })
+
 			preview_win = vim.api.nvim_get_current_win()
 			preview_buf = vim.api.nvim_get_current_buf()
+
 			preview_wins[oil_win] = preview_win
 			preview_bufs[oil_win] = preview_buf
+
 			vim.bo[preview_buf].swapfile = false
 			vim.bo[preview_buf].buflisted = false
 			vim.bo[preview_buf].buftype = "nofile"

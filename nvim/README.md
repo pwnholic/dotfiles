@@ -61,3 +61,4 @@ Disk (/): 270G / 465G (59%)
 # TODO
 
 - fix code action for range
+- fix this `is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)kdiff)?$'"` shit

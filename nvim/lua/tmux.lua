@@ -188,7 +188,7 @@ local function setup()
 
 	tmux_key_fallback("<M-E>", "swap-pane -U", _, { desc = "Swap Up Pane" })
 	tmux_key_fallback("<M-e>", "swap-pane -D", _, { desc = "Swap Down Pane" })
-	tmux_key_fallback("<M-w>", "choose-tree -Zw", _, { desc = "Tmux Choose Tree" })
+	tmux_key_fallback("<M-w>", "choose-tree -ZN", _, { desc = "Tmux Choose Tree" })
 	tmux_key_fallback("<M-z>", "resize-pane -Z", _, { desc = "Tmux Zoom Pane" })
 	tmux_key_fallback("<M-,>", "resize-pane -L 4", tmux_keys_resize_pane_horiz_cond, { desc = "Horizontal Resize Left +4" })
 	tmux_key_fallback("<M-.>", "resize-pane -R 4", tmux_keys_resize_pane_horiz_cond, { { desc = "Horizontal Resize Right +4" } })

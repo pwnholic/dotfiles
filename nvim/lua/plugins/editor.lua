@@ -1,7 +1,23 @@
 return {
 	{ "Bekaboo/deadcolumn.nvim", event = "BufRead", config = true },
-	{ "numToStr/Comment.nvim", event = "BufRead", keys = { "gcc", "gcb", "gc", "gc$" }, config = true },
 	{ "tpope/vim-dadbod", dependencies = { "kristijanhusak/vim-dadbod-ui" }, cmd = "DBUI" },
+	{
+		"JoosepAlviste/nvim-ts-context-commentstring",
+		lazy = true,
+		opts = { enable_autocmd = false },
+	},
+	{
+		"echasnovski/mini.comment",
+		event = "BufRead",
+		opts = {
+			options = {
+				custom_commentstring = function()
+					return require("ts_context_commentstring.internal").calculate_commentstring()
+						or vim.bo.commentstring
+				end,
+			},
+		},
+	},
 	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble" },
