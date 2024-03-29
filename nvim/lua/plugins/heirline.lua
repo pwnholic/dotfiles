@@ -1,20 +1,26 @@
 local M = { "rebelot/heirline.nvim", event = "VeryLazy" }
 
+local icons = require("icons")
+
 M.dependencies = {
 	"SmiteshP/nvim-navic",
-	opts = { highlight = true, icons = require("icons").kinds, lazy_update_context = true },
+	opts = {
+		highlight = true,
+		icons = icons.kinds,
+		lazy_update_context = true,
+	},
 }
 
 M.config = function()
-	local cond = require("heirline.conditions")
-	local fmt, icons = string.format, require("icons")
+	local conditions = require("heirline.conditions")
+	local fmt = string.format
 	local space, align = { provider = " " }, { provider = "%=" }
-	local c = require("tokyonight.colors").setup()
+	local colors = require("tokyonight.colors").setup()
 	-- local c_util = require("tokyonight.util")
 
 	local function buf_matches()
 		if
-			not cond.buffer_matches({
+			not conditions.buffer_matches({
 				bufname = { "sh" },
 				buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 				filetype = {
@@ -37,26 +43,30 @@ M.config = function()
 	end
 
 	local mode_colors = {
-		n = c.blue2,
-		i = c.green,
-		v = c.magenta,
-		V = c.orange,
-		["\22"] = c.red,
-		c = c.cyan,
-		s = c.yellow,
-		S = c.yellow,
-		["\19"] = c.yellow,
-		r = c.green,
-		["!"] = c.red,
-		R = c.red,
-		t = c.teal,
+		n = colors.blue2,
+		i = colors.green,
+		v = colors.magenta,
+		V = colors.orange,
+		["\22"] = colors.red,
+		c = colors.cyan,
+		s = colors.yellow,
+		S = colors.yellow,
+		["\19"] = colors.yellow,
+		r = colors.green,
+		["!"] = colors.red,
+		R = colors.red,
+		t = colors.teal,
 	}
 
 	vim.api.nvim_create_autocmd("ModeChanged", {
 		callback = function()
 			local mode_clr = mode_colors[vim.fn.mode():sub(1, 1)]
-			vim.api.nvim_set_hl(0, "Winbar", { underline = true, sp = mode_clr, bg = c.bg_statusline, italic = true })
-			-- vim.api.nvim_set_hl(0, "LineNr", { fg = c_util.darken(mode_clr, 0.7), bg = c.none, bold = true })
+			vim.api.nvim_set_hl(
+				0,
+				"Winbar",
+				{ underline = true, sp = mode_clr, bg = colors.bg_statusline, italic = true }
+			)
+			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = mode_clr, bg = colors.none, bold = true })
 		end,
 	})
 
@@ -117,43 +127,47 @@ M.config = function()
 			return fmt("%s%s%s", " %1(", self.mode_names[self.mode], "%) ")
 		end,
 		hl = function(self)
-			return { bg = self.mode_color, fg = c.bg_statusline, bold = true }
+			return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }
 		end,
 	}
 
 	local git = {
-		condition = cond.is_git_repo,
+		condition = conditions.is_git_repo,
 		init = function(self)
 			self.status_dict = vim.b.gitsigns_status_dict
 		end,
-		space,
 		{
-			provider = function(self)
-				return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
-			end,
-			hl = { fg = c.blue2, bg = c.fg_gutter, bold = true },
-		},
-		space,
-		{
-			provider = function(self)
-				local count = self.status_dict.added or 0
-				return count > 0 and fmt("%s %d ", icons.git.added, count)
-			end,
-			hl = { fg = c.green2, bold = true, bg = c.bg_statusline },
+			space,
+			{
+				provider = function(self)
+					return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
+				end,
+				hl = { fg = colors.blue2, bg = colors.fg_gutter, bold = true },
+			},
 		},
 		{
-			provider = function(self)
-				local count = self.status_dict.removed or 0
-				return count > 0 and fmt("%s %d ", icons.git.removed, count)
-			end,
-			hl = { fg = c.red, bold = true, bg = c.bg_statusline },
-		},
-		{
-			provider = function(self)
-				local count = self.status_dict.changed or 0
-				return count > 0 and fmt("%s %d ", icons.git.modified, count)
-			end,
-			hl = { fg = c.yellow1, bold = true, bg = c.bg_statusline },
+			space,
+			{
+				provider = function(self)
+					local count = self.status_dict.added or 0
+					return count > 0 and fmt("%s %d ", icons.git.added, count)
+				end,
+				hl = { fg = colors.green2, bold = true, bg = colors.bg_statusline },
+			},
+			{
+				provider = function(self)
+					local count = self.status_dict.removed or 0
+					return count > 0 and fmt("%s %d ", icons.git.removed, count)
+				end,
+				hl = { fg = colors.red, bold = true, bg = colors.bg_statusline },
+			},
+			{
+				provider = function(self)
+					local count = self.status_dict.changed or 0
+					return count > 0 and fmt("%s %d ", icons.git.modified, count)
+				end,
+				hl = { fg = colors.yellow1, bold = true, bg = colors.bg_statusline },
+			},
 		},
 		on_click = {
 			callback = function()
@@ -175,55 +189,59 @@ M.config = function()
 
 	local filename = {
 		condition = buf_matches,
-		space,
 		{
-			init = function(self)
-				self.icon, self.fg = require("nvim-web-devicons").get_icon_color_by_filetype(vim.bo.filetype)
-			end,
-			provider = function(self)
-				return fmt("%s ", self.icon or "")
-			end,
-			hl = function(self)
-				return { fg = self.fg, bg = c.bg_statusline }
-			end,
-		},
-		space,
-		{
-			condition = function()
-				return not vim.tbl_contains({ "[No Name]", "" }, vim.api.nvim_buf_get_name(0))
-			end,
-			init = mode_cinit,
-			static = { mode_colors = mode_colors },
+			space,
 			{
-				provider = function()
-					if vim.bo.filetype == "oil" then
-						return vim.fn.expand("%:f")
-					end
-					return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+				init = function(self)
+					self.icon, self.fg = require("nvim-web-devicons").get_icon_color_by_filetype(vim.bo.filetype)
+				end,
+				provider = function(self)
+					return fmt("%s ", self.icon or "")
 				end,
 				hl = function(self)
-					return { bold = true, fg = self.mode_color, bg = c.bg_statusline }
+					return { fg = self.fg, bg = colors.bg_statusline }
 				end,
 			},
+		},
+		{
+			space,
 			{
 				condition = function()
-					return vim.bo.modified
+					return not vim.tbl_contains({ "[No Name]", "" }, vim.api.nvim_buf_get_name(0))
 				end,
-				space,
-				{ provider = "[+]", hl = { fg = c.green, bg = c.bg_statusline } },
-			},
-			{
-				condition = function()
-					return not vim.bo.modifiable or vim.bo.readonly
-				end,
-				space,
-				{ provider = " ", hl = { fg = c.red, bg = c.bg_statusline } },
+				init = mode_cinit,
+				static = { mode_colors = mode_colors },
+				{
+					provider = function()
+						if vim.bo.filetype == "oil" then
+							return vim.fn.expand("%:f")
+						end
+						return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+					end,
+					hl = function(self)
+						return { bold = true, fg = self.mode_color, bg = colors.bg_statusline }
+					end,
+				},
+				{
+					condition = function()
+						return vim.bo.modified
+					end,
+					space,
+					{ provider = "[+]", hl = { fg = colors.green, bg = colors.bg_statusline } },
+				},
+				{
+					condition = function()
+						return not vim.bo.modifiable or vim.bo.readonly
+					end,
+					space,
+					{ provider = " ", hl = { fg = colors.red, bg = colors.bg_statusline } },
+				},
 			},
 		},
 	}
 
 	local diagnostics = {
-		condition = cond.has_diagnostics,
+		condition = conditions.has_diagnostics,
 		init = function(self)
 			self.mode = vim.fn.mode()
 			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
@@ -246,7 +264,13 @@ M.config = function()
 				return self.errors > 0
 			end,
 			hl = function(self)
-				return { fg = c.error, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+				return {
+					fg = colors.error,
+					bg = colors.bg_statusline,
+					bold = true,
+					sp = self.mode_color,
+					underline = true,
+				}
 			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Error, self.errors)
@@ -258,7 +282,13 @@ M.config = function()
 				return self.warnings > 0
 			end,
 			hl = function(self)
-				return { fg = c.warning, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+				return {
+					fg = colors.warning,
+					bg = colors.bg_statusline,
+					bold = true,
+					sp = self.mode_color,
+					underline = true,
+				}
 			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Warn, self.warnings)
@@ -270,7 +300,13 @@ M.config = function()
 				return self.hints > 0
 			end,
 			hl = function(self)
-				return { fg = c.hint, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+				return {
+					fg = colors.hint,
+					bg = colors.bg_statusline,
+					bold = true,
+					sp = self.mode_color,
+					underline = true,
+				}
 			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Hint, self.hints)
@@ -281,7 +317,13 @@ M.config = function()
 				return self.info > 0
 			end,
 			hl = function(self)
-				return { fg = c.info, bg = c.bg_statusline, bold = true, sp = self.mode_color, underline = true }
+				return {
+					fg = colors.info,
+					bg = colors.bg_statusline,
+					bold = true,
+					sp = self.mode_color,
+					underline = true,
+				}
 			end,
 			provider = function(self)
 				return fmt("%s %d ", icons.diagnostics.Info, self.info)
@@ -312,12 +354,12 @@ M.config = function()
 			name = "sl_plugins_click",
 		},
 		hl = function(self)
-			return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
+			return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
 		end,
 	}
 
 	local lsp_attach = {
-		condition = cond.lsp_attached,
+		condition = conditions.lsp_attached,
 		static = { lsp_attached = false, server_name = "", mode_colors = mode_colors },
 		init = function(self)
 			self.mode = vim.fn.mode()
@@ -344,7 +386,7 @@ M.config = function()
 					return fmt(" %s ", string.lower(self.server_name))
 				end,
 				hl = function(self)
-					return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
+					return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
 				end,
 			},
 		},
@@ -370,7 +412,7 @@ M.config = function()
 				end
 			end,
 			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
+				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
 			end,
 		},
 	}
@@ -385,7 +427,7 @@ M.config = function()
 				return fmt(" %s ", require("noice").api.status.command.get())
 			end,
 			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
+				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
 			end,
 		},
 	}
@@ -400,7 +442,7 @@ M.config = function()
 				return fmt(" %s ", require("noice").api.status.mode.get())
 			end,
 			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = c.fg_gutter }
+				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
 			end,
 		},
 	}
@@ -412,7 +454,7 @@ M.config = function()
 		{
 			provider = " %l:%c:%L ",
 			hl = function(self)
-				return { bg = self.mode_color, fg = c.bg_statusline, bold = true }
+				return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }
 			end,
 			on_click = {
 				callback = function()
@@ -498,7 +540,7 @@ M.config = function()
 				if #data > 1 and i < #data then
 					table.insert(child, {
 						provider = " --> ",
-						hl = { bg = c.bg_statusline, fg = c.red, bold = true },
+						hl = { bg = colors.bg_statusline, fg = colors.red, bold = true },
 					})
 				end
 				table.insert(children, child)
@@ -510,7 +552,7 @@ M.config = function()
 		end,
 		hl = function(self)
 			return {
-				bg = c.bg_statusline,
+				bg = colors.bg_statusline,
 				underline = true,
 				sp = self.mode_color,
 				italic = true,
@@ -533,9 +575,9 @@ M.config = function()
 				end,
 				hl = function(self)
 					if self.is_active then
-						return { bg = self.mode_color, bold = true, fg = c.bg_statusline }
+						return { bg = self.mode_color, bold = true, fg = colors.bg_statusline }
 					else
-						return { bg = c.fg_gutter, fg = self.mode_color }
+						return { bg = colors.fg_gutter, fg = self.mode_color }
 					end
 				end,
 			},
@@ -555,7 +597,7 @@ M.config = function()
 				return {
 					bold = true,
 					fg = self.mode_color,
-					bg = c.bg_statusline,
+					bg = colors.bg_statusline,
 					underline = true,
 					sp = self.mode_color,
 				}
@@ -683,7 +725,7 @@ M.config = function()
 	local stc_get_gitsign = {
 		{
 			condition = function()
-				return cond.is_git_repo() and vim.v.virtnum == 0
+				return conditions.is_git_repo() and vim.v.virtnum == 0
 			end,
 			init = function(self)
 				local extmark = vim.api.nvim_buf_get_extmarks(
@@ -709,7 +751,7 @@ M.config = function()
 		},
 		{
 			condition = function()
-				return not cond.is_git_repo() or vim.v.virtnum ~= 0
+				return not conditions.is_git_repo() or vim.v.virtnum ~= 0
 			end,
 			provider = "",
 			hl = "HeirlineStatusColumn",
@@ -718,7 +760,7 @@ M.config = function()
 	}
 
 	local disable_winbar_cb = function(args)
-		return cond.buffer_matches({
+		return conditions.buffer_matches({
 			bufname = { "sh" },
 			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 			filetype = {
@@ -744,17 +786,18 @@ M.config = function()
 	vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
 		callback = function()
 			vim.schedule(function()
-				local items = require("harpoon"):list():display()
-				for i, v in ipairs(items) do
-					buflist_cache[i] = v
+				local harpoon = require("harpoon")
+				local items = harpoon:list():display()
+				for i, path in ipairs(items) do
+					buflist_cache[i] = path
 				end
 				for i = #items + 1, #buflist_cache do
 					buflist_cache[i] = nil
 				end
 				if #buflist_cache > 3 then
 					vim.o.showtabline = 2 -- always
-				elseif vim.o.showtabline ~= 1 then -- don't reset the option if it's already at default value
-					vim.o.showtabline = 1 -- only when #tabpages > 1
+				else
+					vim.o.showtabline = 0 -- only when #tabpages > 1
 				end
 			end)
 		end,
@@ -791,9 +834,9 @@ M.config = function()
 						end,
 						hl = function()
 							if self.fullpath or self.shorten_path then
-								return { bg = self.mode_color, bold = true, fg = c.black }
+								return { bg = self.mode_color, bold = true, fg = colors.black }
 							else
-								return { bg = c.fg_gutter, fg = self.mode_color, bold = true }
+								return { bg = colors.fg_gutter, fg = self.mode_color, bold = false }
 							end
 						end,
 					},
@@ -804,9 +847,9 @@ M.config = function()
 						end,
 						hl = function()
 							if self.fullpath or self.shorten_path then
-								return { bg = self.mode_color, bold = true, fg = c.black }
+								return { bg = self.mode_color, bold = true, fg = colors.black }
 							else
-								return { bg = c.fg_gutter, fg = self.mode_color, bold = true }
+								return { bg = colors.fg_gutter, fg = self.mode_color, bold = false }
 							end
 						end,
 					},
@@ -822,7 +865,7 @@ M.config = function()
 	}
 
 	require("heirline").setup({
-		opts = { disable_winbar_cb = disable_winbar_cb, colors = c },
+		opts = { disable_winbar_cb = disable_winbar_cb, colors = colors },
 		tabline = { harpoon },
 		winbar = { navic, align, diagnostics, current_path },
 		statusline = {

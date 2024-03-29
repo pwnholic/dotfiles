@@ -5,9 +5,8 @@ local autocmd = vim.api.nvim_create_autocmd
 
 return {
 	setup = function()
-		autocmd("BufReadPost", {
+		autocmd("BufEnter", {
 			desc = "Last position jump.",
-			group = vim.api.nvim_create_augroup("LastPost", { clear = false }),
 			callback = function()
 				if not vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo.filetype) then
 					return vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })

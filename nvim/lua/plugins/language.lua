@@ -310,4 +310,5 @@ return {
 			}
 		end,
 	},
+	{ "ccaglak/phptools.nvim", ft = "php", config = true },
 }
