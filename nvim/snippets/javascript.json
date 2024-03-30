@@ -3,10 +3,7 @@
     "prefix": ["?"],
     "body": ["$1 ? $2 : $3"]
   },
-  "oneLineLambda": {
-    "prefix": ["f"],
-    "body": ["($1) => $0"]
-  },
+  "oneLineLambda": { "prefix": ["f"], "body": ["($1) => $0"] },
   "multiLineLambda": {
     "prefix": ["ff"],
     "body": ["($1) => {", "  $1", "}"]
