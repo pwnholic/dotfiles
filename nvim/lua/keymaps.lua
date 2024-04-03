@@ -64,8 +64,8 @@ return {
 			if vim.bo.filetype == "oil" and vim.bo.modified then
 				return require("oil").save()
 			end
-			return "<esc>:wall<cr>"
-		end, { desc = "Save file", silent = true, expr = true })
+			return vim.cmd.wall()
+		end, { desc = "Save file", silent = true })
 
 		-- better indenting
 		map("v", "<", "<gv")
@@ -103,7 +103,6 @@ return {
 		map("n", "<leader><tab>7", "7gt", { desc = "Go to tab 7" })
 		map("n", "<leader><tab>8", "8gt", { desc = "Go to tab 8" })
 		map("n", "<leader><tab>9", "9gt", { desc = "Go to tab 9" })
-		map("t", "<esc><esc>", "<c-\\><c-n>", { buffer = true })
 
 		map("n", "]z", function()
 			local cur_line = vim.fn.line(".")
@@ -179,7 +178,7 @@ return {
 		local function diag_goto(next, severity)
 			local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
 			severity = severity and vim.diagnostic.severity[severity] or nil
-			return function() go({ severity = severity }) end
+                	return function() go({ severity = severity }) end
 		end
 		map("n", "[d", diag_goto(false), { desc = "Prev Diagnostic" })
 		map("n", "]d", diag_goto(true), { desc = "Next Diagnostic" })

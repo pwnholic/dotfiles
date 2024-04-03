@@ -262,7 +262,17 @@ return {
 			style = "night",
 			transparent = false,
 			styles = { sidebars = "normal", floats = "normal" },
-			sidebars = { "toggleterm", "qf", "oil", "help", "terminal", "neotest-summary", "dashboard", "Trouble" },
+			sidebars = {
+				"toggleterm",
+				"qf",
+				"oil",
+				"help",
+				"terminal",
+				"neotest-summary",
+				"dashboard",
+				"Trouble",
+				"lazyterm",
+			},
 			on_highlights = function(hl_group, color)
 				require("hl")(hl_group, color, require("tokyonight.util"))
 			end,

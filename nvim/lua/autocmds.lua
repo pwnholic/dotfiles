@@ -1,11 +1,12 @@
-local function augroup(name)
+local function ag(name)
 	return vim.api.nvim_create_augroup(name, { clear = true })
 end
-local autocmd = vim.api.nvim_create_autocmd
+
+local ac = vim.api.nvim_create_autocmd
 
 return {
 	setup = function()
-		autocmd("BufEnter", {
+		ac("BufEnter", {
 			desc = "Last position jump.",
 			callback = function()
 				if not vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo.filetype) then
@@ -14,17 +15,23 @@ return {
 			end,
 		})
 
-		autocmd("TextYankPost", {
-			group = augroup("Hl on yank"),
+		ac({ "BufDelete", "BufWipeout" }, {
+			group = ag("WriteShadaOnBufDelete"),
+			desc = "Write to ShaDa when deleting/wiping out buffers",
+			command = "wshada",
+		})
+
+		ac("TextYankPost", {
+			group = ag("Hl on yank"),
 			desc = "Highlight on yank",
 			callback = function()
 				vim.highlight.on_yank({ higroup = "LspReferenceText", priority = 250 })
 			end,
 		})
 
-		autocmd({ "BufWinEnter", "FileChangedShellPost" }, {
+		ac({ "BufWinEnter", "FileChangedShellPost" }, {
 			pattern = "*",
-			group = augroup("AutoCwd"),
+			group = ag("AutoCwd"),
 			desc = "Automatically change local current directory.",
 			callback = function(opts)
 				if opts.file == "" or vim.bo[opts.buf].bt ~= "" then
@@ -33,17 +40,17 @@ return {
 				local current_win = vim.api.nvim_get_current_win()
 				vim.schedule(function()
 					if
-						not vim.api.nvim_buf_is_valid(opts.buf)
+						not vim.api.nvim_buf_is_loaded(opts.buf)
 						or not vim.api.nvim_win_is_valid(current_win)
 						or not vim.api.nvim_win_get_buf(current_win) == opts.buf
 					then
 						return
 					end
 					vim.api.nvim_win_call(current_win, function()
-						local current_dir = vim.fn.getcwd(0)
+						local cwd = vim.fn.getcwd(0)
 						local target_dir = require("directory").project_dir(opts.file) or vim.fs.dirname(opts.file)
 						local stat = target_dir and vim.uv.fs_stat(target_dir)
-						if stat and stat.type == "directory" and current_dir ~= target_dir then
+						if stat and stat.type == "directory" and cwd ~= target_dir then
 							vim.cmd.lcd(target_dir)
 						end
 					end)
@@ -52,11 +59,11 @@ return {
 		})
 
 		-- Check if we need to reload the file when it changed
-		autocmd({ "FocusGained", "TermClose", "TermLeave" }, { group = augroup("CheckTime"), command = "checktime" })
+		ac({ "FocusGained", "TermClose", "TermLeave" }, { group = ag("CheckTime"), command = "checktime" })
 
 		-- Auto create dir when saving a file, in case some intermediate directory does not exist
-		autocmd({ "BufWritePre" }, {
-			group = augroup("AutoCreateDir"),
+		ac({ "BufWritePre" }, {
+			group = ag("AutoCreateDir"),
 			callback = function(event)
 				if event.match:match("^%w%w+://") then
 					return
@@ -66,7 +73,7 @@ return {
 			end,
 		})
 
-		autocmd("BufReadPre", {
+		ac("BufReadPre", {
 			desc = "Set settings for large files.",
 			callback = function(opts)
 				vim.b.bigfile = false
@@ -88,7 +95,7 @@ return {
 				local function force_to_deattach()
 					for _, client in pairs(vim.lsp.get_clients({ bufnr = opts.buf })) do
 						if client.id > 0 then
-							autocmd("BufReadPost", {
+							ac("BufReadPost", {
 								buffer = opts.buf,
 								once = true,
 								callback = function()
@@ -122,9 +129,9 @@ return {
 			end,
 		})
 
-		autocmd({ "BufWinEnter", "WinEnter", "UIEnter" }, {
+		ac({ "BufWinEnter", "WinEnter", "UIEnter" }, {
 			desc = "Show cursorline and cursorcolumn in current window.",
-			group = augroup("AutoHlCursorLines"),
+			group = ag("AutoHlCursorLines"),
 			callback = function()
 				if vim.fn.mode():match("^[itRsS\x13]") then
 					return
@@ -140,9 +147,9 @@ return {
 			end,
 		})
 
-		autocmd("WinLeave", {
+		ac("WinLeave", {
 			desc = "Hide cursorline and cursorcolumn in other windows.",
-			group = augroup("AutoHlCursorLines"),
+			group = ag("AutoHlCursorLines"),
 			callback = function()
 				if vim.wo.cul then
 					vim.w._cul = true
@@ -155,10 +162,10 @@ return {
 			end,
 		})
 
-		autocmd("ModeChanged", {
+		ac("ModeChanged", {
 			desc = "Hide cursorline and cursorcolumn in insert mode.",
 			pattern = { "[itRss\x13]*:*", "*:[itRss\x13]*" },
-			group = augroup("AutoHlCursorLines"),
+			group = ag("AutoHlCursorLines"),
 			callback = function()
 				if vim.v.event.new_mode:match("^[itRss\x13]") then
 					if vim.wo.cul then

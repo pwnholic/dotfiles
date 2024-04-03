@@ -205,41 +205,23 @@ M.keys = function()
 	local harpoon = require("harpoon")
 	local function toggle(list) return function() harpoon.ui:toggle_quick_menu(harpoon:list(list), { title = "", ui_max_width = 80 }) end end
 	local function select(idx) return function() harpoon:list():select(idx) end end
-	-- stylua: ignore end
 
 	return {
-		{
-			"<A-a>",
-			function()
-				harpoon:list():append()
-			end,
-			desc = "Add to Mark",
-		},
-		{
-			"<Tab>",
-			function()
-				harpoon:list():next()
-			end,
-			desc = "Next Harpoon",
-		},
-		{
-			"<S-Tab>",
-			function()
-				harpoon:list():prev()
-			end,
-			desc = "Prev Harpoon",
-		},
-		{ "<space>1", select(1), desc = "Mark File 1" },
-		{ "<space>2", select(2), desc = "Mark File 2" },
-		{ "<space>3", select(3), desc = "Mark File 3" },
-		{ "<space>4", select(4), desc = "Mark File 4" },
-		{ "<space>5", select(5), desc = "Mark File 6" },
-		{ "<space>6", select(6), desc = "Mark File 6" },
-		{ "<space>7", select(7), desc = "Mark File 7" },
-		{ "<space>8", select(8), desc = "Mark File 8" },
-		{ "<space>9", select(9), desc = "Mark File 9" },
+		{ "<A-a>", function() harpoon:list():append() end, desc = "Add to Mark", },
+		{ "<Tab>", function() harpoon:list():next() end, desc = "Next Harpoon", },
+		{ "<S-Tab>", function() harpoon:list():prev() end, desc = "Prev Harpoon", },
+		{ "<leader>1", select(1), desc = "Mark File 1" },
+		{ "<leader>2", select(2), desc = "Mark File 2" },
+		{ "<leader>3", select(3), desc = "Mark File 3" },
+		{ "<leader>4", select(4), desc = "Mark File 4" },
+		{ "<leader>5", select(5), desc = "Mark File 6" },
+		{ "<leader>6", select(6), desc = "Mark File 6" },
+		{ "<leader>7", select(7), desc = "Mark File 7" },
+		{ "<leader>8", select(8), desc = "Mark File 8" },
+		{ "<leader>9", select(9), desc = "Mark File 9" },
 		{ "<A-space>", toggle("files"), desc = "Harpoon Files", mode = { "i", "n", "v" } },
-		{ "<leader>tt", toggle("terminals"), desc = "Harpoon Term List" },
+		{ [[<A-\>]], toggle("terminals"), desc = "Harpoon Term List" },
+	-- stylua: ignore end
 	}
 end
 return M

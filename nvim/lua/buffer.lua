@@ -1,4 +1,18 @@
-local function buffer_closer(cfg)
+local cfg = {
+	retirement_age_mins = 5, -- minutes after which an inactive buffer is closed
+	ignored_filetypes = { "lazy", "mason", "oil" }, -- list of filetypes to never close
+	notification_on_autoclose = true, -- list of filetypes to never close
+	ignore_alt_file = true, -- whether the alternate file is also going to be ignored
+	ignore_unsaved_changes_bufs = true, -- when false, will automatically write and then close buffers with unsaved changes
+	ignore_special_buf_types = true, -- ignore non-empty buftypes, e.g. terminal buffers
+	ignore_visible_bufs = true, -- ignore visible buffers (buffers open in a window, "a" in `:buffers`)
+	ignore_unloaded_bufs = false, -- session plugins often add buffers without unloading them
+	minimum_buffer_num = 1, -- minimum number of open buffers for auto-closing to become active
+	ignore_filename_pattern = "", -- ignore files matches this lua pattern (string.find)
+	delete_buffer_when_file_deleted = true,
+}
+
+local function buffer_closer()
 	local timer, checkingIntervalSecs = vim.uv.new_timer(), 30
 	timer:start(
 		cfg.retirement_age_mins * 60000,
@@ -103,22 +117,8 @@ local function buffer_closer(cfg)
 	end
 end
 
-local cfg = {
-	retirement_age_mins = 5, -- minutes after which an inactive buffer is closed
-	ignored_filetypes = { "lazy", "mason", "oil" }, -- list of filetypes to never close
-	notification_on_autoclose = true, -- list of filetypes to never close
-	ignore_alt_file = true, -- whether the alternate file is also going to be ignored
-	ignore_unsaved_changes_bufs = true, -- when false, will automatically write and then close buffers with unsaved changes
-	ignore_special_buf_types = true, -- ignore non-empty buftypes, e.g. terminal buffers
-	ignore_visible_bufs = true, -- ignore visible buffers (buffers open in a window, "a" in `:buffers`)
-	ignore_unloaded_bufs = false, -- session plugins often add buffers without unloading them
-	minimum_buffer_num = 1, -- minimum number of open buffers for auto-closing to become active
-	ignore_filename_pattern = "", -- ignore files matches this lua pattern (string.find)
-	delete_buffer_when_file_deleted = true,
-}
-
 return {
 	setup = function()
-		buffer_closer(cfg)
+		buffer_closer()
 	end,
 }

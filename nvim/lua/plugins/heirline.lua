@@ -708,11 +708,6 @@ M.config = function()
 	}
 
 	local stc_get_lnum = {
-		-- init = mode_cinit,
-		-- static = { mode_colors = mode_colors },
-		-- hl = function(self)
-		-- 	return { fg = self.mode_color, bg = c.none, bold = false }
-		-- end,
 		provider = "%=%4{v:virtnum ? '' : &nu ? (&rnu && v:relnum ? v:relnum : v:lnum) . ' ' : ''}",
 		on_click = {
 			name = "sc_linenumber_click",
@@ -782,19 +777,18 @@ M.config = function()
 		}, args.buf)
 	end
 
-	local buflist_cache = {}
+	local harpoon_items = {}
 	vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
 		callback = function()
 			vim.schedule(function()
-				local harpoon = require("harpoon")
-				local items = harpoon:list():display()
+				local items = require("harpoon"):list():display()
 				for i, path in ipairs(items) do
-					buflist_cache[i] = path
+					harpoon_items[i] = path
 				end
-				for i = #items + 1, #buflist_cache do
-					buflist_cache[i] = nil
+				for i = #items + 1, #harpoon_items do
+					harpoon_items[i] = nil
 				end
-				if #buflist_cache > 3 then
+				if #harpoon_items > 3 then
 					vim.o.showtabline = 2 -- always
 				else
 					vim.o.showtabline = 0 -- only when #tabpages > 1
@@ -805,13 +799,12 @@ M.config = function()
 
 	local harpoon = {
 		condition = function()
-			return package.loaded.harpoon and require("harpoon"):list():length() > 1
+			return package.loaded.harpoon and #harpoon_items > 1 and require("harpoon.config").DEFAULT_LIST == "files"
 		end,
 		space,
 		static = { mode_colors = mode_colors },
 		init = function(self)
 			local children = {}
-			local items = require("harpoon"):list():display()
 			local bufnr = vim.api.nvim_get_current_buf()
 			if not vim.api.nvim_buf_is_valid(bufnr) then
 				return {}
@@ -821,7 +814,7 @@ M.config = function()
 			self.mode = vim.fn.mode()
 			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
 
-			for i, path in ipairs(items) do
+			for i, path in ipairs(harpoon_items) do
 				local child = {
 					{
 						provider = function()

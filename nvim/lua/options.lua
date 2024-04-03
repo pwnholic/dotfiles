@@ -77,6 +77,16 @@ opt.autoindent = true
 
 opt.formatoptions = "jcroqlnt" -- tcqj
 
+local function _rshada()
+	vim.cmd.set("shada&")
+	vim.cmd.rshada()
+	return true
+end
+
+opt.shada = ""
+vim.defer_fn(_rshada, 100)
+vim.api.nvim_create_autocmd("BufReadPre", { once = true, callback = _rshada })
+
 wo.cursorline = true
 wo.cursorlineopt = "both"
 wo.colorcolumn = "80,120"
