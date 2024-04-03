@@ -22,6 +22,9 @@ opt.sessionoptions = {
 	"folds",
 }
 
+opt.ignorecase = true
+opt.smartcase = true
+
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.smoothscroll = true
@@ -77,6 +80,14 @@ opt.autoindent = true
 
 opt.formatoptions = "jcroqlnt" -- tcqj
 
+-- Cursor shape
+opt.gcr = {
+	"i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor",
+	"n-v:block-Curosr/lCursor",
+	"o:hor50-Curosr/lCursor",
+	"r-cr:hor20-Curosr/lCursor",
+}
+
 local function _rshada()
 	vim.cmd.set("shada&")
 	vim.cmd.rshada()
@@ -98,10 +109,8 @@ wo.signcolumn = "yes:1"
 
 o.timeout = true
 o.timeoutlen = 300
-o.smartcase = true
 o.shell = "/usr/bin/zsh"
 o.mousescroll = "ver:1,hor:6"
-o.ignorecase = true
 o.inccommand = "nosplit"
 o.completeopt = "menu,menuone,noinsert"
 o.confirm = true
