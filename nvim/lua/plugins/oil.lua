@@ -246,7 +246,7 @@ M.config = function()
 					vim.api.nvim_win_is_valid(win)
 					and require("oil.util").is_oil_bufnr(vim.api.nvim_win_get_buf(win))
 				then
-					vim.w[win].oil_opened = true
+					vim.g[win].oil_opened = true
 				end
 			end)
 		end,
@@ -390,7 +390,7 @@ M.config = function()
 						return vim.fn.winnr("#")
 					end)
 					oil.close()
-					if vim.api.nvim_win_is_valid(win) and vim.w[win].oil_opened and alt ~= 0 then
+					if vim.api.nvim_win_is_valid(win) and vim.g[win].oil_opened and alt ~= 0 then
 						vim.api.nvim_win_close(win, false)
 					end
 				end,

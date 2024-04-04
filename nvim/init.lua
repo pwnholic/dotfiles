@@ -1,10 +1,15 @@
 vim.loader.enable()
 
-local lazy_path, config_path = vim.fn.stdpath("data") .. "/lazy/lazy.nvim", vim.fn.stdpath("config") --[[@as string]]
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
+local lazy_path, config_path = vim.fn.stdpath("data") .. "/lazy/lazy.nvim", vim.fn.stdpath("config") --[[@as string]]
 vim.opt.rtp:prepend(lazy_path)
 
-require("options")
+vim.env.PATH = vim.fn.stdpath("data")
+	.. "/mason/bin"
+	.. (vim.uv.os_uname().sysname == "Windows_NT" and ";" or ":")
+	.. vim.env.PATH
 
 if not vim.uv.fs_stat(lazy_path) then
 	vim.fn.system({
@@ -18,53 +23,17 @@ if not vim.uv.fs_stat(lazy_path) then
 end
 
 require("lazy").setup({
+	{ name = "options", main = "options", dir = config_path, event = "VimEnter", config = true },
+	{ name = "autocmds", main = "autocmds", dir = config_path, event = "VeryLazy", config = true },
+	{ name = "keymaps", main = "keymaps", dir = config_path, event = "VeryLazy", config = true },
+	{ name = "tmux", main = "tmux", dir = config_path, event = "BufRead", config = true },
+	{ name = "buffer", main = "buffer", dir = config_path, event = "BufRead", config = true },
 	{ import = "plugins" },
-	{
-		name = "autocmds",
-		main = "autocmds",
-		dir = config_path,
-		event = "VeryLazy",
-		config = true,
-	},
-	{
-		name = "keymaps",
-		main = "keymaps",
-		dir = config_path,
-		event = "VeryLazy",
-		config = true,
-	},
-	{
-		name = "tmux",
-		main = "tmux",
-		dir = config_path,
-		event = "BufRead",
-		config = true,
-	},
-	{
-		name = "buffer",
-		main = "buffer",
-		dir = config_path,
-		event = "BufRead",
-		config = true,
-	},
 }, {
-	defaults = {
-		lazy = true,
-		version = "*",
-	},
-	install = {
-		missing = true,
-		colorscheme = { "tokyonight" },
-	},
-	change_detection = {
-		enabled = true,
-		notify = false,
-	},
-	checker = {
-		enabled = true,
-		notify = false,
-		frequency = (3600 * 24) * 7,
-	},
+	defaults = { lazy = true, version = "*" },
+	install = { missing = true, colorscheme = { "tokyonight" } },
+	change_detection = { enabled = true, notify = false },
+	checker = { enabled = true, notify = false, frequency = (3600 * 24) * 7 },
 	diff = { cmd = "diffview.nvim" },
 	ui = { border = "single" },
 	performance = {
@@ -84,8 +53,3 @@ require("lazy").setup({
 		},
 	},
 })
-
-vim.env.PATH = vim.fn.stdpath("data")
-	.. "/mason/bin"
-	.. (vim.uv.os_uname().sysname == "Windows_NT" and ";" or ":")
-	.. vim.env.PATH

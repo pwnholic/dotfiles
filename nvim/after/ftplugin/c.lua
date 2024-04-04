@@ -3,6 +3,7 @@ vim.opt_local.commentstring = "// %s"
 vim.opt_local.path = { "/usr/include/**", "/usr/local/include/**" }
 
 local map = vim.keymap.set
+
 map("n", "<leader>js", vim.cmd.ClangdSwitchSourceHeader, { desc = "Switch Source Header" })
 map("n", "<leader>ja", vim.cmd.ClangdAST, { desc = "AST Grep" })
 map("n", "<leader>ji", vim.cmd.ClangdSymbolInfo, { desc = "Symbol Info" })

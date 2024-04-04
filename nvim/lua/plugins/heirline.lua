@@ -61,12 +61,11 @@ M.config = function()
 	vim.api.nvim_create_autocmd("ModeChanged", {
 		callback = function()
 			local mode_clr = mode_colors[vim.fn.mode():sub(1, 1)]
-			vim.api.nvim_set_hl(
-				0,
-				"Winbar",
-				{ underline = true, sp = mode_clr, bg = colors.bg_statusline, italic = true }
-			)
+            -- stylua: ignore start
+			vim.api.nvim_set_hl( 0, "Winbar", { underline = true, sp = mode_clr, bg = colors.bg_statusline, italic = true })
 			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = mode_clr, bg = colors.none, bold = true })
+			vim.api.nvim_set_hl(0, "TermCursor", { bg = mode_clr })
+			-- stylua: ignore end
 		end,
 	})
 
@@ -245,6 +244,7 @@ M.config = function()
 		init = function(self)
 			self.mode = vim.fn.mode()
 			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
+
 			self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
 			self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
 			self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
@@ -332,14 +332,12 @@ M.config = function()
 	}
 
 	local plugins_update = {
-		condition = function()
-			return require("lazy.status").has_updates()
-		end,
+		condition = require("lazy.status").has_updates,
 		init = mode_cinit,
 		static = { mode_colors = mode_colors },
 		update = {
 			"User",
-			pattern = "LazyCheck",
+			pattern = "VeryLazy",
 			callback = vim.schedule_wrap(function()
 				vim.cmd.redrawstatus()
 			end),
@@ -364,6 +362,7 @@ M.config = function()
 		init = function(self)
 			self.mode = vim.fn.mode()
 			self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
+
 			local server_name = vim.lsp.get_clients({ bufnr = 0 })[1].name
 			if server_name ~= "" then
 				self.lsp_attached = true

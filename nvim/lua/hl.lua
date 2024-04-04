@@ -11,6 +11,8 @@ return function(hl, c, util)
 	hl.CursorLineNr = { fg = c.cyan, bg = c.none, bold = true }
 	hl.FloatBorder = { link = "Comment" }
 
+	hl.TermCursor = { bg = c.green }
+
 	hl.WhichKey = { fg = c.cyan, bg = c.none, bold = true }
 	hl.WhichKeyGroup = { fg = c.orange, bg = c.none, bold = true }
 
