@@ -13,10 +13,10 @@ local buf_conf = {
 }
 
 local function buffer_autocloser()
-	local timer, checkingIntervalSecs = vim.uv.new_timer(), 30
+	local timer, checking_interval_secs = vim.uv.new_timer(), 30
 	timer:start(
 		buf_conf.retirement_age_mins * 60000,
-		checkingIntervalSecs * 1000,
+		checking_interval_secs * 1000,
 		-- schedule_wrap required for timers
 		vim.schedule_wrap(function()
 			local open_buffers = vim.fn.getbufinfo({ buflisted = 1 }) -- https://neovim.io/doc/user/builtin.html#getbufinfo
@@ -117,8 +117,35 @@ local function buffer_autocloser()
 	end
 end
 
+local function buffer_matches(patterns, bufnr)
+	bufnr = bufnr or 0
+
+	local buf_matchers = {
+		filetype = function()
+			return vim.bo[bufnr].filetype
+		end,
+		buftype = function()
+			return vim.bo[bufnr].buftype
+		end,
+		bufname = function()
+			return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+		end,
+	}
+
+	for kind, pattern_list in pairs(patterns) do
+		for _, pattern in ipairs(pattern_list) do
+			if buf_matchers[kind](bufnr):find(pattern) then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
 return {
 	setup = function()
 		buffer_autocloser()
 	end,
+	buffer_matches = buffer_matches,
 }

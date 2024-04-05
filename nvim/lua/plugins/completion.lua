@@ -134,11 +134,12 @@ return {
 						cmp.config.compare.order,
 					},
 				},
-				performance = { debounce = 80, throttle = 50, fetching_timeout = 200 },
 				enabled = function()
 					if
-						vim.tbl_contains({ "prompt" }, vim.bo.buftype)
-						or vim.tbl_contains({ "oil", "noice" }, vim.bo.filetype)
+						require("buffer").buffer_matches({
+							buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
+							filetype = { "oil", "noice" },
+						})
 						or vim.fn.reg_recording() ~= ""
 						or vim.fn.reg_executing() ~= ""
 						or require("cmp.config.context").in_treesitter_capture("comment")
@@ -153,11 +154,6 @@ return {
 						require("luasnip").lsp_expand(args.body)
 					end,
 				},
-				-- matching = {
-				-- 	disallow_fuzzy_matching = false,
-				-- 	disallow_partial_matching = false,
-				-- 	disallow_prefix_unmatching = false,
-				-- },
 				window = {
 					completion = cmp.config.window.bordered({
 						winhighlight = "CmpMenu:CmpMenu,FloatBorder:Comment,CursorLine:PmenuSel",
