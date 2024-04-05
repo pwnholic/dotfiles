@@ -31,7 +31,7 @@ return {
 		opt.ignorecase = true
 		opt.smartcase = true
 
-		opt.scrolloff = 8
+		opt.scrolloff = 10
 		opt.sidescrolloff = 8
 		opt.smoothscroll = true
 
@@ -42,7 +42,7 @@ return {
 		opt.cmdheight = 0
 		opt.laststatus = 3
 
-		opt.textwidth = 80
+		-- opt.textwidth = 80
 		opt.winminwidth = 5
 		opt.wrap = false
 
@@ -89,9 +89,9 @@ return {
 		-- Cursor shape
 		opt.guicursor = {
 			"i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor",
-			"n-v:block-TermCursor",
-			"o:hor50-TermCursor",
-			"r-cr:hor20-TermCursor",
+			"n-v:block-Cursor/lCursor",
+			"o:hor50-Cursor/lCursor",
+			"r-cr:hor20-Cursor/lCursor",
 		}
 
 		local function _rshada()

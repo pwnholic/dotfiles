@@ -594,7 +594,7 @@ M.config = function()
 	map("n", "<leader>fr", fzfmap("registers"), { desc = "Registers" })
 	map("n", "<leader>fs", fzfmap("spell_suggest"), { desc = "Spell Suggest" })
 	map("n", "<leader>fT", fzfmap("awesome_colorschemes"), { desc = "Awesome Colorschemes" })
-	map("n", "<leader>fF", "<cmd>FzfLua resume<cr>", { desc = "Find Resume" })
+	map("n", "<leader>fF", fzfmap("resume"), { desc = "Find Resume" })
 
 	map("n", "<leader>fg", fzfmap("git_files"), { desc = "Git Files" })
 	map("n", "<leader>hfs", fzfmap("git_status"), { desc = "`git status`" })

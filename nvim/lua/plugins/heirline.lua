@@ -65,6 +65,7 @@ M.config = function()
 			vim.api.nvim_set_hl( 0, "Winbar", { underline = true, sp = mode_clr, bg = colors.bg_statusline, italic = true })
 			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = mode_clr, bg = colors.none, bold = true })
 			vim.api.nvim_set_hl(0, "TermCursor", { bg = mode_clr })
+			vim.api.nvim_set_hl(0, "Cursor", { bg = mode_clr })
 			-- stylua: ignore end
 		end,
 	})

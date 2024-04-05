@@ -107,11 +107,4 @@ return function(hl, c, util)
 	hl["@string_scalar"] = { fg = c.yellow, bold = true } -- yaml
 	hl["@pipe_table_header"] = { fg = c.green, bold = true }
 	hl["@markup.link.label"] = { fg = c.cyan1, italic = true, underline = true, sp = c.yellow1 }
-
-	hl["@comment.todo"] = { bg = c.cyan1, fg = c.black, italic = true, underline = true, bold = true }
-	hl["@comment.note"] = { bg = c.hint, fg = c.black, italic = true, underline = true, bold = true }
-	hl["@comment.error"] = { bg = c.error, fg = c.black, italic = true, underline = true, bold = true }
-	hl["@comment.hint"] = { bg = c.hint, fg = c.black, italic = true, underline = true, bold = true }
-	hl["@comment.info"] = { bg = c.blue2, fg = c.black, italic = true, underline = true, bold = true }
-	hl["@comment.warning"] = { bg = c.yellow, fg = c.black, italic = true, underline = true, bold = true }
 end

@@ -12,7 +12,7 @@ M.config = function()
 				return vim.uv.cwd()
 			end,
 		},
-		default = {
+		cmd = {
 			display = function(list_item)
 				if string.len(list_item.value) > 75 then
 					return vim.fn.pathshorten(vim.fn.fnamemodify(list_item.value, ":~:."), 3)
@@ -207,7 +207,7 @@ M.keys = function()
 	local function select(idx) return function() harpoon:list():select(idx) end end
 
 	return {
-		{ "<A-a>", function() harpoon:list():append() end, desc = "Add to Mark", },
+		{ "<A-a>", function() harpoon:list():add() end, desc = "Add to Mark", },
 		{ "<Tab>", function() harpoon:list():next() end, desc = "Next Harpoon", },
 		{ "<S-Tab>", function() harpoon:list():prev() end, desc = "Prev Harpoon", },
 		{ "<leader>1", select(1), desc = "Mark File 1" },
