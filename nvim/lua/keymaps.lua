@@ -21,8 +21,8 @@ return {
 		-- Resize window using <ctrl> arrow keys
 		map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height", silent = true })
 		map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height", silent = true })
-		map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width", silent = true })
-		map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width", silent = true })
+		map("n", "<C-Left>", "<cmd>vertical resize +2<cr>", { desc = "Decrease window width", silent = true })
+		map("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Increase window width", silent = true })
 
 		-- Move Lines
 		map("n", "<A-u>", "<cmd>m .-2<cr>==", { desc = "Move up", silent = true })
@@ -91,7 +91,7 @@ return {
 		map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
 		map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })
 		map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
-		map("n", "<leader><tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+		map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 		map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 		map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 		map("n", "<leader><tab>1", "1gt", { desc = "Go to tab 1" })
@@ -201,5 +201,17 @@ return {
 		map( "n", "cQ", [[:\<C-ucall v:lua.SetupMultipleCursors()<CR>#``qz]], { desc = "Inititiate with macros (in backwards direction)" })
 		map( "x", "cQ", [[":\<C-u>call v:lua.SetupMultipleCursors()<CR>gv" . substitute(g:mc, '/', '?', 'g') . "``qz"]], { desc = "Inititiate with macros (in backwards direction)", expr = true })
 		-- stylua: ignore end
+
+		local enabled = true
+		map("n", "<leader>uS", function()
+			enabled = not enabled
+			if enabled then
+				vim.notify("Change to English", 2, { title = "Spellfile" })
+				vim.o.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+			else
+				vim.notify("Change to Indonesian", 2, { title = "Spellfile" })
+				vim.o.spellfile = vim.fn.stdpath("config") .. "/spell/id.utf-8.add"
+			end
+		end, { desc = "Toggle Spellfile" })
 	end,
 }

@@ -113,7 +113,7 @@ return {
 				lsp = {
 					signature = {
 						enabled = true,
-						auto_open = { enabled = true, trigger = false, luasnip = true, throttle = 100 },
+						auto_open = { enabled = true, trigger = true, luasnip = true, throttle = 100 },
 						view = "hover",
 						opts = {
 							win_options = {

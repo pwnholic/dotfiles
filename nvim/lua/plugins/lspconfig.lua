@@ -2,7 +2,7 @@ return {
 	{
 		"stevearc/conform.nvim",
 		event = { "BufWritePre" },
-		kyes = {
+		keys = {
 			"<leader>uf",
 			{
 				"=",
@@ -35,7 +35,6 @@ return {
 				return false
 			end,
 			notify_on_error = true,
-			formatters = { injected = { options = { lang_to_formatters = { html = {}, json = { "jq" } } } } },
 			formatters_by_ft = {
 				lua = { "stylua" },
 				go = { "goimports" },

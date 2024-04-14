@@ -72,9 +72,10 @@ return {
 			opt.grepformat = "%f:%l:%c:%m,%f:%l:%m"
 		end
 
-		-- yang di prioritaskan adalah file pertama yaitu id.utf-8.add
-		opt.spellfile = vim.fn.stdpath("config") .. "/spell/id.utf-8.add"
-		-- opt.spellfile = vim.fn.stdpath("config") .. "/spell/en_us.utf-8.add"
+		opt.spellfile = {
+			vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
+			vim.fn.stdpath("config") .. "/spell/id.utf-8.add",
+		}
 		opt.spelllang = { "en_us", "id" }
 
 		opt.tabstop = 4
@@ -124,8 +125,7 @@ return {
 		o.infercase = true
 		o.pumblend = 0
 		o.pumheight = 10
-		o.viewoptions = ""
-		o.virtualedit = "onemore,block"
+		o.virtualedit = "block"
 		o.whichwrap = "b,h,l"
 
 		g.loaded_fzf_file_explorer = 1

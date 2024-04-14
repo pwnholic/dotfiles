@@ -757,8 +757,9 @@ M.config = function()
 	local disable_winbar_cb = function(args)
 		return conditions.buffer_matches({
 			bufname = { "sh" },
-			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
+			buftype = { "nofile", "terminal", "prompt", "help", "quickfix", "vim" },
 			filetype = {
+				"vim",
 				"^harpoon$",
 				"^dashboard$",
 				"^lazy$",
@@ -877,10 +878,10 @@ M.config = function()
 			code_ruler,
 		},
 		statuscolumn = {
-			condition = buf_matches,
 			init = function(self)
 				self.signs = {}
 			end,
+			condition = buf_matches,
 			static = stc_get_extmarks,
 			stc_get_signs,
 			align,

@@ -2,7 +2,7 @@ return {
 	{
 		"hrsh7th/nvim-cmp",
 		lazy = true,
-		kyes = { "<leader>uk", "<leader>ue" },
+		keys = { "<leader>uk", "<leader>ue" },
 		config = function()
 			local luasnip, cmp, fmt, cmp_core = require("luasnip"), require("cmp"), string.format, require("cmp.core")
 			local _cmp_on_change, last_changed, cmdline = cmp_core.on_change, 0, cmp.setup.cmdline
@@ -48,38 +48,43 @@ return {
 			end
 
 			local function follow_indent_line(fb)
-				local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
-				if row == 1 and col == 0 then
+				local cursor_row, cursor_col = table.unpack(vim.api.nvim_win_get_cursor(0))
+				if cursor_row == 1 and cursor_col == 0 then
 					return
 				end
 				cmp.close()
-				local current_line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1]
-				local ok, get_indent = pcall(ts_indent.get_indent, row)
+				local current_line = vim.api.nvim_buf_get_lines(0, cursor_row - 1, cursor_row, true)[1]
+				local ok, get_indent = pcall(ts_indent.get_indent, cursor_row)
 				if not ok then
 					get_indent = 0
 				end
-				if vim.fn.strcharpart(current_line, get_indent - 1, col - get_indent + 1):gsub("%s+", "") == "" then
-					if get_indent > 0 and col > get_indent then
+				if
+					vim.fn.strcharpart(current_line, get_indent - 1, cursor_col - get_indent + 1):gsub("%s+", "") == ""
+				then
+					if get_indent > 0 and cursor_col > get_indent then
 						local new_line = vim.fn.strcharpart(current_line, 0, get_indent)
-							.. vim.fn.strcharpart(current_line, col)
-						vim.api.nvim_buf_set_lines(0, row - 1, row, true, { new_line })
-						vim.api.nvim_win_set_cursor(0, { row, math.min(get_indent or 0, vim.fn.strcharlen(new_line)) })
-					elseif row > 1 and (get_indent > 0 and col + 1 > get_indent) then
-						local prev_line = vim.api.nvim_buf_get_lines(0, row - 2, row - 1, true)[1]
+							.. vim.fn.strcharpart(current_line, cursor_col)
+						vim.api.nvim_buf_set_lines(0, cursor_row - 1, cursor_row, true, { new_line })
+						vim.api.nvim_win_set_cursor(
+							0,
+							{ cursor_row, math.min(get_indent or 0, vim.fn.strcharlen(new_line)) }
+						)
+					elseif cursor_row > 1 and (get_indent > 0 and cursor_col + 1 > get_indent) then
+						local prev_line = vim.api.nvim_buf_get_lines(0, cursor_row - 2, cursor_row - 1, true)[1]
 						if vim.trim(prev_line) == "" then
-							local prev_indent = ts_indent.get_indent(row - 1) or 0
+							local prev_indent = ts_indent.get_indent(cursor_row - 1) or 0
 							local new_line = vim.fn.strcharpart(current_line, 0, prev_indent)
-								.. vim.fn.strcharpart(current_line, col)
-							vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
+								.. vim.fn.strcharpart(current_line, cursor_col)
+							vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
 							vim.api.nvim_win_set_cursor(
 								0,
-								{ row - 1, math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))) }
+								{ cursor_row - 1, math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))) }
 							)
 						else
 							local len = vim.fn.strcharlen(prev_line)
-							local new_line = prev_line .. vim.fn.strcharpart(current_line, col)
-							vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
-							vim.api.nvim_win_set_cursor(0, { row - 1, math.max(0, len) })
+							local new_line = prev_line .. vim.fn.strcharpart(current_line, cursor_col)
+							vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
+							vim.api.nvim_win_set_cursor(0, { cursor_row - 1, math.max(0, len) })
 						end
 					else
 						fb()
@@ -89,21 +94,21 @@ return {
 				end
 			end
 
-			local function clamp_item(field, min_width, max_width, items)
-				if not items[field] or not type(items) == "string" then
+			local function clamp_items(field, min_width, max_width, cmp_items)
+				if not cmp_items[field] or not type(cmp_items) == "string" then
 					return
 				end
 				if min_width > max_width then
 					min_width, max_width = max_width, min_width
 				end
-				local field_str = items[field]
+				local field_str = cmp_items[field]
 				local field_width = vim.fn.strdisplaywidth(field_str)
 				if field_width > max_width then
 					local former_width = math.floor(max_width * 0.6)
 					local latter_width = math.max(0, max_width - former_width - 1)
-					items[field] = fmt("%s...%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
+					cmp_items[field] = fmt("%s...%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
 				elseif field_width < min_width then
-					items[field] = fmt("%-" .. min_width .. "s", field_str)
+					cmp_items[field] = fmt("%-" .. min_width .. "s", field_str)
 				end
 			end
 
@@ -173,9 +178,9 @@ return {
 							end
 						end,
 						["i"] = function(fb)
-							local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
-							local line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1]
-							local get_indent = ts_indent.get_indent(row)
+							local cursor_row, cursor_col = table.unpack(vim.api.nvim_win_get_cursor(0))
+							local current_line = vim.api.nvim_buf_get_lines(0, cursor_row - 1, cursor_row, true)[1]
+							local get_indent = ts_indent.get_indent(cursor_row)
 
 							if cmp.visible() then
 								cmp.select_next_item()
@@ -183,15 +188,17 @@ return {
 								luasnip.expand_or_jump()
 							elseif has_words_before() then
 								cmp.complete()
-							elseif col < get_indent and line:sub(1, col):gsub("^%s+", "") == "" then
+							elseif
+								cursor_col < get_indent and current_line:sub(1, cursor_col):gsub("^%s+", "") == ""
+							then
 								vim.api.nvim_buf_set_lines(
 									0,
-									row - 1,
-									row,
+									cursor_row - 1,
+									cursor_row,
 									true,
-									{ string.rep(" ", get_indent or 0) .. line:sub(col) }
+									{ string.rep(" ", get_indent or 0) .. current_line:sub(cursor_col) }
 								)
-								vim.api.nvim_win_set_cursor(0, { row, math.max(0, get_indent) })
+								vim.api.nvim_win_set_cursor(0, { cursor_row, math.max(0, get_indent) })
 								local client = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })[1]
 								local ctx = {}
 								ctx.client_id = client.id
@@ -346,26 +353,26 @@ return {
 							item.kind = icons.Folder
 							item.kind_hl_group = "Directory"
 						elseif item.kind == "File" then
-							local icon, hl = require("nvim-web-devicons").get_icon(
+							local icon, hl_group = require("nvim-web-devicons").get_icon(
 								vim.fs.basename(item.word),
 								vim.fn.fnamemodify(item.word, ":e"),
 								{ default = true }
 							)
 							item.kind = icon or icons.File
-							item.kind_hl_group = hl or "CmpItemKindFile"
+							item.kind_hl_group = hl_group or "CmpItemKindFile"
 						else
 							item.dup = ({ rg = 1, async_path = 1, nvim_lsp = 0, luasnip = 1 })[entry.source.name] or 0
 							item.menu = item.kind
 							item.menu_hl_group = "CmpItemKind" .. item.kind
 							item.kind = vim.fn.strcharpart(icons[item.kind] or "", 0, 2)
 						end
-						clamp_item(
+						clamp_items(
 							"abbr",
 							vim.go.pw,
 							math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
 							item
 						)
-						clamp_item("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), item)
+						clamp_items("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), item)
 						return item
 					end,
 				},
@@ -376,7 +383,7 @@ return {
 				formatting = {
 					fields = { cmp.ItemField.Abbr },
 					format = function(_, cmp_item)
-						clamp_item(
+						clamp_items(
 							"abbr",
 							vim.go.pw,
 							math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
@@ -392,7 +399,7 @@ return {
 				formatting = {
 					fields = { cmp.ItemField.Abbr },
 					format = function(_, cmp_item)
-						clamp_item(
+						clamp_items(
 							"abbr",
 							vim.go.pw,
 							math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
@@ -408,7 +415,7 @@ return {
 				formatting = {
 					fields = { cmp.ItemField.Abbr },
 					format = function(_, cmp_item)
-						clamp_item(
+						clamp_items(
 							"abbr",
 							vim.go.pw,
 							math.max(5, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)),
@@ -454,7 +461,6 @@ return {
 					}))
 				end
 			end, { desc = "Toggle Documentation" })
-
 			cmp.setup(cmp_opts)
 		end,
 	},
@@ -478,7 +484,6 @@ return {
 		config = function()
 			local ls = require("luasnip")
 			local ls_type = require("luasnip.util.types")
-			local ls_util = require("luasnip.util.util")
 			ls.setup({
 				region_check_events = "CursorMoved,CursorMovedI",
 				delete_check_events = "TextChanged,TextChangedI",
@@ -494,60 +499,6 @@ return {
 						unvisited = { virt_text = { { "│", "Comment" } }, virt_text_pos = "inline" },
 					},
 				},
-				parser_nested_assembler = function(_, snippet)
-					local select = function(snip, no_move)
-						snip.parent:enter_node(snip.indx)
-						-- upon deletion, extmarks of inner nodes should shift to end of
-						-- placeholder-text.
-						for _, node in ipairs(snip.nodes) do
-							node:set_mark_rgrav(true, true)
-						end
-						-- SELECT all text inside the snippet.
-						if not no_move then
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-							local pos_begin, pos_end = snip.mark:pos_begin_end()
-							ls_util.normal_move_on(pos_begin)
-							vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("v", true, false, true), "n", true)
-							ls_util.normal_move_before(pos_end)
-							vim.api.nvim_feedkeys(
-								vim.api.nvim_replace_termcodes("o<C-G>", true, false, true),
-								"n",
-								true
-							)
-						end
-					end
-					function snippet:jump_into(dir, no_move)
-						if self.active then
-							-- inside snippet, but not selected.
-							if dir == 1 then
-								self:input_leave()
-								return self.next:jump_into(dir, no_move)
-							else
-								select(self, no_move)
-								return self
-							end
-						else
-							-- jumping in from outside snippet.
-							self:input_enter()
-							if dir == 1 then
-								select(self, no_move)
-								return self
-							else
-								return self.inner_last:jump_into(dir, no_move)
-							end
-						end
-					end
-					-- this is called only if the snippet is currently selected.
-					function snippet:jump_from(dir, no_move)
-						if dir == 1 then
-							return self.inner_first:jump_into(dir, no_move)
-						else
-							self:input_leave()
-							return self.prev:jump_into(dir, no_move)
-						end
-					end
-					return snippet
-				end,
 			})
 			vim.api.nvim_create_autocmd("InsertLeave", {
 				group = vim.api.nvim_create_augroup("Unlink_Snippet", { clear = true }),
