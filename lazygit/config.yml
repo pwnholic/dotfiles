@@ -14,5 +14,23 @@ gui:
       - bold
     unstagedChangesColor:
       - yellow
-  border: rounded
-  nerdFontsVersion: "3"
+  border: 'single'
+refresher:
+  refreshInterval: 1
+update:
+  method: never
+promptToReturnFromSubprocess: false
+notARepository: 'skip'
+keybinding:
+  universal:
+    gotoTop: 'g'
+    gotoBottom: 'G'
+  commits:
+    renameCommit: 'A'
+    renameCommitWithEditor: 'e'
+    viewResetOptions: 'r'
+    squashAboveCommits: 'S'
+    amendToCommit: 'a'
+  stash:
+    popStash: 'o'
+    renameStash: 'i'
