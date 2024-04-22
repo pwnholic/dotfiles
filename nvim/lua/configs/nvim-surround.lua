@@ -1,0 +1,35 @@
+local M = {}
+
+function M.setup()
+	require("nvim-surround").setup({
+		keymaps = {
+			insert = "<C-g>s",
+			insert_line = "<C-g>S",
+			normal = "ys",
+			normal_cur = "yss",
+			normal_line = "yS",
+			normal_cur_line = "ySS",
+			visual = "S",
+			visual_line = "gS",
+			delete = "ds",
+			change = "cs",
+			change_line = "cS",
+		},
+	})
+end
+
+M.keys = {
+	{ "<C-g>s", mode = "i" },
+	{ "<C-g>S", mode = "i" },
+	{ "S", mode = "x" },
+	{ "gS", mode = "x" },
+	"ys",
+	"yss",
+	"yS",
+	"ySS",
+	"ds",
+	"cs",
+	"cS",
+}
+
+return M

@@ -14,12 +14,17 @@ if ok then
 		comparators = {
 			priority_weight = 100,
 			comparators = {
-				function(lhs, rhs)
-					return lhs:get_kind() > rhs:get_kind()
-				end,
 				cmp.config.compare.offset,
 				cmp.config.compare.exact,
-				require("clangd_extensions.cmp_scores"),
+				function(lhs, rhs)
+					local diff
+					if lhs.completion_item.score and rhs.completion_item.score then
+						diff = (rhs.completion_item.score * rhs.score) - (lhs.completion_item.score * lhs.score)
+					else
+						diff = rhs.score - lhs.score
+					end
+					return (diff < 0)
+				end,
 				function(lhs, rhs)
 					lhs:get_kind()
 					local _, lhs_under = lhs.completion_item.label:find("^_+")

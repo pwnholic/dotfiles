@@ -17,14 +17,9 @@
 (pipe_table_header (pipe_table_cell) @pipe_table_header)
 
 ; Block quotes
-((block_quote_marker) @block_quote_marker (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
-((block_continuation) @block_quote_marker (#eq? @block_quote_marker "> ") (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
-((block_continuation) @block_quote_marker (#eq? @block_quote_marker ">") (#set! conceal "▐"))
-(block_quote (paragraph) @text.literal)
+;((block_quote_marker) @block_quote_marker (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
+;((block_continuation) @block_quote_marker (#eq? @block_quote_marker "> ") (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
+;((block_continuation) @block_quote_marker (#eq? @block_quote_marker ">") (#set! conceal "▐"))
+;(block_quote (paragraph) @text.literal)
 
-; ((atx_h1_marker) @markup.heading.1.markdown (#set! conceal "󰉫 "))
-; ((atx_h2_marker) @markup.heading.2.markdown (#set! conceal "󰉬 "))
-; ((atx_h3_marker) @markup.heading.3.markdown (#set! conceal "󰉭 "))
-; ((atx_h4_marker) @markup.heading.4.markdown (#set! conceal "󰉮 "))
-; ((atx_h5_marker) @markup.heading.5.markdown (#set! conceal "󰉯 "))
-; ((atx_h6_marker) @markup.heading.6.markdown (#set! conceal "󰉰 "))
+
