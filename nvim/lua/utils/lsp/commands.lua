@@ -567,7 +567,7 @@ local subcommands = {
 			end,
 			opts = { "namespace", ["bufnr"] = subcommand_opt_vals.bufs },
 			fn_override = function(...)
-				vim.notify(vim.inspect(vim.diagnostic.is_disabled(...)))
+				vim.notify(vim.inspect(not vim.diagnostic.is_enabled(...)))
 			end,
 		},
 		match = {
@@ -774,38 +774,34 @@ local function setup_commands(meta, subcommand_info_list, fn_scope)
 	-- metacommand -> MetaCommand abbreviation
 	require("utils.keys").command_abbrev(meta:lower(), meta)
 	-- Format: MetaCommand sub_command opts ...
-	vim.api.nvim_create_user_command(meta, command_meta(subcommand_info_list, fn_scope), {
-		bang = true,
-		range = true,
-		nargs = "*",
-		complete = command_complete(meta, subcommand_info_list),
-	})
+	vim.api.nvim_create_user_command(
+		meta,
+		command_meta(subcommand_info_list, fn_scope),
+		{ bang = true, range = true, nargs = "*", complete = command_complete(meta, subcommand_info_list) }
+	)
 	-- Format: MetaCommandSubcommand opts ...
 	for subcommand, _ in pairs(subcommand_info_list) do
 		vim.api.nvim_create_user_command(
 			meta .. snake_to_camel(subcommand),
 			command_meta(subcommand_info_list, fn_scope, subcommand),
-			{
-				bang = true,
-				range = true,
-				nargs = "*",
-				complete = command_complete(meta, subcommand_info_list),
-			}
+			{ bang = true, range = true, nargs = "*", complete = command_complete(meta, subcommand_info_list) }
 		)
 	end
 end
 
-local lsp_autostop_pending
----Automatically stop LSP servers that no longer attaches to any buffers
----
----  Once `BufDelete` is triggered, wait for 60s before checking and
----  stopping servers, in this way the callback will be invoked once
----  every 60 seconds at most and can stop multiple clients at once
----  if possible, which is more efficient than checking and stopping
----  clients on every `BufDelete` events
----
+---Set up LSP and diagnostic
 ---@return nil
-local function setup_lsp_stopidle()
+local function setup()
+	local lsp_autostop_pending
+	---Automatically stop LSP servers that no longer attaches to any buffers
+	---
+	---  Once `BufDelete` is triggered, wait for 60s before checking and
+	---  stopping servers, in this way the callback will be invoked once
+	---  every 60 seconds at most and can stop multiple clients at once
+	---  if possible, which is more efficient than checking and stopping
+	---  clients on every `BufDelete` events
+	---
+	---@return nil
 	vim.api.nvim_create_autocmd("BufDelete", {
 		group = vim.api.nvim_create_augroup("LspAutoStop", {}),
 		desc = "Automatically stop idle language servers.",
@@ -824,12 +820,7 @@ local function setup_lsp_stopidle()
 			end, 60000)
 		end,
 	})
-end
 
----Set up LSP and diagnostic
----@return nil
-local function setup()
-	setup_lsp_stopidle()
 	setup_commands("Lsp", subcommands.lsp, function(name)
 		return vim.lsp[name] or vim.lsp.buf[name]
 	end)

@@ -30,29 +30,9 @@ require("go").setup({
 	dap_port = 38697,
 	dap_timeout = 15,
 	dap_retries = 20,
-	dap_debug_gui = {
-		floating = { border = "solid" },
-		layouts = {
-			{
-				elements = {
-					{ id = "scopes", size = 0.2 },
-					{ id = "breakpoints", size = 0.2 },
-					{ id = "stacks", size = 0.2 },
-					{ id = "watches", size = 0.2 },
-					{ id = "console", size = 0.2 },
-				},
-				position = "right",
-				size = 55,
-			},
-			{
-				elements = { { id = "repl", size = 1 } },
-				position = "bottom",
-				size = 8,
-			},
-		},
-	},
+	dap_debug_gui = require("configs.nvim-dap-ui").opts_cfg,
 	lsp_on_attach = function(client, bufnr)
-        require"utils.lsp.default".on_attach(client,bufnr)
+		require("utils.lsp.default").on_attach(client, bufnr)
 		if not client.server_capabilities.semanticTokensProvider then
 			local semantic = client.config.capabilities.textDocument.semanticTokens
 			client.server_capabilities.semanticTokensProvider = {
@@ -63,7 +43,7 @@ require("go").setup({
 		end
 	end,
 	lsp_cfg = {
-		-- capabilities = require("lsp_default").capabilities,
+		capabilities = require("utils.lsp.default").capabilities,
 		settings = {
 			gopls = {
 				gofumpt = false,

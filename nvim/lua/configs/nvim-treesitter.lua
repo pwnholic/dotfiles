@@ -3,8 +3,7 @@ return vim.schedule(function()
 		highlight = { enable = true },
 		indent = { enable = true },
 		sync_install = false,
-		-- ensure_installed = "all",
-		ensure_installed = { "lua", "vimdoc", "regex", "vim" },
+		ensure_installed = "all",
 		endwise = { enable = true },
 		incremental_selection = {
 			enable = true,

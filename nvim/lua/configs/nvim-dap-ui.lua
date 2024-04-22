@@ -1,23 +1,25 @@
 local M = {}
 
-function M.setup()
-	require("dapui").setup({
-		floating = { border = "solid" },
-		layouts = {
-			{
-				elements = {
-					{ id = "scopes", size = 0.2 },
-					{ id = "breakpoints", size = 0.2 },
-					{ id = "stacks", size = 0.2 },
-					{ id = "watches", size = 0.2 },
-					{ id = "console", size = 0.2 },
-				},
-				position = "right",
-				size = 55,
+M.opts_cfg = {
+	floating = { border = "solid" },
+	layouts = {
+		{
+			elements = {
+				{ id = "scopes", size = 0.2 },
+				{ id = "breakpoints", size = 0.2 },
+				{ id = "stacks", size = 0.2 },
+				{ id = "watches", size = 0.2 },
+				{ id = "console", size = 0.2 },
 			},
-			{ elements = { { id = "repl", size = 1 } }, position = "bottom", size = 8 },
+			position = "right",
+			size = 55,
 		},
-	})
+		{ elements = { { id = "repl", size = 1 } }, position = "bottom", size = 8 },
+	},
+}
+
+function M.setup()
+	require("dapui").setup(M.opts_cfg)
 end
 
 function M.keys()

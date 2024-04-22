@@ -191,7 +191,7 @@ return {
 	-- lsp
 	{
 		"nvimtools/none-ls.nvim",
-		event = "BufWritePost",
+		event = "BufWritePre",
 		config = function()
 			rq("none-ls")
 		end,
@@ -215,7 +215,7 @@ return {
 
 	{
 		"epwalsh/obsidian.nvim",
-		ft = { "markdown" },
+		ft = "markdown",
 		config = function()
 			rq("obsidian")
 		end,

@@ -3,36 +3,33 @@ local M = {}
 function M.setup()
 	require("neotest").setup({
 		adapters = {
-			require("neotest-go")({
-				experimental = { test_table = true },
-				args = { "-count=1", "-timeout=60s" },
-			}),
-			default_strategy = "integrated",
-			status = { enabled = true, signs = true, virtual_text = true },
-			icons = {
-				passed = " ",
-				running = " ",
-				failed = " ",
-				unknown = " ",
-				watching = "󰈈 ",
-				running_animated = vim.tbl_map(function(s)
-					return s .. " "
-				end, { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }),
-			},
-			run = { enabled = true },
-			running = { concurrent = true },
-			state = { enabled = true },
-			output = { open_on_run = true },
-			output_panel = { enabled = true, open = "botright split | resize 15" },
-			quickfix = {
-				open = function()
-					if require("lazy.core.config").spec.plugins["trouble.nvim"] ~= nil then
-						require("trouble").toggle("quickfix")
-					else
-						vim.cmd.copen()
-					end
-				end,
-			},
+			require("neotest-go")({ experimental = { test_table = true }, args = { "-count=1", "-timeout=60s" } }),
+		},
+		default_strategy = "integrated",
+		status = { enabled = true, signs = true, virtual_text = true },
+		icons = {
+			passed = " ",
+			running = " ",
+			failed = " ",
+			unknown = " ",
+			watching = "󰈈 ",
+			running_animated = vim.tbl_map(function(s)
+				return s .. " "
+			end, { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }),
+		},
+		run = { enabled = true },
+		running = { concurrent = true },
+		state = { enabled = true },
+		output = { open_on_run = true },
+		output_panel = { enabled = true, open = "botright split | resize 15" },
+		quickfix = {
+			open = function()
+				if require("lazy.core.config").spec.plugins["trouble.nvim"] ~= nil then
+					require("trouble").toggle("quickfix")
+				else
+					vim.cmd.copen()
+				end
+			end,
 		},
 	})
 end
