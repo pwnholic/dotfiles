@@ -7,4 +7,6 @@
 
 <!--toc:end-->
 
-
+```lua
+require"hello"
+```

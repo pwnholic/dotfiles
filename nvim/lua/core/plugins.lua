@@ -50,14 +50,6 @@ return {
 		end,
 	},
 
-	{
-		"jmbuhr/otter.nvim",
-		ft = { "markdown", "norg", "org" },
-		config = function()
-			rq("otter")
-		end,
-	},
-
 	-- coding shit
 	{
 		"mfussenegger/nvim-dap",

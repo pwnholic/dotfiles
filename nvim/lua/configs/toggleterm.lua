@@ -4,7 +4,7 @@ function M.keys()
 	local term_exec = function(cmd, direction)
 		return function()
 			require("toggleterm.terminal").Terminal
-				:new({ cmd = cmd, dir = require("directory").get_cwd(), direction = direction })
+				:new({ cmd = cmd, dir = require("utils.root").get_cwd(), direction = direction })
 				:toggle()
 		end
 	end
