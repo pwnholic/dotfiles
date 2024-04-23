@@ -6,11 +6,11 @@ local ok, cmp = pcall(require, "cmp")
 if ok then
 	cmp.setup.filetype({ "go" }, {
 		mapping = {
-			["<CR>"] = cmp.mapping(function(fb)
+			["<CR>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
-					return cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })(fb)
+					return cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })(fallback)
 				else
-					return fb()
+					return fallback()
 				end
 			end, { "i" }),
 		},

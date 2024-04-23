@@ -113,11 +113,9 @@ M.git = {
 }
 
 M.kinds = {
-	RipGrep = " ",
-	Yanky = " ",
-	FzfPath = " ",
-	FzfBuffer = " ",
-	Calc = " ",
+	RipGrep = " ",
+	Yanky = " ",
+	Calc = " ",
 	Array = "󰅪 ",
 	Boolean = " ",
 	BreakStatement = "󰙧 ",

@@ -278,7 +278,10 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
 		event = { "FileType", "VeryLazy" },
-		keys = { "<leader><space>" },
+		keys = {
+			{ "<leader><space>", desc = "Incremental Selection" },
+			{ "<bs>", desc = "Decrement Selection", mode = "x" },
+		},
 		build = ":TSUpdate",
 		config = function()
 			rq("nvim-treesitter")
