@@ -1,49 +1,20 @@
-local function vault(name)
-	return vim.fn.fnamemodify(string.format("%s/Notes/%s", vim.fn.expand("~"), name), ":~:.") --- @type string
-end
-
-local new_noteid ---@type string
-local function generate_new_id()
-	math.randomseed(os.time())
-	local len = 7
-	local chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	local name = ""
-	for _ = 1, len do
-		local ridx = math.random(1, #chars)
-		name = string.format("%s%s", name, string.sub(chars, ridx, ridx))
-	end
-	if string.len(name) > len then
-		string.lower(name:gsub(" ", "_"))
-	end
-	new_noteid = string.format("%s_%s%s", os.date("%d%m%Y"), os.date("%S"), name)
-	return new_noteid
-end
-
 require("obsidian").setup({
 	workspaces = {
 		{
-			name = "planning",
-			path = vault("private/planning"),
-			overrides = {
-				notes_subdir = vim.NIL,
+			name = "private",
+			path = function()
+				return assert(require("utils.root").get_root())
+			end,
+			override = {
+				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
 				new_notes_location = "current_dir",
-				templates = { subdir = vim.NIL },
-			},
-		},
-		{
-			name = "workspace",
-			path = vault("private/workspace"),
-			overrides = {
-				notes_subdir = vim.NIL,
-				new_notes_location = "current_dir",
-				templates = { subdir = vim.NIL },
 			},
 		},
 	},
 	preferred_link_style = "markdown",
 	picker = { name = "fzf-lua", mappings = { new = "<C-x>", insert_link = "<C-l>" } },
 	daily_notes = {
-		folder = vault("private/dailies"),
+		folder = "private/dailies",
 		date_format = os.date("%d%m%Y"),
 		alias_format = "%B %-d, %Y",
 		template = "dailies.md",
@@ -72,7 +43,18 @@ require("obsidian").setup({
 		},
 	},
 	note_id_func = function()
-		return generate_new_id
+		math.randomseed(os.time())
+		local len = 7
+		local chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		local name = ""
+		for _ = 1, len do
+			local ridx = math.random(1, #chars)
+			name = string.format("%s%s", name, string.sub(chars, ridx, ridx))
+		end
+		if string.len(name) > len then
+			string.lower(name:gsub(" ", "_"))
+		end
+		return string.format("%s_%s%s", os.date("%d%m%Y"), os.date("%S"), name)
 	end,
 	note_frontmatter_func = function(note)
 		if note.title then
@@ -91,10 +73,10 @@ require("obsidian").setup({
 		enable = true, -- set to false to disable all additional syntax features
 		update_debounce = 150, -- update delay after a text change (in milliseconds)
 		checkboxes = {
-			[" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-			["x"] = { char = "", hl_group = "ObsidianDone" },
-			[">"] = { char = "", hl_group = "ObsidianRightArrow" },
-			["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
+			[" "] = { char = "󰄱 ", hl_group = "ObsidianTodo" },
+			["x"] = { char = " ", hl_group = "ObsidianDone" },
+			[">"] = { char = " ", hl_group = "ObsidianRightArrow" },
+			["~"] = { char = "󰰱 ", hl_group = "ObsidianTilde" },
 			-- You can also add more custom ones...
 		},
 	},
@@ -107,9 +89,11 @@ require("obsidian").setup({
 		end,
 	},
 	templates = {
-		subdir = vault("templates"),
+		subdir = "templates",
 		date_format = "%Y-%m-%d",
 		time_format = "%H:%M",
+		-- TODO: do experiment with this shitt
+		-- A map for custom variables, the key should be the variable and the value a function
 		substitutions = {},
 	},
 })

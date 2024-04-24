@@ -10,7 +10,7 @@ vim.env.PATH = vim.fn.stdpath("data")
 	.. vim.env.PATH
 
 require("core.options")
-require("core.lazyvim")
+require("core.package")
 
 vim.api.nvim_create_autocmd("User", {
 	group = vim.api.nvim_create_augroup("OnMales", { clear = true }),
