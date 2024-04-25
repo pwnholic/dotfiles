@@ -374,6 +374,7 @@ return {
 	},
 	{
 		"kevinhwang91/nvim-ufo",
+		event = "BufRead",
 		dependencies = "kevinhwang91/promise-async",
 		keys = rq("nvim-ufo").keys,
 		config = function()

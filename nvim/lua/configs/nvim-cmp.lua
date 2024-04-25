@@ -1,5 +1,5 @@
-local luasnip = require("luasnip")
 local nvim_cmp = require("cmp")
+local luasnip = require("luasnip")
 local nvim_cmp_core = require("cmp.core")
 local ts_indent = require("nvim-treesitter.indent")
 local _cmp_on_change = nvim_cmp_core.on_change

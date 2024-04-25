@@ -7,9 +7,7 @@ tsj.setup({ use_default_keymaps = false, max_join_length = 1024 })
 function _G.tsj_split_recursive(_, preset)
 	require("treesj.format")._format(
 		"split",
-		vim.tbl_deep_extend("force", preset or {}, {
-			split = { recursive = true },
-		})
+		vim.tbl_deep_extend("force", preset or {}, { split = { recursive = true } })
 	)
 end
 

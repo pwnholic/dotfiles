@@ -93,13 +93,13 @@ end
 local conf_path = vim.fn.stdpath("config") --[[@as string]]
 local data_path = vim.fn.stdpath("data") --[[@as string]]
 local state_path = vim.fn.stdpath("state") --[[@as string]]
+local package_path = vim.fs.joinpath(data_path, "packages")
+local package_lock = vim.fs.joinpath(conf_path, "package-lock.json")
+local lazy_path = vim.fs.joinpath(package_path, "lazy.nvim")
 
 ---Install package manager if not already installed
 ---@return boolean success
 local function bootstrap()
-	local package_path = vim.fs.joinpath(data_path, "packages")
-	local package_lock = vim.fs.joinpath(conf_path, "package-lock.json")
-	local lazy_path = vim.fs.joinpath(package_path, "lazy.nvim")
 	if vim.uv.fs_stat(lazy_path) then
 		vim.opt.rtp:prepend(lazy_path)
 		return true

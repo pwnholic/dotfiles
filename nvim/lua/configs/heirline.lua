@@ -1,8 +1,8 @@
 local conditions = require("heirline.conditions")
 local fmt = string.format
 local space, align = { provider = " " }, { provider = "%=" }
-local icons = require("utils.icons")
 local colors = require("tokyonight.colors").setup()
+local icons = require("utils.icons")
 
 local function buf_matches()
 	if
@@ -320,13 +320,6 @@ local plugins_update = {
 	condition = require("lazy.status").has_updates,
 	init = mode_cinit,
 	static = { mode_colors = mode_colors },
-	update = {
-		"User",
-		pattern = "VeryLazy",
-		callback = vim.schedule_wrap(function()
-			vim.cmd.redrawstatus()
-		end),
-	},
 	provider = function()
 		return fmt(" %s ", require("lazy.status").updates())
 	end,
@@ -375,31 +368,6 @@ local lsp_attach = {
 		},
 	},
 }
-
--- local formatters = {
--- 	condition = function(self)
--- 		return not vim.tbl_contains(
--- 			{ "", "trim_whitespace", "trim_newlines" },
--- 			require("conform").list_formatters_for_buffer(self.bufnr)[1]
--- 		)
--- 	end,
--- 	init = mode_cinit,
--- 	static = { mode_colors = mode_colors },
--- 	space,
--- 	{
--- 		init = function(self)
--- 			self.formatter = require("conform").list_formatters_for_buffer(self.bufnr)[1]
--- 		end,
--- 		provider = function(self)
--- 			if self.formatter ~= "" then
--- 				return fmt(" %s ", self.formatter)
--- 			end
--- 		end,
--- 		hl = function(self)
--- 			return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
--- 		end,
--- 	},
--- }
 
 local noice_command = {
 	condition = require("noice").api.status.command.has,
@@ -782,6 +750,7 @@ vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
 	end,
 })
 
+
 local harpoon = {
 	condition = function()
 		return package.loaded.harpoon and #harpoon_items > 1 and require("harpoon.config").DEFAULT_LIST == "files"
@@ -856,7 +825,6 @@ require("heirline").setup({
 		align,
 		plugins_update,
 		lsp_attach,
-		-- formatters,
 		noice_command,
 		noice_mode,
 		code_ruler,
