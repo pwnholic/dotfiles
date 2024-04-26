@@ -8,7 +8,6 @@ obsidian.setup({
 	preferred_link_style = "markdown",
 	picker = { name = "fzf-lua", mappings = { new = "<C-x>", insert_link = "<C-l>" } },
 	completion = { nvim_cmp = true, min_chars = 3 },
-	new_notes_location = "current_dir",
 	use_advanced_uri = true,
 	workspaces = {
 		{
@@ -16,14 +15,14 @@ obsidian.setup({
 			path = function()
 				return assert(vim.fn.expand("~") .. "/Notes")
 			end,
-			override = {
+			overrides = {
 				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
 				new_notes_location = "current_dir",
 				daily_notes = {
-					folder = "private/dailies",
+					folder = "dailies",
 					date_format = os.date("%d%m%Y"),
 					alias_format = "%B %-d, %Y",
-					template = "dailies.md",
+					-- template = "dailies.md",
 				},
 				templates = {
 					subdir = "templates",
@@ -40,7 +39,7 @@ obsidian.setup({
 			path = function()
 				return assert(require("utils.root").get_root())
 			end,
-			override = {
+			overrides = {
 				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
 				new_notes_location = "current_dir",
 			},
@@ -67,9 +66,12 @@ obsidian.setup({
 		},
 	},
 	note_id_func = function(title)
-		local suffix = ""
 		if title ~= nil then
-			suffix = string.format("%s_%s", os.date("%d%m%Y"), title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):upper())
+			return string.format(
+				"%s_%s",
+				os.date("%d%m%Y"),
+				title:gsub(" ", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
+			)
 		else
 			math.randomseed(os.time())
 			local len = 7
@@ -82,9 +84,8 @@ obsidian.setup({
 			if string.len(name) > len then
 				string.lower(name:gsub(" ", "_"))
 			end
-			suffix = string.format("%s_%s%s", os.date("%d%m%Y"), os.date("%S"), name)
+			return string.format("%s_%s%s", os.date("%d%m%Y"), os.date("%S"), name)
 		end
-		return suffix
 	end,
 	note_frontmatter_func = function(note)
 		if note.title then

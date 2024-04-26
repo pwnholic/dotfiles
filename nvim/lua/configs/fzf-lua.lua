@@ -579,7 +579,9 @@ function M.setup()
 		fzfmap("files", vim.tbl_extend("force", note_args, { cwd = note_path })),
 		{ desc = "Find Notes Folder (root)" }
 	)
-	map("n", "<C-p>", fzfmap("files"), { desc = "Find Files (root)" })
+	map("n", "<C-p>", function()
+		fzf_lua.files({ cwd = vim.fs.normalize(vim.fs.dirname(vim.api.nvim_buf_get_name(0))) })
+	end, { desc = "Find Files (cwd)" })
 	map("n", "<leader>fd", fzfmap("files", note_args), { desc = "Find Folder (root)" })
 	map("n", "<leader>fn", fzfmap("files", { cwd = note_path }), { desc = "Find Notes Files (root)" })
 	map("n", "<leader>fB", fzfmap("builtin"), { desc = "Find Builtin" })
@@ -601,7 +603,7 @@ function M.setup()
 	map("n", "<leader>fr", fzfmap("registers"), { desc = "Registers" })
 	map("n", "<leader>fs", fzfmap("spell_suggest"), { desc = "Spell Suggest" })
 	map("n", "<leader>fT", fzfmap("awesome_colorschemes"), { desc = "Awesome Colorschemes" })
-	map("n", "<leader>fF", fzfmap("resume"), { desc = "Find Resume" })
+	map("n", "<leader>fR", fzfmap("resume"), { desc = "Find Resume" })
 
 	map("n", "<leader>fg", fzfmap("git_files"), { desc = "Git Files" })
 	map("n", "<leader>hfs", fzfmap("git_status"), { desc = "`git status`" })
@@ -637,7 +639,8 @@ end
 
 M.keys = {
 	"<C-p>",
-	"<leader>fN",
+	"<leader>fn",
+	"<leader>fR",
 	"<leader>fd",
 	"<leader>fn",
 	"<leader>fB",

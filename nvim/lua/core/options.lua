@@ -5,6 +5,7 @@ g.root_spec = {
 	{
 		".git",--[[add folder or filename pattern here if needed]]
 		"lua",
+        "Makefile"
 	},
 	"cwd",
 }

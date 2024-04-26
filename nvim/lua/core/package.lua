@@ -1,210 +1,96 @@
----Print git command error
----@param cmd string[] shell command
----@param msg string error message
----@param lev number? log level to use for errors, defaults to WARN
----@return nil
-local function error(cmd, msg, lev)
-	lev = lev or vim.log.levels.WARN
-	vim.notify("[git] failed to execute git command: " .. table.concat(cmd, " ") .. "\n" .. msg, lev)
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
 end
+vim.opt.rtp:prepend(lazypath)
 
----Execute git command in given directory synchronously
----@param path string
----@param cmd string[] git command to execute
----@param error_lev number? log level to use for errors, hide errors if nil or false
----@reurn { success: boolean, output: string }
-local function dir_execute(path, cmd, error_lev)
-	local shell_args = { "git", "-C", path, table.unpack(cmd) }
-	local shell_out = vim.fn.system(shell_args)
-	if vim.v.shell_error ~= 0 then
-		if error_lev then
-			error(shell_args, shell_out, error_lev)
-		end
-		return { success = false, output = shell_out }
-	end
-	return { success = true, output = shell_out }
-end
-
----Execute git command in current directory synchronously
----@param cmd string[] git command to execute
----@param error_lev number? log level to use for errors, hide errors if nil or false
----@return { success: boolean, output: string }
-local function execute(cmd, error_lev)
-	local shell_args = { "git", unpack(cmd) }
-	local shell_out = vim.fn.system(shell_args)
-	if vim.v.shell_error ~= 0 then
-		if error_lev then
-			error(shell_args, shell_out, error_lev)
-		end
-		return { success = false, output = shell_out }
-	end
-	return { success = true, output = shell_out }
-end
-
----Read file contents
----@param path string
----@return string?
-local function read_file(path)
-	local file = io.open(path, "r")
-	if not file then
-		return nil
-	end
-	local content = file:read("*a")
-	file:close()
-	return content or ""
-end
-
----Write string into file
----@param path string
----@return boolean success
-local function write_file(path, str)
-	local file = io.open(path, "w")
-	if not file then
-		return false
-	end
-	file:write(str)
-	file:close()
-	return true
-end
-
----Write json contents
----@param path string
----@param tbl table
----@return boolean success
-local function write(path, tbl)
-	local ok, str = pcall(vim.json.encode, tbl)
-	if not ok then
-		return false
-	end
-	return write_file(path, str)
-end
-
----Read json contents as lua table
----@param path string
----@param opts table? same option table as `vim.json.decode()`
----@return table
-local function read(path, opts)
-	opts = opts or {}
-	local str = read_file(path)
-	local ok, tbl = pcall(vim.json.decode, str, opts)
-	return ok and tbl or {}
-end
-
-local conf_path = vim.fn.stdpath("config") --[[@as string]]
-local data_path = vim.fn.stdpath("data") --[[@as string]]
-local state_path = vim.fn.stdpath("state") --[[@as string]]
-local package_path = vim.fs.joinpath(data_path, "packages")
-local package_lock = vim.fs.joinpath(conf_path, "package-lock.json")
-local lazy_path = vim.fs.joinpath(package_path, "lazy.nvim")
-
----Install package manager if not already installed
----@return boolean success
-local function bootstrap()
-	if vim.uv.fs_stat(lazy_path) then
-		vim.opt.rtp:prepend(lazy_path)
-		return true
-	end
-
-	local startup_file = vim.fs.joinpath(state_path, "startup.json")
-	local startup_data = read(startup_file)
-	if startup_data.bootstrap == false then
-		return false
-	end
-
-	local response = ""
-	vim.ui.input({
-		prompt = "[packages] package manager not found, bootstrap? [y/N/never] ",
-	}, function(r)
-		response = r
-	end)
-
-	if vim.fn.match(response, "[Nn][Ee][Vv][Ee][Rr]") >= 0 then
-		startup_data.bootstrap = false
-		write(startup_file, startup_data)
-		return false
-	end
-
-	if vim.fn.match(response, "^[Yy]\\([Ee][Ss]\\)\\?$") < 0 then
-		return false
-	end
-
-	print("\n")
-	local lock_data = read(package_lock)
-	local commit = lock_data["lazy.nvim"] and lock_data["lazy.nvim"].commit
-	local url = "https://github.com/folke/lazy.nvim.git"
-	vim.notify("[packages] installing lazy.nvim...")
-	vim.fn.mkdir(package_path, "p")
-	if not execute({ "clone", "--filter=blob:none", url, lazy_path }, vim.log.levels.INFO).success then
-		return false
-	end
-
-	if commit then
-		dir_execute(lazy_path, { "checkout", commit }, vim.log.levels.INFO)
-	end
-	local lazy_patch_path = vim.fs.joinpath(conf_path, "patches", "lazy.nvim.patch")
-	if vim.uv.fs_stat(lazy_patch_path) and vim.uv.fs_stat(lazy_path) then
-		dir_execute(lazy_path, { "apply", "--ignore-space-change", lazy_patch_path }, vim.log.levels.WARN)
-	end
-	vim.notify("[packages] lazy.nvim cloned to " .. lazy_path)
-	vim.opt.rtp:prepend(lazy_path)
-	return true
-end
-
-if not bootstrap() then
-	return
-end
-
--- Reverse/Apply local patches on updating/intalling plugins,
--- must be created before setting lazy to apply the patches properly
-vim.api.nvim_create_autocmd("User", {
-	desc = "Reverse/Apply local patches on updating/intalling plugins.",
-	group = vim.api.nvim_create_augroup("LazyPatches", {}),
-	pattern = { "LazyInstall*", "LazyUpdate*", "LazySync*", "LazyRestore*" },
-	callback = function(info)
-		-- In a lazy sync action:
-		-- -> LazySyncPre     <- restore packages
-		-- -> LazyInstallPre
-		-- -> LazyUpdatePre
-		-- -> LazyInstall
-		-- -> LazyUpdate
-		-- -> LazySync        <- apply patches
-		vim.g._lz_syncing = vim.g._lz_syncing or info.match == "LazySyncPre"
-		if vim.g._lz_syncing and not info.match:find("^LazySync") then
-			return
-		end
-		if info.match == "LazySync" then
-			vim.g._lz_syncing = nil
-		end
-
-		local patches_path = vim.fs.joinpath(conf_path, "patches")
-		for patch in vim.fs.dir(patches_path) do
-			local patch_path = vim.fs.joinpath(patches_path, patch)
-			local plugin_path = vim.fs.joinpath(package_path, (patch:gsub("%.patch$", "")))
-			if vim.uv.fs_stat(plugin_path) then
-				dir_execute(plugin_path, { "restore", "." })
-				if not info.match:find("Pre$") then
-					vim.notify("[packages] applying patch " .. patch)
-					dir_execute(plugin_path, { "apply", "--ignore-space-change", patch_path }, vim.log.levels.WARN)
-				end
-			end
-		end
-	end,
-})
-
-require("lazy").setup(require("core.plugins"), {
+require("lazy").setup({
+	root = vim.fn.stdpath("data") .. "/lazy",
 	defaults = { lazy = true, version = "*" },
+	spec = require("core.plugins"), ---@type LazySpec
+	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json", -- lockfile generated after running update.
+	concurrency = jit.os:find("Windows") and (vim.uv.available_parallelism() * 2) or nil,
+	git = {
+		log = { "-8" }, -- show the last 8 commits
+		timeout = 120, -- kill processes that take more than 2 minutes
+		url_format = "https://github.com/%s.git",
+		filter = true,
+	},
 	install = { missing = true, colorscheme = { "tokyonight" } },
-	change_detection = { enabled = true, notify = false },
-	checker = { enabled = true, notify = false, frequency = (3600 * 24) * 7 },
 	ui = {
-		border = "single",
-		icons = { ft = " ", lazy = "󰂠 ", loaded = " ", not_loaded = " " },
+		size = { width = 0.8, height = 0.8 },
+		wrap = true, -- wrap the lines in the ui
+		border = "rounded",
+		backdrop = 60,
+		pills = true, ---@type boolean
+		icons = {
+			cmd = " ",
+			config = "",
+			event = " ",
+			ft = " ",
+			init = " ",
+			import = " ",
+			keys = " ",
+			lazy = "󰒲 ",
+			loaded = "●",
+			not_loaded = "○",
+			plugin = " ",
+			runtime = " ",
+			require = "󰢱 ",
+			source = " ",
+			start = " ",
+			task = "✔ ",
+			list = {
+				"●",
+				"➜",
+				"★",
+				"‒",
+			},
+		},
+		throttle = 20, -- how frequently should the ui process render events
+		custom_keys = {
+			["<localleader>l"] = {
+				function(plugin)
+					require("lazy.util").float_term({ "lazygit", "log" }, {
+						cwd = plugin.dir,
+					})
+				end,
+				desc = "Open lazygit log",
+			},
+
+			["<localleader>t"] = {
+				function(plugin)
+					require("lazy.util").float_term(nil, {
+						cwd = plugin.dir,
+					})
+				end,
+				desc = "Open terminal in plugin dir",
+			},
+		},
+	},
+	diff = { cmd = "git" },
+	checker = {
+		enabled = true,
+		concurrency = 10, ---@type number? set to 1 to check for updates very slowly
+		notify = false, -- get a notification when new updates are found
+		frequency = 3600 * 24 * 7, -- check for updates every hour
+	},
+	change_detection = {
+		enabled = true,
+		notify = false,
 	},
 	performance = {
 		cache = { enabled = true },
-		reset_packpath = true,
+		reset_packpath = true, -- reset the package path to improve startup time
 		rtp = {
-			reset = true,
+			reset = true, -- reset the runtime path to $VIMRUNTIME and your config directory
 			disabled_plugins = {
 				"gzip",
 				"matchit",
@@ -217,4 +103,14 @@ require("lazy").setup(require("core.plugins"), {
 			},
 		},
 	},
+	-- lazy can generate helptags from the headings in markdown readme files,
+	-- so :help works even for plugins that don't have vim docs.
+	-- when the readme opens with :help it will be correctly displayed as markdown
+	readme = {
+		enabled = true,
+		root = vim.fn.stdpath("state") .. "/lazy/readme",
+		files = { "README.md", "lua/**/README.md" },
+		skip_if_doc_exists = true,
+	},
+	state = vim.fn.stdpath("state") .. "/lazy/state.json", -- state info for checker and other things
 })

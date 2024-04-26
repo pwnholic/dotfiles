@@ -78,18 +78,18 @@ augroup("YankHighlight", {
 	},
 })
 
-augroup("Autosave", {
-	{ "BufLeave", "WinLeave", "FocusLost" },
-	{
-		nested = true,
-		desc = "Autosave on focus change.",
-		callback = function(info)
-			if vim.bo[info.buf].bt == "" then
-				vim.cmd.update({ mods = { emsg_silent = true } })
-			end
-		end,
-	},
-})
+-- augroup("Autosave", {
+-- 	{ "BufLeave", "WinLeave", "FocusLost" },
+-- 	{
+-- 		nested = true,
+-- 		desc = "Autosave on focus change.",
+-- 		callback = function(info)
+-- 			if vim.bo[info.buf].bt == "" then
+-- 				vim.cmd.update({ mods = { emsg_silent = true } })
+-- 			end
+-- 		end,
+-- 	},
+-- })
 
 augroup("WinCloseJmp", {
 	"WinClosed",
