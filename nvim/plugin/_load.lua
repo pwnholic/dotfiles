@@ -21,12 +21,12 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 	once = true,
 	group = vim.api.nvim_create_augroup("SmartExpandtabSetup", {}),
 	callback = function()
-		require("utils.expand-tab")
+		require("utils.expandtab")
 		return true
 	end,
 })
 
 vim.schedule(function()
-	require("utils.diag-conf")
+	require("utils.diagconf")
 	require("utils.tmux").setup()
 end)

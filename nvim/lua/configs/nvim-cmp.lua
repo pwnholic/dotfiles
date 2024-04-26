@@ -1,5 +1,5 @@
-local nvim_cmp = require("cmp")
 local luasnip = require("luasnip")
+local nvim_cmp = require("cmp")
 local nvim_cmp_core = require("cmp.core")
 local ts_indent = require("nvim-treesitter.indent")
 local _cmp_on_change = nvim_cmp_core.on_change
@@ -48,6 +48,32 @@ local has_words_before = function()
 		and next_char ~= "}"
 		and next_char ~= ")"
 		and next_char ~= "]"
+end
+
+local function buffer_matches(patterns, bufnr)
+	bufnr = bufnr or 0
+
+	local buf_matchers = {
+		filetype = function()
+			return vim.bo[bufnr].filetype
+		end,
+		buftype = function()
+			return vim.bo[bufnr].buftype
+		end,
+		bufname = function()
+			return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+		end,
+	}
+
+	for kind, pattern_list in pairs(patterns) do
+		for _, pattern in ipairs(pattern_list) do
+			if buf_matchers[kind](bufnr):find(pattern) then
+				return true
+			end
+		end
+	end
+
+	return false
 end
 
 local cmp_source = {
@@ -178,7 +204,7 @@ local cmp_opts = {
 	},
 	enabled = function()
 		if
-			require("utils").buffer_matches({
+			buffer_matches({
 				buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 				filetype = { "oil", "noice" },
 			})

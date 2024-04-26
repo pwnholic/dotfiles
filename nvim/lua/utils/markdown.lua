@@ -32,4 +32,23 @@ function M.in_codeblock(lnum, buf)
 	return M.in_codeblock_regex(lnum, buf)
 end
 
+---Check if cursor position is in a markdown inline code
+---@param cursor integer[]? default to current cursor position
+---@param buf integer? default to current buffer
+---@return boolean
+function M.in_codeinline(cursor, buf)
+	cursor = cursor or vim.api.nvim_win_get_cursor(0)
+	buf = buf or 0
+	local line = vim.api.nvim_buf_get_lines(buf, cursor[1] - 1, cursor[1], false)[1]
+	local idx = 0
+	local inside = false
+	while idx ~= cursor[2] do
+		idx = idx + 1
+		if line:sub(idx, idx) == "`" then
+			inside = not inside
+		end
+	end
+	return inside
+end
+
 return M
