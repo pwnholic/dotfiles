@@ -5,15 +5,28 @@ local opts = {
 	config = {
 		header = vim.split(logo, "\n"),
 		center = {
-                        -- stylua: ignore start
-						{ action = "lua require('fzf-lua').files({fzf_opts = {['--info'] = 'right'}})", desc = " Find Files", icon = " ", key = "f", },
-						{ action = "lua require('fzf-lua').oldfiles({fzf_opts = {['--info'] = 'right'}})", desc = " Old Files", icon = "󰼨 ", key = "p" },
-						{ action = "Oil", desc = " File Explorer", icon = "󱇧 ", key = "o" },
-						{ action = "ToggleTerm", desc = " Open Terminal", icon = " ", key = "t" },
-						{ action = "lua require'harpoon'.ui:toggle_quick_menu(require'harpoon':list('files'))", desc = " Marks", icon = "󱪾 ", key = "m", },
-						{ action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l" },
-						{ action = "qa", desc = " Quit", icon = " ", key = "q" },
-			-- stylua: ignore end
+			{
+				action = "lua require('fzf-lua').files({fzf_opts = {['--info'] = 'right'}})",
+				desc = " Find Files",
+				icon = " ",
+				key = "f",
+			},
+			{
+				action = "lua require('fzf-lua').oldfiles({fzf_opts = {['--info'] = 'right'}})",
+				desc = " Old Files",
+				icon = "󰼨 ",
+				key = "p",
+			},
+			{ action = "Oil", desc = " File Explorer", icon = "󱇧 ", key = "o" },
+			{ action = "ToggleTerm", desc = " Open Terminal", icon = " ", key = "t" },
+			{
+				action = "lua require'harpoon'.ui:toggle_quick_menu(require'harpoon':list('files'))",
+				desc = " Marks",
+				icon = "󱪾 ",
+				key = "m",
+			},
+			{ action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l" },
+			{ action = "qa", desc = " Quit", icon = " ", key = "q" },
 		},
 		footer = function()
 			local stats = require("lazy").stats()

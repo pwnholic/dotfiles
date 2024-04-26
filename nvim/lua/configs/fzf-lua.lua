@@ -579,14 +579,18 @@ function M.setup()
 		fzfmap("files", vim.tbl_extend("force", note_args, { cwd = note_path })),
 		{ desc = "Find Notes Folder (root)" }
 	)
-	map("n", "<C-p>", function()
+	map("n", "<C-S-p>", function()
 		fzf_lua.files({ cwd = vim.fs.normalize(vim.fs.dirname(vim.api.nvim_buf_get_name(0))) })
 	end, { desc = "Find Files (cwd)" })
+	map("n", "<leader>fF", function()
+		fzf_lua.files({ cwd = vim.fs.normalize(vim.fs.dirname(vim.api.nvim_buf_get_name(0))) })
+	end, { desc = "Find Files (cwd)" })
+	map("n", "<leader>ff", fzfmap("files"), { desc = "Find Files (root)" })
+	map("n", "<C-p>", fzfmap("files"), { desc = "Find Files (root)" })
 	map("n", "<leader>fd", fzfmap("files", note_args), { desc = "Find Folder (root)" })
 	map("n", "<leader>fn", fzfmap("files", { cwd = note_path }), { desc = "Find Notes Files (root)" })
 	map("n", "<leader>fB", fzfmap("builtin"), { desc = "Find Builtin" })
 	map("n", "<leader>fb", fzfmap("buffers"), { desc = "Find Buffers" })
-	map("n", "<leader>ff", fzfmap("files"), { desc = "Find Files (root)" })
 	map("n", "<leader>fo", fzfmap("oldfiles"), { desc = "Find Old Files" })
 	map("n", "<leader>fq", fzfmap("quickfix"), { desc = "Quick Fix Item" })
 	map("n", "<leader>fl", fzfmap("lines"), { desc = "Find in Lines" })
@@ -639,6 +643,7 @@ end
 
 M.keys = {
 	"<C-p>",
+	"<C-S-p>",
 	"<leader>fn",
 	"<leader>fR",
 	"<leader>fd",
