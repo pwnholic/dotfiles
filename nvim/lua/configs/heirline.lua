@@ -543,7 +543,11 @@ local current_path = {
 	space,
 	{
 		provider = function()
-			return fmt("%s %s ", icons.kinds.Folder, vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":~:h"))
+			return fmt(
+				"%s %s ",
+				icons.kinds.Folder,
+				vim.fn.fnamemodify(vim.fs.normalize(vim.fs.dirname(vim.api.nvim_buf_get_name(0))), ":~")
+			)
 		end,
 		hl = function(self)
 			return {
@@ -749,7 +753,6 @@ vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
 		end)
 	end,
 })
-
 
 local harpoon = {
 	condition = function()
