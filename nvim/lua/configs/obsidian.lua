@@ -31,30 +31,9 @@ obsidian.setup({
 	use_advanced_uri = true,
 	workspaces = {
 		{
-			name = "root",
+			name = "notes",
 			path = function()
 				return assert(vim.fn.expand("~") .. "/Notes")
-			end,
-			overrides = overrides,
-		},
-		{
-			name = "01_fleeting",
-			path = function()
-				return assert(vim.fn.expand("~") .. "/Notes/01_fleeting")
-			end,
-			overrides = overrides,
-		},
-		{
-			name = "02_literature",
-			path = function()
-				return assert(vim.fn.expand("~") .. "/Notes/02_literature")
-			end,
-			overrides = overrides,
-		},
-		{
-			name = "03_permanent",
-			path = function()
-				return assert(vim.fn.expand("~") .. "/Notes/03_permanent")
 			end,
 			overrides = overrides,
 		},
@@ -153,8 +132,8 @@ obsidian.setup({
 		---@param client obsidian.Client
 		---@param workspace obsidian.Workspace
 		post_set_workspace = function(client, workspace)
-            local wpath = tostring(workspace.path)
-			local lcd = pcall(vim.cmd.lcd,wpath)
+			local wpath = tostring(workspace.path)
+			local lcd = pcall(vim.cmd.lcd, wpath)
 			if not lcd then
 				vim.notify("[obsidian.nvim] failed to cd to " .. wpath, vim.log.levels.WARN)
 			end
