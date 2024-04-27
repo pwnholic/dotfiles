@@ -113,6 +113,9 @@ M.git = {
 }
 
 M.kinds = {
+	Obs = "Obs",
+	ObsNew = "ObsNew",
+	ObsTags = "ObsTags",
 	RipGrep = " ",
 	Yanky = " ",
 	Calc = " ",

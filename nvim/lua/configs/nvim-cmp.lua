@@ -356,6 +356,7 @@ local cmp_opts = {
 		fields = { "kind", "abbr", "menu" },
 		format = function(entry, item)
 			local icons = require("utils.icons").kinds
+			local sname = entry.source.name
 			if item.kind == "Folder" then
 				item.menu = item.kind
 				item.menu_hl_group = "Directory"
@@ -372,20 +373,13 @@ local cmp_opts = {
 				item.kind = icon or icons.File
 				item.kind_hl_group = hl_group or "CmpItemKindFile"
 			else
-				item.dup = ({
-					rg = 1,
-					nvim_lsp = 0,
-					luasnip = 1,
-					calc = 0,
-					fuzzy_path = 1,
-					cmp_yanky = 1,
-				})[entry.source.name] or 0
+				item.dup = ({ rg = 1, nvim_lsp = 0, luasnip = 1, calc = 0, fuzzy_path = 1, cmp_yanky = 1 })[sname] or 0
 
-				if entry.source.name == "rg" then
+				if sname == "rg" then
 					item.kind = "RipGrep"
-				elseif entry.source.name == "cmp_yanky" then
+				elseif sname == "cmp_yanky" then
 					item.kind = "Yanky"
-				elseif entry.source.name == "calc" then
+				elseif sname == "calc" then
 					item.kind = "Calc"
 				end
 

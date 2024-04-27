@@ -4,6 +4,26 @@ if not ok then
 	return
 end
 
+local fmt = string.format
+local overrides = {
+	notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
+	new_notes_location = "current_dir",
+	daily_notes = {
+		folder = "01_fleeting",
+		date_format = os.date("%d%m%Y"),
+		alias_format = "%B %-d, %Y",
+		-- template = "dailies.md",
+	},
+	templates = {
+		subdir = "templates",
+		date_format = "%Y-%m-%d",
+		time_format = "%H:%M",
+		-- TODO: do experiment with this shitt
+		-- A map for custom variables, the key should be the variable and the value a function
+		substitutions = {},
+	},
+}
+
 obsidian.setup({
 	preferred_link_style = "markdown",
 	picker = { name = "fzf-lua", mappings = { new = "<C-x>", insert_link = "<C-l>" } },
@@ -11,28 +31,32 @@ obsidian.setup({
 	use_advanced_uri = true,
 	workspaces = {
 		{
-			name = "notes",
+			name = "root",
 			path = function()
 				return assert(vim.fn.expand("~") .. "/Notes")
 			end,
-			overrides = {
-				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
-				new_notes_location = "current_dir",
-				daily_notes = {
-					folder = "dailies",
-					date_format = os.date("%d%m%Y"),
-					alias_format = "%B %-d, %Y",
-					-- template = "dailies.md",
-				},
-				templates = {
-					subdir = "templates",
-					date_format = "%Y-%m-%d",
-					time_format = "%H:%M",
-					-- TODO: do experiment with this shitt
-					-- A map for custom variables, the key should be the variable and the value a function
-					substitutions = {},
-				},
-			},
+			overrides = overrides,
+		},
+		{
+			name = "01_fleeting",
+			path = function()
+				return assert(vim.fn.expand("~") .. "/Notes/01_fleeting")
+			end,
+			overrides = overrides,
+		},
+		{
+			name = "02_literature",
+			path = function()
+				return assert(vim.fn.expand("~") .. "/Notes/02_literature")
+			end,
+			overrides = overrides,
+		},
+		{
+			name = "03_permanent",
+			path = function()
+				return assert(vim.fn.expand("~") .. "/Notes/03_permanent")
+			end,
+			overrides = overrides,
 		},
 		{
 			name = "no-vault",
@@ -67,24 +91,10 @@ obsidian.setup({
 	},
 	note_id_func = function(title)
 		if title ~= nil then
-			return string.format(
-				"%s_%s",
-				os.date("%d%m%Y"),
-				title:gsub(" ", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
-			)
+			title:gsub("%s+", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
+			return fmt("%s_%s", os.date("%d%m%Y"), title)
 		else
-			math.randomseed(os.time())
-			local len = 7
-			local chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			local name = ""
-			for _ = 1, len do
-				local ridx = math.random(1, #chars)
-				name = string.format("%s%s", name, string.sub(chars, ridx, ridx))
-			end
-			if string.len(name) > len then
-				string.lower(name:gsub(" ", "_"))
-			end
-			return string.format("%s_%s%s", os.date("%d%m%Y"), os.date("%S"), name)
+			return fmt("%s_%s", os.date("%d%m%Y"), os.date("%H%M%S"))
 		end
 	end,
 	note_frontmatter_func = function(note)
@@ -116,7 +126,7 @@ obsidian.setup({
 		-- TODO: do experiment with this also
 		img_text_func = function(client, path)
 			path = client:vault_relative_path(path) or path
-			return string.format("![%s](%s)", path.name, path)
+			return fmt("![%s](%s)", path.name, path)
 		end,
 	},
 	callbacks = {
@@ -139,6 +149,16 @@ obsidian.setup({
 			end)
 		end,
 
+		-- Runs anytime the workspace is set/changed.
+		---@param client obsidian.Client
+		---@param workspace obsidian.Workspace
+		post_set_workspace = function(client, workspace)
+            local wpath = tostring(workspace.path)
+			local lcd = pcall(vim.cmd.lcd,wpath)
+			if not lcd then
+				vim.notify("[obsidian.nvim] failed to cd to " .. wpath, vim.log.levels.WARN)
+			end
+		end,
 		-- -- Runs right before writing the buffer for a note.
 		-- ---@param client obsidian.Client
 		-- ---@param note obsidian.Note
@@ -147,14 +167,5 @@ obsidian.setup({
 		-- -- Runs at the end of `obsidian.setup()`.
 		-- ---@param client obsidian.Client
 		-- post_setup = function(client) end,
-		--
-		-- -- Runs anytime the workspace is set/changed.
-		-- ---@param client obsidian.Client
-		-- ---@param workspace obsidian.Workspace
-		-- post_set_workspace = function(client, workspace)
-		-- 	-- TODO: make sure this only runs when we're inside a vault.
-		-- 	-- client.log.info("Changing directory to %s", workspace.path)
-		-- 	-- vim.cmd.cd(tostring(workspace.path))
-		-- end,
 	},
 })
