@@ -23,7 +23,6 @@ return {
 			rq("nvim-cmp")
 		end,
 	},
-	{ "dmitmel/cmp-cmdline-history", event = "CmdlineEnter" },
 	{ "chrisgrieser/cmp_yanky", event = "TextYankPost" },
 	{ "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
 	{ "hrsh7th/cmp-nvim-lsp", event = "InsertEnter" },
@@ -298,7 +297,13 @@ return {
 		end,
 	},
 	{ "NvChad/nvim-colorizer.lua", event = "BufRead", config = true },
-	{ "https://gitlab.com/HiPhish/rainbow-delimiters.nvim", event = "BufRead" },
+	{
+		"HiPhish/rainbow-delimiters.nvim",
+		event = "BufReadPre",
+		config = function()
+			rq("rainbow-delimiters")
+		end,
+	},
 	{
 		"nvimdev/dashboard-nvim",
 		event = "VimEnter",

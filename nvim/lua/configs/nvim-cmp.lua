@@ -412,7 +412,6 @@ nvim_cmp.setup.cmdline(":", {
 	sources = {
 		{ name = "cmdline" },
 		cmp_source.fuzzy_path,
-		{ name = "cmdline_history" },
 		cmp_source.cmp_yanky,
 	},
 })
