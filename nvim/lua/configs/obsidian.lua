@@ -10,7 +10,7 @@ local overrides = {
 	new_notes_location = "current_dir",
 	daily_notes = {
 		folder = "01_fleeting",
-		date_format = os.date("%d%m%Y"),
+		date_format = os.date("%Y%m%d"),
 		alias_format = "%B %-d, %Y",
 		-- template = "dailies.md",
 	},
@@ -18,8 +18,6 @@ local overrides = {
 		subdir = "templates",
 		date_format = "%Y-%m-%d",
 		time_format = "%H:%M",
-		-- TODO: do experiment with this shitt
-		-- A map for custom variables, the key should be the variable and the value a function
 		substitutions = {},
 	},
 }
@@ -42,10 +40,7 @@ obsidian.setup({
 			path = function()
 				return assert(require("utils.root").get_root())
 			end,
-			overrides = {
-				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
-				new_notes_location = "current_dir",
-			},
+			overrides = { notes_subdir = vim.NIL, new_notes_location = "current_dir" },
 		},
 	},
 	mappings = {
@@ -70,10 +65,13 @@ obsidian.setup({
 	},
 	note_id_func = function(title)
 		if title ~= nil then
-			title:gsub("%s+", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
-			return fmt("%s_%s", os.date("%d%m%Y"), title)
+			return fmt(
+				"%s_%s",
+				os.date("%Y%m%d"),
+				title:gsub("%s+", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
+			)
 		else
-			return fmt("%s_%s", os.date("%d%m%Y"), os.date("%H%M%S"))
+			return fmt("%s_%s", os.date("%Y%m%d"), os.date("%H%M%S"))
 		end
 	end,
 	note_frontmatter_func = function(note)
@@ -93,10 +91,10 @@ obsidian.setup({
 		enable = true, -- set to false to disable all additional syntax features
 		update_debounce = 150, -- update delay after a text change (in milliseconds)
 		checkboxes = {
-			[" "] = { char = "󰄱 ", hl_group = "ObsidianTodo" },
-			["x"] = { char = " ", hl_group = "ObsidianDone" },
-			[">"] = { char = " ", hl_group = "ObsidianRightArrow" },
-			["~"] = { char = "󰰱 ", hl_group = "ObsidianTilde" },
+			[" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+			["x"] = { char = "", hl_group = "ObsidianDone" },
+			[">"] = { char = "", hl_group = "ObsidianRightArrow" },
+			["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
 			-- You can also add more custom ones...
 		},
 	},

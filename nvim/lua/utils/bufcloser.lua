@@ -9,13 +9,11 @@ local buf_conf = {
 	ignore_unloaded_bufs = false, -- session plugins often add buffers without unloading them
 	minimum_buffer_num = 1, -- minimum number of open buffers for auto-closing to become active
 	ignore_filename_pattern = "", -- ignore files matches this lua pattern (string.find)
-	delete_buffer_when_file_deleted = false,
 }
 
-local timer, checking_interval_secs = vim.uv.new_timer(), 30
-timer:start(
+vim.uv.new_timer():start(
 	buf_conf.retirement_age_mins * 60000,
-	checking_interval_secs * 1000,
+	30 * 1000, --sec
 	-- schedule_wrap required for timers
 	vim.schedule_wrap(function()
 		local open_buffers = vim.fn.getbufinfo({ buflisted = 1 }) -- https://neovim.io/doc/user/builtin.html#getbufinfo
@@ -27,7 +25,6 @@ timer:start(
 			-- check all the conditions
 			local used_secs_ago = os.time() - buf.lastused -- always 0 for current buffer, therefore it's never closed
 			local recently_used = used_secs_ago < buf_conf.retirement_age_mins * 60
-
 			local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = buf.bufnr })
 			local is_ignored_ft = vim.tbl_contains(buf_conf.ignored_filetypes, buf_ft)
 			local is_modified = vim.api.nvim_get_option_value("modified", { buf = buf.bufnr })
@@ -67,50 +64,9 @@ timer:start(
 			if is_modified and not buf_conf.ignore_unsaved_changes_bufs then
 				vim.api.nvim_buf_call(buf.bufnr, vim.cmd.write)
 			end
-			vim.api.nvim_buf_delete(buf.bufnr, { force = false, unload = false })
 
+			require("mini.bufremove").delete(buf.bufnr, true)
 			::continue::
 		end
 	end)
 )
-
-if buf_conf.delete_buffer_when_file_deleted then
-	vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "QuickFixCmdPost" }, {
-		callback = function(ctx)
-			local bufnr = ctx.buf
-			local is_set, set_true = pcall(vim.api.nvim_buf_get_var, bufnr, "buffer_closer")
-			local is_manually_ignored = is_set and set_true
-			if is_manually_ignored then
-				return
-			end
-
-			-- deferred to not interfere with new buffers
-			vim.defer_fn(function()
-				-- buffer has been deleted in the meantime
-				if not vim.api.nvim_buf_is_loaded(bufnr) then
-					return
-				end
-
-				local bufname = vim.api.nvim_buf_get_name(bufnr)
-				local is_special_buffer = vim.bo[bufnr].buftype ~= ""
-				local is_ignored_ft = vim.tbl_contains(buf_conf.ignored_filetypes, vim.bo[bufnr].ft)
-				local file_exists = vim.uv.fs_stat(bufname) ~= nil
-
-				local is_new_buffer = bufname == ""
-				-- prevent the temporary buffers from conform.nvim's "injected"
-				-- formatter to be closed by this. (filename is like "README.md.5.lua")
-				local conform_temp_buf = bufname:find("%.md%.%d+%.%l+$")
-				if file_exists or is_special_buffer or is_new_buffer or conform_temp_buf or is_ignored_ft then
-					return
-				end
-
-				vim.notify(
-					("%q does not exist anymore. Closing."):format(vim.fs.basename(bufname)),
-					vim.log.levels.INFO,
-					{ title = "Buffer" }
-				)
-				vim.api.nvim_buf_delete(bufnr, { force = false, unload = false })
-			end, 100)
-		end,
-	})
-end

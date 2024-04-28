@@ -229,23 +229,6 @@ function M.setup()
 		end,
 	})
 
-	vim.api.nvim_create_autocmd("WinNew", {
-		pattern = "oil://*",
-		callback = function()
-			-- ensure the window is the one that was current
-			-- when the autocmd was executed, since the rest
-			-- of the callback will executed later.
-			local win = vim.api.nvim_get_current_win()
-			vim.schedule(function()
-				if
-					vim.api.nvim_win_is_valid(win)
-					and require("oil.util").is_oil_bufnr(vim.api.nvim_win_get_buf(win))
-				then
-					vim.g[win].oil_opened = true
-				end
-			end)
-		end,
-	})
 
 	---Toggle preview window
 	local function toggle_preview()

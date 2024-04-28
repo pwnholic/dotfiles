@@ -5,7 +5,6 @@ vim.g.maplocalleader = "\\"
 
 vim.env.PATH = vim.fn.stdpath("data")
 	.. "/mason/bin"
-	---@diagnostic disable-next-line: undefined-field
 	.. (vim.uv.os_uname().sysname == "Windows_NT" and ";" or ":")
 	.. vim.env.PATH
 
@@ -22,4 +21,3 @@ vim.api.nvim_create_autocmd("User", {
 		require("core.commands")
 	end,
 })
-

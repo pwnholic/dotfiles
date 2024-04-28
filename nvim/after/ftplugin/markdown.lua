@@ -17,6 +17,7 @@ local function obsidan_map(cmd, prompt)
 			return vim.cmd[cmd]()
 		else
 			vim.ui.input({ prompt = prompt .. " : " }, function(input)
+				input = input:gsub("%s+", " ")
 				if input == "" then
 					return vim.cmd[cmd]()
 				else
