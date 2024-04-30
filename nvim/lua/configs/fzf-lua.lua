@@ -678,7 +678,7 @@ M.keys = {
 
 	"<leader>sc",
 	"<leader>sC",
-	"<leader>sv",
+    {	"<leader>sv",mode = "v"},
 	"<leader>/",
 	"<leader>?",
 	"<leader>ss",

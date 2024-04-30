@@ -229,7 +229,6 @@ function M.setup()
 		end,
 	})
 
-
 	---Toggle preview window
 	local function toggle_preview()
 		local oil_win = vim.api.nvim_get_current_win()
@@ -287,6 +286,12 @@ function M.setup()
 		{ "mtime", highlight = "RainbowDelimiterViolet" },
 		{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
 	}
+
+	if tostring(vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))) == tostring(vim.fn.expand("~") .. "/Notes") then
+		columns = {
+			{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
+		}
+	end
 
 	oil.setup({
 		default_file_explorer = true,

@@ -19,19 +19,18 @@ obsidian.setup({
 			overrides = {
 				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
 				new_notes_location = "current_dir",
-				daily_notes = { folder = "01_fleeting", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
+				daily_notes = { folder = "01_INBOX", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
 				templates = {
 					subdir = "templates",
 					date_format = "%Y-%m-%d",
 					time_format = "%H:%M",
-					substitutions = {},
+					-- TODO: implement this shit...
+					substitutions = {
+						created = "",
+						modified = "",
+					},
 				},
 			},
-		},
-		{
-			name = "no-vault",
-			path = require("utils.root").get_root,
-			overrides = { notes_subdir = vim.NIL, new_notes_location = "current_dir" },
 		},
 	},
 	mappings = {
@@ -55,12 +54,9 @@ obsidian.setup({
 		},
 	},
 	note_id_func = function(title)
+		title = title:gsub("%s+", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
 		if title ~= nil then
-			return fmt(
-				"%s_%s",
-				os.date("%Y%m%d"),
-				title:gsub("%s+", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
-			)
+			return fmt("%s_%s", os.date("%Y%m%d"), title)
 		else
 			return fmt("%s_%s", os.date("%Y%m%d"), os.date("%H%M%S"))
 		end
@@ -127,11 +123,12 @@ obsidian.setup({
 				vim.notify("[obsidian.nvim] failed to cd to " .. wpath, vim.log.levels.WARN)
 			end
 		end,
+
 		-- -- Runs right before writing the buffer for a note.
 		-- ---@param client obsidian.Client
 		-- ---@param note obsidian.Note
 		-- pre_write_note = function(client, note) end,
-		--
+
 		-- -- Runs at the end of `obsidian.setup()`.
 		-- ---@param client obsidian.Client
 		-- post_setup = function(client) end,
