@@ -5,41 +5,32 @@ if not ok then
 end
 
 local fmt = string.format
-local overrides = {
-	notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
-	new_notes_location = "current_dir",
-	daily_notes = {
-		folder = "01_fleeting",
-		date_format = os.date("%Y%m%d"),
-		alias_format = "%B %-d, %Y",
-		-- template = "dailies.md",
-	},
-	templates = {
-		subdir = "templates",
-		date_format = "%Y-%m-%d",
-		time_format = "%H:%M",
-		substitutions = {},
-	},
-}
 
 obsidian.setup({
 	preferred_link_style = "markdown",
 	picker = { name = "fzf-lua", mappings = { new = "<C-x>", insert_link = "<C-l>" } },
 	completion = { nvim_cmp = true, min_chars = 3 },
 	use_advanced_uri = true,
+	wiki_link_func = "prepend_note_path",
 	workspaces = {
 		{
 			name = "notes",
-			path = function()
-				return assert(vim.fn.expand("~") .. "/Notes")
-			end,
-			overrides = overrides,
+			path = vim.fn.expand("~") .. "/Notes",
+			overrides = {
+				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
+				new_notes_location = "current_dir",
+				daily_notes = { folder = "01_fleeting", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
+				templates = {
+					subdir = "templates",
+					date_format = "%Y-%m-%d",
+					time_format = "%H:%M",
+					substitutions = {},
+				},
+			},
 		},
 		{
 			name = "no-vault",
-			path = function()
-				return assert(require("utils.root").get_root())
-			end,
+			path = require("utils.root").get_root,
 			overrides = { notes_subdir = vim.NIL, new_notes_location = "current_dir" },
 		},
 	},
