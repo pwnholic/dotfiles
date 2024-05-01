@@ -5,6 +5,8 @@ vim.opt_local.wrapmargin = 113
 vim.opt_local.statuscolumn = nil
 vim.opt_local.number = false
 vim.opt_local.relativenumber = false
+vim.opt_local.signcolumn = "no"
+vim.opt_local.foldcolumn = "0"
 
 vim.treesitter.language.register("sql", "dataview")
 vim.treesitter.language.register("javascript", "dataviewjs")

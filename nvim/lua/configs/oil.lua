@@ -3,14 +3,13 @@ local M = {}
 M.keys = { { "<leader>e", "<cmd>Oil<cr>", desc = "File Explorer" } }
 
 function M.init()
-	vim.api.nvim_create_autocmd("BufWinEnter", {
+	return vim.api.nvim_create_autocmd("BufWinEnter", {
 		nested = true,
 		callback = function(info)
 			local path = info.file
 			if path == "" then
 				return
 			end
-			---@diagnostic disable-next-line: undefined-field
 			local stat = vim.uv.fs_stat(path)
 			if stat and stat.type == "directory" then
 				vim.api.nvim_del_autocmd(info.id)

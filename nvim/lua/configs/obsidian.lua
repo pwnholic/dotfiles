@@ -4,8 +4,6 @@ if not ok then
 	return
 end
 
-local fmt = string.format
-
 obsidian.setup({
 	preferred_link_style = "markdown",
 	picker = { name = "fzf-lua", mappings = { new = "<C-x>", insert_link = "<C-l>" } },
@@ -16,21 +14,21 @@ obsidian.setup({
 		{
 			name = "notes",
 			path = vim.fn.expand("~") .. "/Notes",
-			overrides = {
-				notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
-				new_notes_location = "current_dir",
-				daily_notes = { folder = "01_INBOX", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
-				templates = {
-					subdir = "templates",
-					date_format = "%Y-%m-%d",
-					time_format = "%H:%M",
-					-- TODO: implement this shit...
-					substitutions = {
-						created = "",
-						modified = "",
-					},
-				},
-			},
+		},
+	},
+	overrides = {
+		notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
+		new_notes_location = "current_dir",
+	},
+	daily_notes = { folder = "01_FLEETING", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
+	templates = {
+		subdir = "Templates",
+		date_format = "%Y-%m-%d",
+		time_format = "%H:%M",
+		-- TODO: implement this shit...
+		substitutions = {
+			modified = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).mtime.sec)),
+			created = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).birthtime.sec)),
 		},
 	},
 	mappings = {
@@ -56,22 +54,31 @@ obsidian.setup({
 	note_id_func = function(title)
 		title = title:gsub("%s+", "_"):gsub("^%l", string.upper):gsub("_%l", string.upper)
 		if title ~= nil then
-			return fmt("%s_%s", os.date("%Y%m%d"), title)
+			return string.format("%s_%s", os.date("%Y%m%d"), title)
 		else
-			return fmt("%s_%s", os.date("%Y%m%d"), os.date("%H%M%S"))
+			return string.format("%s_%s", os.date("%Y%m%d"), os.date("%H%M%S"))
 		end
 	end,
 	note_frontmatter_func = function(note)
 		if note.title then
 			note:add_alias(note.title)
 		end
+
 		-- TODO: do some experiment with this...
-		local out = { id = note.id, aliases = note.aliases, tags = note.tags }
+		local out = {
+			id = note.id,
+			aliases = note.aliases,
+			tags = note.tags,
+			created = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).birthtime.sec)) or "",
+			modified = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).mtime.sec)) or "",
+		}
+
 		if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
 			for k, v in pairs(note.metadata) do
 				out[k] = v
 			end
 		end
+
 		return out
 	end,
 	ui = {
@@ -86,11 +93,11 @@ obsidian.setup({
 		},
 	},
 	attachments = {
-		img_folder = "assets/images", -- This is the default
+		img_folder = "Assets/images", -- This is the default
 		-- TODO: do experiment with this also
 		img_text_func = function(client, path)
 			path = client:vault_relative_path(path) or path
-			return fmt("![%s](%s)", path.name, path)
+			return string.format("![%s](%s)", path.name, path)
 		end,
 	},
 	callbacks = {

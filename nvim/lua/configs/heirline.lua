@@ -11,7 +11,7 @@ local function buf_matches()
 			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 			filetype = {
 				"^harpoon$",
-				"^dashboard$",
+				"dashboard",
 				"^fzf$",
 				"^lazy$",
 				"^lazyterm$",

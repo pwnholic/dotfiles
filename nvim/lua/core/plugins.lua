@@ -23,7 +23,6 @@ return {
 			rq("nvim-cmp")
 		end,
 	},
-	{ "chrisgrieser/cmp_yanky", event = "TextYankPost" },
 	{ "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
 	{ "hrsh7th/cmp-nvim-lsp", event = "InsertEnter" },
 	{ "hrsh7th/cmp-calc", event = "InsertEnter" },
@@ -100,7 +99,7 @@ return {
 		end,
 	},
 
-	{ "echasnovski/mini.bufremove", keys = rq("mini-bufremove").keys },
+	{ "echasnovski/mini.bufremove", keys = rq("mini-bufremove").keys, config = true },
 
 	{
 		"altermo/ultimate-autopair.nvim",
@@ -128,7 +127,9 @@ return {
 		"ibhagwan/fzf-lua",
 		cmd = "FzfLua",
 		keys = rq("fzf-lua").keys,
-		init = rq("fzf-lua").init(),
+		init = function()
+			rq("fzf-lua").init()
+		end,
 		config = function()
 			rq("fzf-lua").setup()
 		end,
@@ -319,12 +320,6 @@ return {
 			rq("vim-illuminate")
 		end,
 		keys = { "]]", "[[" },
-	},
-	{
-		"gbprod/yanky.nvim",
-		dependencies = { "kkharji/sqlite.lua" },
-		keys = rq("yanky").keys,
-		opts = { highlight = { timer = 250 }, ring = { storage = "sqlite" } },
 	},
 
 	{
