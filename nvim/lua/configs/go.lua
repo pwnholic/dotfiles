@@ -24,7 +24,6 @@ require("go").setup({
 	luasnip = true,
 	iferr_vertical_shift = 4,
 	dap_debug = true,
-	diagnostic = require("utils").diagnostic_conf,
 	dap_debug_keymap = false,
 	dap_debug_vt = { enabled_commands = true, all_frames = true },
 	dap_port = 38697,
@@ -46,6 +45,7 @@ require("go").setup({
 		capabilities = require("utils.lsp.default").capabilities,
 		settings = {
 			gopls = {
+				experimentalPostfixCompletions = true,
 				gofumpt = false,
 				codelenses = {
 					gc_details = false,
@@ -91,4 +91,5 @@ require("go").setup({
 			},
 		},
 	},
+
 })
