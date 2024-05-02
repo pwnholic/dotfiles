@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-doc-name, unused-local
+---@diagnostic disable: undefined-doc-name, unused-local, inject-field
 local ok, obsidian = pcall(require, "obsidian")
 if not ok then
 	return
@@ -26,10 +26,7 @@ obsidian.setup({
 		date_format = "%Y-%m-%d",
 		time_format = "%H:%M",
 		-- TODO: implement this shit...
-		substitutions = {
-			modified = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).mtime.sec)),
-			created = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).birthtime.sec)),
-		},
+		substitutions = {},
 	},
 	mappings = {
 		["gf"] = {
@@ -69,8 +66,8 @@ obsidian.setup({
 			id = note.id,
 			aliases = note.aliases,
 			tags = note.tags,
-			created = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).birthtime.sec)) or "",
-			modified = tostring(os.date("%c", vim.uv.fs_stat(vim.api.nvim_buf_get_name(0)).mtime.sec)) or "",
+			created = note.created,
+			modified = note.modified,
 		}
 
 		if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
@@ -131,10 +128,14 @@ obsidian.setup({
 			end
 		end,
 
-		-- -- Runs right before writing the buffer for a note.
-		-- ---@param client obsidian.Client
-		-- ---@param note obsidian.Note
-		-- pre_write_note = function(client, note) end,
+		-- Runs right before writing the buffer for a note.
+		---@param client obsidian.Client
+		---@param note obsidian.Note
+		pre_write_note = function(client, note)
+			local stat = vim.uv.fs_stat(vim.fs.normalize(tostring(vim.api.nvim_buf_get_name(0))))
+			note.created = tostring(os.date("%c", stat.birthtime.sec)) or ""
+			note.modified = tostring(os.date("%c", stat.mtime.sec)) or ""
+		end,
 
 		-- -- Runs at the end of `obsidian.setup()`.
 		-- ---@param client obsidian.Client

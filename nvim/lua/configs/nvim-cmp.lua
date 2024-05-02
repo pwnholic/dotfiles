@@ -79,7 +79,6 @@ end
 local cmp_source = {
 	calc = { name = "calc" },
 	luasnip = { name = "luasnip", max_item_count = 3, priority = 700 },
-	cmp_yanky = { name = "cmp_yanky", priority = 400, option = { onlyCurrentFiletype = false, minLength = 3 } },
 	nvim_lsp = { name = "nvim_lsp", max_item_count = 20, priority = 900 },
 	fuzzy_path = {
 		name = "fuzzy_path",
@@ -397,13 +396,13 @@ local cmp_opts = {
 nvim_cmp.setup.cmdline("/", {
 	window = { documentation = false },
 	formatting = { fields = { nvim_cmp.ItemField.Abbr } },
-	sources = { cmp_source.rg, cmp_source.cmp_yanky },
+	sources = { cmp_source.rg },
 })
 
 nvim_cmp.setup.cmdline("?", {
 	window = { documentation = false },
 	formatting = { fields = { nvim_cmp.ItemField.Abbr } },
-	sources = { cmp_source.rg, cmp_source.cmp_yanky },
+	sources = { cmp_source.rg },
 })
 
 nvim_cmp.setup.cmdline(":", {
@@ -412,7 +411,6 @@ nvim_cmp.setup.cmdline(":", {
 	sources = {
 		{ name = "cmdline" },
 		cmp_source.fuzzy_path,
-		cmp_source.cmp_yanky,
 	},
 })
 

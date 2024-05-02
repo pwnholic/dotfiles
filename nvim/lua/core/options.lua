@@ -137,6 +137,14 @@ o.foldlevelstart = 99
 o.foldenable = true
 o.foldmethod = "manual"
 
+g.netrw_banner          = 0
+g.netrw_cursor          = 5
+g.netrw_keepdir         = 0
+g.netrw_keepj           = ''
+g.netrw_list_hide       = [[\(^\|\s\s\)\zs\.\S\+]]
+g.netrw_liststyle       = 1
+g.netrw_localcopydircmd = 'cp -r'
+
 g.markdown_recommended_style = 1
 g.border = "single"
 g.db_ui_use_nerd_fonts = 1

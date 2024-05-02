@@ -99,7 +99,7 @@ return {
 		end,
 	},
 
-	{ "echasnovski/mini.bufremove", keys = rq("mini-bufremove").keys, config = true },
+	{ "echasnovski/mini.bufremove", keys = rq("mini-bufremove").keys },
 
 	{
 		"altermo/ultimate-autopair.nvim",
@@ -374,7 +374,6 @@ return {
 	},
 	{
 		"kevinhwang91/nvim-ufo",
-		event = "BufRead",
 		dependencies = "kevinhwang91/promise-async",
 		keys = rq("nvim-ufo").keys,
 		config = function()
