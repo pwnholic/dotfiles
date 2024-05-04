@@ -159,30 +159,8 @@ function M.lsp_keymaps(client, bufnr)
 		{ "<leader>gX", fzflsp("diagnostics_workspace"), desc = "Workspace Diagnostics", has = methods.workspace_diagnostic },
 		{ "<leader>ga", function() vim.lsp.buf.add_workspace_folder() vim.notify("Added to Workspace") end, desc = "Add Workspace", has = methods.workspace_workspaceFolders },
 		{ "<leader>gq", function() vim.lsp.buf.remove_workspace_folder() vim.notify("Folder has been Removed") end, desc = "Remove Workspace", has = methods.workspace_workspaceFolders },
+		{ "<leader>gc", vim.lsp.buf.code_action, desc = "Code Action", has = methods.textDocument_codeAction },
 		-- stylua: ignore end
-		{
-			"<leader>gc",
-			function()
-				vim.lsp.buf.code_action({
-					context = {
-						only = {
-							"source",
-							"source.fixAll",
-							"source.organizeImports",
-							"quickfix",
-							"refactor",
-							"refactor.inline",
-							"refactor.extract",
-							"refactor.rewrite",
-							"",
-						},
-						diagnostics = {},
-					},
-				})
-			end,
-			desc = "Code Action",
-			has = methods.textDocument_codeAction,
-		},
 		{
 			"<leader>gn",
 			function()

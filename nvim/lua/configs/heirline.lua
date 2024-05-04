@@ -492,7 +492,7 @@ local navic = {
 			if #data > 1 and i < #data then
 				table.insert(child, {
 					provider = " --> ",
-					hl = { bg = colors.bg_statusline, fg = colors.red, bold = true },
+					hl = { bg = colors.bg_statusline, fg = self.mode_color, bold = true },
 				})
 			end
 			table.insert(children, child)

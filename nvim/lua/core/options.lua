@@ -111,7 +111,7 @@ vim.api.nvim_create_autocmd("BufReadPre", { once = true, callback = _rshada })
 wo.cursorline = true
 wo.cursorlineopt = "both"
 wo.colorcolumn = "80,120"
-wo.conceallevel = 2
+wo.conceallevel = 3
 wo.concealcursor = "nc"
 wo.number = true
 wo.relativenumber = true

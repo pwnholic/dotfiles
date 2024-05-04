@@ -17,6 +17,7 @@ ill.configure({
 	},
 	large_file_cutoff = 2000,
 	case_insensitive_regex = false,
+	modes_denylist = { "i", "ic", "ix" },
 })
 
 vim.keymap.set("n", "]]", function()
