@@ -305,7 +305,6 @@ function M.on_attach(client, bufnr)
 end
 
 M.server_config = {
-	solidity_ls_nomicfoundation = { name = "solidity_ls" },
 	lua_ls = {
 		settings = {
 			Lua = {
@@ -337,7 +336,6 @@ M.lang_servers = {
 	rust = "rust-analyzer",
 	solidity = "solidity_ls_nomicfoundation",
 	php = "phpactor",
-	templ = "templ",
 	python = "pyright",
 }
 

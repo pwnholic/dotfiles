@@ -84,18 +84,10 @@ return {
 		lazy = true,
 	},
 	{
-		"folke/todo-comments.nvim",
-		event = "BufRead",
-		keys = rq("comment").todo_comment_keys,
-		config = function()
-			rq("comment").todo_comment_setup()
-		end,
-	},
-	{
 		"numToStr/Comment.nvim",
-		keys = rq("comment").comment_keys,
+		keys = rq("comment").keys,
 		config = function()
-			rq("comment").comment_setup()
+			rq("comment").setup()
 		end,
 	},
 
@@ -259,11 +251,6 @@ return {
 
 	--- treesitter
 	{ "nvim-treesitter/nvim-treesitter-textobjects", event = "BufRead" },
-	{
-		"windwp/nvim-ts-autotag",
-		config = true,
-		ft = { "html", "javascriptreact", "typescriptreact", "templ", "markdown" },
-	},
 	{ "RRethy/nvim-treesitter-endwise", event = "BufRead" },
 	{
 		"Wansmer/treesj",
@@ -370,14 +357,6 @@ return {
 		event = "InsertCharPre",
 		config = function()
 			rq("tabout")
-		end,
-	},
-	{
-		"kevinhwang91/nvim-ufo",
-		dependencies = "kevinhwang91/promise-async",
-		keys = rq("nvim-ufo").keys,
-		config = function()
-			rq("nvim-ufo").setup()
 		end,
 	},
 }
