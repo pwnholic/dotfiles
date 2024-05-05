@@ -87,7 +87,6 @@ function M.setup()
 			return
 		end
 		local fpath = vim.fs.joinpath(dir, fname)
-		---@diagnostic disable-next-line: undefined-field
 		local stat = vim.uv.fs_stat(fpath)
 		if not stat or (stat.type ~= "file" and stat.type ~= "directory") then
 			return
@@ -101,10 +100,8 @@ function M.setup()
 			or not vim.api.nvim_win_is_valid(preview_win)
 			or not vim.api.nvim_buf_is_valid(preview_buf)
 		then
-			local oil_win_height = vim.api.nvim_win_get_height(oil_win)
-			local oil_win_width = vim.api.nvim_win_get_width(oil_win)
-
-			vim.cmd.new({ mods = { vertical = oil_win_width > 6 * oil_win_height } })
+		vim.cmd.new({ mods = { vertical = true } })
+			-- vim.cmd.new({ mods = { horizontal = true } })
 
 			preview_win = vim.api.nvim_get_current_win()
 			preview_buf = vim.api.nvim_get_current_buf()
@@ -117,6 +114,7 @@ function M.setup()
 			vim.bo[preview_buf].buftype = "nofile"
 			vim.bo[preview_buf].bufhidden = "wipe"
 			vim.bo[preview_buf].filetype = "oil_preview"
+
 			vim.opt_local.spell = false
 			vim.opt_local.number = false
 			vim.opt_local.relativenumber = false
@@ -124,6 +122,7 @@ function M.setup()
 			vim.opt_local.foldcolumn = "0"
 			vim.opt_local.winbar = ""
 			vim.opt_local.listchars:append({ tab = "  " })
+
 			vim.api.nvim_set_current_win(oil_win)
 		end
 		-- Set keymap for opening the file from preview buffer
@@ -207,6 +206,7 @@ function M.setup()
 			end, preview_debounce)
 		end,
 	})
+
 	vim.api.nvim_create_autocmd("BufEnter", {
 		desc = "Close preview window when leaving oil buffers.",
 		group = groupid_preview,
@@ -351,7 +351,7 @@ function M.setup()
 							name = string.format("%s%s", name, string.sub(chars, ridx, ridx))
 						end
 						if string.len(name) > len then
-							string.lower(name:gsub(" ", "_"))
+							name:gsub(" ", "_"):lower()
 						end
 						local generate_name = string.format("%s_%s%s.md", os.date("%d%m%Y"), os.date("%S"), name)
 						table.insert(replacement, generate_name)

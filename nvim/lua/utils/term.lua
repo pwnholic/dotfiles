@@ -5,7 +5,6 @@ M.tui = {
 	vi = true,
 	fzf = true,
 	nvi = true,
-	kak = true,
 	vim = true,
 	nvim = true,
 	sudo = true,

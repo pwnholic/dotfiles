@@ -559,7 +559,7 @@ function M.setup()
 	end
 
 	local note_path = os.getenv("HOME") .. "/Notes"
-	local note_args = {
+	local folder_opts = {
 		cwd_header = true,
 		headers = { "actions", "cwd" },
 		prompt = "Folder : ",
@@ -568,7 +568,18 @@ function M.setup()
 		rg_opts = [[--color=never --files --hidden --follow -g '!.git'"]],
 		actions = {
 			["default"] = function(selected, opts)
-				vim.cmd.Oil(fzf_path.entry_to_file(selected[1], opts).path)
+				for i = 1, #selected do
+					local entry = fzf_path.entry_to_file(selected[i], opts, opts.force_uri)
+					if entry.path == "<none>" then
+						goto continue
+					end
+					local fullpath = entry.path or entry.uri and entry.uri:match("^%a+://(.*)")
+					if not fzf_path.is_absolute(fullpath) then
+						fullpath = fzf_path.join({ opts.cwd or opts._cwd or vim.loop.cwd(), fullpath })
+					end
+					vim.cmd.Oil(fullpath)
+					::continue::
+				end
 			end,
 		},
 	}
@@ -576,7 +587,7 @@ function M.setup()
 	map(
 		"n",
 		"<leader>fN",
-		fzfmap("files", vim.tbl_extend("force", note_args, { cwd = note_path })),
+		fzfmap("files", vim.tbl_extend("force", folder_opts, { cwd = note_path })),
 		{ desc = "Find Notes Folder (root)" }
 	)
 	map("n", "<C-S-p>", function()
@@ -587,7 +598,7 @@ function M.setup()
 	end, { desc = "Find Files (cwd)" })
 	map("n", "<leader>ff", fzfmap("files"), { desc = "Find Files (root)" })
 	map("n", "<C-p>", fzfmap("files"), { desc = "Find Files (root)" })
-	map("n", "<leader>fd", fzfmap("files", note_args), { desc = "Find Folder (root)" })
+	map("n", "<leader>fd", fzfmap("files", folder_opts), { desc = "Find Folder (root)" })
 	map("n", "<leader>fn", fzfmap("files", { cwd = note_path }), { desc = "Find Notes Files (root)" })
 	map("n", "<leader>fB", fzfmap("builtin"), { desc = "Find Builtin" })
 	map("n", "<leader>fb", fzfmap("buffers"), { desc = "Find Buffers" })
@@ -678,7 +689,7 @@ M.keys = {
 
 	"<leader>sc",
 	"<leader>sC",
-    {	"<leader>sv",mode = "v"},
+	{ "<leader>sv", mode = "v" },
 	"<leader>/",
 	"<leader>?",
 	"<leader>ss",
