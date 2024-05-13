@@ -31,13 +31,7 @@ M.init = vim.schedule_wrap(function()
 				return {
 					winopts = {
 						split = string.format(
-							[[
-                                    let tabpage_win_list = nvim_tabpage_list_wins(0) |
-                                    \ call v:lua.require'utils.window'.save_heights(tabpage_win_list) |
-                                    \ call v:lua.require'utils.window'.save_views(tabpage_win_list) |
-                                    \ unlet tabpage_win_list |
-                                    \ botright %dnew |
-                              ]],
+							"botright %dnew",
 							math.min(10 + vim.go.ch + (vim.go.ls == 0 and 0 or 1), #items + 2)
 						),
 					},
@@ -280,7 +274,10 @@ function M.setup()
 			["hl+"] = { "fg", "CmpItemAbbrMatch" },
 		},
 		keymap = {
-			builtin = { ["<F1>"] = "toggle-help", ["<esc><esc>"] = "abort" },
+			builtin = {
+				["<F1>"] = "toggle-help",
+				["<esc><esc>"] = "abort",
+			},
 			fzf = {
 				["ctrl-z"] = "abort",
 				["ctrl-c"] = "abort",
@@ -290,7 +287,6 @@ function M.setup()
 				["ctrl-a"] = "beginning-of-line",
 				["ctrl-e"] = "end-of-line",
 				["ctrl-h"] = "toggle-header",
-				["ctrl-y"] = "yank",
 				["alt-a"] = "toggle-all",
 				["alt-,"] = "clear-selection",
 				["ctrl-d"] = "clear-query",
@@ -301,13 +297,7 @@ function M.setup()
 		global_resume_query = true, -- include typed query in `resume`?
 		fzf_opts = no_preview_fzf_opts,
 		winopts = {
-			split = [[
-                let tabpage_win_list = nvim_tabpage_list_wins(0) |
-                \ call v:lua.require'utils.window'.save_heights(tabpage_win_list) |
-                \ call v:lua.require'utils.window'.save_views(tabpage_win_list) |
-                \ unlet tabpage_win_list |
-                \ botright 12new 
-            ]],
+			split = "botright 12new",
 			preview = { hidden = "hidden" },
 		},
 
@@ -432,6 +422,23 @@ function M.setup()
 			actions = {
 				["ctrl-g"] = fzf_actions.toggle_ignore,
 				["alt-f"] = fzf_actions.switch_cwd,
+				["ctrl-y"] = function(selected, opts)
+					for i = 1, #selected do
+						local entry = fzf_path.entry_to_file(selected[i], opts, opts.force_uri)
+						if entry.path == "<none>" then
+							return
+						end
+						local fullpath = entry.path or entry.uri --[[and entry.uri:match("^%a+://(.*)")]]
+						if not fzf_path.is_absolute(fullpath) then
+							fullpath = fzf_path.join({ opts.cwd or opts._cwd or vim.uv.cwd(), fullpath })
+						end
+						fullpath = vim.fn.fnamemodify(fullpath, ":~:.")
+						vim.fn.setreg('"', fullpath)
+						vim.fn.setreg(vim.v.register, fullpath)
+						vim.notify(string.format("[fzf-lua] yanked '%s' to register '%s'", fullpath, vim.v.register))
+						return
+					end
+				end,
 			},
 		},
 		lsp = {
@@ -571,14 +578,30 @@ function M.setup()
 				for i = 1, #selected do
 					local entry = fzf_path.entry_to_file(selected[i], opts, opts.force_uri)
 					if entry.path == "<none>" then
-						goto continue
+						return
 					end
 					local fullpath = entry.path or entry.uri and entry.uri:match("^%a+://(.*)")
 					if not fzf_path.is_absolute(fullpath) then
-						fullpath = fzf_path.join({ opts.cwd or opts._cwd or vim.loop.cwd(), fullpath })
+						fullpath = fzf_path.join({ opts.cwd or opts._cwd or vim.uv.cwd(), fullpath })
 					end
 					vim.cmd.Oil(fullpath)
-					::continue::
+				end
+			end,
+			["ctrl-Y"] = function(selected, opts)
+				for i = 1, #selected do
+					local entry = fzf_path.entry_to_file(selected[i], opts, opts.force_uri)
+					if entry.path == "<none>" then
+						return
+					end
+					local fullpath = entry.path or entry.uri and entry.uri:match("^%a+://(.*)")
+					if not fzf_path.is_absolute(fullpath) then
+						fullpath = fzf_path.join({ opts.cwd or opts._cwd or vim.uv.cwd(), fullpath })
+					end
+					fullpath = vim.fn.fnamemodify(fullpath, ":~:.")
+					vim.fn.setreg('"', fullpath)
+					vim.fn.setreg(vim.v.register, fullpath)
+					vim.notify(string.format("[fzf-lua] yanked '%s' to register '%s'", fullpath, vim.v.register))
+					return
 				end
 			end,
 		},

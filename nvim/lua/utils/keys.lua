@@ -17,7 +17,7 @@ function M.command_abbrev(trig, command, opts)
 		end
 		return
 	end
-	vim.keymap.set("ca", trig, function()
+	vim.keymap.set("c", trig, function()
 		return vim.fn.getcmdcompltype() == "command" and command or trig
 	end, vim.tbl_deep_extend("keep", { expr = true }, opts or {}))
 end

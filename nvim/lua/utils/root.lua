@@ -46,7 +46,7 @@ function M.get_clients(opts)
 		ret = vim.lsp.get_clients(opts)
 	else
 		---@diagnostic disable-next-line: deprecated
-		ret = vim.lsp.get_active_clients(opts)
+		ret = vim.lsp.get_clients(opts)
 		if opts and opts.method then
 			---@param client lsp.Client
 			ret = vim.tbl_filter(function(client)
@@ -208,11 +208,6 @@ function M.get_git()
 	local git_root = vim.fs.find(".git", { path = root, upward = true })[1]
 	local ret = git_root and vim.fn.fnamemodify(git_root, ":h") or root
 	return ret
-end
-
----@param opts? {hl_last?: string}
-function M.pretty_path(opts)
-	return ""
 end
 
 return M

@@ -1,5 +1,12 @@
 ; extends
 
+(atx_heading (atx_h1_marker) @markup.heading.1.markdown (inline) @markup.heading.1.markdown)
+(atx_heading (atx_h2_marker) @markup.heading.2.markdown (inline) @markup.heading.2.markdown)
+(atx_heading (atx_h3_marker) @markup.heading.3.markdown (inline) @markup.heading.3.markdown)
+(atx_heading (atx_h4_marker) @markup.heading.4.markdown (inline) @markup.heading.4.markdown)
+(atx_heading (atx_h5_marker) @markup.heading.5.markdown (inline) @markup.heading.5.markdown)
+(atx_heading (atx_h6_marker) @markup.heading.6.markdown (inline) @markup.heading.6.markdown)
+
 ; bullet points
 ([(list_marker_plus) (list_marker_minus) (list_marker_star) (list_marker_dot)] @punctuation.special (#offset! @punctuation.special 0 0 0 -1) (#set! conceal "•"))
 
@@ -17,9 +24,7 @@
 (pipe_table_header (pipe_table_cell) @pipe_table_header)
 
 ; Block quotes
-;((block_quote_marker) @block_quote_marker (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
-;((block_continuation) @block_quote_marker (#eq? @block_quote_marker "> ") (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
-;((block_continuation) @block_quote_marker (#eq? @block_quote_marker ">") (#set! conceal "▐"))
-;(block_quote (paragraph) @text.literal)
-
-
+((block_quote_marker) @block_quote_marker (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
+((block_continuation) @block_quote_marker (#eq? @block_quote_marker "> ") (#offset! @block_quote_marker 0 0 0 -1) (#set! conceal "▐"))
+((block_continuation) @block_quote_marker (#eq? @block_quote_marker ">") (#set! conceal "▐"))
+(block_quote (paragraph) @text.literal)

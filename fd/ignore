@@ -25,3 +25,7 @@ dosdevices/
 node_modules/
 vendor/
 venv/
+example/
+templates/
+assets/
+canvases/

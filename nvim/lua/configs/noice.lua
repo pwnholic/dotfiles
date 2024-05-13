@@ -48,10 +48,13 @@ require("noice").setup({
 		{
 			filter = {
 				event = "msg_show",
-				any = { { find = "%d+L, %d+B" }, { find = "; after #%d+" }, { find = "; before #%d+" } },
+				any = {
+					{ find = "%d+L, %d+B" },
+					{ find = "; after #%d+" },
+					{ find = "; before #%d+" },
+				},
 			},
 			view = "mini",
-			opts = { stop = true, skip = true },
 		},
 	},
 	views = {
@@ -79,7 +82,7 @@ require("noice").setup({
 		bottom_search = true,
 		command_palette = true,
 		long_message_to_split = true,
-		inc_rename = false,
+		inc_rename = true,
 		lsp_doc_border = true,
 	},
 })

@@ -100,6 +100,7 @@ return {
 			rq("ultimate-autopair")
 		end,
 	},
+
 	{
 		"kylechui/nvim-surround",
 		keys = rq("nvim-surround").keys,
@@ -181,13 +182,6 @@ return {
 	},
 
 	-- lsp
-	{
-		"nvimtools/none-ls.nvim",
-		event = "BufWritePre",
-		config = function()
-			rq("none-ls")
-		end,
-	},
 
 	{
 		"williamboman/mason.nvim",
@@ -212,14 +206,6 @@ return {
 		ft = "markdown",
 		config = function()
 			rq("obsidian")
-		end,
-	},
-
-	{
-		"lukas-reineke/headlines.nvim",
-		ft = { "markdown", "norg", "rmd", "org" },
-		config = function()
-			rq("headlines")
 		end,
 	},
 
@@ -250,8 +236,13 @@ return {
 	},
 
 	--- treesitter
-	{ "nvim-treesitter/nvim-treesitter-textobjects", event = "BufRead" },
-	{ "RRethy/nvim-treesitter-endwise", event = "BufRead" },
+	{
+		"echasnovski/mini.ai",
+		event = "VeryLazy",
+		config = function()
+			rq("mini-ai")
+		end,
+	},
 	{
 		"Wansmer/treesj",
 		keys = {
@@ -267,9 +258,19 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
 		event = { "FileType", "VeryLazy" },
+		init = function(plugin)
+			require("lazy.core.loader").add_to_rtp(plugin)
+			require("nvim-treesitter.query_predicates")
+		end,
 		keys = {
 			{ "<leader><space>", desc = "Incremental Selection" },
 			{ "<bs>", desc = "Decrement Selection", mode = "x" },
+		},
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			config = function()
+				rq("nvim-treesitter-textobjects")
+			end,
 		},
 		build = ":TSUpdate",
 		config = function()
@@ -349,14 +350,31 @@ return {
 		end,
 	},
 
-	{ "smjonas/inc-rename.nvim", config = true, event = { "BufRead", "LspAttach" }, cmd = "IncRename" },
+	-- {
+	-- 	"vhyrro/luarocks.nvim",
+	-- 	priority = 1000,
+	-- 	config = true,
+	-- 	opts = { rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" } },
+	-- },
 	{
-		"abecodes/tabout.nvim",
-		lazy = false,
-		priority = 1000,
-		event = "InsertCharPre",
+		"rest-nvim/rest.nvim",
+		ft = "http",
+		keys = { "<leader>rr", "<leader>rl" },
+		-- dependencies = { "luarocks.nvim" },
 		config = function()
-			rq("tabout")
+			rq("rest")
+		end,
+	},
+	{
+		"stevearc/conform.nvim",
+		cmd = "ConformInfo",
+		event = "BufWritePre",
+		keys = { "<leader>uf" },
+		init = function()
+			vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+		end,
+		config = function()
+			rq("conform")
 		end,
 	},
 }

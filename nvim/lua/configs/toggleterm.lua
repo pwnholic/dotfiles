@@ -42,15 +42,21 @@ function M.setup()
 				return math.floor(vim.o.columns * 0.4)
 			end
 		end,
-		on_create = function(term)
-			vim.keymap.set("t", "<C-h>", "<cmd>wincmd h<cr>", { buffer = term.bufnr })
-			vim.keymap.set("t", "<C-j>", "<cmd>wincmd j<cr>", { buffer = term.bufnr })
-			vim.keymap.set("t", "<C-k>", "<cmd>wincmd k<cr>", { buffer = term.bufnr })
-			vim.keymap.set("t", "<C-l>", "<cmd>wincmd l<cr>", { buffer = term.bufnr })
-			vim.keymap.set("t", "<esc><esc>", function()
-				vim.notify("Back to Normal Mode", 2)
-				vim.cmd.stopinsert()
-			end, { buffer = term.bufnr })
+		on_create = function(opts)
+			vim.o.signcolumn = "no"
+			local map = vim.keymap.set
+
+            -- stylua: ignore start
+			map({ "n", "t" }, "<C-h>", "<cmd>wincmd h<cr>", { buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-j>", "<cmd>wincmd j<cr>", { buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-k>", "<cmd>wincmd k<cr>", { buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-l>", "<cmd>wincmd l<cr>", { buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-Up>", "<cmd>resize +2<cr>", { silent = true, buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-Down>", "<cmd>resize -2<cr>", { silent = true, buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-Left>", "<cmd>vertical resize +2<cr>", { silent = true, buffer = opts.bufnr })
+			map({ "n", "t" }, "<C-Right>", "<cmd>vertical resize -2<cr>", { silent = true, buffer = opts.bufnr })
+			map("t", "<esc><esc>", function() vim.notify("Back to Normal Mode", 2) vim.cmd.stopinsert() end, { buffer = opts.bufnr })
+			-- stylua: ignore end
 		end,
 	})
 end

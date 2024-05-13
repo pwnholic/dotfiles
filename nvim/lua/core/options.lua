@@ -20,6 +20,7 @@ opt.termguicolors = true
 opt.updatetime = 150
 opt.cursorcolumn = true
 opt.wildmode = "longest:full,full"
+opt.wildignore = { "*/.git/*", "*/node_modules/*" } -- Ignore these files/folders
 opt.guifont = {
 	"Iosevka_NF_Medium",
 	"Symbols_Nerd_Font",
@@ -41,7 +42,7 @@ opt.smartcase = true
 
 opt.scrolloff = 10
 opt.sidescrolloff = 8
-opt.smoothscroll = true
+-- opt.smoothscroll = true
 
 opt.autowrite = true
 opt.autowriteall = true
@@ -69,6 +70,12 @@ opt.fillchars = {
 	diff = "╱",
 	eob = " ",
 }
+
+
+opt.foldcolumn = "1" -- Show the fold column
+opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+opt.foldlevelstart = 99
+opt.foldenable = true
 
 if vim.fn.executable("rg") == 1 then
 	opt.grepprg = "rg --vimgrep --no-heading --smart-case"

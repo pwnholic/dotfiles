@@ -120,7 +120,7 @@ require("tokyonight").setup({
 
 		hl["@task_list_marker_unchecked"] = { fg = c.error, bg = c.none, bold = true }
 		hl["@task_list_marker_checked"] = { fg = c.green, bg = c.none, italic = true }
-		hl["@block_quote_marker"] = { fg = c.yellow1, bg = c.none }
+		hl["@block_quote_marker"] = { fg = c.yellow1 }
 		hl["@strong_emphasis"] = { fg = c.orange, bold = true, underline = true }
 		hl["@strikethrough"] = { fg = c.teal, italic = true }
 		hl["@emphasis"] = { fg = c.cyan1, italic = true, underline = true }

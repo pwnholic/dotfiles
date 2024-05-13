@@ -84,10 +84,10 @@ local cmp_source = {
 		name = "fuzzy_path",
 		priority = 1000,
         --stylua: ignore start
-		option = { fd_cmd = { "fd", "-p", "-H", "-L", "-td", "-tf", "-tl", "--max-results=1024", "--mount", "-c=never", "-E=*.git/", "-E=*.venv/", "-E=*Cache*/", "-E=*cache*/", "-E=.*Cache*/", "-E=.*cache*/", "-E=.*wine/", "-E=.cargo/", "-E=.conda/", "-E=.dot/", "-E=.fonts/", "-E=.ipython/", "-E=.java/", "-E=.jupyter/", "-E=.luarocks/", "-E=.mozilla/", "-E=.npm/", "-E=.nvm/", "-E=.steam*/", "-E=.thunderbird/", "-E=.tmp/", "-E=__pycache__/", "-E=dosdevices/", "-E=node_modules/", "-E=vendor/", "-E=venv/", } },
+		option = { fd_cmd = { vim.fn.executable('fd') == 1 and 'fd' or 'fdfind', "-p", "-H", "-L", "-td", "-tf", "-tl", "--max-results=1024", "--mount", "-c=never", "-E=*.git/", "-E=*.venv/", "-E=*Cache*/", "-E=*cache*/", "-E=.*Cache*/", "-E=.*cache*/", "-E=.*wine/", "-E=.cargo/", "-E=.conda/", "-E=.dot/", "-E=.fonts/", "-E=.ipython/", "-E=.java/", "-E=.jupyter/", "-E=.luarocks/", "-E=.mozilla/", "-E=.npm/", "-E=.nvm/", "-E=.steam*/", "-E=.thunderbird/", "-E=.tmp/", "-E=__pycache__/", "-E=dosdevices/", "-E=node_modules/", "-E=vendor/", "-E=venv/", } },
 		--stylua: ignore end
-		entry_filter = function()
-			return vim.bo.ft ~= "markdown" and vim.bo.ft ~= "tex"
+		entry_filter = function(entry)
+			return not vim.tbl_contains({ "Searching...", "No matches found" }, tostring(entry.completion_item.label))
 		end,
 	},
 	rg = {
@@ -108,7 +108,13 @@ local cmp_source = {
 	},
 }
 
+-- Slow banget kalo index big file
 local function follow_expandtab(fallback)
+	if vim.bo.filetype == "markdown" then
+		fallback()
+		return
+	end
+
 	local cursor_row, cursor_col = table.unpack(vim.api.nvim_win_get_cursor(0))
 	if cursor_row == 1 and cursor_col == 0 then
 		return
@@ -123,6 +129,7 @@ local function follow_expandtab(fallback)
 		if get_indent > 0 and cursor_col > get_indent then
 			local new_line = vim.fn.strcharpart(current_line, 0, get_indent)
 				.. vim.fn.strcharpart(current_line, cursor_col)
+
 			vim.api.nvim_buf_set_lines(0, cursor_row - 1, cursor_row, true, { new_line })
 			vim.api.nvim_win_set_cursor(0, { cursor_row, math.min(get_indent or 0, vim.fn.strcharlen(new_line)) })
 		elseif cursor_row > 1 and (get_indent > 0 and cursor_col + 1 > get_indent) then
@@ -131,6 +138,7 @@ local function follow_expandtab(fallback)
 				local prev_indent = ts_indent.get_indent(cursor_row - 1) or 0
 				local new_line = vim.fn.strcharpart(current_line, 0, prev_indent)
 					.. vim.fn.strcharpart(current_line, cursor_col)
+
 				vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
 				vim.api.nvim_win_set_cursor(
 					0,
@@ -139,6 +147,7 @@ local function follow_expandtab(fallback)
 			else
 				local len = vim.fn.strcharlen(prev_line)
 				local new_line = prev_line .. vim.fn.strcharpart(current_line, cursor_col)
+
 				vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
 				vim.api.nvim_win_set_cursor(0, { cursor_row - 1, math.max(0, len) })
 			end
@@ -249,7 +258,7 @@ local cmp_opts = {
 				local current_line = vim.api.nvim_buf_get_lines(0, cursor_row - 1, cursor_row, true)[1]
 				local get_indent = ts_indent.get_indent(cursor_row)
 
-				if nvim_cmp.visible() and not vim.snippet.active() then
+				if nvim_cmp.visible() then
 					nvim_cmp.select_next_item()
 				elseif luasnip.expand_or_jumpable() then
 					vim.fn.feedkeys(
@@ -272,8 +281,6 @@ local cmp_opts = {
 					ctx.client_id = client.id
 					ctx.bufnr = vim.api.nvim_get_current_buf()
 					vim.lsp.inlay_hint.on_refresh(nil, nil, ctx, nil)
-				elseif cursor_col >= get_indent then
-					require("tabout").tabout()
 				else
 					fallback()
 				end
@@ -418,6 +425,19 @@ nvim_cmp.setup.cmdline("@", { enabled = false })
 nvim_cmp.setup.cmdline(">", { enabled = false })
 nvim_cmp.setup.cmdline("-", { enabled = false })
 nvim_cmp.setup.cmdline("=", { enabled = false })
+
+local Kind = nvim_cmp.lsp.CompletionItemKind
+nvim_cmp.event:on("confirm_done", function(event) -- auto braket karena gk semua lsp support
+	if not vim.tbl_contains({ "go", "lua", "python" } or {}, vim.bo.filetype) then
+		return
+	end
+	local entry = event.entry
+	local item = entry:get_completion_item()
+	if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
+		local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
+		vim.api.nvim_feedkeys(keys, "i", true)
+	end
+end)
 
 local enabled, cmp_on = true, true
 vim.keymap.set("n", "<leader>uk", function()

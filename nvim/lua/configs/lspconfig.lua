@@ -1,8 +1,7 @@
 local lsp_default = require("utils.lsp.default")
 
-local methods = vim.lsp.protocol.Methods
-local register_capability = vim.lsp.handlers[methods.client_registerCapability]
-vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
+local register_capability = vim.lsp.handlers["client/registerCapability"]
+vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
 	local ret = register_capability(err, res, ctx)
 	local bufnr = vim.api.nvim_get_current_buf()
 	if not vim.api.nvim_buf_is_valid(bufnr) then

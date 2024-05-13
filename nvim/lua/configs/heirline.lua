@@ -8,7 +8,7 @@ local function buf_matches()
 	if
 		not conditions.buffer_matches({
 			bufname = { "sh" },
-			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
+			buftype = { "nofile", "terminal", "prompt", "quickfix" },
 			filetype = {
 				"^harpoon$",
 				"dashboard",
@@ -107,12 +107,16 @@ local vim_mode = {
 		},
 		mode_colors = mode_colors,
 	},
-	provider = function(self)
-		return fmt("%s%s%s", " %1(", self.mode_names[self.mode], "%) ")
-	end,
-	hl = function(self)
-		return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }
-	end,
+	{
+
+		provider = function(self)
+			return fmt("%s%s%s", " %1(", self.mode_names[self.mode], "%) ")
+		end,
+		hl = function(self)
+			return { bg = self.mode_color, fg = colors.bg_statusline, bold = true }
+		end,
+	},
+	space,
 }
 
 local git = {
@@ -121,7 +125,6 @@ local git = {
 		self.status_dict = vim.b.gitsigns_status_dict
 	end,
 	{
-		space,
 		{
 			provider = function(self)
 				return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
@@ -174,21 +177,17 @@ local git = {
 local filename = {
 	condition = buf_matches,
 	{
-		space,
-		{
-			init = function(self)
-				self.icon, self.fg = require("nvim-web-devicons").get_icon_color_by_filetype(vim.bo.filetype)
-			end,
-			provider = function(self)
-				return fmt("%s ", self.icon or "")
-			end,
-			hl = function(self)
-				return { fg = self.fg, bg = colors.bg_statusline }
-			end,
-		},
+		init = function(self)
+			self.icon, self.fg = require("nvim-web-devicons").get_icon_color_by_filetype(vim.bo.filetype)
+		end,
+		provider = function(self)
+			return fmt("%s ", self.icon or "")
+		end,
+		hl = function(self)
+			return { fg = self.fg, bg = colors.bg_statusline }
+		end,
 	},
 	{
-		space,
 		{
 			condition = function()
 				return not vim.tbl_contains({ "[No Name]", "" }, vim.api.nvim_buf_get_name(0))
@@ -197,10 +196,17 @@ local filename = {
 			static = { mode_colors = mode_colors },
 			{
 				provider = function()
+					-- TODO: fix oil-trash:/// error
 					if vim.bo.filetype == "oil" then
-						return vim.fn.expand("%:f")
+						local path = vim.api
+							.nvim_buf_get_name(0)
+							:gsub("oil%-trash://", "[trash] ")
+							:gsub("oil://", "")
+							:gsub(vim.env.HOME, "~")
+							:gsub("/$", "")
+						return icons.kinds.Folder .. " " .. path .. "/"
 					end
-					return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+					return fmt(" %s", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t"))
 				end,
 				hl = function(self)
 					return { bold = true, fg = self.mode_color, bg = colors.bg_statusline }
@@ -562,34 +568,7 @@ local current_path = {
 }
 
 local stc_get_extmarks = {
-	get_extmarks = function(self, bufnr, lnum)
-		local signs = {}
-		local extmarks = vim.api.nvim_buf_get_extmarks(
-			0,
-			bufnr,
-			{ lnum - 1, 0 },
-			{ lnum - 1, -1 },
-			{ details = true, type = "sign" }
-		)
-		for _, extmark in pairs(extmarks) do
-			-- Exclude gitsigns
-			if extmark[4].ns_id ~= self.git_ns then
-				signs[#signs + 1] = {
-					name = extmark[4].sign_hl_group or "",
-					text = extmark[4].sign_text,
-					sign_hl_group = extmark[4].sign_hl_group,
-					priority = extmark[4].priority,
-				}
-			end
-		end
-		-- Sort by priority
-		table.sort(signs, function(a, b)
-			return (a.priority or 0) > (b.priority or 0)
-		end)
-
-		return signs
-	end,
-	git_ns = vim.api.nvim_create_namespace("gitsigns_extmark_signs_"),
+	bufnr = vim.api.nvim_win_get_buf(0),
 	click_args = function(self, minwid, clicks, button, mods)
 		local args = {
 			minwid = minwid,
@@ -605,6 +584,7 @@ local stc_get_extmarks = {
 		args.sign = self.signs[sign]
 		vim.api.nvim_set_current_win(args.mousepos.winid)
 		vim.api.nvim_win_set_cursor(0, { args.mousepos.line, 0 })
+
 		return args
 	end,
 	resolve = function(self, name)
@@ -629,6 +609,13 @@ local stc_get_extmarks = {
 		Dap = function()
 			require("dap").toggle_breakpoint()
 		end,
+		Fold = function(args)
+			local line = args.mousepos.line
+			if vim.fn.foldlevel(line) <= vim.fn.foldlevel(line - 1) then
+				return
+			end
+			vim.cmd.execute("'" .. line .. "fold" .. (vim.fn.foldclosed(line) == -1 and "close" or "open") .. "'")
+		end,
 		GitSigns = function()
 			vim.defer_fn(function()
 				require("gitsigns").blame_line({ full = true })
@@ -637,15 +624,62 @@ local stc_get_extmarks = {
 	},
 }
 
+local git_ns = vim.api.nvim_create_namespace("gitsigns_extmark_signs_")
+local function get_signs(lnum)
+	local signs = {}
+	if vim.fn.has("nvim-0.10") > 0 then
+		local extmarks = vim.api.nvim_buf_get_extmarks(
+			0,
+			-1,
+			{ lnum - 1, 0 },
+			{ lnum - 1, -1 },
+			{ details = true, type = "sign" }
+		)
+
+		for _, extmark in pairs(extmarks) do
+			-- Exclude gitsigns
+			if extmark[4].ns_id ~= git_ns then
+				signs[#signs + 1] = {
+					name = extmark[4].sign_hl_group or "",
+					text = extmark[4].sign_text,
+					sign_hl_group = extmark[4].sign_hl_group,
+					priority = extmark[4].priority,
+				}
+			end
+		end
+	else
+		signs = vim.fn.sign_getplaced(vim.api.nvim_win_get_buf(0), { group = "*", lnum = vim.v.lnum })
+
+		-- if #signs == 0 or signs[1].signs == nil then
+		--   return
+		-- end
+
+		-- Filter out git signs
+		signs = vim.tbl_filter(function(sign)
+			return not vim.startswith(sign.group, "gitsigns")
+		end, signs[1].signs)
+
+		-- Update sign meta data
+		for _, sign in ipairs(signs) do
+			sign.text = vim.fn.sign_getdefined(sign.name)[1].text
+			sign.sign_hl_group = sign.name
+		end
+	end
+
+	table.sort(signs, function(a, b)
+		return (a.priority or 0) > (b.priority or 0)
+	end)
+
+	return signs
+end
+
 local stc_get_signs = {
 	init = function(self)
-		local signs = self.get_extmarks(self, -1, vim.v.lnum)
+		local signs = get_signs(vim.v.lnum)
 		self.sign = signs[1]
 	end,
 	provider = function(self)
-		return (
-			self.sign and vim.fn.strcharpart(self.sign.text or "", 0, 2)--[[@type string]]
-		) or ""
+		return self.sign and self.sign.text or "  "
 	end,
 	hl = function(self)
 		return self.sign and self.sign.sign_hl_group
@@ -655,7 +689,7 @@ local stc_get_signs = {
 		update = true,
 		callback = function(self, ...)
 			local line = self.click_args(self, ...).mousepos.line
-			local sign = self.get_signs(self, -1, line)[1]
+			local sign = get_signs(line)[1]
 			if sign then
 				self:resolve(sign.name)
 			end
@@ -673,41 +707,65 @@ local stc_get_lnum = {
 	},
 }
 
+-- local stc_get_fold = {
+-- 	init = function(self)
+-- 		self.can_fold = vim.fn.foldlevel(vim.v.lnum) > vim.fn.foldlevel(vim.v.lnum - 1)
+-- 	end,
+-- 	{
+-- 		condition = function(self)
+-- 			return vim.v.virtnum == 0 and self.can_fold
+-- 		end,
+-- 		provider = "%C",
+-- 	},
+-- 	{
+-- 		condition = function(self)
+-- 			return not self.can_fold
+-- 		end,
+-- 		space,
+-- 	},
+-- 	on_click = {
+-- 		name = "sc_fold_click",
+-- 		callback = function(self, ...)
+-- 			self.handlers.Fold(self.click_args(self, ...))
+-- 		end,
+-- 	},
+-- }
+
 local stc_get_gitsign = {
 	{
 		condition = function()
-			return conditions.is_git_repo() and vim.v.virtnum == 0
+			return conditions.is_git_repo()
 		end,
 		init = function(self)
 			local extmark = vim.api.nvim_buf_get_extmarks(
 				0,
-				self.git_ns,
+				git_ns,
 				{ vim.v.lnum - 1, 0 },
 				{ vim.v.lnum - 1, -1 },
 				{ limit = 1, details = true }
 			)[1]
+
 			self.sign = extmark and extmark[4]["sign_hl_group"]
 		end,
-		provider = "•",
-		-- provider = "▍",
-		hl = function(self)
-			return self.sign or { fg = "bg" }
-		end,
-		on_click = {
-			name = "sc_gitsigns_click",
-			callback = function(self, ...)
-				self.handlers.GitSigns(self.click_args(self, ...))
+		{
+			provider = "│",
+			hl = function(self)
+				return self.sign or { fg = "bg" }
 			end,
+			on_click = {
+				name = "sc_gitsigns_click",
+				callback = function(self, ...)
+					self.handlers.GitSigns(self.click_args(self, ...))
+				end,
+			},
 		},
 	},
 	{
 		condition = function()
-			return not conditions.is_git_repo() or vim.v.virtnum ~= 0
+			return not conditions.is_git_repo()
 		end,
-		provider = "",
-		hl = "HeirlineStatusColumn",
+		space,
 	},
-	space,
 }
 
 local disable_winbar_cb = function(args)
@@ -841,6 +899,7 @@ require("heirline").setup({
 		stc_get_signs,
 		align,
 		stc_get_lnum,
+		-- stc_get_fold,
 		stc_get_gitsign,
 	},
 })

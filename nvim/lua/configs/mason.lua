@@ -17,15 +17,17 @@ local mason_install = {
 	"prettier",
 	"goimports",
 
-    "mdformat",
+	"mdformat",
 	"delve",
-    "golangci-lint",
-    "markdownlint",
-    "selene"
+	"golangci-lint",
+	"markdownlint",
+	"selene",
+	"eslint_d",
 }
 
 require("mason").setup({
 	ensure_installed = mason_install,
+	max_concurrent_installers = 10,
 })
 
 local mr = require("mason-registry")

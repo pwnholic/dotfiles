@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not (vim.uv or vim.uv).fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
 		"clone",
@@ -15,14 +15,7 @@ require("lazy").setup({
 	root = vim.fn.stdpath("data") .. "/lazy",
 	defaults = { lazy = true, version = "*" },
 	spec = require("core.plugins"),
-	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
-	concurrency = jit.os:find("Windows") and (vim.uv.available_parallelism() * 2) or nil,
-	git = {
-		log = { "-8" }, -- show the last 8 commits
-		timeout = 120, -- kill processes that take more than 2 minutes
-		url_format = "https://github.com/%s.git",
-		filter = true,
-	},
+	concurrency = 10,
 	install = { missing = true, colorscheme = { "tokyonight" } },
 	ui = {
 		size = { width = 0.8, height = 0.8 },
@@ -39,13 +32,5 @@ require("lazy").setup({
 	performance = {
 		cache = { enabled = true },
 		reset_packpath = true, -- reset the package path to improve startup time
-		rtp = {},
 	},
-	readme = {
-		enabled = true,
-		root = vim.fn.stdpath("state") .. "/lazy/readme",
-		files = { "README.md", "lua/**/README.md" },
-		skip_if_doc_exists = true,
-	},
-	state = vim.fn.stdpath("state") .. "/lazy/state.json",
 })

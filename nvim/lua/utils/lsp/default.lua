@@ -1,7 +1,5 @@
 local M = {}
 
-local methods = vim.lsp.protocol.Methods
-
 local function lsp_code_action(bufnr)
 	local code_action = {
 		lb_icon = "💡",
@@ -45,16 +43,16 @@ local function lsp_code_action(bufnr)
 			vim.fn.sign_unplace(code_action.sign_group, { id = code_action[winid].lightbulb_line, buffer = "%" })
 		end
 
-		if line then
-			local id = vim.fn.sign_place(
-				line,
-				code_action.sign_group,
-				code_action.sign_name,
-				"%",
-				{ lnum = line + 1, priority = code_action.sign_priority }
-			)
-			code_action[winid].lightbulb_line = id
-		end
+		-- if line then
+		-- 	local id = vim.fn.sign_place(
+		-- 		line,
+		-- 		code_action.sign_group,
+		-- 		code_action.sign_name,
+		-- 		"%",
+		-- 		{ lnum = line + 1, priority = code_action.sign_priority }
+		-- 	)
+		-- 	code_action[winid].lightbulb_line = id
+		-- end
 	end
 
 	local function render_virtual_text(line, diagnostics)
@@ -113,7 +111,7 @@ local function lsp_code_action(bufnr)
 	params.context = { diagnostics = get_diagnostic }
 	local line = params.range.start.line
 	local callback = render_virtual_text(line, get_diagnostic)
-	return vim.lsp.buf_request(bufnr, methods.textDocument_codeAction, params, callback)
+	return vim.lsp.buf_request(bufnr, "textDocument/codeAction", params, callback)
 end
 
 local function fzflsp(builtin, opts)
@@ -142,34 +140,31 @@ function M.lsp_keymaps(client, bufnr)
 	local skip = { mode = true, id = true, ft = true, rhs = true, lhs = true }
 	local keymaps = handler_keys.resolve({
         -- stylua: ignore start
-		{ "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "Definition", has = methods.textDocument_definition },
-		{ "gD", "<cmd>Trouble lsp_type_definitions<cr>", desc = "Type Definitions", has = methods.textDocument_typeDefinition },
-		{ "<leader>gr", "<cmd>Trouble lsp_references<cr>", desc = "References", has = methods.textDocument_references },
-		{ "<leader>gy", "<cmd>Trouble lsp_implementations<cr>", desc = "Implementation", has = methods.textDocument_implementation },
-		{ "<leader>gl", vim.lsp.codelens.run, desc = "Run Codelens", has = methods.textDocument_codeLens },
-		{ "<leader>gd", fzflsp("lsp_declarations"), desc = "Declaration", has = methods.textDocument_declaration },
-		{ "<leader>gs", fzflsp("lsp_document_symbols"), desc = "Document Symbols", has = methods.textDocument_documentSymbol },
-		{ "<leader>gS", fzflsp("lsp_live_workspace_symbols"), desc = "Workspace Symbols", has = methods.workspace_symbol },
-        { "<leader>gi", fzflsp("lsp_incoming_calls"), desc = "Incoming Calls", has = methods.callHierarchy_incomingCalls },
-		{ "<leader>go", fzflsp("lsp_outgoing_calls"), desc = "Outgoing Calls", has = methods.callHierarchy_outgoingCalls },
+		{ "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "Definition", has = "textDocument/definition" },
+		{ "gD", "<cmd>Trouble lsp_type_definitions<cr>", desc = "Type Definitions", has = "textDocument/typeDefinition" },
+		{ "<leader>gr", "<cmd>Trouble lsp_references<cr>", desc = "References", has = "textDocument/references" },
+		{ "<leader>gy", "<cmd>Trouble lsp_implementations<cr>", desc = "Implementation", has = "textDocument/implementation" },
+		{ "<leader>gl", vim.lsp.codelens.run, desc = "Run Codelens", has = "textDocument/codeLens" },
+		{ "<leader>gd", fzflsp("lsp_declarations"), desc = "Declaration", has = "textDocument/declaration" },
+		{ "<leader>gs", fzflsp("lsp_document_symbols"), desc = "Document Symbols", has = "textDocument/documentSymbol" },
+		{ "<leader>gS", fzflsp("lsp_live_workspace_symbols"), desc = "Workspace Symbols", has = "workspace/symbol" },
+        { "<leader>gi", fzflsp("lsp_incoming_calls"), desc = "Incoming Calls", has ="callHierarchy/incomingCalls" },
+		{ "<leader>go", fzflsp("lsp_outgoing_calls"), desc = "Outgoing Calls", has = "callHierarchy/outgoingCalls" },
 		{ "<leader>gf", fzflsp("lsp_finder"), desc = "Lsp Finder" },
-		{ "K", vim.lsp.buf.hover, desc = "Hover Document", has = methods.textDocument_hover },
-		{ "<C-k>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = { "i" }, has = methods.textDocument_signatureHelp },
-		{ "<leader>gx", fzflsp("diagnostics_document"), desc = "Buffer Diagnostics", has = methods.workspace_diagnostic },
-		{ "<leader>gX", fzflsp("diagnostics_workspace"), desc = "Workspace Diagnostics", has = methods.workspace_diagnostic },
-		{ "<leader>ga", function() vim.lsp.buf.add_workspace_folder() vim.notify("Added to Workspace") end, desc = "Add Workspace", has = methods.workspace_workspaceFolders },
-		{ "<leader>gq", function() vim.lsp.buf.remove_workspace_folder() vim.notify("Folder has been Removed") end, desc = "Remove Workspace", has = methods.workspace_workspaceFolders },
-		{ "<leader>gc", vim.lsp.buf.code_action, desc = "Code Action", has = methods.textDocument_codeAction },
+		{ "K", vim.lsp.buf.hover, desc = "Hover Document", has ="textDocument/hover"},
+		{ "<C-k>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = { "i" }, has = "textDocument/signatureHelp" },
+		{ "<leader>gx", fzflsp("diagnostics_document"), desc = "Buffer Diagnostics", has = "workspace/diagnostic"},
+		{ "<leader>gX", fzflsp("diagnostics_workspace"), desc = "Workspace Diagnostics", has =  "workspace/diagnostic" },
+		{ "<leader>ga", function() vim.lsp.buf.add_workspace_folder() vim.notify("Added to Workspace") end, desc = "Add Workspace", has ="workspace/workspaceFolders"},
+		{ "<leader>gq", function() vim.lsp.buf.remove_workspace_folder() vim.notify("Folder has been Removed") end, desc = "Remove Workspace", has ="workspace/workspaceFolders" },
+		{ "<leader>gc", vim.lsp.buf.code_action, desc = "Code Action", has = "textDocument/codeAction" },
 		-- stylua: ignore end
 		{
 			"<leader>gn",
-			function()
-				local inc_rename = require("inc_rename")
-				return ":" .. inc_rename.config.cmd_name .. " " .. vim.fn.expand("<cword>")
-			end,
+			vim.lsp.buf.rename,
 			desc = "Rename Symbol",
 			expr = true,
-			has = methods.textDocument_rename,
+			has = "textDocument/rename",
 		},
 		{
 			"<leader>gw",
@@ -179,7 +174,7 @@ function M.lsp_keymaps(client, bufnr)
 				end
 			end,
 			desc = "List Workspace",
-			has = methods.workspace_workspaceFolders,
+			has = "workspace/workspaceFolders",
 		},
 		{
 			"<leader>gC",
@@ -193,7 +188,7 @@ function M.lsp_keymaps(client, bufnr)
 				})
 			end,
 			desc = "Range Code Action",
-			has = methods.textDocument_codeAction,
+			has = "textDocument/codeAction",
 			mode = { "v" },
 		},
 	})
@@ -267,7 +262,7 @@ function M.on_attach(client, bufnr)
 	else
 		M.lsp_keymaps(client, bufnr)
 
-		if client.supports_method(methods.textDocument_codeAction) then
+		if client.supports_method("textDocument/codeAction") then
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 				group = vim.api.nvim_create_augroup("MyCodeAction", { clear = false }),
 				buffer = bufnr,
@@ -279,7 +274,7 @@ function M.on_attach(client, bufnr)
 			return vim.notify_once("Method [textDocument/codeAction] not supported!", 2)
 		end
 
-		if client.supports_method(methods.textDocument_documentSymbol) then
+		if client.supports_method("textDocument/documentSymbol") then
 			vim.g.navic_silence = true
 			require("nvim-navic").attach(client, bufnr)
 		else
@@ -287,7 +282,7 @@ function M.on_attach(client, bufnr)
 		end
 
 		local enabled = true
-		if client.supports_method(methods.textDocument_inlayHint) then
+		if client.supports_method("textDocument/inlayHint") then
 			vim.keymap.set("n", "<leader>uh", function()
 				enabled = not enabled
 				if enabled then
@@ -305,6 +300,7 @@ function M.on_attach(client, bufnr)
 end
 
 M.server_config = {
+	solidity_ls_nomicfoundation = { name = "solidity_ls" },
 	lua_ls = {
 		settings = {
 			Lua = {

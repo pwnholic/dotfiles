@@ -13,7 +13,7 @@ obsidian.setup({
 	workspaces = { { name = "notes", path = vim.fn.expand("~") .. "/Notes" } },
 	daily_notes = { folder = "01_FLEETING", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
 	templates = {
-		subdir = "Templates",
+		subdir = "templates",
 		date_format = "%Y-%m-%d",
 		time_format = "%H:%M",
 		substitutions = {},
@@ -46,11 +46,12 @@ obsidian.setup({
 		end
 	end,
 	note_frontmatter_func = function(note)
-		local fs_stat = vim.uv.fs_stat(vim.fs.normalize(tostring(vim.api.nvim_buf_get_name(0))))
+		local fs_stat = vim.uv.fs_stat(vim.fs.normalize(vim.api.nvim_buf_get_name(0)))
 
 		if note.title then
 			note:add_alias(note.title)
 		end
+
 		local out = {
 			id = note.id,
 			aliases = note.aliases,
@@ -79,7 +80,7 @@ obsidian.setup({
 		},
 	},
 	attachments = {
-		img_folder = "Assets/images", -- This is the default
+		img_folder = "assets/images", -- This is the default
 		-- TODO: do experiment with this also
 		img_text_func = function(client, path)
 			path = client:vault_relative_path(path) or path

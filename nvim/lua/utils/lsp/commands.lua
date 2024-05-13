@@ -271,10 +271,7 @@ local subcommands = {
 				local subdirs = {}
 				for name, type in vim.fs.dir(basedir) do
 					if type == "directory" and name ~= "." and name ~= ".." then
-						table.insert(
-							subdirs,
-							vim.fn.fnamemodify(vim.fn.resolve(vim.fs.joinpath(basedir, name)), ":p:~:.")
-						)
+						table.insert(subdirs, vim.fn.fnamemodify(vim.fn.resolve(vim.fs.join(basedir, name)), ":p:~:."))
 					end
 				end
 				if incomplete then

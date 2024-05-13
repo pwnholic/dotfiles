@@ -1,4 +1,5 @@
 local M = {}
+
 M.keys = {
 	{
 		"<leader>bd",

@@ -247,13 +247,12 @@ local ensure_installed = {
 	"zig",
 }
 
-return vim.schedule(function()
+vim.schedule(function()
 	require("nvim-treesitter.configs").setup({
 		highlight = { enable = true },
 		indent = { enable = true },
 		sync_install = false,
 		ensure_installed = ensure_installed,
-		endwise = { enable = true },
 		incremental_selection = {
 			enable = true,
 			keymaps = {
@@ -264,25 +263,25 @@ return vim.schedule(function()
 			},
 		},
 		textobjects = {
-			select = {
-				enable = true,
-				lookahead = true,
-				keymaps = {
-					["af"] = { query = "@function.outer", desc = "Around Func" },
-					["if"] = { query = "@function.inner", desc = "Inside Func" },
-					["al"] = { query = "@loop.outer", desc = "Around Loop" },
-					["il"] = { query = "@loop.inner", desc = "Inside Loop" },
-					["ak"] = { query = "@class.outer", desc = "Around Class" },
-					["ik"] = { query = "@class.inner", desc = "Inside Class" },
-					["ap"] = { query = "@parameter.outer", desc = "Around Param" },
-					["ip"] = { query = "@parameter.inner", desc = "Inside Param" },
-					["a/"] = { query = "@comment.outer", desc = "Around Comment" },
-					["ab"] = { query = "@block.outer", desc = "Around Block" },
-					["ib"] = { query = "@block.inner", desc = "Inside Block" },
-					["ac"] = { query = "@conditional.outer", desc = "Around Cond" },
-					["ic"] = { query = "@conditional.inner", desc = "Inside Cond" },
-				},
-			},
+			-- select = {
+			-- 	enable = true,
+			-- 	lookahead = true,
+			-- 	keymaps = {
+			-- 		["af"] = { query = "@function.outer", desc = "Around Func" },
+			-- 		["if"] = { query = "@function.inner", desc = "Inside Func" },
+			-- 		["al"] = { query = "@loop.outer", desc = "Around Loop" },
+			-- 		["il"] = { query = "@loop.inner", desc = "Inside Loop" },
+			-- 		["ak"] = { query = "@class.outer", desc = "Around Class" },
+			-- 		["ik"] = { query = "@class.inner", desc = "Inside Class" },
+			-- 		["ap"] = { query = "@parameter.outer", desc = "Around Param" },
+			-- 		["ip"] = { query = "@parameter.inner", desc = "Inside Param" },
+			-- 		["a/"] = { query = "@comment.outer", desc = "Around Comment" },
+			-- 		["ab"] = { query = "@block.outer", desc = "Around Block" },
+			-- 		["ib"] = { query = "@block.inner", desc = "Inside Block" },
+			-- 		["ac"] = { query = "@conditional.outer", desc = "Around Cond" },
+			-- 		["ic"] = { query = "@conditional.inner", desc = "Inside Cond" },
+			-- 	},
+			-- },
 			move = {
 				enable = true,
 				goto_next_start = {

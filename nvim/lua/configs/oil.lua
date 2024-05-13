@@ -83,24 +83,28 @@ function M.setup()
 		local entry = oil.get_cursor_entry()
 		local fname = entry and entry.name
 		local dir = oil.get_current_dir()
+
 		if not dir or not fname then
 			return
 		end
+
 		local fpath = vim.fs.joinpath(dir, fname)
 		local stat = vim.uv.fs_stat(fpath)
 		if not stat or (stat.type ~= "file" and stat.type ~= "directory") then
 			return
 		end
+
 		local oil_win = vim.api.nvim_get_current_win()
 		local preview_win = preview_wins[oil_win]
 		local preview_buf = preview_bufs[oil_win]
+
 		if
 			not preview_win
 			or not preview_buf
 			or not vim.api.nvim_win_is_valid(preview_win)
 			or not vim.api.nvim_buf_is_valid(preview_buf)
 		then
-		vim.cmd.new({ mods = { vertical = true } })
+			vim.cmd.new({ mods = { vertical = true } })
 			-- vim.cmd.new({ mods = { horizontal = true } })
 
 			preview_win = vim.api.nvim_get_current_win()
@@ -126,10 +130,8 @@ function M.setup()
 			vim.api.nvim_set_current_win(oil_win)
 		end
 		-- Set keymap for opening the file from preview buffer
-		vim.keymap.set("n", "<CR>", function()
-			vim.cmd.edit(fpath)
-			end_preview(oil_win)
-		end, { buffer = preview_buf })
+        -- stylua: ignore start
+		vim.keymap.set("n", "<CR>", function() vim.cmd.edit(fpath) end_preview(oil_win) end, { buffer = preview_buf })
 		-- Preview buffer already contains contents of file to preview
 		local preview_bufname = vim.fn.bufname(preview_buf)
 		local preview_bufnewname = "oil_preview://" .. fpath
@@ -140,27 +142,12 @@ function M.setup()
 		local preview_win_width = vim.api.nvim_win_get_width(preview_win)
 		local add_syntax = false
 		local lines = {}
-		lines = stat.type == "directory" and vim.fn.systemlist("ls -lhA " .. vim.fn.shellescape(fpath))
-			or stat.size == 0 and no_preview("Empty file", preview_win_height, preview_win_width)
-			or stat.size > preview_max_fsize and no_preview(
-				"File too large to preview",
-				preview_win_height,
-				preview_win_width
-			)
-			or not vim.fn.system({ "file", fpath }):match("text") and no_preview(
-				"Binary file, no preview available",
-				preview_win_height,
-				preview_win_width
-			)
-			or (function()
-					add_syntax = true
-					return true
-				end)()
-				and vim.iter(io.lines(fpath))
-					:map(function(line)
-						return (line:gsub("\x0d$", ""))
-					end)
-					:totable()
+        lines = stat.type == "directory" and vim.fn.systemlist("ls -lhA " .. vim.fn.shellescape(fpath))
+		 	or stat.size == 0 and no_preview("Empty file", preview_win_height, preview_win_width)
+		 	or stat.size > preview_max_fsize and no_preview( "File too large to preview", preview_win_height, preview_win_width)
+			or not vim.fn.system({ "file", fpath }):match("text") and no_preview( "Binary file, no preview available", preview_win_height, preview_win_width)
+			or (function() add_syntax = true return true end)() and vim.iter(io.lines(fpath)):map(function(line) return (line:gsub("\x0d$", "")) end):totable()
+		-- stylua: ignore end
 		vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, lines)
 		vim.api.nvim_buf_set_name(preview_buf, preview_bufnewname)
 		-- If previewing a directory, change cwd to that directory
@@ -197,10 +184,10 @@ function M.setup()
 				end_preview()
 				return
 			end
-			local current_request_timestamp = vim.uv.now()
-			preview_request_last_timestamp = current_request_timestamp
+			local current_req_timestamp = vim.uv.now()
+			preview_request_last_timestamp = current_req_timestamp
 			vim.defer_fn(function()
-				if preview_request_last_timestamp == current_request_timestamp then
+				if preview_request_last_timestamp == current_req_timestamp then
 					preview()
 				end
 			end, preview_debounce)
@@ -306,7 +293,7 @@ function M.setup()
 			concealcursor = "nivc",
 			number = false,
 			relativenumber = false,
-			statuscolumn = nil,
+			statuscolumn = "",
 		},
 		cleanup_delay_ms = false,
 		delete_to_trash = true,
