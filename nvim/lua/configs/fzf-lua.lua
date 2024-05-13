@@ -313,11 +313,7 @@ function M.setup()
 			ls_cmd = "ls",
 		},
 		autocmds = { actions = { ["ctrl-x"] = { fn = fzf_actions.del_autocmd } }, headers = { "actions" } },
-		args = {
-			files_only = false,
-			headers = { "actions" },
-			actions = { ["ctrl-j"] = fzf_actions.arg_search_add },
-		},
+		args = { files_only = false, headers = { "actions" }, actions = { ["ctrl-j"] = fzf_actions.arg_search_add } },
 		colorschemes = { actions = { ["default"] = fzf_actions.colorscheme } },
 		highlights = {
 			actions = {
@@ -587,7 +583,7 @@ function M.setup()
 					vim.cmd.Oil(fullpath)
 				end
 			end,
-			["ctrl-Y"] = function(selected, opts)
+			["ctrl-y"] = function(selected, opts)
 				for i = 1, #selected do
 					local entry = fzf_path.entry_to_file(selected[i], opts, opts.force_uri)
 					if entry.path == "<none>" then

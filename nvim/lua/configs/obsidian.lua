@@ -13,7 +13,7 @@ obsidian.setup({
 	workspaces = { { name = "notes", path = vim.fn.expand("~") .. "/Notes" } },
 	daily_notes = { folder = "01_FLEETING", date_format = os.date("%Y%m%d"), alias_format = "%B %-d, %Y" },
 	templates = {
-		subdir = "templates",
+		subdir = "Templates",
 		date_format = "%Y-%m-%d",
 		time_format = "%H:%M",
 		substitutions = {},
