@@ -251,7 +251,7 @@ vim.schedule(function()
 	require("nvim-treesitter.configs").setup({
 		highlight = { enable = true },
 		indent = { enable = true },
-		sync_install = false,
+		sync_install = true,
 		ensure_installed = ensure_installed,
 		incremental_selection = {
 			enable = true,

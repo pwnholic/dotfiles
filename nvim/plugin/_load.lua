@@ -26,6 +26,14 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 	end,
 })
 
+-- tabout
+vim.keymap.set({ "i", "c" }, "<Tab>", function()
+	require("utils.tabout").jump(1)
+end)
+vim.keymap.set({ "i", "c" }, "<S-Tab>", function()
+	require("utils.tabout").jump(-1)
+end)
+
 vim.schedule(function()
 	require("utils.diagconf")
 	require("utils.tmux").setup()

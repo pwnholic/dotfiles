@@ -190,7 +190,6 @@ return {
 			rq("mason")
 		end,
 	},
-
 	{
 		"neovim/nvim-lspconfig",
 		event = "FileType",
@@ -198,7 +197,6 @@ return {
 			rq("lspconfig")
 		end,
 	},
-
 	{
 		"epwalsh/obsidian.nvim",
 		version = "*",
@@ -208,7 +206,6 @@ return {
 			rq("obsidian")
 		end,
 	},
-
 	{
 		"stevearc/oil.nvim",
 		cmd = "Oil",
@@ -217,7 +214,6 @@ return {
 			rq("oil").setup()
 		end,
 	},
-
 	{
 		"akinsho/toggleterm.nvim",
 		keys = rq("toggleterm").keys,
@@ -225,7 +221,6 @@ return {
 			rq("toggleterm").setup()
 		end,
 	},
-
 	{
 		"willothy/flatten.nvim",
 		lazy = false,
@@ -350,17 +345,16 @@ return {
 		end,
 	},
 
-	-- {
-	-- 	"vhyrro/luarocks.nvim",
-	-- 	priority = 1000,
-	-- 	config = true,
-	-- 	opts = { rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" } },
-	-- },
 	{
 		"rest-nvim/rest.nvim",
 		ft = "http",
-		keys = { "<leader>rr", "<leader>rl" },
-		-- dependencies = { "luarocks.nvim" },
+		keys = { { "<leader>rr", ft = "http" }, { "<leader>rl", ft = "http" } },
+		-- dependencies = {
+		-- 	"vhyrro/luarocks.nvim",
+		-- 	priority = 1000,
+		-- 	config = true,
+		-- 	opts = { rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" } },
+		-- },
 		config = function()
 			rq("rest")
 		end,

@@ -2,12 +2,15 @@ local ls = require("luasnip")
 local ls_type = require("luasnip.util.types")
 
 ls.setup({
+	keep_roots = true,
+	link_roots = false,
+	link_children = true,
 	region_check_events = "CursorMoved,CursorMovedI",
 	delete_check_events = "TextChanged,TextChangedI",
-	enable_autosnippets = true,
-	ext_base_prio = 300,
-	ft_func = require("luasnip.extras.filetype_functions").from_cursor_pos,
+	-- enable_autosnippets = true,
 	store_selection_keys = "<Tab>",
+	-- ext_base_prio = 300,
+	-- ft_func = require("luasnip.extras.filetype_functions").from_cursor_pos,
 	ext_opts = {
 		[ls_type.choiceNode] = { active = { virt_text = { { "│", "DashboardKey" } } } },
 		[ls_type.insertNode] = {

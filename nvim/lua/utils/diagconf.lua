@@ -61,14 +61,15 @@ vim.diagnostic.config({
 	},
 })
 
-local hide = vim.diagnostic.handlers.virtual_text.hide
-local show = vim.diagnostic.handlers.virtual_text.show
+local show_handler = vim.diagnostic.handlers.virtual_text.show
+assert(show_handler)
+local hide_handler = vim.diagnostic.handlers.virtual_text.hide
 vim.diagnostic.handlers.virtual_text = {
-	show = function(ns, bufnr, diagnostics, opts)
+	show = function(namespace, bufnr, diagnostics, opts)
 		table.sort(diagnostics, function(diag1, diag2)
 			return diag1.severity > diag2.severity
 		end)
-		return show(ns, bufnr, diagnostics, opts)
+		return show_handler(namespace, bufnr, diagnostics, opts)
 	end,
-	hide = hide,
+	hide = hide_handler,
 }
