@@ -57,7 +57,7 @@ vim.uv.new_timer():start(
 
 			-- close buffer
 			if buf_conf.notification_on_autoclose then
-				local filename = vim.fs.nvim_cmp_core(buf.name)
+				local filename = vim.fs.basename(buf.name)
 				vim.notify(("Auto Closing %q"):format(filename), vim.log.levels.INFO, { title = "Buffer" })
 			end
 
