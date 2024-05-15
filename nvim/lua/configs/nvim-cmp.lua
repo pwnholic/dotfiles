@@ -520,14 +520,8 @@ local cmp_opts = {
 	},
 }
 
-nvim_cmp.setup.cmdline("/", {
-	window = { documentation = false },
-	formatting = { fields = { nvim_cmp.ItemField.Abbr } },
-	sources = { cmp_source.rg },
-})
-
-nvim_cmp.setup.cmdline("?", {
-	window = { documentation = false },
+nvim_cmp.setup.cmdline({ "/", "?" }, {
+	enabled = true,
 	formatting = { fields = { nvim_cmp.ItemField.Abbr } },
 	sources = { cmp_source.rg },
 })
@@ -535,16 +529,9 @@ nvim_cmp.setup.cmdline("?", {
 nvim_cmp.setup.cmdline(":", {
 	enabled = true,
 	formatting = { fields = { nvim_cmp.ItemField.Abbr } },
-	sources = {
-		{ name = "cmdline" },
-		cmp_source.fuzzy_path,
-	},
+	sources = { { name = "cmdline" }, cmp_source.fuzzy_path },
 })
-
-nvim_cmp.setup.cmdline("@", { enabled = false })
-nvim_cmp.setup.cmdline(">", { enabled = false })
-nvim_cmp.setup.cmdline("-", { enabled = false })
-nvim_cmp.setup.cmdline("=", { enabled = false })
+nvim_cmp.setup.cmdline({ "@", ">", "-", "=" }, { enabled = false })
 
 local Kind = nvim_cmp.lsp.CompletionItemKind
 nvim_cmp.event:on("confirm_done", function(event) -- auto braket karena gk semua lsp support
