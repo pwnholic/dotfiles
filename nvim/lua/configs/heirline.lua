@@ -125,36 +125,32 @@ local git = {
 		self.status_dict = vim.b.gitsigns_status_dict
 	end,
 	{
-		{
-			provider = function(self)
-				return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
-			end,
-			hl = { fg = colors.blue2, bg = colors.fg_gutter, bold = true },
-		},
+		provider = function(self)
+			return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
+		end,
+		hl = { fg = colors.blue2, bg = colors.fg_gutter, bold = true },
+	},
+	space,
+	{
+		provider = function(self)
+			local count = self.status_dict.added or 0
+			return count > 0 and fmt("%s %d ", icons.git.added, count)
+		end,
+		hl = { fg = colors.green2, bold = true, bg = colors.bg_statusline },
 	},
 	{
-		space,
-		{
-			provider = function(self)
-				local count = self.status_dict.added or 0
-				return count > 0 and fmt("%s %d ", icons.git.added, count)
-			end,
-			hl = { fg = colors.green2, bold = true, bg = colors.bg_statusline },
-		},
-		{
-			provider = function(self)
-				local count = self.status_dict.removed or 0
-				return count > 0 and fmt("%s %d ", icons.git.removed, count)
-			end,
-			hl = { fg = colors.red, bold = true, bg = colors.bg_statusline },
-		},
-		{
-			provider = function(self)
-				local count = self.status_dict.changed or 0
-				return count > 0 and fmt("%s %d ", icons.git.modified, count)
-			end,
-			hl = { fg = colors.yellow1, bold = true, bg = colors.bg_statusline },
-		},
+		provider = function(self)
+			local count = self.status_dict.removed or 0
+			return count > 0 and fmt("%s %d ", icons.git.removed, count)
+		end,
+		hl = { fg = colors.red, bold = true, bg = colors.bg_statusline },
+	},
+	{
+		provider = function(self)
+			local count = self.status_dict.changed or 0
+			return count > 0 and fmt("%s %d ", icons.git.modified, count)
+		end,
+		hl = { fg = colors.yellow1, bold = true, bg = colors.bg_statusline },
 	},
 	on_click = {
 		callback = function()
@@ -188,45 +184,40 @@ local filename = {
 		end,
 	},
 	{
-		{
-			condition = function()
-				return not vim.tbl_contains({ "[No Name]", "" }, vim.api.nvim_buf_get_name(0))
-			end,
-			init = mode_cinit,
-			static = { mode_colors = mode_colors },
-			{
-				provider = function()
-					-- TODO: fix oil-trash:/// error
-					if vim.bo.filetype == "oil" then
-						local path = vim.api
-							.nvim_buf_get_name(0)
-							:gsub("oil%-trash://", "[trash] ")
-							:gsub("oil://", "")
-							:gsub(vim.env.HOME, "~")
-							:gsub("/$", "")
-						return icons.kinds.Folder .. " " .. path .. "/"
-					end
-					return fmt(" %s", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t"))
-				end,
-				hl = function(self)
-					return { bold = true, fg = self.mode_color, bg = colors.bg_statusline }
-				end,
-			},
-			{
-				condition = function()
-					return vim.bo.modified
-				end,
-				space,
-				{ provider = "[+]", hl = { fg = colors.green, bg = colors.bg_statusline } },
-			},
-			{
-				condition = function()
-					return not vim.bo.modifiable or vim.bo.readonly
-				end,
-				space,
-				{ provider = " ", hl = { fg = colors.red, bg = colors.bg_statusline } },
-			},
-		},
+		condition = function()
+			return not vim.tbl_contains({ "[No Name]", "" }, vim.api.nvim_buf_get_name(0))
+		end,
+		init = mode_cinit,
+		static = { mode_colors = mode_colors },
+		provider = function()
+			if vim.bo.filetype == "oil" then
+				local path = vim.api
+					.nvim_buf_get_name(0)
+					:gsub("oil%-trash://", "[trash] ")
+					:gsub("oil://", "")
+					:gsub(vim.env.HOME, "~")
+					:gsub("/$", "")
+				return icons.kinds.Folder .. " " .. path .. "/"
+			end
+			return fmt(" %s", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t"))
+		end,
+		hl = function(self)
+			return { bold = true, fg = self.mode_color, bg = colors.bg_statusline }
+		end,
+	},
+	{
+		condition = function()
+			return vim.bo.modified
+		end,
+		space,
+		{ provider = "[+]", hl = { fg = colors.green, bg = colors.bg_statusline } },
+	},
+	{
+		condition = function()
+			return not vim.bo.modifiable or vim.bo.readonly
+		end,
+		space,
+		{ provider = " ", hl = { fg = colors.red, bg = colors.bg_statusline } },
 	},
 }
 
@@ -362,16 +353,14 @@ local lsp_attach = {
 		end,
 		name = "sl_lsp_click",
 	},
+	space,
 	{
-		space,
-		{
-			provider = function(self)
-				return fmt(" %s ", string.lower(self.server_name))
-			end,
-			hl = function(self)
-				return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
-			end,
-		},
+		provider = function(self)
+			return fmt(" %s ", string.lower(self.server_name))
+		end,
+		hl = function(self)
+			return { bold = true, fg = self.mode_color, bg = colors.fg_gutter }
+		end,
 	},
 }
 
@@ -679,7 +668,7 @@ local stc_get_signs = {
 		self.sign = signs[1]
 	end,
 	provider = function(self)
-		return self.sign and self.sign.text or "  "
+		return self.sign and self.sign.text or ""
 	end,
 	hl = function(self)
 		return self.sign and self.sign.sign_hl_group

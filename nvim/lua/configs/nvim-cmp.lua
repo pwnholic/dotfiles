@@ -156,7 +156,7 @@ local function format(entry, item)
 		item.kind_hl_group = "Directory"
 	elseif item.kind == "File" then
 		local icon, hl_group = require("nvim-web-devicons").get_icon(
-			vim.fs.nvim_cmp_core(item.word),
+			vim.fs.basename(item.word),
 			vim.fn.fnamemodify(item.word, ":e"),
 			{ default = true }
 		)
