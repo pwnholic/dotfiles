@@ -2,6 +2,7 @@ local conditions = require("heirline.conditions")
 local fmt = string.format
 local space, align = { provider = " " }, { provider = "%=" }
 local colors = require("tokyonight.colors").setup()
+local cutil = require("tokyonight.util")
 local icons = require("utils.icons")
 
 local function buf_matches()
@@ -32,9 +33,9 @@ local mode_colors = {
 	n = colors.blue2,
 	i = colors.green,
 	v = colors.magenta,
-	V = colors.orange,
+	V = colors.cyan,
 	["\22"] = colors.red,
-	c = colors.cyan,
+	c = colors.orange,
 	s = colors.yellow,
 	S = colors.yellow,
 	["\19"] = colors.yellow,
@@ -51,6 +52,8 @@ vim.api.nvim_create_autocmd("ModeChanged", {
 		vim.api.nvim_set_hl(0, "CursorLineNr", { fg = mode_clr, bg = colors.none, bold = true })
 		vim.api.nvim_set_hl(0, "TermCursor", { bg = mode_clr })
 		vim.api.nvim_set_hl(0, "Cursor", { bg = mode_clr })
+		vim.api.nvim_set_hl(0, "Visual", { bg = cutil.darken(mode_clr, 0.3) })
+		vim.api.nvim_set_hl(0, "VisualNOS", { bg = cutil.darken(mode_clr, 0.3) })
 	end,
 })
 

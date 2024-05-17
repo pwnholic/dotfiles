@@ -47,6 +47,7 @@ function M.setup()
 	local icons, fzf_config = require("utils.icons"), require("fzf-lua.config")
 	local fzf_core, fzf_path = require("fzf-lua.core"), require("fzf-lua.path")
 	local fzf_utils = require("fzf-lua.utils")
+	local harpoon = require("harpoon")
 
 	local _mt_cmd_wrapper = fzf_core.mt_cmd_wrapper
 
@@ -211,6 +212,16 @@ function M.setup()
 		})
 	end
 
+	function fzf_actions.add_to_harpoon(selected, opts)
+		for i = 1, #selected do
+			local entry_file = fzf_path.entry_to_file(selected[i], opts)
+			harpoon:list():add({
+				value = vim.fn.fnamemodify(entry_file.path, ":~:."),
+				context = { row = entry_file.line, col = entry_file.col },
+			})
+		end
+	end
+
 	fzf_core.ACTION_DEFINITIONS[fzf_actions.toggle_ignore] = {
 		function(opts)
 			local flag = opts.toggle_ignore_flag or "--no-ignore"
@@ -237,10 +248,10 @@ function M.setup()
 	fzf_core.ACTION_DEFINITIONS[fzf_actions.arg_search_add] = { "search and argadd" }
 	fzf_core.ACTION_DEFINITIONS[fzf_actions.buf_del] = { "buf close" }
 	fzf_core.ACTION_DEFINITIONS[fzf_actions.arg_del] = { "arg delete" }
+	fzf_core.ACTION_DEFINITIONS[fzf_actions.add_to_harpoon] = { "add to harpoon" }
 	fzf_core.ACTION_DEFINITIONS[fzf_actions.dap_bp_del] = { "breakpoint delete" }
 
 	fzf_config._action_to_helpstr[fzf_actions.arg_search_add] = "search-and-argadd"
-	fzf_config._action_to_helpstr[fzf_actions.arg_add] = "argadd"
 	fzf_config._action_to_helpstr[fzf_actions.buf_edit_or_qf] = "buf-edit-or-qf"
 	fzf_config._action_to_helpstr[fzf_actions.del_autocmd] = "delete-autocmd"
 	fzf_config._action_to_helpstr[fzf_actions.switch_provider] = "switch-provider"
@@ -418,6 +429,7 @@ function M.setup()
 			actions = {
 				["ctrl-g"] = fzf_actions.toggle_ignore,
 				["alt-f"] = fzf_actions.switch_cwd,
+				["alt-m"] = fzf_actions.add_to_harpoon,
 				["ctrl-y"] = function(selected, opts)
 					for i = 1, #selected do
 						local entry = fzf_path.entry_to_file(selected[i], opts, opts.force_uri)
@@ -603,6 +615,34 @@ function M.setup()
 		},
 	}
 
+	map("n", "<leader>a", function()
+		local path = {}
+		for _, item in ipairs(harpoon:list().items) do
+			table.insert(path, item.value)
+		end
+		fzf_lua.fzf_exec(path, {
+			prompt = "Harpoon : ",
+			actions = {
+				["default"] = function(selected)
+					for i = 1, #selected do
+						vim.cmd.edit(selected[i])
+					end
+				end,
+				["ctrl-x"] = function(selected)
+					local del_info = {}
+					for i = 1, #selected do
+						harpoon:list():remove_at(i)
+						table.insert(del_info, selected[i])
+					end
+					require("lazy.util").info(del_info, { title = "Delete from List" })
+				end,
+				["ctrl-s"] = fzf_actions.file_split,
+				["ctrl-v"] = fzf_actions.file_vsplit,
+				["ctrl-t"] = fzf_actions.file_tabedit,
+			},
+		})
+	end, { desc = "Harpoon List" })
+
 	map(
 		"n",
 		"<leader>fN",
@@ -730,6 +770,8 @@ M.keys = {
 	"<leader>dsf",
 
 	"<leader>uz",
+
+	"<leader>a",
 }
 
 return M

@@ -20,6 +20,9 @@ vim.env.PATH = vim.fn.stdpath("data")
 require("core.options")
 require("core.package")
 
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua"
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua"
+
 vim.api.nvim_create_autocmd("User", {
 	group = vim.api.nvim_create_augroup("OnMales", { clear = true }),
 	pattern = "VeryLazy",

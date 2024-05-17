@@ -261,12 +261,12 @@ return {
 			{ "<leader><space>", desc = "Incremental Selection" },
 			{ "<bs>", desc = "Decrement Selection", mode = "x" },
 		},
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
-			config = function()
-				rq("nvim-treesitter-textobjects")
-			end,
-		},
+		-- dependencies = {
+		-- 	"nvim-treesitter/nvim-treesitter-textobjects",
+		-- 	config = function()
+		-- 		rq("nvim-treesitter-textobjects")
+		-- 	end,
+		-- },
 		build = ":TSUpdate",
 		config = function()
 			rq("nvim-treesitter")
@@ -344,17 +344,11 @@ return {
 			rq("tokyonight")
 		end,
 	},
-
 	{
 		"rest-nvim/rest.nvim",
 		ft = "http",
+		cmd = "Rest",
 		keys = { { "<leader>rr", ft = "http" }, { "<leader>rl", ft = "http" } },
-		-- dependencies = {
-		-- 	"vhyrro/luarocks.nvim",
-		-- 	priority = 1000,
-		-- 	config = true,
-		-- 	opts = { rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" } },
-		-- },
 		config = function()
 			rq("rest")
 		end,
@@ -369,6 +363,14 @@ return {
 		end,
 		config = function()
 			rq("conform")
+		end,
+	},
+	{
+		"3rd/image.nvim",
+		event = "BufReadPre " .. vim.env.HOME .. "/Notes/*.md",
+		ft = { "markdown" },
+		config = function()
+			rq("image")
 		end,
 	},
 }

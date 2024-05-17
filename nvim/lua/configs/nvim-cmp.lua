@@ -314,9 +314,6 @@ local cmp_source = {
 
 local comparators = {
 	fuzzy_path_comparator,
-	nvim_cmp.config.compare.offset,
-	nvim_cmp.config.compare.exact,
-	nvim_cmp.config.compare.score,
 	function(lhs, rhs)
 		lhs:get_kind()
 		local _, lhs_under = lhs.completion_item.label:find("^_+")
@@ -328,8 +325,8 @@ local comparators = {
 	nvim_cmp.config.compare.kind,
 	nvim_cmp.config.compare.locality,
 	nvim_cmp.config.compare.recently_used,
-	nvim_cmp.config.compare.sort_text,
-	nvim_cmp.config.compare.order,
+	nvim_cmp.config.compare.exact,
+	nvim_cmp.config.compare.score,
 }
 
 local cmp_opts = {
