@@ -5,11 +5,12 @@ g.root_spec = {
 	{
 		".git",--[[add folder or filename pattern here if needed]]
 		"lua",
-        "Makefile"
+		"Makefile",
 	},
 	"cwd",
 }
 
+opt.showtabline = 0
 opt.swapfile = false
 opt.clipboard = "unnamedplus"
 opt.list = true
@@ -47,7 +48,6 @@ opt.sidescrolloff = 8
 opt.autowrite = true
 opt.autowriteall = true
 
-opt.showtabline = 0
 opt.cmdheight = 0
 opt.laststatus = 3
 
@@ -70,7 +70,6 @@ opt.fillchars = {
 	diff = "╱",
 	eob = " ",
 }
-
 
 opt.foldcolumn = "1" -- Show the fold column
 opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
@@ -144,13 +143,13 @@ o.foldlevelstart = 99
 o.foldenable = true
 o.foldmethod = "manual"
 
-g.netrw_banner          = 0
-g.netrw_cursor          = 5
-g.netrw_keepdir         = 0
-g.netrw_keepj           = ''
-g.netrw_list_hide       = [[\(^\|\s\s\)\zs\.\S\+]]
-g.netrw_liststyle       = 1
-g.netrw_localcopydircmd = 'cp -r'
+g.netrw_banner = 0
+g.netrw_cursor = 5
+g.netrw_keepdir = 0
+g.netrw_keepj = ""
+g.netrw_list_hide = [[\(^\|\s\s\)\zs\.\S\+]]
+g.netrw_liststyle = 1
+g.netrw_localcopydircmd = "cp -r"
 
 g.markdown_recommended_style = 1
 g.border = "single"

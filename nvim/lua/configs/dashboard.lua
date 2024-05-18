@@ -1,7 +1,11 @@
 local logo = string.rep("\n", 2) .. require("utils.icons").logo .. "\n\n"
 local opts = {
 	theme = "doom",
-	hide = { statusline = true, winbar = true },
+	hide = {
+		statusline = true,
+		tabline = true,
+		winbar = true,
+	},
 	config = {
 		header = vim.split(logo, "\n"),
 		center = {

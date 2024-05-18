@@ -138,6 +138,7 @@ return {
 	{
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
+		lazy = false,
 		keys = rq("harpoon").keys,
 		config = function()
 			rq("harpoon").setup()
@@ -261,12 +262,12 @@ return {
 			{ "<leader><space>", desc = "Incremental Selection" },
 			{ "<bs>", desc = "Decrement Selection", mode = "x" },
 		},
-		-- dependencies = {
-		-- 	"nvim-treesitter/nvim-treesitter-textobjects",
-		-- 	config = function()
-		-- 		rq("nvim-treesitter-textobjects")
-		-- 	end,
-		-- },
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			config = function()
+				rq("nvim-treesitter-textobjects")
+			end,
+		},
 		build = ":TSUpdate",
 		config = function()
 			rq("nvim-treesitter")

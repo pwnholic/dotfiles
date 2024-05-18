@@ -43,11 +43,13 @@ M.init = vim.schedule_wrap(function()
 end)
 
 function M.setup()
-	local fzf_lua, fzf_actions = require("fzf-lua"), require("fzf-lua.actions")
-	local icons, fzf_config = require("utils.icons"), require("fzf-lua.config")
-	local fzf_core, fzf_path = require("fzf-lua.core"), require("fzf-lua.path")
+	local fzf_lua = require("fzf-lua")
+	local fzf_actions = require("fzf-lua.actions")
+	local icons = require("utils.icons")
+	local fzf_config = require("fzf-lua.config")
+	local fzf_core = require("fzf-lua.core")
+	local fzf_path = require("fzf-lua.path")
 	local fzf_utils = require("fzf-lua.utils")
-	local harpoon = require("harpoon")
 
 	local _mt_cmd_wrapper = fzf_core.mt_cmd_wrapper
 
@@ -215,7 +217,7 @@ function M.setup()
 	function fzf_actions.add_to_harpoon(selected, opts)
 		for i = 1, #selected do
 			local entry_file = fzf_path.entry_to_file(selected[i], opts)
-			harpoon:list():add({
+			require("harpoon"):list():add({
 				value = vim.fn.fnamemodify(entry_file.path, ":~:."),
 				context = { row = entry_file.line, col = entry_file.col },
 			})
@@ -616,6 +618,7 @@ function M.setup()
 	}
 
 	map("n", "<leader>a", function()
+		local harpoon = require("harpoon")
 		local path = {}
 		for _, item in ipairs(harpoon:list().items) do
 			table.insert(path, item.value)

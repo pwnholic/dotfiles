@@ -39,10 +39,10 @@ function M.toggle_diagnostics()
 	enabled = not enabled
 	if enabled then
 		vim.notify("Enabled diagnostic", 2, { title = "Diagnostics" })
-		vim.diagnostic.enable()
+		vim.diagnostic.enable(true)
 	else
 		vim.notify("Disabled diagnostic", 2, { title = "Diagnostics" })
-		vim.diagnostic.disable()
+		vim.diagnostic.enable(false)
 	end
 end
 

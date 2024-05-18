@@ -2,7 +2,7 @@ local M = {}
 
 M.keys = {
 	{
-		"<leader>ut",
+		"<leader>uT",
 		function()
 			local tsc = require("treesitter-context")
 			tsc.toggle()

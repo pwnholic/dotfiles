@@ -784,21 +784,22 @@ local disable_winbar_cb = function(args)
 	}, args.buf)
 end
 
-local harpoon_items = {}
-vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
+local buflist_cache = {}
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "BufLeave" }, {
 	callback = function()
 		vim.schedule(function()
-			local items = require("harpoon"):list():display()
-			for i, path in ipairs(items) do
-				harpoon_items[i] = path
+			local items = require("harpoon"):list().items or {}
+			for i, v in ipairs(items) do
+				buflist_cache[i] = v.value
 			end
-			for i = #items + 1, #harpoon_items do
-				harpoon_items[i] = nil
+			for i = #items + 1, #buflist_cache do
+				buflist_cache[i] = nil
 			end
-			if #harpoon_items > 3 then
-				vim.o.showtabline = 2 -- always
+
+			if #buflist_cache > 3 then
+				vim.o.showtabline = 2
 			else
-				vim.o.showtabline = 0 -- only when #tabpages > 1
+				vim.o.showtabline = 0
 			end
 		end)
 	end,
@@ -806,7 +807,7 @@ vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "BufLeave" }, {
 
 local harpoon = {
 	condition = function()
-		return package.loaded.harpoon and #harpoon_items > 1 and require("harpoon.config").DEFAULT_LIST == "files"
+		return package.loaded.harpoon
 	end,
 	space,
 	static = { mode_colors = mode_colors },
@@ -817,11 +818,9 @@ local harpoon = {
 			return {}
 		end
 		local cur_bufname = vim.api.nvim_buf_get_name(bufnr)
-
 		self.mode = vim.fn.mode()
 		self.mode_color = self.mode_colors[self.mode:sub(1, 1)]
-
-		for i, path in ipairs(harpoon_items) do
+		for i, path in ipairs(buflist_cache) do
 			local child = {
 				{
 					provider = function()
@@ -829,6 +828,7 @@ local harpoon = {
 					end,
 					init = function()
 						self.fullpath = string.len(path) < 75 and path == vim.fn.fnamemodify(cur_bufname, ":~:.")
+
 						self.shorten_path = string.len(path) > 75
 							and path == vim.fn.pathshorten(vim.fn.fnamemodify(cur_bufname, ":~:."), 3)
 					end,
