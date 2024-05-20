@@ -2,7 +2,8 @@ local M = {}
 
 function M.setup()
 	require("trouble").setup({
-		height = 15,
+		position = "bottom", -- position of the list can be: bottom, top, left, right
+		height = 10, -- height of the trouble list when position is top or bottom
 		auto_close = true,
 		use_diagnostic_signs = true,
 		auto_jump = { "lsp_references", "lsp_implementations", "lsp_type_definitions", "lsp_definitions" },

@@ -127,21 +127,24 @@ function M.setup()
 		---@diagnostic disable-next-line: undefined-field
 		opts.cwd = (opts.cwd or vim.uv.cwd())
 		opts.query = fzf_config.__resume_data.last_query
-		vim.ui.input({ prompt = "New cwd: ", default = opts.cwd, completion = "dir" }, function(input)
-			if not input then
-				return
+		vim.ui.input(
+			{ prompt = "New cwd: ", default = vim.fn.fnamemodify(tostring(opts.cwd), ":.:~"), completion = "dir" },
+			function(input)
+				if not input then
+					return
+				end
+				input = vim.fs.normalize(input)
+				---@diagnostic disable-next-line: undefined-field
+				local stat = vim.uv.fs_stat(input)
+				if not stat or not stat.type == "directory" then
+					print("\n")
+					vim.notify("[Fzf-lua] invalid path: " .. input .. "\n", vim.log.levels.ERROR)
+					vim.cmd.redraw()
+					return
+				end
+				opts.cwd = input
 			end
-			input = vim.fs.normalize(input)
-			---@diagnostic disable-next-line: undefined-field
-			local stat = vim.uv.fs_stat(input)
-			if not stat or not stat.type == "directory" then
-				print("\n")
-				vim.notify("[Fzf-lua] invalid path: " .. input .. "\n", vim.log.levels.ERROR)
-				vim.cmd.redraw()
-				return
-			end
-			opts.cwd = input
-		end)
+		)
 
 		-- Adapted from fzf-lua `core.set_header()` function
 		-- if opts.cwd_prompt then
@@ -176,6 +179,7 @@ function M.setup()
 	function fzf_lua.diagnostics_document(opts)
 		return _diagnostics_document(vim.tbl_extend("force", opts or {}, { prompt = "Document Diagnostics> " }))
 	end
+
 	local _diagnostics_workspace = fzf_lua.diagnostics_workspace
 	function fzf_lua.diagnostics_workspace(opts)
 		return _diagnostics_workspace(vim.tbl_extend("force", opts or {}, { prompt = "Workspace Diagnostics> " }))

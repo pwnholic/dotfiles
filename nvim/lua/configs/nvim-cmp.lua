@@ -517,6 +517,35 @@ local cmp_opts = {
 	},
 }
 
+nvim_cmp.setup.filetype({ "c", "cpp" }, {
+	sorting = {
+		priority_weight = 100,
+		comparators = {
+			function(lhs, rhs)
+				lhs:get_kind()
+				local _, lhs_under = lhs.completion_item.label:find("^_+")
+				local _, rhs_under = rhs.completion_item.label:find("^_+")
+				lhs_under = lhs_under or 0
+				rhs_under = rhs_under or 0
+				return lhs_under < rhs_under
+			end,
+			nvim_cmp.config.compare.kind,
+			nvim_cmp.config.compare.locality,
+			nvim_cmp.config.compare.recently_used,
+			nvim_cmp.config.compare.exact,
+			function(lhs, rhs) -- custom score
+				local diff
+				if lhs.completion_item.score and rhs.completion_item.score then
+					diff = (rhs.completion_item.score * rhs.score) - (lhs.completion_item.score * lhs.score)
+				else
+					diff = rhs.score - lhs.score
+				end
+				return (diff < 0)
+			end,
+		},
+	},
+})
+
 nvim_cmp.setup.cmdline({ "/", "?" }, {
 	enabled = true,
 	formatting = { fields = { nvim_cmp.ItemField.Abbr } },
