@@ -1,0 +1,38 @@
+vim.api.nvim_create_autocmd("InsertEnter", {
+	once = true,
+	group = vim.api.nvim_create_augroup("SmartExpandtabSetup", {}),
+	callback = function()
+		vim.on_key(function(key)
+			if key ~= "\t" or vim.bo.et or vim.fn.match(vim.fn.mode(), [[^i\|^R]]) == -1 then
+				return
+			end
+			local col = vim.api.nvim_win_get_cursor(0)[2]
+			local line = vim.api.nvim_get_current_line()
+			local after_non_blank = vim.fn.match(line:sub(1, col), [[\S]]) >= 0
+			-- An adjacent tab is a tab that can be joined with the tab
+			-- inserted before the cursor assuming 'noet' is set
+			local has_adjacent_tabs = vim.fn.match(
+				line:sub(1, col),
+				string.format([[\t\ \{,%d}$]], math.max(0, vim.bo.ts - 1))
+			) >= 0 or line:sub(col + 1, col + 1) == "\t"
+			if after_non_blank and not has_adjacent_tabs then
+				if vim.b.et == nil then
+					vim.b.et = vim.bo.et
+				end
+				vim.bo.et = true
+			end
+		end)
+
+		vim.api.nvim_create_autocmd("TextChangedI", {
+			group = vim.api.nvim_create_augroup("Smartet", {}),
+			callback = function(info)
+				-- Restore et setting
+				if vim.b[info.buf].et ~= nil then
+					vim.bo[info.buf].et = vim.b[info.buf].et
+					vim.b[info.buf].et = nil
+				end
+			end,
+		})
+		return true
+	end,
+})

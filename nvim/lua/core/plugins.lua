@@ -28,6 +28,7 @@ return {
 	{ "hrsh7th/cmp-calc", event = "InsertEnter" },
 	{ "lukas-reineke/cmp-rg", event = "InsertEnter" },
 	{ "saadparwaiz1/cmp_luasnip", event = "InsertEnter" },
+	{ "amarakon/nvim-cmp-buffer-lines", event = "InsertEnter" },
 	{
 		"tzachar/cmp-fuzzy-path",
 		event = { "CmdlineEnter", "InsertEnter" },
@@ -47,6 +48,7 @@ return {
 			rq("luasnip")
 		end,
 	},
+	{ "chrisgrieser/nvim-scissors" },
 
 	-- coding shit
 	{
@@ -187,6 +189,7 @@ return {
 	{
 		"williamboman/mason.nvim",
 		cmd = "Mason",
+		build = ":MasonUpdate",
 		config = function()
 			rq("mason")
 		end,
