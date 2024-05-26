@@ -296,6 +296,42 @@ function M.on_attach(client, bufnr)
 		else
 			return vim.notify_once("Method [textDocument/inlayHint] not supported!", 2)
 		end
+
+		local originalRenameHandler = vim.lsp.handlers["textDocument/rename"]
+		vim.lsp.handlers["textDocument/rename"] = function(err, result, ctx, config)
+			originalRenameHandler(err, result, ctx, config)
+			if err or not result then
+				return
+			end
+			-- save all
+			vim.cmd.wall()
+			local changes = result.changes or result.documentChanges or {}
+			local changedFiles = vim.iter(vim.tbl_keys(changes))
+				:filter(function(file)
+					return #changes[file] > 0
+				end)
+				:map(function(file)
+					return "- " .. vim.fs.basename(file)
+				end)
+				:totable()
+			local changeCount = 0
+			for _, change in pairs(changes) do
+				changeCount = changeCount + #(change.edits or change)
+			end
+
+			-- notification
+			local pluralS = changeCount > 1 and "s" or ""
+			local msg = ("%s instance%s"):format(changeCount, pluralS)
+			if #changedFiles > 1 then
+				msg = msg .. (" in %s files:\n"):format(#changedFiles) .. table.concat(changedFiles, "\n")
+			end
+			vim.notify(msg, vim.log.levels.INFO, {
+				on_open = function()
+					vim.api.nvim_set_option_value("filetype", "markdown", { buf = bufnr })
+				end,
+				title = "Renamed with LSP",
+			})
+		end
 	end
 end
 
@@ -305,7 +341,11 @@ M.server_config = {
 		settings = {
 			Lua = {
 				workspace = {
-					library = { vim.env.VIMRUNTIME .. "/lua", vim.uv.cwd() },
+					library = {
+						vim.env.VIMRUNTIME .. "/lua",
+						vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1",
+						vim.uv.cwd(),
+					},
 					checkThirdParty = false,
 					maxPreload = 1000,
 					preloadFileSize = 40000,
