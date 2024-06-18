@@ -1,5 +1,4 @@
-local fmt = string.format
-
+local M = {}
 ---@class fallbak_tbl_t each key shares a default / fallback pattern table
 ---that can be used for pattern matching if corresponding key is not present
 ---or non patterns stored in the key are matched
@@ -128,7 +127,7 @@ local opening_pattern_lookup_tbl = {
   ['-->']             = '<!--',
   ['\\%)']            = '\\%(',
   ['\\%]']            = '\\%[',
-  ['%]=*%]']            = '--%[=*%[',
+  ['%]=*%]']          = '--%[=*%[',
   ['\\right}']        = '\\left{',
   ['\\right>']        = '\\left<',
   ['\\right%)']       = '\\left%(',
@@ -159,9 +158,9 @@ local function jumpin_idx(leading, closing_pattern, cursor)
 
 	-- Case 1
 	local _, _, content_str, closing_pattern_str =
-		leading:find(fmt("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
+		leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
 	if content_str == nil or closing_pattern_str == nil then
-		_, _, content_str, closing_pattern_str = leading:find(fmt("^(%s)(%s)$", "%s*", closing_pattern))
+		_, _, content_str, closing_pattern_str = leading:find(string.format("^(%s)(%s)$", "%s*", closing_pattern))
 	end
 
 	if content_str and closing_pattern_str then
@@ -175,10 +174,10 @@ local function jumpin_idx(leading, closing_pattern, cursor)
 
 	-- Case 2
 	_, _, _, closing_pattern_str =
-		leading:find(fmt("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
+		leading:find(string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
 
 	if content_str == nil or closing_pattern_str == nil then
-		_, _, closing_pattern_str = leading:find(fmt("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
+		_, _, closing_pattern_str = leading:find(string.format("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
 	end
 
 	return { cursor[1], cursor[2] - #closing_pattern_str }
@@ -240,7 +239,7 @@ end
 
 ---@param direction 1|-1 1 for tabout, -1 for tabin
 ---@return number[]? cursor position after jump; nil if no jump
-local function get_jump_pos(direction)
+function M.get_jump_pos(direction)
 	if direction == 1 then
 		return get_tabout_pos()
 	else
@@ -271,8 +270,8 @@ local S_TAB = vim.api.nvim_replace_termcodes("<S-Tab>", true, true, true)
 ---Get the position to jump for Tab or Shift-Tab, perform the jump if
 ---there is a position to jump to, otherwise fallback (feedkeys)
 ---@param direction 1|-1 1 for tabout, -1 for tabin
-local function jump(direction)
-	local pos = get_jump_pos(direction)
+function M.jump(direction)
+	local pos = M.get_jump_pos(direction)
 	if pos then
 		set_cursor(pos)
 		return
@@ -280,4 +279,4 @@ local function jump(direction)
 	vim.api.nvim_feedkeys(direction == 1 and TAB or S_TAB, "nt", false)
 end
 
-return { jump = jump, get_jump_pos = get_jump_pos }
+return M

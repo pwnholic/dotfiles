@@ -1,4 +1,5 @@
-local lsp_utils = require("utils.lsp.utils")
+local utils = require("utils")
+local M = {}
 
 ---@class lsp_command_parsed_arg_t : parsed_arg_t
 ---@field apply boolean|nil
@@ -50,28 +51,8 @@ local lsp_utils = require("utils.lsp.utils")
 ---@return lsp_command_parsed_arg_t parsed the parsed arguments
 local function parse_cmdline_args(fargs, fn_name_alt)
 	local fn_name = fn_name_alt or fargs[1] and table.remove(fargs, 1) or nil
-	local parsed = lsp_utils.parse_cmdline_args(fargs)
+	local parsed = utils.parse_cmdline_args(fargs)
 	return fn_name, parsed
-end
-
----Convert a snake_case string to camelCase
----@param str string?
----@return string?
-local function snake_to_camel(str)
-	if not str then
-		return nil
-	end
-	return (str:gsub("^%l", string.upper):gsub("_%l", string.upper):gsub("_", ""))
-end
-
----Convert a camelCase string to snake_case
----@param str string
----@return string|nil
-local function camel_to_snake(str)
-	if not str then
-		return nil
-	end
-	return (str:gsub("%u", "_%1"):gsub("^_", ""):lower())
 end
 
 ---@type string<table, subcommand_arg_handler_t>
@@ -82,10 +63,7 @@ local subcommand_arg_handler = {
 	---@return table args
 	range = function(args, tbl)
 		args.range = args.range
-			or tbl.range > 0 and {
-				["start"] = { tbl.line1, 0 },
-				["end"] = { tbl.line2, 999 },
-			}
+			or tbl.range > 0 and { ["start"] = { tbl.line1, 0 }, ["end"] = { tbl.line2, 999 } }
 			or nil
 		return args
 	end,
@@ -206,10 +184,95 @@ local subcommand_opt_vals = {
 ---@field fn_override subcommand_fn_override_t?
 ---@field completion subcommand_completion_t?
 
-local subcommands = {
+M.subcommands = {
 	---LSP subcommands
 	---@type table<string, subcommand_info_t>
 	lsp = {
+		info = {
+			opts = {
+				"filter",
+				["filter.bufnr"] = subcommand_opt_vals.bufs,
+				["filter.id"] = subcommand_opt_vals.lsp_client_ids,
+				["filter.name"] = subcommand_opt_vals.lsp_client_names,
+				["filter.method"] = subcommand_opt_vals.lsp_methods,
+			},
+			arg_handler = function(args)
+				return args.filter
+			end,
+			fn_override = function(filter)
+				local clients = vim.lsp.get_clients(filter)
+				for _, client in ipairs(clients) do
+					vim.print({
+						id = client.id,
+						name = client.name,
+						root_dir = client.config.root_dir,
+						attached_buffers = vim.tbl_keys(client.attached_buffers),
+					})
+				end
+			end,
+		},
+		restart = {
+			completion = subcommand_completion.lsp_clients,
+			arg_handler = subcommand_arg_handler.lsp_client_ids,
+			fn_override = function(ids)
+				-- Restart all clients attached to current buffer if no ids are given
+				local clients = not vim.tbl_isempty(ids)
+						and vim.tbl_map(function(id)
+							return vim.lsp.get_client_by_id(id)
+						end, ids)
+					or vim.lsp.get_clients({ bufnr = 0 })
+				for _, client in ipairs(clients) do
+					utils.lsp.restart(client)
+					vim.notify(string.format("[LSP] restarted client %d (%s)", client.id, client.name))
+				end
+			end,
+		},
+		get_clients_by_id = {
+			completion = subcommand_completion.lsp_clients,
+			arg_handler = function(args)
+				return tonumber(args[1]:match("^%d+"))
+			end,
+			fn_override = function(id)
+				vim.notify(vim.inspect(vim.lsp.get_client_by_id(id)))
+			end,
+		},
+		get_clients = {
+			opts = {
+				"filter",
+				["filter.bufnr"] = subcommand_opt_vals.bufs,
+				["filter.id"] = subcommand_opt_vals.lsp_client_ids,
+				["filter.name"] = subcommand_opt_vals.lsp_client_names,
+				["filter.method"] = subcommand_opt_vals.lsp_methods,
+			},
+			arg_handler = function(args)
+				return args.filter
+			end,
+			fn_override = function(filter)
+				local clients = vim.lsp.get_clients(filter)
+				for _, client in ipairs(clients) do
+					vim.print(client)
+				end
+			end,
+		},
+		stop = {
+			completion = subcommand_completion.lsp_clients,
+			arg_handler = subcommand_arg_handler.lsp_client_ids,
+			fn_override = function(ids)
+				-- Stop all clients attached to current buffer if no ids are given
+				local clients = not vim.tbl_isempty(ids)
+						and vim.tbl_map(function(id)
+							return vim.lsp.get_client_by_id(id)
+						end, ids)
+					or vim.lsp.get_clients({ bufnr = 0 })
+				for _, client in ipairs(clients) do
+					utils.lsp.soft_stop(client, {
+						on_close = function()
+							vim.notify(string.format("[LSP] stopped client %d (%s)", client.id, client.name))
+						end,
+					})
+				end
+			end,
+		},
 		references = {
 			---@param args lsp_command_parsed_arg_t
 			arg_handler = function(args)
@@ -271,7 +334,10 @@ local subcommands = {
 				local subdirs = {}
 				for name, type in vim.fs.dir(basedir) do
 					if type == "directory" and name ~= "." and name ~= ".." then
-						table.insert(subdirs, vim.fn.fnamemodify(vim.fn.resolve(vim.fs.join(basedir, name)), ":p:~:."))
+						table.insert(
+							subdirs,
+							vim.fn.fnamemodify(vim.fn.resolve(vim.fs.joinpath(basedir, name)), ":p:~:.")
+						)
 					end
 				end
 				if incomplete then
@@ -557,14 +623,14 @@ local subcommands = {
 			end,
 			opts = { "namespace", ["bufnr"] = subcommand_opt_vals.bufs },
 		},
-		is_disabled = {
+		is_enabled = {
 			---@param args lsp_command_parsed_arg_t
 			arg_handler = function(args)
 				return args.bufnr, args.namespace
 			end,
 			opts = { "namespace", ["bufnr"] = subcommand_opt_vals.bufs },
 			fn_override = function(...)
-				vim.notify(vim.inspect(not vim.diagnostic.is_enabled(...)))
+				vim.notify(vim.inspect(vim.diagnostic.is_enabled(...)))
 			end,
 		},
 		match = {
@@ -637,12 +703,8 @@ local subcommands = {
 				["opts.severity_sort.reverse"] = subcommand_opt_vals.bool,
 			},
 		},
-		setloclist = {
-			opts = { "namespace", "winnr", "open", "title", ["severity"] = subcommand_opt_vals.severity },
-		},
-		setqflist = {
-			opts = { "namespace", "open", "title", ["severity"] = subcommand_opt_vals.severity },
-		},
+		setloclist = { opts = { "namespace", "winnr", "open", "title", ["severity"] = subcommand_opt_vals.severity } },
+		setqflist = { opts = { "namespace", "open", "title", ["severity"] = subcommand_opt_vals.severity } },
 		show = {
 			---@param args lsp_command_parsed_arg_t
 			arg_handler = function(args)
@@ -696,7 +758,7 @@ local subcommands = {
 ---@param fn_scope table|fun(name: string): function scope of corresponding functions for subcommands
 ---@param fn_name_alt string|nil name of the function to call given no subcommand
 ---@return function meta_command_fn
-local function command_meta(subcommand_info_list, fn_scope, fn_name_alt)
+function M.command_meta(subcommand_info_list, fn_scope, fn_name_alt)
 	---Meta command function, calls the appropriate subcommand with args
 	---@param tbl table information passed to the command
 	return function(tbl)
@@ -721,7 +783,7 @@ end
 ---@param meta string meta command name
 ---@param subcommand_info_list subcommand_info_t[] subcommands information
 ---@return function completion_fn
-local function command_complete(meta, subcommand_info_list)
+function M.command_complete(meta, subcommand_info_list)
 	---Command completion function
 	---@param arglead string leading portion of the argument being completed
 	---@param cmdline string entire command line
@@ -744,7 +806,7 @@ local function command_complete(meta, subcommand_info_list)
 			)
 		end
 		-- If subcommand is specified, complete with its options or params
-		local subcommand = camel_to_snake(cmdline:match("^%s*" .. meta .. "(%w+)"))
+		local subcommand = utils.camel_to_snake(cmdline:match("^%s*" .. meta .. "(%w+)"))
 			or cmdline:match("^%s*" .. meta .. "%s+(%S+)")
 		if not subcommand_info_list[subcommand] then
 			return {}
@@ -756,7 +818,7 @@ local function command_complete(meta, subcommand_info_list)
 		-- Complete with subcommand's options or params
 		local subcommand_info = subcommand_info_list[subcommand]
 		if subcommand_info then
-			return lsp_utils.complete(subcommand_info.params, subcommand_info.opts)(arglead, cmdline, cursorpos)
+			return utils.complete(subcommand_info.params, subcommand_info.opts)(arglead, cmdline, cursorpos)
 		end
 		return {}
 	end
@@ -767,61 +829,23 @@ end
 ---@param subcommand_info_list table<string, subcommand_info_t> subcommands information
 ---@param fn_scope table|fun(name: string): function scope of corresponding functions for subcommands
 ---@return nil
-local function setup_commands(meta, subcommand_info_list, fn_scope)
+function M.setup_commands(meta, subcommand_info_list, fn_scope)
 	-- metacommand -> MetaCommand abbreviation
-	require("utils.keys").command_abbrev(meta:lower(), meta)
+	utils.command_abbrev(meta:lower(), meta)
 	-- Format: MetaCommand sub_command opts ...
 	vim.api.nvim_create_user_command(
 		meta,
-		command_meta(subcommand_info_list, fn_scope),
-		{ bang = true, range = true, nargs = "*", complete = command_complete(meta, subcommand_info_list) }
+		M.command_meta(subcommand_info_list, fn_scope),
+		{ bang = true, range = true, nargs = "*", complete = M.command_complete(meta, subcommand_info_list) }
 	)
 	-- Format: MetaCommandSubcommand opts ...
 	for subcommand, _ in pairs(subcommand_info_list) do
 		vim.api.nvim_create_user_command(
-			meta .. snake_to_camel(subcommand),
-			command_meta(subcommand_info_list, fn_scope, subcommand),
-			{ bang = true, range = true, nargs = "*", complete = command_complete(meta, subcommand_info_list) }
+			meta .. utils.snake_to_camel(subcommand),
+			M.command_meta(subcommand_info_list, fn_scope, subcommand),
+			{ bang = true, range = true, nargs = "*", complete = M.command_complete(meta, subcommand_info_list) }
 		)
 	end
 end
 
----Set up LSP and diagnostic
----@return nil
-local function setup()
-	local lsp_autostop_pending
-	---Automatically stop LSP servers that no longer attaches to any buffers
-	---
-	---  Once `BufDelete` is triggered, wait for 60s before checking and
-	---  stopping servers, in this way the callback will be invoked once
-	---  every 60 seconds at most and can stop multiple clients at once
-	---  if possible, which is more efficient than checking and stopping
-	---  clients on every `BufDelete` events
-	---
-	---@return nil
-	vim.api.nvim_create_autocmd("BufDelete", {
-		group = vim.api.nvim_create_augroup("LspAutoStop", {}),
-		desc = "Automatically stop idle language servers.",
-		callback = function()
-			if lsp_autostop_pending then
-				return
-			end
-			lsp_autostop_pending = true
-			vim.defer_fn(function()
-				lsp_autostop_pending = nil
-				for _, client in ipairs(vim.lsp.get_clients()) do
-					if vim.tbl_isempty(client.attached_buffers) then
-						lsp_utils.lsp_soft_stop(client)
-					end
-				end
-			end, 60000)
-		end,
-	})
-
-	setup_commands("Lsp", subcommands.lsp, function(name)
-		return vim.lsp[name] or vim.lsp.buf[name]
-	end)
-	setup_commands("Diagnostic", subcommands.diagnostic, vim.diagnostic)
-end
-
-return { setup = setup }
+return M
