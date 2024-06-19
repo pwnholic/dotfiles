@@ -233,7 +233,7 @@ return {
 			log_level = "error",
 			file_types = { "markdown" },
 			render_modes = { "n", "c" },
-			headings = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+			headings = { "󰲡  ", "󰲣  ", "󰲥  ", "󰲧  ", "󰲩  ", "󰲫  " },
 			dash = "—",
 			bullets = { "●", "○", "◆", "◇" },
 			checkbox = {

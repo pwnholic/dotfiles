@@ -28,7 +28,7 @@ M.git = {
 }
 
 M.kinds = {
-	RipGrep = " ",
+	RipGrep = " ",
 	Array = "󰅪 ",
 	Boolean = " ",
 	BreakStatement = "󰙧 ",

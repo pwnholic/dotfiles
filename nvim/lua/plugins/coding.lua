@@ -13,6 +13,9 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				go = { "goimports", "gofmt" },
+				php = { "php_cs_fixer" },
+				markdown = { "prettier" },
+				solidity = { "prettier" },
 				javascript = { { "prettierd", "prettier" } },
 				python = function(bufnr)
 					if require("conform").get_formatter_info("ruff_format", bufnr).available then
@@ -42,6 +45,8 @@ return {
 				"rust-analyzer",
 				"clangd",
 				"marksman",
+				"phpactor",
+				"php-cs-fixer",
 			},
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
