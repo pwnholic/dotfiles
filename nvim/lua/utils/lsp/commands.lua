@@ -1,7 +1,8 @@
+---@diagnostic disable: undefined-field
 local utils = require("utils")
 local M = {}
 
----@class lsp_command_parsed_arg_t : parsed_arg_t
+---@class lsp_command_parsed_arg_t
 ---@field apply boolean|nil
 ---@field async boolean|nil
 ---@field bufnr integer|nil

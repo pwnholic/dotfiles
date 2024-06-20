@@ -15,7 +15,7 @@ return {
 				go = { "goimports", "gofmt" },
 				php = { "php_cs_fixer" },
 				markdown = { "prettier" },
-				solidity = { "prettier" },
+				-- solidity = { "forge" },
 				javascript = { { "prettierd", "prettier" } },
 				python = function(bufnr)
 					if require("conform").get_formatter_info("ruff_format", bufnr).available then
@@ -25,6 +25,12 @@ return {
 					end
 				end,
 				["_"] = { "trim_whitespace" },
+			},
+			formatters = {
+				-- forge = {
+				-- 	command = "forge",
+				-- 	args = { "fmt", "$FILENAME" },
+				-- },
 			},
 		},
 	},

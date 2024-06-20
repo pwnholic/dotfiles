@@ -63,6 +63,6 @@ return {
 			iferr_vertical_shift = 4,
 		},
 		ft = { "go", "gomod" },
-		build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+		-- build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
 	},
 }

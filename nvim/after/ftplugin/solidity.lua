@@ -1,5 +1,6 @@
 require("utils.lsp").start({
 	cmd = { "vscode-solidity-server", "--stdio" },
+	name = "solidity_ls",
 	root_patterns = {
 		"hardhat.config.js",
 		"hardhat.config.ts",
@@ -12,21 +13,4 @@ require("utils.lsp").start({
 		"package.json",
 	},
 	filetypes = { "solidity" },
-	settings = {
-		solidity = {
-			compileUsingRemoteVersion = "latest",
-			packageDefaultDependenciesContractsDirectory = "",
-			enabledAsYouTypeCompilationErrorCheck = true,
-			validationDelay = 1500,
-			packageDefaultDependenciesDirectory = { "node_modules", "lib" },
-			-- remappings = {
-			-- 	"@chainlink/=/Users/patrick/.brownie/packages/smartcontractkit/chainlink-brownie-contracts@0.2.2",
-			-- 	"@openzeppelin/=/Users/patrick/.brownie/packages/OpenZeppelin/openzeppelin-contracts@4.3.2",
-			-- },
-			linter = "solhint",
-			solhintRules = {
-				["avoid-sha3"] = "warn",
-			},
-		},
-	},
 })
