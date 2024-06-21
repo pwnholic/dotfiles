@@ -15,6 +15,9 @@ return {
 				go = { "goimports", "gofmt" },
 				php = { "php_cs_fixer" },
 				markdown = { "prettier" },
+				yaml = { "prettier" },
+				sql = { "sqlfmt" },
+				mysql = { "sqlfmt" },
 				-- solidity = { "forge" },
 				javascript = { { "prettierd", "prettier" } },
 				python = function(bufnr)
@@ -53,6 +56,8 @@ return {
 				"marksman",
 				"phpactor",
 				"php-cs-fixer",
+				"sqls",
+				"sqlfmt",
 			},
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
@@ -87,13 +92,6 @@ return {
 	{
 		"rest-nvim/rest.nvim",
 		ft = "http",
-		dependencies = {
-			"vhyrro/luarocks.nvim",
-			config = true,
-			opts = {
-				rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" },
-			},
-		},
 		config = function()
 			require("rest-nvim").setup()
 		end,
@@ -129,6 +127,23 @@ return {
 			vim.keymap.set("n", "[[", function()
 				ill.goto_prev_reference(false)
 			end, { desc = "Prev Reference" })
+		end,
+	},
+	{
+		"kristijanhusak/vim-dadbod-ui",
+		dependencies = {
+			{ "tpope/vim-dadbod", lazy = true },
+			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
+		},
+		cmd = {
+			"DBUI",
+			"DBUIToggle",
+			"DBUIAddConnection",
+			"DBUIFindBuffer",
+		},
+		init = function()
+			-- Your DBUI configuration
+			vim.g.db_ui_use_nerd_fonts = 1
 		end,
 	},
 }

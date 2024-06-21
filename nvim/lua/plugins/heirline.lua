@@ -768,6 +768,7 @@ return {
 						"json",
 						"dbui",
 						"dbout",
+						"sql",
 					},
 				}, args.buf)
 			end,
