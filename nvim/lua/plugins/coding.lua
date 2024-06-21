@@ -16,8 +16,8 @@ return {
 				php = { "php_cs_fixer" },
 				markdown = { "prettier" },
 				yaml = { "prettier" },
-				sql = { "sqlfmt" },
-				mysql = { "sqlfmt" },
+				sql = { "sqlfluff" },
+				mysql = { "sqlfluff" },
 				-- solidity = { "forge" },
 				javascript = { { "prettierd", "prettier" } },
 				python = function(bufnr)
@@ -30,6 +30,9 @@ return {
 				["_"] = { "trim_whitespace" },
 			},
 			formatters = {
+				sqlfluff = {
+					args = { "format", "--dialect=ansi", "-" },
+				},
 				-- forge = {
 				-- 	command = "forge",
 				-- 	args = { "fmt", "$FILENAME" },
@@ -57,7 +60,7 @@ return {
 				"phpactor",
 				"php-cs-fixer",
 				"sqls",
-				"sqlfmt",
+				"sqlfluff",
 			},
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
