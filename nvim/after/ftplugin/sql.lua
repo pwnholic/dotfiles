@@ -9,5 +9,5 @@ if not ok then
 end
 
 cmp.setup.filetype({ "sql", "mysql" }, {
-	sources = { { name = "vim-dadbod-completion" }, { name = "nvim_lsp", max_item_count = 20 } },
+	sources = { { name = "nvim_lsp" }, { name = "vim-dadbod-completion" } },
 })
