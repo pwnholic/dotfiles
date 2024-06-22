@@ -104,7 +104,7 @@ return {
 					local former_width = math.floor(max_width * 0.6)
 					local latter_width = math.max(0, max_width - former_width - 1)
 					items[field] =
-						string.format("%s…%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
+						string.format("%s...%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
 				elseif field_width < min_width then
 					items[field] = string.format("%-" .. min_width .. "s", field_str)
 				end
@@ -144,18 +144,16 @@ return {
 				end,
 			}
 
+			local types = require("cmp.types")
+			local fuzzy_path_ok, fuzzy_path = pcall(require, "cmp_fuzzy_path.compare")
+			if not fuzzy_path_ok then
+				fuzzy_path = function() end
+			end
+
 			opts.sorting = {
 				priority_weight = 100,
 				comparators = {
-					require("cmp_fuzzy_path.compare") or function() end,
-					function(lhs, rhs)
-						lhs:get_kind()
-						local _, lhs_under = lhs.completion_item.label:find("^_+")
-						local _, rhs_under = rhs.completion_item.label:find("^_+")
-						lhs_under = lhs_under or 0
-						rhs_under = rhs_under or 0
-						return lhs_under < rhs_under
-					end,
+					fuzzy_path,
 					cmp.config.compare.kind,
 					cmp.config.compare.locality,
 					cmp.config.compare.recently_used,
@@ -169,11 +167,11 @@ return {
 				end,
 			}
 
-			opts.matching = {
-				disallow_fuzzy_matching = false,
-				disallow_partial_matching = false,
-				disallow_prefix_unmatching = false,
-			}
+			-- opts.matching = {
+			-- 	disallow_fuzzy_matching = false,
+			-- 	disallow_partial_matching = false,
+			-- 	disallow_prefix_unmatching = false,
+			-- }
 
 			opts.completion = {
 				completeopt = "menu,menuone,noinsert",
