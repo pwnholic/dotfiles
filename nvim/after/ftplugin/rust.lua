@@ -11,9 +11,4 @@ require("utils.lsp").start({
 			procMacro = { enable = true },
 		},
 	},
-	capabilities = {
-		experimental = {
-			serverStatusNotification = true,
-		},
-	},
 })
