@@ -144,7 +144,6 @@ return {
 				end,
 			}
 
-			local types = require("cmp.types")
 			local fuzzy_path_ok, fuzzy_path = pcall(require, "cmp_fuzzy_path.compare")
 			if not fuzzy_path_ok then
 				fuzzy_path = function() end
@@ -154,11 +153,23 @@ return {
 				priority_weight = 100,
 				comparators = {
 					fuzzy_path,
+					cmp.config.compare.exact,
+					cmp.config.compare.offset,
+					function(lhs, rhs)
+						-- Gua gak yakin ini pattern yang bagus ini "GENERAL"
+						local _, lhs_under = lhs.completion_item.label:find("^_+")
+						local _, rhs_under = rhs.completion_item.label:find("^_+")
+						lhs_under = lhs_under or 0
+						rhs_under = rhs_under or 0
+						if lhs_under > rhs_under then
+							return false
+						elseif lhs_under < rhs_under then
+							return true
+						end
+					end,
 					cmp.config.compare.kind,
 					cmp.config.compare.locality,
 					cmp.config.compare.recently_used,
-					cmp.config.compare.exact,
-					cmp.config.compare.score,
 				},
 			}
 			opts.snippet = {
@@ -197,8 +208,15 @@ return {
 
 			opts.sources = {
 				{ name = "luasnip", max_item_count = 3, priority = 700 },
-				{ name = "nvim_lsp", max_item_count = 20, priority = 900 },
 				{ name = "fuzzy_path", priority = 1000, option = { fd_cmd = fd_cmd } },
+				{
+					name = "nvim_lsp",
+					max_item_count = 20,
+					priority = 900,
+					entry_filter = function(entry)
+						return cmp.lsp.CompletionItemKind.Snippet ~= entry:get_kind()
+					end,
+				},
 				{
 					name = "rg",
 					keyword_length = 4,
