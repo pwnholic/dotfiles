@@ -54,12 +54,65 @@ function M.start(config, opts)
 		vim.list_extend(config.root_patterns or {}, M.default_config.root_patterns or {})
 	) or vim.fs.dirname(bufname)
 
+	local default_capabilities = vim.tbl_deep_extend(
+		"force",
+		vim.lsp.protocol.make_client_capabilities(),
+		require("cmp_nvim_lsp").default_capabilities(),
+		{
+			textDocument = {
+				foldingRange = { dynamicRegistration = false, lineFoldingOnly = true },
+				semanticTokens = { augmentsSyntaxTokens = false },
+				formatting = { dynamicRegistration = false },
+				completion = {
+					dynamicRegistration = false,
+					completionItem = {
+						snippetSupport = true,
+						commitCharactersSupport = true,
+						deprecatedSupport = true,
+						preselectSupport = true,
+						tagSupport = { valueSet = { 1 } },
+						insertReplaceSupport = true,
+						resolveSupport = {
+							properties = {
+								"documentation",
+								"detail",
+								"additionalTextEdits",
+								"sortText",
+								"filterText",
+								"insertText",
+								"textEdit",
+								"insertTextFormat",
+								"insertTextMode",
+							},
+						},
+						insertTextModeSupport = { valueSet = { 1, 2 } },
+						labelDetailsSupport = true,
+					},
+					contextSupport = true,
+					insertTextMode = 1,
+					completionList = {
+						itemDefaults = { "commitCharacters", "editRange", "insertTextFormat", "insertTextMode", "data" },
+					},
+				},
+			},
+			general = { positionEncodings = { "utf-8" } },
+			experimental = {
+				hoverActions = true,
+				hoverRange = true,
+				serverStatusNotification = true,
+				snippetTextEdit = true,
+				codeActionGroup = true,
+				ssr = true,
+			},
+		}
+	)
+
 	return vim.lsp.start(
 		---@diagnostic disable-next-line: param-type-mismatch
 		vim.tbl_deep_extend("keep", config or {}, {
 			name = name,
 			root_dir = root_dir,
-			capabilities = require("cmp_nvim_lsp").default_capabilities(),
+			capabilities = default_capabilities,
 		}, M.default_config),
 		opts
 	)

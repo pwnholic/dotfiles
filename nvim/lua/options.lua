@@ -67,4 +67,9 @@ opt.guicursor = {
 	"r-cr:hor20-Cursor/lCursor",
 }
 
+-- opt.foldcolumn = "1" -- '0' is not bad
+-- opt.foldenable = true
+-- opt.foldlevel = 99
+-- opt.foldlevelstart = 99
+
 vim.g.markdown_recommended_style = 1

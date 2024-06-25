@@ -213,9 +213,6 @@ return {
 					name = "nvim_lsp",
 					max_item_count = 20,
 					priority = 900,
-					entry_filter = function(entry)
-						return cmp.lsp.CompletionItemKind.Snippet ~= entry:get_kind()
-					end,
 				},
 				{
 					name = "rg",
