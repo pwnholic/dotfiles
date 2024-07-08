@@ -1,7 +1,6 @@
 local M = {}
 local handler_keys = require("lazy.core.handler.keys")
 local fzf = require("fzf-lua")
-local utils = require("utils")
 
 function M.lsp_keymaps(client, bufnr)
 	if not handler_keys.resolve then
@@ -10,7 +9,7 @@ function M.lsp_keymaps(client, bufnr)
 
 	local skip = { mode = true, id = true, ft = true, rhs = true, lhs = true }
 	local keymaps = handler_keys.resolve({
-		{ "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "Definition", has = "textDocument/definition" },
+		{ "gd", fzf.lsp_definitions, desc = "Definition", has = "textDocument/definition" },
 		{ "<leader>gl", vim.lsp.codelens.run, desc = "Run Codelens", has = "textDocument/codeLens" },
 		{ "<leader>gd", fzf.lsp_declarations, desc = "Declaration", has = "textDocument/declaration" },
 		{ "<leader>gs", fzf.lsp_document_symbols, desc = "Document Symbols", has = "textDocument/documentSymbol" },

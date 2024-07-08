@@ -57,7 +57,7 @@ return {
 				hl.OilDelete = { link = "DiagnosticSignError", bold = true }
 				hl.OilPermissionNone = { link = "NonText" }
 				hl.OilPermissionRead = { fg = c.red1, bg = c.none, bold = true }
-				hl.OilPermissionWrite = { fg = util.lighten(c.yellow, 0.5), bg = c.none, bold = true }
+				hl.OilPermissionWrite = { fg = c.yellow, bg = c.none, bold = true }
 				hl.OilPermissionExecute = { fg = c.teal, bg = c.none, bold = true }
 				hl.OilTypeDir = { link = "Directory" }
 				hl.OilTypeFifo = { link = "Special" }
@@ -200,13 +200,12 @@ return {
 					enabled = true,
 					show_exact_scope = false,
 					highlight = {
-						"RainbowDelimiterRed",
-						"RainbowDelimiterYellow",
-						"RainbowDelimiterBlue",
-						"RainbowDelimiterOrange",
-						"RainbowDelimiterGreen",
-						"RainbowDelimiterViolet",
-						"RainbowDelimiterCyan",
+						"@markup.heading.1.markdown",
+						"@markup.heading.2.markdown",
+						"@markup.heading.3.markdown",
+						"@markup.heading.4.markdown",
+						"@markup.heading.5.markdown",
+						"@markup.heading.6.markdown",
 					},
 				},
 				exclude = {

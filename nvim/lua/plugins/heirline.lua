@@ -24,16 +24,15 @@ return {
 			R = c.red,
 			t = c.teal,
 		}
-
 		vim.api.nvim_create_autocmd("ModeChanged", {
 			callback = function()
 				local color = (mode_colors)[vim.fn.mode():sub(1, 1)]
 				set_hl(0, "Winbar", { underline = true, sp = color, bg = c.bg_statusline, italic = true })
 				set_hl(0, "CursorLineNr", { fg = color, bg = c.none, bold = true })
 				set_hl(0, "TermCursor", { bg = color })
-				set_hl(0, "Cursor", { bg = color })
-				set_hl(0, "Visual", { bg = cutil.darken(color, 0.3) })
-				set_hl(0, "VisualNOS", { bg = cutil.darken(color, 0.3) })
+				set_hl(0, "Cursor", { bg = cutil.darken(color, 0.3), bold = true })
+				set_hl(0, "Visual", { bg = cutil.darken(color, 0.3), bold = true })
+				set_hl(0, "VisualNOS", { bg = cutil.darken(color, 0.3), bold = true })
 			end,
 		})
 

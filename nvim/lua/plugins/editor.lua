@@ -736,6 +736,7 @@ return {
 				{
 					"<leader>a",
 					function()
+						vim.notify("added to harpoon", 2, { title = "harpoon" })
 						harpoon:list():add()
 					end,
 					desc = "Harpoon File",
@@ -746,6 +747,39 @@ return {
 						harpoon.ui:toggle_quick_menu(harpoon:list(), { title = "", ui_max_width = 80 })
 					end,
 					desc = "Harpoon Quick Menu",
+				},
+				{
+					"<space>l",
+					function()
+						local file_paths = {}
+						for _, items in ipairs(harpoon:list().items) do
+							table.insert(file_paths, items.value)
+						end
+
+						local filter_path = {}
+						for idx = 1, #file_paths do
+							if file_paths[idx] ~= "" then
+								table.insert(filter_path, file_paths[idx])
+							end
+						end
+
+						local actions = require("fzf-lua").actions
+						require("fzf-lua").fzf_exec(file_paths, {
+							prompt = "Harpoon> ",
+							actions = {
+								["default"] = actions.file_edit,
+								["ctrl-s"] = actions.file_split,
+								["ctrl-v"] = actions.file_vsplit,
+								["ctrl-t"] = actions.file_tabedit,
+								["ctrl-x"] = function(selected)
+									for i = 1, #selected do
+										harpoon:list():remove_at(i)
+									end
+								end,
+							},
+						})
+					end,
+					desc = "Fzf Harpoon",
 				},
 			}
 

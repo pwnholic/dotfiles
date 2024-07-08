@@ -236,6 +236,7 @@ return {
 							utils.tabout.jump(-1)
 							return
 						end
+
 						if cmp.visible() then
 							cmp.select_prev_item()
 						else
