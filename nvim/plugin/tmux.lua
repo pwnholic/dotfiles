@@ -1,4 +1,150 @@
-local utils = require("utils")
+---Get list of commands of the processes running in the terminal
+---@param buf integer? terminal buffer handler, default to 0 (current)
+---@return string[]: process names
+local function proc_cmds(buf)
+	buf = buf or 0
+	if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].bt ~= "terminal" then
+		return {}
+	end
+	local channel = vim.bo[buf].channel
+	local chan_valid, pid = pcall(vim.fn.jobpid, channel)
+	if not chan_valid then
+		return {}
+	end
+	return vim.split(vim.fn.system("ps h -o args -g " .. pid), "\n", {
+		trimempty = true,
+	})
+end
+
+---Check if any of the processes in terminal buffer `buf` is a TUI app
+---@param buf integer? buffer handler
+---@return boolean?
+local function running_tui(buf)
+	for _, cmd in ipairs(proc_cmds(buf)) do
+		if
+			vim.fn.match(
+				cmd,
+				"\\v^(sudo(\\s+--?(\\w|-)+((\\s+|\\=)\\S+)?)*\\s+)?(/usr/bin/)?(n?vim?|vimdiff|emacs(client)?|lem|nano|helix|kak|lazygit|fzf|nmtui|sudoedit|ssh)"
+			) >= 0
+		then
+			return true
+		end
+	end
+end
+
+---@class keymap_def_t
+---@field lhs string
+---@field lhsraw string
+---@field rhs string?
+---@field callback function?
+---@field expr boolean?
+---@field desc string?
+---@field noremap boolean?
+---@field script boolean?
+---@field silent boolean?
+---@field nowait boolean?
+---@field buffer boolean?
+---@field replace_keycodes boolean?
+
+---Get keymap definition
+---@param mode string
+---@param lhs string
+---@return keymap_def_t
+local function get_keys(mode, lhs)
+	local lhs_keycode = vim.keycode(lhs)
+	for _, map in ipairs(vim.api.nvim_buf_get_keymap(0, mode)) do
+		if vim.keycode(map.lhs) == lhs_keycode then
+			return {
+				lhs = map.lhs,
+				rhs = map.rhs,
+				expr = map.expr == 1,
+				callback = map.callback,
+				desc = map.desc,
+				noremap = map.noremap == 1,
+				script = map.script == 1,
+				silent = map.silent == 1,
+				nowait = map.nowait == 1,
+				buffer = true,
+				replace_keycodes = map.replace_keycodes == 1,
+			}
+		end
+	end
+	for _, map in ipairs(vim.api.nvim_get_keymap(mode)) do
+		if vim.keycode(map.lhs) == lhs_keycode then
+			return {
+				lhs = map.lhs,
+				rhs = map.rhs or "",
+				expr = map.expr == 1,
+				callback = map.callback,
+				desc = map.desc,
+				noremap = map.noremap == 1,
+				script = map.script == 1,
+				silent = map.silent == 1,
+				nowait = map.nowait == 1,
+				buffer = false,
+				replace_keycodes = map.replace_keycodes == 1,
+			}
+		end
+	end
+	return {
+		lhs = lhs,
+		rhs = lhs,
+		expr = false,
+		noremap = true,
+		script = false,
+		silent = true,
+		nowait = false,
+		buffer = false,
+		replace_keycodes = true,
+	}
+end
+
+---@param def keymap_def_t
+---@return function
+local function keys_fallback_fn(def)
+	local modes = def.noremap and "in" or "im"
+	---@param keys string
+	---@return nil
+	local function feed(keys)
+		local keycode = vim.keycode(keys)
+		local keyseq = vim.v.count > 0 and vim.v.count .. keycode or keycode
+		vim.api.nvim_feedkeys(keyseq, modes, false)
+	end
+	if not def.expr then
+		return def.callback or function()
+			feed(def.rhs)
+		end
+	end
+	if def.callback then
+		return function()
+			feed(def.callback())
+		end
+	else
+		-- Escape rhs to avoid nvim_eval() interpreting
+		-- special characters
+		local rhs = vim.fn.escape(def.rhs, "\\")
+		return function()
+			feed(vim.api.nvim_eval(rhs))
+		end
+	end
+end
+
+---Amend keymap
+---Caveat: currently cannot amend keymap with <Cmd>...<CR> rhs
+---@param modes string[]|string
+---@param lhs string
+---@param rhs function(fallback: function)
+---@param opts table?
+---@return nil
+local function amend_keys(modes, lhs, rhs, opts)
+	modes = type(modes) ~= "table" and { modes } or modes --[=[@as string[]]=]
+	for _, mode in ipairs(modes) do
+		local fallback = keys_fallback_fn(get_keys(mode, lhs))
+		vim.keymap.set(mode, lhs, function()
+			rhs(fallback)
+		end, opts)
+	end
+end
 
 ---@alias nvim_direction_t 'h'|'j'|'k'|'l'
 ---@alias tmux_direction_t 'L'|'D'|'U'|'R'
@@ -181,8 +327,8 @@ end
 ---@return nil
 local function tmux_mapkey_fallback(key, action, condition)
 	condition = condition or tmux_mapkey_default_condition
-	utils.amend_keys({ "n", "x", "t" }, key, function(fallback)
-		if not condition() or vim.env.NVIM or vim.fn.mode():sub(1, 1) == "t" and utils.running_tui() then
+	amend_keys({ "n", "x", "t" }, key, function(fallback)
+		if not condition() or vim.env.NVIM or vim.fn.mode():sub(1, 1) == "t" and running_tui() then
 			fallback()
 			return
 		end
@@ -201,28 +347,32 @@ return vim.schedule(function()
 
 	vim.g.loaded_tmux = true
 
+	tmux_mapkey_fallback("<M-h>", navigate_wrap("h"), tmux_mapkey_navigate_condition("h"))
+	tmux_mapkey_fallback("<M-j>", navigate_wrap("j"), tmux_mapkey_navigate_condition("j"))
+	tmux_mapkey_fallback("<M-k>", navigate_wrap("k"), tmux_mapkey_navigate_condition("k"))
+	tmux_mapkey_fallback("<M-l>", navigate_wrap("l"), tmux_mapkey_navigate_condition("l"))
 
-
-  -- stylua: ignore start
-  tmux_mapkey_fallback('<M-h>', navigate_wrap('h'), tmux_mapkey_navigate_condition('h'))
-  tmux_mapkey_fallback('<M-j>', navigate_wrap('j'), tmux_mapkey_navigate_condition('j'))
-  tmux_mapkey_fallback('<M-k>', navigate_wrap('k'), tmux_mapkey_navigate_condition('k'))
-  tmux_mapkey_fallback('<M-l>', navigate_wrap('l'), tmux_mapkey_navigate_condition('l'))
-
-  tmux_mapkey_fallback('<M-p>', 'last-pane')
-  tmux_mapkey_fallback('<M-R>', 'swap-pane -U')
-  tmux_mapkey_fallback('<M-r>', 'swap-pane -D')
-  tmux_mapkey_fallback('<M-o>', "confirm 'kill-pane -a'")
-  tmux_mapkey_fallback('<M-=>', "confirm 'select-layout tiled'")
-  tmux_mapkey_fallback('<M-c>', 'confirm kill-pane', tmux_mapkey_close_win_condition)
-  tmux_mapkey_fallback('<M-q>', 'confirm kill-pane', tmux_mapkey_close_win_condition)
-  tmux_mapkey_fallback('<M-<>', 'resize-pane -L 4', tmux_mapkey_resize_pane_horiz_condition)
-  tmux_mapkey_fallback('<M->>', 'resize-pane -R 4', tmux_mapkey_resize_pane_horiz_condition)
-  tmux_mapkey_fallback('<M-,>', 'resize-pane -L 4', tmux_mapkey_resize_pane_horiz_condition)
-  tmux_mapkey_fallback('<M-.>', 'resize-pane -R 4', tmux_mapkey_resize_pane_horiz_condition)
-  tmux_mapkey_fallback('<M-->', [[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') - 2))"]], tmux_mapkey_resize_pane_vert_condition)
-  tmux_mapkey_fallback('<M-+>', [[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') + 2))"]], tmux_mapkey_resize_pane_vert_condition)
-	-- stylua: ignore end
+	tmux_mapkey_fallback("<M-p>", "last-pane")
+	tmux_mapkey_fallback("<M-R>", "swap-pane -U")
+	tmux_mapkey_fallback("<M-r>", "swap-pane -D")
+	tmux_mapkey_fallback("<M-o>", "confirm 'kill-pane -a'")
+	tmux_mapkey_fallback("<M-=>", "confirm 'select-layout tiled'")
+	tmux_mapkey_fallback("<M-c>", "confirm kill-pane", tmux_mapkey_close_win_condition)
+	tmux_mapkey_fallback("<M-q>", "confirm kill-pane", tmux_mapkey_close_win_condition)
+	tmux_mapkey_fallback("<M-<>", "resize-pane -L 4", tmux_mapkey_resize_pane_horiz_condition)
+	tmux_mapkey_fallback("<M->>", "resize-pane -R 4", tmux_mapkey_resize_pane_horiz_condition)
+	tmux_mapkey_fallback("<M-,>", "resize-pane -L 4", tmux_mapkey_resize_pane_horiz_condition)
+	tmux_mapkey_fallback("<M-.>", "resize-pane -R 4", tmux_mapkey_resize_pane_horiz_condition)
+	tmux_mapkey_fallback(
+		"<M-->",
+		[[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') - 2))"]],
+		tmux_mapkey_resize_pane_vert_condition
+	)
+	tmux_mapkey_fallback(
+		"<M-+>",
+		[[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') + 2))"]],
+		tmux_mapkey_resize_pane_vert_condition
+	)
 
 	-- Set @is_vim and register relevant autocmds callbacks if not already
 	-- in a vim/nvim session

@@ -1,122 +1,4 @@
-local lazy_util = require("lazy.util")
-
 local M = {}
-
----@alias Placeholder {n:number, text:string}
-
----@param snippet string
----@param fn fun(placeholder:Placeholder):string
----@return string
-function M.snippet_replace(snippet, fn)
-	return snippet:gsub("%$%b{}", function(m)
-		local n, name = m:match("^%${(%d+):(.+)}$")
-		return n and fn({ n = n, text = name }) or m
-	end) or snippet
-end
-
--- This function resolves nested placeholders in a snippet.
----@param snippet string
----@return string
-function M.snippet_preview(snippet)
-	local ok, parsed = pcall(function()
-		return vim.lsp._snippet_grammar.parse(snippet)
-	end)
-	return ok and tostring(parsed)
-		or M.snippet_replace(snippet, function(placeholder)
-			return M.snippet_preview(placeholder.text)
-		end):gsub("%$0", "")
-end
-
--- This function replaces nested placeholders in a snippet with LSP placeholders.
-function M.snippet_fix(snippet)
-	local texts = {} ---@type table<number, string>
-	return M.snippet_replace(snippet, function(placeholder)
-		texts[placeholder.n] = texts[placeholder.n] or M.snippet_preview(placeholder.text)
-		return "${" .. placeholder.n .. ":" .. texts[placeholder.n] .. "}"
-	end)
-end
-
----@param entry cmp.Entry
-function M.auto_brackets(entry)
-	local cmp = require("cmp")
-	local Kind = cmp.lsp.CompletionItemKind
-	local item = entry:get_completion_item()
-	if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
-		local cursor = vim.api.nvim_win_get_cursor(0)
-		local prev_char = vim.api.nvim_buf_get_text(0, cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2] + 1, {})[1]
-		if prev_char ~= "(" and prev_char ~= ")" then
-			local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
-			vim.api.nvim_feedkeys(keys, "i", true)
-		end
-	end
-end
-
--- This function adds missing documentation to snippets.
--- The documentation is a preview of the snippet.
----@param window cmp.CustomEntriesView|cmp.NativeEntriesView
-function M.add_missing_snippet_docs(window)
-	local cmp = require("cmp")
-	local Kind = cmp.lsp.CompletionItemKind
-	local entries = window:get_entries()
-	for _, entry in ipairs(entries) do
-		if entry:get_kind() == Kind.Snippet then
-			local item = entry:get_completion_item()
-			if not item.documentation and item.insertText then
-				item.documentation = {
-					kind = cmp.lsp.MarkupKind.Markdown,
-					value = string.format("```%s\n%s\n```", vim.bo.filetype, M.snippet_preview(item.insertText)),
-				}
-			end
-		end
-	end
-end
-
--- This is a better implementation of `cmp.confirm`:
---  * check if the completion menu is visible without waiting for running sources
---  * create an undo point before confirming
--- This function is both faster and more reliable.
----@param opts? {select: boolean, behavior: cmp.ConfirmBehavior}
-function M.confirm(opts)
-	local cmp = require("cmp")
-	opts = vim.tbl_extend("force", {
-		select = true,
-		behavior = cmp.ConfirmBehavior.Insert,
-	}, opts or {})
-	return function(fallback)
-		if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-			require("utils").create_undo()
-			if cmp.confirm(opts) then
-				return
-			end
-		end
-		return fallback()
-	end
-end
-
-function M.expand(snippet)
-	-- Native sessions don't support nested snippet sessions.
-	-- Always use the top-level session.
-	-- Otherwise, when on the first placeholder and selecting a new completion,
-	-- the nested session will be used instead of the top-level session.
-	-- See: https://github.com/LazyVim/LazyVim/issues/3199
-	local session = vim.snippet.active() and vim.snippet._session or nil
-
-	local ok, err = pcall(vim.snippet.expand, snippet)
-	if not ok then
-		local fixed = M.snippet_fix(snippet)
-		ok = pcall(vim.snippet.expand, fixed)
-
-		local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
-			or ("Failed to parse snippet.\n" .. err)
-
-		lazy_util.warn(string.format("%s ```%s\n%s ```", msg, vim.bo.filetype, snippet), { title = "vim.snippet" })
-	end
-
-	-- Restore top-level session when needed
-	if session then
-		vim.snippet._session = session
-	end
-end
 
 ---Choose the closer destination between two destinations
 ---@param dest1 number[]?
@@ -211,6 +93,72 @@ function M.jump_to_closer(snip_dest, tabout_dest, direction)
 		require("luasnip").jump(direction)
 	end
 	return true
+end
+
+function M.clamp_format_items(field, min_width, max_width, items)
+	if not items[field] or not type(items) == "string" then
+		return
+	end
+	-- In case that min_width > max_width
+	if min_width > max_width then
+		min_width, max_width = max_width, min_width
+	end
+	local field_str = items[field]
+	local field_width = vim.fn.strdisplaywidth(field_str)
+	if field_width > max_width then
+		local former_width = math.floor(max_width * 0.6)
+		local latter_width = math.max(0, max_width - former_width - 1)
+		items[field] = string.format("%s...%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
+	elseif field_width < min_width then
+		items[field] = string.format("%-" .. min_width .. "s", field_str)
+	end
+end
+
+function M.backspace_autoindent(fallback)
+	local ts_indent = require("nvim-treesitter.indent")
+	local cmp = require("cmp")
+	local cursor_row, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+	if cursor_row == 1 and cursor_col == 0 then
+		return
+	end
+	cmp.close()
+	local current_line = vim.api.nvim_buf_get_lines(0, cursor_row - 1, cursor_row, true)[1]
+	local ok, get_indent = pcall(ts_indent.get_indent, cursor_row)
+	if not ok then
+		get_indent = 0
+	end
+	if vim.fn.strcharpart(current_line, get_indent - 1, cursor_col - get_indent + 1):gsub("%s+", "") == "" then
+		if get_indent > 0 and cursor_col > get_indent then
+			local new_line = vim.fn.strcharpart(current_line, 0, get_indent)
+				.. vim.fn.strcharpart(current_line, cursor_col)
+
+			vim.api.nvim_buf_set_lines(0, cursor_row - 1, cursor_row, true, { new_line })
+			vim.api.nvim_win_set_cursor(0, { cursor_row, math.min(get_indent or 0, vim.fn.strcharlen(new_line)) })
+		elseif cursor_row > 1 and (get_indent > 0 and cursor_col + 1 > get_indent) then
+			local prev_line = vim.api.nvim_buf_get_lines(0, cursor_row - 2, cursor_row - 1, true)[1]
+			if vim.trim(prev_line) == "" then
+				local prev_indent = ts_indent.get_indent(cursor_row - 1) or 0
+				local new_line = vim.fn.strcharpart(current_line, 0, prev_indent)
+					.. vim.fn.strcharpart(current_line, cursor_col)
+
+				vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
+				vim.api.nvim_win_set_cursor(0, {
+					cursor_row - 1,
+					math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))),
+				})
+			else
+				local len = vim.fn.strcharlen(prev_line)
+				local new_line = prev_line .. vim.fn.strcharpart(current_line, cursor_col)
+
+				vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
+				vim.api.nvim_win_set_cursor(0, { cursor_row - 1, math.max(0, len) })
+			end
+		else
+			fallback()
+		end
+	else
+		fallback()
+	end
 end
 
 return M

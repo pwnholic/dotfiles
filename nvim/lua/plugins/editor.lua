@@ -1,5 +1,279 @@
 return {
 	{
+		"ibhagwan/fzf-lua",
+		cmd = "FzfLua",
+		opts = function(_, opts)
+			local config = require("fzf-lua.config")
+			local actions = require("fzf-lua.actions")
+			local path = require("fzf-lua.path")
+			local core = require("fzf-lua.core")
+
+			-- Quickfix
+			config.defaults.keymap.fzf["ctrl-q"] = "select-all+accept"
+			config.defaults.keymap.fzf["ctrl-u"] = "half-page-up"
+			config.defaults.keymap.fzf["ctrl-d"] = "half-page-down"
+			config.defaults.keymap.fzf["ctrl-x"] = "jump"
+			config.defaults.keymap.fzf["ctrl-f"] = "preview-page-down"
+			config.defaults.keymap.fzf["ctrl-b"] = "preview-page-up"
+			config.defaults.keymap.builtin["<c-f>"] = "preview-page-down"
+			config.defaults.keymap.builtin["<c-b>"] = "preview-page-up"
+
+			-- Trouble
+			if LazyVim.has("trouble.nvim") then
+				config.defaults.actions.files["ctrl-t"] = require("trouble.sources.fzf").actions.open
+			end
+
+			-- Toggle root dir / cwd
+			config.defaults.actions.files["ctrl-r"] = function(_, ctx)
+				local o = vim.deepcopy(ctx.__call_opts)
+				o.root = o.root == false
+				o.cwd = nil
+				o.buf = ctx.__CTX.bufnr
+				LazyVim.pick.open(ctx.__INFO.cmd, o)
+			end
+
+			config.defaults.actions.files["alt-r"] = function()
+				config.__resume_data.opts = config.__resume_data.opts or {}
+				local o = config.__resume_data.opts
+
+				-- Remove old fn_selected, else selected item will be opened
+				-- with previous cwd
+				o.fn_selected = nil
+				o.cwd = o.cwd or vim.uv.cwd()
+				o.query = config.__resume_data.last_query
+
+				vim.ui.input({ prompt = "New cwd: ", default = o.cwd, completion = "dir" }, function(input)
+					if not input then
+						return
+					end
+					input = vim.fs.normalize(input)
+					local stat = vim.uv.fs_stat(input)
+					if not stat or not stat.type == "directory" then
+						print("\n")
+						vim.notify("[Fzf-lua] invalid path: " .. input .. "\n", vim.log.levels.ERROR)
+						vim.cmd.redraw()
+						return
+					end
+					o.cwd = input
+				end)
+
+				-- Adapted from fzf-lua `core.set_header()` function
+				if o.cwd_prompt then
+					o.prompt = vim.fn.fnamemodify(o.cwd, ":.:~")
+					local shorten_len = tonumber(o.cwd_prompt_shorten_len)
+					if shorten_len and #o.prompt >= shorten_len then
+						o.prompt = path.shorten(o.prompt, tonumber(o.cwd_prompt_shorten_val) or 1)
+					end
+					if not path.ends_with_separator(o.prompt) then
+						o.prompt = o.prompt .. path.separator()
+					end
+				end
+				if o.headers then
+					o = core.set_header(o, o.headers)
+				end
+				actions.resume()
+			end
+
+			core.ACTION_DEFINITIONS[config.defaults.actions.files["alt-r"]] = { "Change Cwd", pos = 1 }
+			config.defaults.actions.files["alt-c"] = config.defaults.actions.files["ctrl-r"]
+			config.set_action_helpstr(config.defaults.actions.files["ctrl-r"], "toggle-root-dir")
+			config.set_action_helpstr(config.defaults.actions.files["alt-r"], "change-cwd")
+
+			-- use the same prompt for all
+			local defaults = require("fzf-lua.profiles.default-title")
+			local function fix(t)
+				t.prompt = t.prompt ~= nil and " " or nil
+				for _, v in pairs(t) do
+					if type(v) == "table" then
+						fix(v)
+					end
+				end
+			end
+			fix(defaults)
+
+			local img_previewer ---@type string[]?
+			for _, v in ipairs({
+				{ cmd = "ueberzug", args = {} },
+				{ cmd = "chafa", args = { "{file}", "--format=symbols" } },
+				{ cmd = "viu", args = { "-b" } },
+			}) do
+				if vim.fn.executable(v.cmd) == 1 then
+					img_previewer = vim.list_extend({ v.cmd }, v.args)
+					break
+				end
+			end
+
+			return vim.tbl_deep_extend("force", defaults, {
+				fzf_colors = true,
+				fzf_opts = {
+					["--no-scrollbar"] = true,
+					["--info"] = "right",
+					["--padding"] = "0,1",
+					["--margin"] = "0",
+					["--layout"] = "reverse",
+					["--marker"] = "",
+					["--pointer"] = "",
+					["--border"] = "none",
+					-- ["--no-preview"] = true,
+					-- ["--preview-window"] = "hidden",
+					["--ansi"] = true,
+				},
+				winopts = {
+					split = [[ botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh ]],
+					preview = { hidden = "hidden" },
+				},
+				defaults = {
+					-- formatter = "path.filename_first",
+					headers = { "actions", "cwd" },
+					cwd_header = true,
+					formatter = "path.dirname_first",
+				},
+				previewers = {
+					builtin = {
+						extensions = {
+							["png"] = img_previewer,
+							["jpg"] = img_previewer,
+							["jpeg"] = img_previewer,
+							["gif"] = img_previewer,
+							["webp"] = img_previewer,
+						},
+						ueberzug_scaler = "fit_contain",
+					},
+				},
+				-- Custom LazyVim option to configure vim.ui.select
+				ui_select = function(fzf_opts, items)
+					return vim.tbl_deep_extend("force", fzf_opts, {
+						prompt = " ",
+						winopts = {
+							title = " " .. vim.trim((fzf_opts.prompt or "Select"):gsub("%s*:%s*$", "")) .. " ",
+							title_pos = "center",
+						},
+					}, fzf_opts.kind == "codeaction" and {
+						winopts = {
+							layout = "vertical",
+							-- height is number of items minus 15 lines for the preview, with a max of 80% screen height
+							height = math.floor(math.min(vim.o.lines * 0.8 - 16, #items + 2) + 0.5) + 16,
+							width = 0.5,
+							preview = not vim.tbl_isempty(LazyVim.lsp.get_clients({ bufnr = 0, name = "vtsls" })) and {
+								layout = "vertical",
+								vertical = "down:15,border-top",
+								hidden = "hidden",
+							} or {
+								layout = "vertical",
+								vertical = "down:15,border-top",
+							},
+						},
+					} or {
+						winopts = {
+							width = 0.5,
+							-- height is number of items, with a max of 80% screen height
+							height = math.floor(math.min(vim.o.lines * 0.8, #items + 2) + 0.5),
+						},
+					})
+				end,
+				files = {
+					prompt = "Files❯ ",
+					multiprocess = true,
+					git_icons = false,
+					file_icons = true,
+					color_icons = true,
+					-- path_shorten   = 1,              -- 'true' or number, shorten path?
+					formatter = "path.filename_first",
+					find_opts = [[-type f -type d -type l -not -path '*/\.git/*' -printf '%P\n']],
+					fd_opts = [[--color=never --type f --type d --type l --follow --exclude .git]],
+					rg_opts = [[--color=never --files --follow -g '!.git'"]],
+					cwd_prompt = false,
+					cwd_prompt_shorten_len = 32, -- shorten prompt beyond this length
+					cwd_prompt_shorten_val = 1, -- shortened path parts length
+					toggle_ignore_flag = "--no-ignore", -- flag toggled in `actions.toggle_ignore`
+					toggle_hidden_flag = "--hidden", -- flag toggled in `actions.toggle_hidden`
+					actions = {
+						["alt-h"] = { actions.toggle_hidden },
+					},
+				},
+				grep = {
+					prompt = "Rg❯ ",
+					input_prompt = "Grep For❯ ",
+					multiprocess = true,
+					git_icons = false,
+					file_icons = true,
+					color_icons = true,
+					grep_opts = [[--binary-files=without-match --line-number --recursive --color=auto --perl-regexp -e]],
+					rg_opts = [[--column --hidden --follow --line-number --no-heading --color=always --smart-case --max-columns=4096 -g=!git/ -e]],
+					rg_glob = false, -- default to glob parsing?
+					glob_flag = "--iglob", -- for case sensitive globs use '--glob'
+					glob_separator = "%s%-%-", -- query separator pattern (lua): ' --'
+					-- multiline = 1, -- Display as: PATH:LINE:COL\nTEXT\n
+					no_header = false, -- hide grep|cwd header?
+					no_header_i = false, -- hide interactive header?
+					actions = {
+						["alt-h"] = { actions.toggle_hidden },
+					},
+				},
+				lsp = {
+					symbols = {
+						symbol_hl = function(s)
+							return "TroubleIcon" .. s
+						end,
+						symbol_fmt = function(s)
+							return s:lower() .. "\t"
+						end,
+						child_prefix = false,
+					},
+					code_actions = {
+						previewer = vim.fn.executable("delta") == 1 and "codeaction_native" or nil,
+					},
+				},
+			})
+		end,
+		config = function(_, opts)
+			local fzf = require("fzf-lua")
+			local enabled
+			vim.keymap.set("n", "<leader>uz", function()
+				enabled = not enabled
+				if enabled then
+					vim.notify("Enabled FZF Preview", 2, { title = "Fzflua" })
+					return fzf.setup(vim.tbl_extend("force", opts, {
+						winopts = {
+							height = 0.70,
+							width = 0.90,
+							row = 0.50,
+							col = 0.45,
+							border = "single",
+							fullscreen = false,
+							preview = {
+								border = "noborder",
+								wrap = "nowrap",
+								hidden = "nohidden",
+								horizontal = "right:55%",
+								layout = "flex",
+								flip_columns = 120,
+								title = false,
+								scrollbar = false,
+								delay = 100,
+								winopts = {
+									number = false,
+									relativenumber = false,
+									cursorline = false,
+									cursorlineopt = "both",
+									cursorcolumn = false,
+									signcolumn = "no",
+									list = false,
+									foldenable = false,
+								},
+							},
+						},
+					}))
+				else
+					vim.notify("Disabled FZF preview", 2, { title = "Fzflua" })
+					return fzf.setup(opts)
+				end
+			end, { desc = "Toggle FZF Preview" })
+			fzf.setup(opts)
+		end,
+	},
+
+	{
 		"stevearc/oil.nvim",
 		lazy = false,
 		keys = { { "<leader>e", vim.cmd.Oil, desc = "Open Oil Buffer" } },
@@ -9,7 +283,7 @@ return {
 			vim.g.loaded_netrwPlugin = 1
 
 			local oil = require("oil")
-			local icons = require("utils").icons.kinds
+			local icons = LazyVim.config.icons.kinds
 
 			local preview_wins = {} ---@type table<integer, integer>
 			local preview_bufs = {} ---@type table<integer, integer>
@@ -254,11 +528,11 @@ return {
 			})
 
 			local type_hlgroups = setmetatable({
-				["-"] = "OilTypeFile",
-				["d"] = "OilTypeDir",
-				["p"] = "OilTypeFifo",
-				["l"] = "OilTypeLink",
-				["s"] = "OilTypeSocket",
+				["file"] = "OilTypeFile",
+				["directory"] = "OilTypeDir",
+				["fifo"] = "OilTypeFifo",
+				["link"] = "OilTypeLink",
+				["socket"] = "OilTypeSocket",
 			}, {
 				__index = function()
 					return "OilTypeFile"
@@ -284,8 +558,8 @@ return {
 						return type_hlgroups[type_str]
 					end,
 				},
-				{ "size", highlight = "AlphaButtons" },
-				{ "mtime", highlight = "RainbowDelimiterViolet" },
+				{ "size", highlight = "OilSize" },
+				{ "mtime", highlight = "OilMtime" },
 				{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
 			}
 
@@ -417,7 +691,7 @@ return {
 				callback = function(info)
 					if vim.bo[info.buf].filetype == "oil" then
 						local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
-						local oildir = vim.fs.normalize(oil.get_current_dir())
+						local oildir = vim.fs.normalize(oil.get_current_dir(0))
 						if cwd ~= oildir and vim.uv.fs_stat(oildir) then
 							local ok = pcall(vim.cmd.lcd, oildir)
 							if not ok then
@@ -461,338 +735,6 @@ return {
 					end
 				end,
 			})
-		end,
-	},
-	{
-		"altermo/ultimate-autopair.nvim",
-		event = "InsertEnter",
-		branch = "v0.6", --recommended as each new version will have breaking changes
-		opts = function()
-			---Record previous cmdline completion types,
-			---`cmdcompltype[1]` is the current completion type,
-			---`cmdcompltype[2]` is the previous completion type
-			---@type string[]
-			local compltype = {}
-
-			vim.api.nvim_create_autocmd("CmdlineChanged", {
-				desc = "Record cmd compltype to determine whether to autopair.",
-				group = vim.api.nvim_create_augroup("AutopairRecordCmdCompltype", {}),
-				callback = function()
-					local type = vim.fn.getcmdcompltype()
-					if compltype[1] == type then
-						return
-					end
-					compltype[2] = compltype[1]
-					compltype[1] = type
-				end,
-			})
-
-			---Get next two characters after cursor, whether in cmdline or normal buffer
-			---@return string: next two characters
-			local function get_next_two_chars()
-				local col, line
-				if vim.fn.mode():match("^c") then
-					col = vim.fn.getcmdpos()
-					line = vim.fn.getcmdline()
-				else
-					col = vim.fn.col(".")
-					line = vim.api.nvim_get_current_line()
-				end
-				return line:sub(col, col + 1)
-			end
-
-			-- Matches strings that start with:
-			-- keywords: \k
-			-- opening pairs: (, [, {, \(, \[, \{
-			local IGNORE_REGEX = vim.regex([=[^\%(\k\|\\\?[([{]\)]=])
-
-			return {
-				extensions = {
-					-- Improve performance when typing fast, see
-					-- https://github.com/altermo/ultimate-autopair.nvim/issues/74
-					tsnode = false,
-					utf8 = false,
-					filetype = { tree = false },
-					cond = {
-						cond = function(f)
-							return not f.in_macro()
-								-- Disable autopairs if followed by a keyword or an opening pair
-								and not IGNORE_REGEX:match_str(get_next_two_chars())
-								-- Disable autopairs when inserting a regex,
-								-- e.g. `:s/{pattern}/{string}/[flags]` or
-								-- `:g/{pattern}/[cmd]`, etc.
-								and (not f.in_cmdline() or compltype[1] ~= "" or compltype[2] ~= "command")
-						end,
-					},
-				},
-				{ "\\(", "\\)" },
-				{ "\\[", "\\]" },
-				{ "\\{", "\\}" },
-				{ "[=[", "]=]", ft = { "lua" } },
-				{ "<<<", ">>>", ft = { "cuda" } },
-				{ "/*", "*/", ft = { "c", "cpp", "cuda" }, newline = true, space = true },
-				{ "<", ">", disable_start = true, disable_end = true },
-				-- Paring '$' and '*' are handled by snippets,
-				-- only use autopair to delete matched pairs here
-				{ "$", "$", ft = { "markdown", "tex" }, disable_start = true, disable_end = true },
-				{ "*", "*", ft = { "markdown" }, disable_start = true, disable_end = true },
-				{ "\\left(", "\\right)", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left[", "\\right]", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left{", "\\right}", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left<", "\\right>", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left\\lfloor", "\\right\\rfloor", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left\\lceil", "\\right\\rceil", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left\\vert", "\\right\\vert", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left\\lVert", "\\right\\rVert", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\left\\lVert", "\\right\\rVert", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\begin{bmatrix}", "\\end{bmatrix}", newline = true, space = true, ft = { "markdown", "tex" } },
-				{ "\\begin{pmatrix}", "\\end{pmatrix}", newline = true, space = true, ft = { "markdown", "tex" } },
-			}
-		end,
-	},
-	{
-		"willothy/flatten.nvim",
-		lazy = false,
-		priority = 1001,
-		opts = function()
-			---Check if a file is a git (commit, rebase, etc.) file
-			---@param fpath string
-			---@return boolean
-			local function should_block_file(fpath)
-				fpath = vim.fs.normalize(fpath)
-				return (
-					fpath:find(".git/rebase-merge", 1, true)
-					or fpath:find(".git/COMMIT_EDITMSG", 1, true)
-					or fpath:find("^/tmp")
-				)
-						and true
-					or false
-			end
-
-			if tonumber(vim.fn.system({ "id", "-u" })) == 0 then
-				vim.env["NVIM_ROOT_" .. vim.fn.getpid()] = "1"
-			end
-			return {
-				window = { open = "current" },
-				callbacks = {
-					-- Nest when child nvim is root but parent nvim (current session) is not
-					-- to avoid opening files in current session without write permission
-					should_nest = function()
-						local pid = vim.fn.getpid()
-						local parent_pid = vim.env.NVIM and vim.env.NVIM:match("nvim%.(%d+)")
-						if vim.env["NVIM_ROOT_" .. pid] and parent_pid and not vim.env["NVIM_ROOT_" .. parent_pid] then
-							return true
-						end
-					end,
-					should_block = function()
-						local files = vim.fn.argv() --[=[@as string[]]=]
-						for _, file in ipairs(files) do
-							if should_block_file(file) then
-								return true
-							end
-						end
-						return false
-					end,
-				},
-				one_per = { kitty = false, wezterm = false },
-			}
-		end,
-	},
-	{
-		"kylechui/nvim-surround",
-		version = "*", -- Use for stability; omit to use `main` branch for the latest features
-		event = "BufReadPre",
-		keys = {
-			{ "<C-g>s", mode = "i" },
-			{ "<C-g>S", mode = "i" },
-			{ "S", mode = "x" },
-			{ "gS", mode = "x" },
-			"ys",
-			"yss",
-			"yS",
-			"ySS",
-			"ds",
-			"cs",
-			"cS",
-		},
-		opts = function()
-			return {
-				keymaps = {
-					insert = "<C-g>s",
-					insert_line = "<C-g>S",
-					normal = "ys",
-					normal_cur = "yss",
-					normal_line = "yS",
-					normal_cur_line = "ySS",
-					visual = "S",
-					visual_line = "gS",
-					delete = "ds",
-					change = "cs",
-					change_line = "cS",
-				},
-			}
-		end,
-	},
-	{
-		"lewis6991/gitsigns.nvim",
-		event = "BufReadPre",
-		opts = {
-			numhl = false,
-			linehl = false,
-			signs = {
-				add = { text = "▎" },
-				change = { text = "▎" },
-				delete = { text = "" },
-				topdelete = { text = "" },
-				changedelete = { text = "▎" },
-				untracked = { text = "▎" },
-			},
-			on_attach = function(buffer)
-				local gs = package.loaded.gitsigns
-
-				local function map(mode, l, r, desc)
-					vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
-				end
-
-               -- stylua: ignore start
-                map("n", "]h", function() gs.nav_hunk("next") end, "Next Hunk")
-                map("n", "[h", function() gs.nav_hunk("prev") end, "Prev Hunk")
-                map("n", "]H", function() gs.nav_hunk("last") end, "Last Hunk")
-                map("n", "[H", function() gs.nav_hunk("first") end, "First Hunk")
-                map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
-                map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-                map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
-                map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
-                map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
-                map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview Hunk Inline")
-                map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame Line")
-                map("n", "<leader>ghd", gs.diffthis, "Diff This")
-                map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
-                map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
-				-- stylua: ignore end
-			end,
-		},
-	},
-	{
-		"folke/trouble.nvim",
-		cmd = { "TroubleToggle", "Trouble" },
-		opts = { use_diagnostic_signs = true },
-		keys = {
-			{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-			{ "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
-			{ "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
-			{
-				"<leader>cS",
-				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-				desc = "LSP references/definitions/... (Trouble)",
-			},
-			{ "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
-			{ "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
-			{
-				"[q",
-				function()
-					if require("trouble").is_open() then
-						require("trouble").prev({ skip_groups = true, jump = true })
-					else
-						local ok, err = pcall(vim.cmd.cprev)
-						if not ok then
-							vim.notify(err, vim.log.levels.ERROR)
-						end
-					end
-				end,
-				desc = "Previous Trouble/Quickfix Item",
-			},
-			{
-				"]q",
-				function()
-					if require("trouble").is_open() then
-						require("trouble").next({ skip_groups = true, jump = true })
-					else
-						local ok, err = pcall(vim.cmd.cnext)
-						if not ok then
-							vim.notify(err, vim.log.levels.ERROR)
-						end
-					end
-				end,
-				desc = "Next Trouble/Quickfix Item",
-			},
-		},
-	},
-	{
-		"ThePrimeagen/harpoon",
-		branch = "harpoon2",
-		opts = {
-			settings = {
-				save_on_toggle = true,
-				sync_on_ui_close = true,
-				key = function()
-					return vim.uv.cwd()
-				end,
-			},
-		},
-		keys = function()
-			local harpoon = require("harpoon")
-			local keys = {
-				{
-					"<leader>a",
-					function()
-						vim.notify("added to harpoon", 2, { title = "harpoon" })
-						harpoon:list():add()
-					end,
-					desc = "Harpoon File",
-				},
-				{
-					"<A-space>",
-					function()
-						harpoon.ui:toggle_quick_menu(harpoon:list(), { title = "", ui_max_width = 80 })
-					end,
-					desc = "Harpoon Quick Menu",
-				},
-				{
-					"<space>l",
-					function()
-						local file_paths = {}
-						for _, items in ipairs(harpoon:list().items) do
-							table.insert(file_paths, items.value)
-						end
-
-						local filter_path = {}
-						for idx = 1, #file_paths do
-							if file_paths[idx] ~= "" then
-								table.insert(filter_path, file_paths[idx])
-							end
-						end
-
-						local actions = require("fzf-lua").actions
-						require("fzf-lua").fzf_exec(file_paths, {
-							prompt = "Harpoon> ",
-							actions = {
-								["default"] = actions.file_edit,
-								["ctrl-s"] = actions.file_split,
-								["ctrl-v"] = actions.file_vsplit,
-								["ctrl-t"] = actions.file_tabedit,
-								["ctrl-x"] = function(selected)
-									for i = 1, #selected do
-										harpoon:list():remove_at(i)
-									end
-								end,
-							},
-						})
-					end,
-					desc = "Fzf Harpoon",
-				},
-			}
-
-			for i = 1, 9 do
-				table.insert(keys, {
-					"<leader>" .. i,
-					function()
-						harpoon:list():select(i)
-					end,
-					desc = "Harpoon to File " .. i,
-				})
-			end
-			return keys
 		end,
 	},
 }
