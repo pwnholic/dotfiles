@@ -278,10 +278,6 @@ return {
 		lazy = false,
 		keys = { { "<leader>e", vim.cmd.Oil, desc = "Open Oil Buffer" } },
 		opts = function()
-			vim.g.loaded_fzf_file_explorer = 1
-			vim.g.loaded_netrw = 1
-			vim.g.loaded_netrwPlugin = 1
-
 			local oil = require("oil")
 			local icons = LazyVim.config.icons.kinds
 

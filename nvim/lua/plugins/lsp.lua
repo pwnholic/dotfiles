@@ -4,6 +4,9 @@ return {
 		event = "LazyFile",
 		opts = function()
 			local icons = require("utils.icons")
+			local keys = require("lazyvim.plugins.lsp.keymaps").get()
+			keys[#keys + 1] = { "<A-p>", false }
+			keys[#keys + 1] = { "<A-n>", false }
 			return {
 				diagnostics = {
 					underline = true,
@@ -72,7 +75,7 @@ return {
 				-- Be aware that you also will need to properly configure your LSP server to
 				-- provide the code lenses.
 				codelens = {
-					enabled = false,
+					enabled = true,
 				},
 				-- Enable lsp cursor word highlighting
 				document_highlight = {

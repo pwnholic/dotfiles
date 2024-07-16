@@ -14,18 +14,6 @@ augroup("BigFileSettings", {
 	{
 		desc = "Set settings for large files.",
 		callback = function(opts)
-			vim.b.bigfile = false
-
-			local fname = vim.api.nvim_buf_get_name(opts.buf)
-			if #fname <= 0 then
-				return
-			end
-
-			local size = vim.fn.getfsize(fname) / 1024
-			if not size then
-				return
-			end
-
 			if not vim.api.nvim_buf_is_loaded(opts.buf) then
 				return
 			end
@@ -48,7 +36,7 @@ augroup("BigFileSettings", {
 				end
 			end
 
-			if size > 4800 then
+			if vim.g.bigfile_size > (1024 * 1024 * 2) then
 				vim.b.bigfile = true
 				vim.opt_local.spell = false
 				vim.opt_local.swapfile = false
@@ -62,7 +50,6 @@ augroup("BigFileSettings", {
 				vim.opt_local.number = false
 				vim.opt_local.relativenumber = false
 				force_to_deattach()
-				vim.notify(string.format("[ file %dkb ] big file setup has been loaded", math.floor(size)), 2)
 			end
 		end,
 	},
@@ -154,3 +141,5 @@ augroup("ColorfullHL", {
 		end,
 	},
 })
+
+return augroup

@@ -17,19 +17,27 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
 		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
+
 		{ "akinsho/bufferline.nvim", enabled = false },
 		{ "nvim-neo-tree/neo-tree.nvim", enabled = false },
+
 		{ import = "lazyvim.plugins.extras.editor.fzf" },
 		{ import = "lazyvim.plugins.extras.coding.luasnip" },
-		{ import = "lazyvim.plugins.extras.lang.go" },
-		{ import = "lazyvim.plugins.extras.lang.python" },
-		{ import = "lazyvim.plugins.extras.lang.rust" },
-		{ import = "lazyvim.plugins.extras.lang.typescript" },
 		{ import = "lazyvim.plugins.extras.editor.harpoon2" },
 		{ import = "lazyvim.plugins.extras.ui.treesitter-context" },
 		{ import = "lazyvim.plugins.extras.test.core" },
 		{ import = "lazyvim.plugins.extras.util.rest" },
 		{ import = "lazyvim.plugins.extras.dap.core" },
+
+		{ import = "lazyvim.plugins.extras.lang.go" },
+		{ import = "lazyvim.plugins.extras.lang.php" },
+		{ import = "lazyvim.plugins.extras.lang.python" },
+		{ import = "lazyvim.plugins.extras.lang.rust" },
+		{ import = "lazyvim.plugins.extras.lang.typescript" },
+		{ import = "lazyvim.plugins.extras.lang.yaml" },
+		{ import = "lazyvim.plugins.extras.lang.toml" },
+		{ import = "lazyvim.plugins.extras.lang.json" },
+
 		{ import = "plugins" },
 	},
 	defaults = {
@@ -45,11 +53,14 @@ require("lazy").setup({
 				"gzip",
 				-- "matchit",
 				-- "matchparen",
-				-- "netrwPlugin",
 				"tarPlugin",
 				"tohtml",
 				"tutor",
 				"zipPlugin",
+
+				"loaded_fzf_file_explorer",
+				"netrw",
+				"netrwPlugin",
 			},
 		},
 	},
