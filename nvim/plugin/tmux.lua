@@ -352,7 +352,6 @@ return vim.schedule(function()
 	tmux_mapkey_fallback("<M-k>", navigate_wrap("k"), tmux_mapkey_navigate_condition("k"))
 	tmux_mapkey_fallback("<M-l>", navigate_wrap("l"), tmux_mapkey_navigate_condition("l"))
 
-	tmux_mapkey_fallback("<M-p>", "last-pane")
 	tmux_mapkey_fallback("<M-R>", "swap-pane -U")
 	tmux_mapkey_fallback("<M-r>", "swap-pane -D")
 	tmux_mapkey_fallback("<M-o>", "confirm 'kill-pane -a'")

@@ -1,3 +1,11 @@
+vim.keymap.set({ "i", "c" }, "<Tab>", function()
+	require("utils.tabout").jump(1)
+end)
+
+vim.keymap.set({ "i", "c" }, "<S-Tab>", function()
+	require("utils.tabout").jump(-1)
+end)
+
 vim.keymap.set("n", "<A-n>", "<cmd>m .+1<cr>==", { desc = "Move Down", silent = true })
 vim.keymap.set("i", "<A-p>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up", silent = true })
 vim.keymap.set("i", "<A-n>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down", silent = true })

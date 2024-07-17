@@ -93,8 +93,6 @@ return {
 				formatting_options = nil,
 				timeout_ms = nil,
 			},
-			-- LSP Server Settings
-			---@type lspconfig.options
 			servers = {
 				sqls = {
 					on_attach = function(client, _)
@@ -102,6 +100,7 @@ return {
 						client.server_capabilities.documentRangeFormattingProvider = false
 					end,
 				},
+				solidity_ls = {},
 				marksman = {
 					on_attach = function(client, _)
 						client.server_capabilities.documentFormattingProvider = false
@@ -135,9 +134,6 @@ return {
 					},
 				},
 			},
-			-- you can do any additional lsp server setup here
-			-- return true if you don't want this server to be setup with lspconfig
-			---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
 			setup = {},
 		},
 	},
@@ -151,6 +147,8 @@ return {
 				"stylua",
 				"shfmt",
 				"sqls",
+				"jq",
+				"vscode-solidity-server",
 			},
 		},
 	},
