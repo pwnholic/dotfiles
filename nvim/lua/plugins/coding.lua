@@ -86,7 +86,7 @@ return {
 						else
 							items.dup = ({ buffer = 1, nvim_lsp = 0, luasnip = 1, path = 1 })[sname] or 0
 							items.menu = items.kind
-							items.menu_hl_group = "CmpItemKind" .. items.kind
+							items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
 							items.kind = vim.fn.strcharpart(LazyVim.config.icons.kinds[items.kind] or "", 0, 2)
 						end
 						utils.cmp.clamp_format_items(

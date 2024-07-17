@@ -1,150 +1,145 @@
+local icons = require("utils.icons")
 return {
 	{
 		"neovim/nvim-lspconfig",
 		event = "LazyFile",
-		opts = function()
-			local icons = require("utils.icons")
-			local keys = require("lazyvim.plugins.lsp.keymaps").get()
-			keys[#keys + 1] = { "<A-p>", false }
-			keys[#keys + 1] = { "<A-n>", false }
-			return {
-				diagnostics = {
-					underline = true,
-					update_in_insert = false,
+		opts = {
+			diagnostics = {
+				underline = true,
+				update_in_insert = false,
+				severity_sort = true,
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
+						[vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
+						[vim.diagnostic.severity.INFO] = icons.diagnostics.Hint,
+						[vim.diagnostic.severity.HINT] = icons.diagnostics.Info,
+					},
+					numhl = {
+						[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+						[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+						[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+						[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+					},
+				},
+				virtual_text = {
+					spacing = 4,
+					source = "if_many",
+					prefix = "",
+					format = function(d)
+						local dicons = {}
+						for key, value in pairs(icons.diagnostics) do
+							dicons[key:upper()] = value
+						end
+						return string.format(" %s : %s ", dicons[vim.diagnostic.severity[d.severity]], d.message)
+					end,
+				},
+				float = {
+					header = setmetatable({}, {
+						__index = function(_, k)
+							local icon, hl = require("mini.icons").get("file", vim.api.nvim_buf_get_name(0))
+							local arr = {
+								function()
+									return string.format("Diagnostics: %s  %s", icon, vim.bo.filetype)
+								end,
+								function()
+									return hl
+								end,
+							}
+							return arr[k]()
+						end,
+					}),
+					format = function(d)
+						return string.format("[%s] : %s", d.source, d.message)
+					end,
+					source = "if_many",
 					severity_sort = true,
-					signs = {
-						text = {
-							[vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
-							[vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
-							[vim.diagnostic.severity.INFO] = icons.diagnostics.Hint,
-							[vim.diagnostic.severity.HINT] = icons.diagnostics.Info,
-						},
-						numhl = {
-							[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
-							[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
-							[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
-							[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
-						},
-					},
-					virtual_text = {
-						spacing = 4,
-						source = "if_many",
-						prefix = "",
-						format = function(d)
-							local dicons = {}
-							for key, value in pairs(icons.diagnostics) do
-								dicons[key:upper()] = value
-							end
-							return string.format(" %s : %s ", dicons[vim.diagnostic.severity[d.severity]], d.message)
-						end,
-					},
-					float = {
-						header = setmetatable({}, {
-							__index = function(_, k)
-								local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(vim.bo.filetype)
-								local arr = {
-									function()
-										return string.format("Diagnostics: %s  %s", icon, vim.bo.filetype)
-									end,
-									function()
-										return hl
-									end,
-								}
-								return arr[k]()
-							end,
-						}),
-						format = function(d)
-							return string.format("[%s] : %s", d.source, d.message)
-						end,
-						source = "if_many",
-						severity_sort = true,
-						wrap = true,
-						border = "single",
-						max_width = math.floor(vim.o.columns / 2),
-						max_height = math.floor(vim.o.lines / 3),
+					wrap = true,
+					border = "single",
+					max_width = math.floor(vim.o.columns / 2),
+					max_height = math.floor(vim.o.lines / 3),
+				},
+			},
+			-- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
+			-- Be aware that you also will need to properly configure your LSP server to
+			-- provide the inlay hints.
+			inlay_hints = {
+				enabled = false,
+				exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
+			},
+			-- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
+			-- Be aware that you also will need to properly configure your LSP server to
+			-- provide the code lenses.
+			codelens = {
+				enabled = true,
+			},
+			-- Enable lsp cursor word highlighting
+			document_highlight = {
+				enabled = true,
+			},
+			-- add any global capabilities here
+			capabilities = {
+				workspace = {
+					fileOperations = {
+						didRename = true,
+						willRename = true,
 					},
 				},
-				-- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
-				-- Be aware that you also will need to properly configure your LSP server to
-				-- provide the inlay hints.
-				inlay_hints = {
-					enabled = false,
-					exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
+			},
+			-- options for vim.lsp.buf.format
+			-- `bufnr` and `filter` is handled by the LazyVim formatter,
+			-- but can be also overridden when specified
+			format = {
+				formatting_options = nil,
+				timeout_ms = nil,
+			},
+			-- LSP Server Settings
+			---@type lspconfig.options
+			servers = {
+				sqls = {
+					on_attach = function(client, _)
+						client.server_capabilities.documentFormattingProvider = false
+						client.server_capabilities.documentRangeFormattingProvider = false
+					end,
 				},
-				-- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
-				-- Be aware that you also will need to properly configure your LSP server to
-				-- provide the code lenses.
-				codelens = {
-					enabled = true,
+				marksman = {
+					on_attach = function(client, _)
+						client.server_capabilities.documentFormattingProvider = false
+						client.server_capabilities.documentRangeFormattingProvider = false
+					end,
 				},
-				-- Enable lsp cursor word highlighting
-				document_highlight = {
-					enabled = true,
-				},
-				-- add any global capabilities here
-				capabilities = {
-					workspace = {
-						fileOperations = {
-							didRename = true,
-							willRename = true,
-						},
-					},
-				},
-				-- options for vim.lsp.buf.format
-				-- `bufnr` and `filter` is handled by the LazyVim formatter,
-				-- but can be also overridden when specified
-				format = {
-					formatting_options = nil,
-					timeout_ms = nil,
-				},
-				-- LSP Server Settings
-				---@type lspconfig.options
-				servers = {
-					sqls = {
-						on_attach = function(client, _)
-							client.server_capabilities.documentFormattingProvider = false
-							client.server_capabilities.documentRangeFormattingProvider = false
-						end,
-					},
-					marksman = {
-						on_attach = function(client, _)
-							client.server_capabilities.documentFormattingProvider = false
-							client.server_capabilities.documentRangeFormattingProvider = false
-						end,
-					},
-					lua_ls = {
-						settings = {
-							Lua = {
-								workspace = {
-									checkThirdParty = false,
-								},
-								codeLens = {
-									enable = true,
-								},
-								completion = {
-									callSnippet = "Replace",
-								},
-								doc = {
-									privateName = { "^_" },
-								},
-								hint = {
-									enable = true,
-									setType = false,
-									paramType = true,
-									paramName = "Disable",
-									semicolon = "Disable",
-									arrayIndex = "Disable",
-								},
+				lua_ls = {
+					settings = {
+						Lua = {
+							workspace = {
+								checkThirdParty = false,
+							},
+							codeLens = {
+								enable = true,
+							},
+							completion = {
+								callSnippet = "Replace",
+							},
+							doc = {
+								privateName = { "^_" },
+							},
+							hint = {
+								enable = true,
+								setType = false,
+								paramType = true,
+								paramName = "Disable",
+								semicolon = "Disable",
+								arrayIndex = "Disable",
 							},
 						},
 					},
 				},
-				-- you can do any additional lsp server setup here
-				-- return true if you don't want this server to be setup with lspconfig
-				---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
-				setup = {},
-			}
-		end,
+			},
+			-- you can do any additional lsp server setup here
+			-- return true if you don't want this server to be setup with lspconfig
+			---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+			setup = {},
+		},
 	},
 	{
 		"williamboman/mason.nvim",

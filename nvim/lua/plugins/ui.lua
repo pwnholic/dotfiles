@@ -168,6 +168,7 @@ return {
 				hl.LineNr = { fg = util.darken(c.purple, 0.6), bg = c.none, bold = true }
 				hl.CursorLineNr = { fg = c.cyan, bg = c.none, bold = true }
 				hl.WinSeparator = { link = "Comment" }
+				hl.FloatBorder = { fg = c.bg_statusline, bg = c.bg_statusline }
 
 				hl.DashboardHeader = { fg = c.cyan1, bg = c.none }
 				hl.DashboardIcon = { fg = c.yellow1, bg = c.none }
