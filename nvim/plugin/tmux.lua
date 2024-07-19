@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field
 ---Get list of commands of the processes running in the terminal
 ---@param buf integer? terminal buffer handler, default to 0 (current)
 ---@return string[]: process names

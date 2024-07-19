@@ -204,7 +204,7 @@ return {
 				hl.OilTypeFile = { link = "NonText" }
 				hl.OilTypeLink = { link = "Constant" }
 				hl.OilTypeSocket = { link = "OilSocket" }
-				hl.OilSize = { fg = c.blue2, bg = c.none }
+				hl.OilSize = { fg = c.teal, bg = c.none }
 				hl.OilMtime = { fg = c.purple, bg = c.none }
 			end,
 			on_colors = function(c)

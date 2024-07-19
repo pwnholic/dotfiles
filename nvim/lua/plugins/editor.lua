@@ -582,7 +582,12 @@ return {
 				-- Set to `false` to disable, or "name" to keep it on the file names
 				constrain_cursor = "name",
 				prompt_save_on_select_new_entry = true,
+				watch_for_changes = true,
 				use_default_keymaps = false,
+				lsp_file_methods = {
+					timeout_ms = 1000,
+					autosave_changes = false,
+				},
 				view_options = {
 					is_hidden_file = function(name)
 						return vim.startswith(name, ".") --[[or vim.tbl_contains(require("directory").ignore_folder, name)]]
