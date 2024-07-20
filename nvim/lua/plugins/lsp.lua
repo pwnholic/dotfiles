@@ -1,4 +1,9 @@
 local icons = require("utils.icons")
+local function disabled_formater(client, _)
+	client.server_capabilities.documentFormattingProvider = false
+	client.server_capabilities.documentRangeFormattingProvider = false
+end
+
 return {
 	{
 		"neovim/nvim-lspconfig",
@@ -95,18 +100,15 @@ return {
 			},
 			servers = {
 				sqls = {
-					on_attach = function(client, _)
-						client.server_capabilities.documentFormattingProvider = false
-						client.server_capabilities.documentRangeFormattingProvider = false
-					end,
+					on_attach = disabled_formater,
+				},
+				jsonls = {
+					on_attach = disabled_formater,
+				},
+				marksman = {
+					on_attach = disabled_formater,
 				},
 				solidity_ls = {},
-				marksman = {
-					on_attach = function(client, _)
-						client.server_capabilities.documentFormattingProvider = false
-						client.server_capabilities.documentRangeFormattingProvider = false
-					end,
-				},
 				lua_ls = {
 					settings = {
 						Lua = {
