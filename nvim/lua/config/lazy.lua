@@ -26,7 +26,6 @@ require("lazy").setup({
 		{ import = "lazyvim.plugins.extras.util.rest" },
 		{ import = "lazyvim.plugins.extras.dap.core" },
 		{ import = "lazyvim.plugins.extras.test.core" },
-
 		{ import = "lazyvim.plugins.extras.lang.python" },
 		{ import = "lazyvim.plugins.extras.lang.go" },
 		{ import = "lazyvim.plugins.extras.lang.php" },
@@ -51,7 +50,7 @@ require("lazy").setup({
 				"tohtml",
 				"tutor",
 				"zipPlugin",
-				"loaded_fzf_file_explorer",
+				"fzf_file_explorer",
 				"netrw",
 				"netrwPlugin",
 			},

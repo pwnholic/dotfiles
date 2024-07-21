@@ -119,7 +119,7 @@ return {
 					["--ansi"] = true,
 				},
 				winopts = {
-					split = [[ botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh ]],
+					split = "botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh",
 					preview = { hidden = "hidden" },
 				},
 				defaults = {

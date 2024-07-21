@@ -108,6 +108,7 @@ return {
 				marksman = {
 					on_attach = disabled_formater,
 				},
+
 				solidity_ls = {},
 				lua_ls = {
 					settings = {

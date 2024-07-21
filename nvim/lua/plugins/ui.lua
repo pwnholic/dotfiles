@@ -149,75 +149,74 @@ return {
 		"folke/tokyonight.nvim",
 		lazy = false,
 		priority = 1000,
-		opts = {
-			style = "night",
-			light_style = "day",
-			transparent = false,
-			terminal_colors = true,
-			sidebars = { "qf", "help", "harpoon" },
-			on_highlights = function(hl, c)
-				local util = require("tokyonight.util")
+		config = function()
+			require("tokyonight").setup({
+				style = "night",
+				light_style = "day",
+				transparent = false,
+				terminal_colors = true,
+				lualine_bold = true,
+				cache = true,
+				on_highlights = function(hl, c)
+					local util = require("tokyonight.util")
+					hl.Visual = { bg = c.bg_visual, bold = true, italic = true }
+					hl.VisualNOS = { bg = c.bg_visual, bold = true, italic = true }
+					hl.WinBar = { bg = c.bg_statusline, underline = true, sp = c.blue2 }
+					hl.WinBarNC = { link = "WinBar" }
+					hl.PmenuSel = { bg = util.darken(c.purple, 0.4), bold = true }
+					hl.StatusLine = { bg = c.bg_statusline }
+					hl.TreesitterContext = { underline = true, sp = util.darken(c.purple, 0.7) }
+					hl.LineNr = { fg = util.darken(c.purple, 0.6), bg = c.none, bold = true }
+					hl.CursorLineNr = { fg = c.cyan, bg = c.none, bold = true }
+					hl.WinSeparator = { link = "Comment" }
+					hl.FloatBorder = { fg = c.bg_statusline, bg = c.bg_statusline }
 
-				hl.Visual = { bg = c.bg_visual, bold = true, italic = true }
-				hl.VisualNOS = { bg = c.bg_visual, bold = true, italic = true }
-				hl.WinBar = { bg = c.bg_statusline, underline = true, sp = c.blue2 }
-				hl.WinBarNC = { link = "WinBar" }
-				hl.PmenuSel = { bg = util.darken(c.purple, 0.4), bold = true }
-				hl.StatusLine = { bg = c.bg_statusline }
-				hl.TreesitterContext = { underline = true, sp = util.darken(c.purple, 0.7) }
-				hl.LineNr = { fg = util.darken(c.purple, 0.6), bg = c.none, bold = true }
-				hl.CursorLineNr = { fg = c.cyan, bg = c.none, bold = true }
-				hl.WinSeparator = { link = "Comment" }
-				hl.FloatBorder = { fg = c.bg_statusline, bg = c.bg_statusline }
+					hl.DashboardHeader = { fg = c.cyan1, bg = c.none }
+					hl.DashboardIcon = { fg = c.yellow1, bg = c.none }
+					hl.DashboardFooter = { fg = c.green2, bg = c.none, bold = true }
+					hl.DashboardDesc = { fg = c.grey, bg = c.none, bold = true }
+					hl.DashboardKey = { fg = c.magenta2, bg = c.none, bold = true }
 
-				hl.DashboardHeader = { fg = c.cyan1, bg = c.none }
-				hl.DashboardIcon = { fg = c.yellow1, bg = c.none }
-				hl.DashboardFooter = { fg = c.green2, bg = c.none, bold = true }
-				hl.DashboardDesc = { fg = c.grey, bg = c.none, bold = true }
-				hl.DashboardKey = { fg = c.magenta2, bg = c.none, bold = true }
+					hl.LspReferenceText = { italic = true, bold = true, reverse = true }
+					hl.LspReferenceRead = { italic = true, bold = true, reverse = true }
+					hl.LspReferenceWrite = { italic = true, bold = true, reverse = true }
+					hl.LspSignatureActiveParameter = { italic = true, bold = true, reverse = true }
+					hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
+					hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
+					hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
+					hl.LspCodeLensSeparator = { link = "Boolean", default = true }
+					hl.LspInlayHint = { fg = c.comment, underline = true, sp = util.darken(c.purple1, 0.8) }
 
-				hl.LspReferenceText = { italic = true, bold = true, reverse = true }
-				hl.LspReferenceRead = { italic = true, bold = true, reverse = true }
-				hl.LspReferenceWrite = { italic = true, bold = true, reverse = true }
-				hl.LspSignatureActiveParameter = { italic = true, bold = true, reverse = true }
-				hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
-				hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
-				hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
-				hl.LspCodeLensSeparator = { link = "Boolean", default = true }
-				hl.LspInlayHint = { fg = c.comment, underline = true, sp = util.darken(c.purple1, 0.8) }
-
-				hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
-				hl.OilDirIcon = { fg = c.orange, bg = c.none }
-				hl.OilLink = { link = "Constant" }
-				hl.OilLinkTarget = { link = "Comment" }
-				hl.OilCopy = { link = "DiagnosticSignHint", bold = true }
-				hl.OilMove = { link = "DiagnosticSignWarn", bold = true }
-				hl.OilChange = { link = "DiagnosticSignWarn", bold = true }
-				hl.OilCreate = { link = "DiagnosticSignInfo", bold = true }
-				hl.OilDelete = { link = "DiagnosticSignError", bold = true }
-				hl.OilPermissionNone = { link = "NonText" }
-				hl.OilPermissionRead = { fg = c.red1, bg = c.none, bold = true }
-				hl.OilPermissionWrite = { fg = c.yellow, bg = c.none, bold = true }
-				hl.OilPermissionExecute = { fg = c.teal, bg = c.none, bold = true }
-				hl.OilTypeDir = { link = "Directory" }
-				hl.OilTypeFifo = { link = "Special" }
-				hl.OilTypeFile = { link = "NonText" }
-				hl.OilTypeLink = { link = "Constant" }
-				hl.OilTypeSocket = { link = "OilSocket" }
-				hl.OilSize = { fg = c.teal, bg = c.none }
-				hl.OilMtime = { fg = c.purple, bg = c.none }
-			end,
-			on_colors = function(c)
-				c.green2 = "#2bff05"
-				c.yellow1 = "#faf032"
-				c.cyan1 = "#00ffee"
-				c.purple1 = "#f242f5"
-				c.red2 = "#eb0000"
-				c.black1 = "#000000"
-			end,
-		},
-		config = function(_, opts)
-			require("tokyonight").setup(opts)
+					hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
+					hl.OilDirIcon = { fg = c.orange, bg = c.none }
+					hl.OilLink = { link = "Constant" }
+					hl.OilLinkTarget = { link = "Comment" }
+					hl.OilCopy = { link = "DiagnosticSignHint", bold = true }
+					hl.OilMove = { link = "DiagnosticSignWarn", bold = true }
+					hl.OilChange = { link = "DiagnosticSignWarn", bold = true }
+					hl.OilCreate = { link = "DiagnosticSignInfo", bold = true }
+					hl.OilDelete = { link = "DiagnosticSignError", bold = true }
+					hl.OilPermissionNone = { link = "NonText" }
+					hl.OilPermissionRead = { fg = c.red1, bg = c.none, bold = true }
+					hl.OilPermissionWrite = { fg = c.yellow, bg = c.none, bold = true }
+					hl.OilPermissionExecute = { fg = c.teal, bg = c.none, bold = true }
+					hl.OilTypeDir = { link = "Directory" }
+					hl.OilTypeFifo = { link = "Special" }
+					hl.OilTypeFile = { link = "NonText" }
+					hl.OilTypeLink = { link = "Constant" }
+					hl.OilTypeSocket = { link = "OilSocket" }
+					hl.OilSize = { fg = c.teal, bg = c.none }
+					hl.OilMtime = { fg = c.purple, bg = c.none }
+				end,
+				on_colors = function(c)
+					c.green2 = "#2bff05"
+					c.yellow1 = "#faf032"
+					c.cyan1 = "#00ffee"
+					c.purple1 = "#f242f5"
+					c.red2 = "#eb0000"
+					c.black1 = "#000000"
+				end,
+			})
 			vim.cmd.colorscheme("tokyonight")
 		end,
 	},

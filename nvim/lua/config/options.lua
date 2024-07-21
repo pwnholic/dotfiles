@@ -1,5 +1,7 @@
 vim.g.lazyvim_picker = "fzf"
 vim.g.lazyvim_php_lsp = "phpactor"
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff_lsp"
 
 vim.opt.cmdheight = 0
 vim.opt.shell = "/usr/bin/fish"
