@@ -152,6 +152,7 @@ return {
 				"sqls",
 				"jq",
 				"vscode-solidity-server",
+				"selene",
 			},
 		},
 	},

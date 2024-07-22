@@ -348,21 +348,24 @@ return vim.schedule(function()
 
 	vim.g.loaded_tmux = true
 
+	tmux_mapkey_fallback("<M-R>", "swap-pane -U")
+	tmux_mapkey_fallback("<M-r>", "swap-pane -D")
+	tmux_mapkey_fallback("<M-o>", "confirm 'kill-pane -a'")
+	tmux_mapkey_fallback("<M-=>", "confirm 'select-layout tiled'")
+
 	tmux_mapkey_fallback("<M-h>", navigate_wrap("h"), tmux_mapkey_navigate_condition("h"))
 	tmux_mapkey_fallback("<M-j>", navigate_wrap("j"), tmux_mapkey_navigate_condition("j"))
 	tmux_mapkey_fallback("<M-k>", navigate_wrap("k"), tmux_mapkey_navigate_condition("k"))
 	tmux_mapkey_fallback("<M-l>", navigate_wrap("l"), tmux_mapkey_navigate_condition("l"))
 
-	tmux_mapkey_fallback("<M-R>", "swap-pane -U")
-	tmux_mapkey_fallback("<M-r>", "swap-pane -D")
-	tmux_mapkey_fallback("<M-o>", "confirm 'kill-pane -a'")
-	tmux_mapkey_fallback("<M-=>", "confirm 'select-layout tiled'")
 	tmux_mapkey_fallback("<M-c>", "confirm kill-pane", tmux_mapkey_close_win_condition)
 	tmux_mapkey_fallback("<M-q>", "confirm kill-pane", tmux_mapkey_close_win_condition)
+
 	tmux_mapkey_fallback("<M-<>", "resize-pane -L 4", tmux_mapkey_resize_pane_horiz_condition)
 	tmux_mapkey_fallback("<M->>", "resize-pane -R 4", tmux_mapkey_resize_pane_horiz_condition)
 	tmux_mapkey_fallback("<M-,>", "resize-pane -L 4", tmux_mapkey_resize_pane_horiz_condition)
 	tmux_mapkey_fallback("<M-.>", "resize-pane -R 4", tmux_mapkey_resize_pane_horiz_condition)
+
 	tmux_mapkey_fallback(
 		"<M-->",
 		[[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') - 2))"]],

@@ -2,7 +2,7 @@ return {
 	{
 		"ibhagwan/fzf-lua",
 		cmd = "FzfLua",
-		opts = function(_, opts)
+		opts = function()
 			local config = require("fzf-lua.config")
 			local actions = require("fzf-lua.actions")
 			local path = require("fzf-lua.path")
@@ -119,7 +119,7 @@ return {
 					["--ansi"] = true,
 				},
 				winopts = {
-					split = "botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh",
+					split = "botright 10new",
 					preview = { hidden = "hidden" },
 				},
 				defaults = {

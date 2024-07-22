@@ -19,6 +19,7 @@ require("lazy").setup({
 		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
 		{ "akinsho/bufferline.nvim", enabled = false },
 		{ "nvim-neo-tree/neo-tree.nvim", enabled = false },
+
 		{ import = "lazyvim.plugins.extras.editor.fzf" },
 		{ import = "lazyvim.plugins.extras.coding.luasnip" },
 		{ import = "lazyvim.plugins.extras.editor.harpoon2" },
@@ -26,6 +27,7 @@ require("lazy").setup({
 		{ import = "lazyvim.plugins.extras.util.rest" },
 		{ import = "lazyvim.plugins.extras.dap.core" },
 		{ import = "lazyvim.plugins.extras.test.core" },
+
 		{ import = "lazyvim.plugins.extras.lang.python" },
 		{ import = "lazyvim.plugins.extras.lang.go" },
 		{ import = "lazyvim.plugins.extras.lang.php" },
@@ -35,6 +37,7 @@ require("lazy").setup({
 		{ import = "lazyvim.plugins.extras.lang.toml" },
 		{ import = "lazyvim.plugins.extras.lang.json" },
 		{ import = "lazyvim.plugins.extras.formatting.prettier" },
+
 		{ import = "plugins" },
 	},
 	defaults = { lazy = false, version = false },
