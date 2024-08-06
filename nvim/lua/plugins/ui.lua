@@ -42,9 +42,6 @@ return {
 					})
 				end,
 				{
-					init = function(self)
-						self.mode = vim.fn.mode(1) -- :h mode()
-					end,
 					static = {
 						mode_names = {
 							n = "NORMAL",
@@ -93,10 +90,10 @@ return {
 					},
 					{
 						provider = function(self)
-							return string.format(" %s ", self.mode_names[self.mode])
+							return string.format(" %s ", self.mode_names[vim.fn.mode(1)])
 						end,
 						hl = function(self)
-							return { bg = self.mode_colors[self.mode:sub(1, 1)], bold = true, fg = colors.bg_dark }
+							return { bg = self.mode_colors[vim.fn.mode(1):sub(1, 1)], bold = true, fg = colors.bg_dark }
 						end,
 					},
 					space,

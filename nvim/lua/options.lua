@@ -33,6 +33,7 @@ vim.opt.jumpoptions = "stack,view"
 vim.opt.laststatus = 3 -- global statusline
 vim.opt.linebreak = true
 vim.opt.list = true -- Show some invisible characters (tabs...
+vim.opt.listchars = { tab = "▏ ", trail = "·", nbsp = "␣" }
 vim.opt.mouse = "a" -- Enable mouse mode
 vim.opt.mousemoveevent = true
 vim.opt.number = true

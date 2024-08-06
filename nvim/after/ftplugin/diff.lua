@@ -2,5 +2,3 @@ vim.opt_local.number = false
 vim.opt_local.relativenumber = false
 vim.opt_local.signcolumn = "no"
 vim.opt_local.stc = nil
-vim.opt_local.list = true
-vim.opt_local.listchars = { tab = "  ", trail = "·" }
