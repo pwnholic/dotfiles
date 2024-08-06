@@ -122,7 +122,10 @@ return {
 				},
 				fzf_colors = true,
 				keymap = {
-					builtin = false,
+					builtin = {
+						["<M-Esc>"] = "hide",
+						["<F1>"] = "toggle-help",
+					},
 					fzf = {
 						["ctrl-z"] = "abort",
 						["ctrl-u"] = "unix-line-discard",
@@ -132,8 +135,6 @@ return {
 						["ctrl-e"] = "end-of-line",
 						["alt-g"] = "last",
 						["alt-G"] = "first",
-						["shift-down"] = "preview-page-down",
-						["shift-up"] = "preview-page-up",
 					},
 				},
 				fzf_opts = {
@@ -170,14 +171,14 @@ return {
 						["ctrl-v"] = actions.file_vsplit,
 						["ctrl-t"] = actions.file_tabedit,
 						["alt-q"] = actions.file_sel_to_qf,
-						["alt-."] = actions.toggle_hidden,
+						["alt-o"] = actions.toggle_hidden,
 					},
 					grep = {
 						["default"] = actions.file_edit,
 						["ctrl-s"] = actions.file_split,
 						["ctrl-v"] = actions.file_vsplit,
 						["ctrl-t"] = actions.file_tabedit,
-						["alt-."] = actions.toggle_hidden,
+						["alt-o"] = actions.toggle_hidden,
 					},
 					buffers = {
 						["default"] = actions.buf_edit,
