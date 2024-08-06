@@ -70,7 +70,6 @@ return {
 			return { mode = "cursor", max_lines = 3 }
 		end,
 	},
-
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		event = "VeryLazy",

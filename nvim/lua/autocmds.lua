@@ -94,41 +94,41 @@ augroup("LastPosJmp", {
 	},
 })
 
--- augroup("AutoCwd", {
--- 	{ "BufWinEnter", "FileChangedShellPost" },
--- 	{
--- 		pattern = "*",
--- 		desc = "Automatically change local current directory.",
--- 		callback = function(info)
--- 			if info.file == "" or vim.bo[info.buf].bt ~= "" then
--- 				return
--- 			end
--- 			local buf = info.buf
--- 			local win = vim.api.nvim_get_current_win()
---
--- 			vim.schedule(function()
--- 				if
--- 					not vim.api.nvim_buf_is_valid(buf)
--- 					or not vim.api.nvim_win_is_valid(win)
--- 					or not vim.api.nvim_win_get_buf(win) == buf
--- 				then
--- 					return
--- 				end
--- 				vim.api.nvim_win_call(win, function()
--- 					local current_dir = vim.fn.getcwd(0)
--- 					local target_dir = vim.fs.root(info.file, require("utils.lsp").root_patterns)
--- 						or vim.fs.dirname(info.file)
--- 					local stat = target_dir and vim.uv.fs_stat(target_dir)
--- 					-- Prevent unnecessary directory change, which triggers
--- 					-- DirChanged autocmds that may update winbar unexpectedly
--- 					if stat and stat.type == "directory" and current_dir ~= target_dir then
--- 						pcall(vim.cmd.lcd, target_dir)
--- 					end
--- 				end)
--- 			end)
--- 		end,
--- 	},
--- })
+augroup("AutoCwd", {
+	{ "BufWinEnter", "FileChangedShellPost" },
+	{
+		pattern = "*",
+		desc = "Automatically change local current directory.",
+		callback = function(info)
+			if info.file == "" or vim.bo[info.buf].bt ~= "" then
+				return
+			end
+			local buf = info.buf
+			local win = vim.api.nvim_get_current_win()
+
+			vim.schedule(function()
+				if
+					not vim.api.nvim_buf_is_valid(buf)
+					or not vim.api.nvim_win_is_valid(win)
+					or not vim.api.nvim_win_get_buf(win) == buf
+				then
+					return
+				end
+				vim.api.nvim_win_call(win, function()
+					local current_dir = vim.fn.getcwd(0)
+					local target_dir = vim.fs.root(info.file, require("utils.lsp").root_patterns)
+						or vim.fs.dirname(info.file)
+					local stat = target_dir and vim.uv.fs_stat(target_dir)
+					-- Prevent unnecessary directory change, which triggers
+					-- DirChanged autocmds that may update winbar unexpectedly
+					if stat and stat.type == "directory" and current_dir ~= target_dir then
+						pcall(vim.cmd.lcd, target_dir)
+					end
+				end)
+			end)
+		end,
+	},
+})
 
 augroup("PromptBufKeymaps", {
 	"BufEnter",

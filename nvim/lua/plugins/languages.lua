@@ -114,7 +114,7 @@ return {
 	},
 	{
 		"MeanderingProgrammer/markdown.nvim",
-		ft = "markdown",
+		ft = { "ipynb", "markdown" },
 		opts = function()
 			return {
 				enabled = true,

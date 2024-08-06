@@ -26,6 +26,7 @@
   "mini.ai": { "branch": "main", "commit": "45587078f323eaf41b9f701bbc04f8d1ab008979" },
   "mini.comment": { "branch": "main", "commit": "03c13e37318bdb18481311c0ac1adc9ed731caf1" },
   "mini.icons": { "branch": "main", "commit": "fe63fe080e76d80713557e5f0c65bc15b14b152d" },
+  "molten-nvim": { "branch": "main", "commit": "eb6d0fe33e14989b0f1fbe25d9732889ee57bd1a" },
   "neotest": { "branch": "master", "commit": "32ff2ac21135a372a42b38ae131e531e64833bd3" },
   "neotest-go": { "branch": "main", "commit": "92950ad7be2ca02a41abca5c6600ff6ffaf5b5d6" },
   "neotest-python": { "branch": "master", "commit": "2e83d2bc00acbcc1fd529dbf0a0e677cabfe6b50" },
