@@ -883,21 +883,22 @@ return {
 		"lewis6991/gitsigns.nvim",
 		event = "VeryLazy",
 		opts = function()
+			local icons = require("utils.icons").misc
 			return {
 				signs = {
-					add = { text = "▎" },
-					change = { text = "▎" },
-					delete = { text = "" },
-					topdelete = { text = "" },
-					changedelete = { text = "▎" },
-					untracked = { text = "▎" },
+					add = { text = icons.vertical_bar_bold },
+					change = { text = icons.vertical_bar_bold },
+					delete = { text = icons.vertical_bar_bold },
+					topdelete = { text = icons.vertical_bar_bold },
+					changedelete = { text = icons.vertical_bar_bold },
+					untracked = { text = icons.vertical_bar_bold },
 				},
 				signs_staged = {
-					add = { text = "▎" },
-					change = { text = "▎" },
-					delete = { text = "" },
-					topdelete = { text = "" },
-					changedelete = { text = "▎" },
+					add = { text = icons.vertical_bar_bold },
+					change = { text = icons.vertical_bar_bold },
+					delete = { text = icons.vertical_bar_bold },
+					topdelete = { text = icons.vertical_bar_bold },
+					changedelete = { text = icons.vertical_bar_bold },
 				},
 				on_attach = function(buffer)
 					local gs = package.loaded.gitsigns
