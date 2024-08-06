@@ -1,48 +1,43 @@
+---@diagnostic disable: unused-local, undefined-field
 return {
 	{
 		"ibhagwan/fzf-lua",
 		cmd = "FzfLua",
 		opts = function()
-			local config = require("fzf-lua.config")
+			local fzf = require("fzf-lua")
 			local actions = require("fzf-lua.actions")
-			local path = require("fzf-lua.path")
 			local core = require("fzf-lua.core")
+			local config = require("fzf-lua.config")
+			local utils = require("utils")
 
-			-- Quickfix
-			config.defaults.keymap.fzf["ctrl-q"] = "select-all+accept"
-			config.defaults.keymap.fzf["ctrl-u"] = "half-page-up"
-			config.defaults.keymap.fzf["ctrl-d"] = "half-page-down"
-			config.defaults.keymap.fzf["ctrl-x"] = "jump"
-			config.defaults.keymap.fzf["ctrl-f"] = "preview-page-down"
-			config.defaults.keymap.fzf["ctrl-b"] = "preview-page-up"
-			config.defaults.keymap.builtin["<c-f>"] = "preview-page-down"
-			config.defaults.keymap.builtin["<c-b>"] = "preview-page-up"
+			local _mt_cmd_wrapper = core.mt_cmd_wrapper
 
-			-- Trouble
-			if LazyVim.has("trouble.nvim") then
-				config.defaults.actions.files["ctrl-t"] = require("trouble.sources.fzf").actions.open
+			---@param opts table?
+			---@diagnostic disable-next-line: duplicate-set-field
+			function core.mt_cmd_wrapper(opts)
+				if not opts or not opts.cwd then
+					return _mt_cmd_wrapper(opts)
+				end
+				local _opts = {}
+				for k, v in pairs(opts) do
+					_opts[k] = v
+				end
+				_opts.cwd = nil
+				return _mt_cmd_wrapper(_opts)
 			end
 
-			-- Toggle root dir / cwd
-			config.defaults.actions.files["ctrl-r"] = function(_, ctx)
-				local o = vim.deepcopy(ctx.__call_opts)
-				o.root = o.root == false
-				o.cwd = nil
-				o.buf = ctx.__CTX.bufnr
-				LazyVim.pick.open(ctx.__INFO.cmd, o)
-			end
-
-			config.defaults.actions.files["alt-r"] = function()
-				config.__resume_data.opts = config.__resume_data.opts or {}
-				local o = config.__resume_data.opts
-
+			---Switch cwd while preserving the last query
+			---@return nil
+			function actions.switch_cwd()
+				fzf.config.__resume_data.opts = fzf.config.__resume_data.opts or {}
+				local opts = fzf.config.__resume_data.opts
 				-- Remove old fn_selected, else selected item will be opened
 				-- with previous cwd
-				o.fn_selected = nil
-				o.cwd = o.cwd or vim.uv.cwd()
-				o.query = config.__resume_data.last_query
+				opts.fn_selected = nil
+				opts.cwd = opts.cwd or vim.uv.cwd()
+				opts.query = fzf.config.__resume_data.last_query
 
-				vim.ui.input({ prompt = "New cwd: ", default = o.cwd, completion = "dir" }, function(input)
+				vim.ui.input({ prompt = "New cwd: ", default = opts.cwd, completion = "dir" }, function(input)
 					if not input then
 						return
 					end
@@ -54,32 +49,40 @@ return {
 						vim.cmd.redraw()
 						return
 					end
-					o.cwd = input
+					opts.cwd = input
 				end)
-
-				-- Adapted from fzf-lua `core.set_header()` function
-				if o.cwd_prompt then
-					o.prompt = vim.fn.fnamemodify(o.cwd, ":.:~")
-					local shorten_len = tonumber(o.cwd_prompt_shorten_len)
-					if shorten_len and #o.prompt >= shorten_len then
-						o.prompt = path.shorten(o.prompt, tonumber(o.cwd_prompt_shorten_val) or 1)
-					end
-					if not path.ends_with_separator(o.prompt) then
-						o.prompt = o.prompt .. path.separator()
-					end
-				end
-				if o.headers then
-					o = core.set_header(o, o.headers)
+				if opts.headers then
+					opts = core.set_header(opts, opts.headers)
 				end
 				actions.resume()
 			end
 
-			core.ACTION_DEFINITIONS[config.defaults.actions.files["alt-r"]] = { "Change Cwd", pos = 1 }
-			config.defaults.actions.files["alt-c"] = config.defaults.actions.files["ctrl-r"]
-			config.set_action_helpstr(config.defaults.actions.files["ctrl-r"], "toggle-root-dir")
-			config.set_action_helpstr(config.defaults.actions.files["alt-r"], "change-cwd")
+			---Delete selected autocmd
+			---@return nil
+			function actions.del_autocmd(selected)
+				for _, line in ipairs(selected) do
+					local event, group, pattern = line:match("^.+:%d+:(%w+)%s*│%s*(%S+)%s*│%s*(.-)%s*│")
+					if event and group and pattern then
+						vim.cmd.autocmd({
+							bang = true,
+							args = { group, event, pattern },
+							mods = { emsg_silent = true },
+						})
+					end
+				end
+				local query = fzf.config.__resume_data.last_query
+				fzf.autocmds({ fzf_opts = { ["--query"] = query ~= "" and query or nil } })
+			end
 
-			-- use the same prompt for all
+			core.ACTION_DEFINITIONS[actions.toggle_ignore] = { "Disable .gitignore", fn_reload = "Respect .gitignore" }
+			core.ACTION_DEFINITIONS[actions.toggle_hidden] = { "Disable dotfile", fn_reload = "Respect dotfile" }
+			core.ACTION_DEFINITIONS[actions.switch_cwd] = { "Change Cwd", pos = 1 }
+
+			config._action_to_helpstr[actions.toggle_ignore] = "toggle-ignore"
+			config._action_to_helpstr[actions.toggle_hidden] = "toggle-hidden"
+			config._action_to_helpstr[actions.switch_cwd] = "change-cwd"
+			config._action_to_helpstr[actions.del_autocmd] = "delete-autocmd"
+
 			local defaults = require("fzf-lua.profiles.default-title")
 			local function fix(t)
 				t.prompt = t.prompt ~= nil and " " or nil
@@ -103,31 +106,36 @@ return {
 				end
 			end
 
-			return vim.tbl_deep_extend("force", defaults, {
-				fzf_colors = true,
-				fzf_opts = {
-					["--no-scrollbar"] = true,
-					["--info"] = "right",
-					["--padding"] = "0,1",
-					["--margin"] = "0",
-					["--layout"] = "reverse",
-					["--marker"] = "",
-					["--pointer"] = "",
-					["--border"] = "none",
-					-- ["--no-preview"] = true,
-					-- ["--preview-window"] = "hidden",
-					["--ansi"] = true,
-				},
+			return {
 				winopts = {
-					split = "botright 10new",
+					backdrop = 100,
+					split = "botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh",
 					preview = { hidden = "hidden" },
 				},
+				file_icon_padding = " ",
 				defaults = {
 					-- formatter = "path.filename_first",
+					file_icons = "mini",
 					headers = { "actions", "cwd" },
 					cwd_header = true,
 					formatter = "path.dirname_first",
 				},
+				fzf_colors = true,
+				fzf_opts = {
+					["--no-scrollbar"] = true,
+					-- ["--no-separator"] = true,
+					["--info"] = "inline-right",
+					["--layout"] = "reverse",
+					["--marker"] = " ",
+					["--pointer"] = " ",
+					["--border"] = "none",
+					["--padding"] = "0,1",
+					["--margin"] = "0",
+					["--no-preview"] = true,
+					["--highlight-line"] = true,
+					["--preview-window"] = "hidden",
+				},
+
 				previewers = {
 					builtin = {
 						extensions = {
@@ -140,78 +148,108 @@ return {
 						ueberzug_scaler = "fit_contain",
 					},
 				},
-				-- Custom LazyVim option to configure vim.ui.select
-				ui_select = function(fzf_opts, items)
-					return vim.tbl_deep_extend("force", fzf_opts, {
-						prompt = " ",
-						winopts = {
-							title = " " .. vim.trim((fzf_opts.prompt or "Select"):gsub("%s*:%s*$", "")) .. " ",
-							title_pos = "center",
+				actions = {
+					files = {
+						["default"] = actions.file_edit_or_qf,
+						["ctrl-s"] = actions.file_split,
+						["ctrl-v"] = actions.file_vsplit,
+						["ctrl-t"] = actions.file_tabedit,
+						["alt-q"] = actions.file_sel_to_qf,
+						["alt-l"] = actions.file_sel_to_ll,
+						["alt-h"] = actions.toggle_hidden,
+					},
+					grep = {
+						["default"] = actions.file_edit,
+						["ctrl-s"] = actions.file_split,
+						["ctrl-v"] = actions.file_vsplit,
+						["ctrl-t"] = actions.file_tabedit,
+						["alt-h"] = actions.toggle_hidden,
+					},
+					buffers = {
+						["default"] = actions.buf_edit,
+						["ctrl-s"] = actions.buf_split,
+						["ctrl-v"] = actions.buf_vsplit,
+						["ctrl-t"] = actions.buf_tabedit,
+						["ctrl-x"] = { fn = actions.buf_del, reload = true },
+					},
+					git = {
+						commits = {
+							["default"] = actions.git_checkout,
+							["ctrl-y"] = { fn = actions.git_yank_commit, exec_silent = true },
 						},
-					}, fzf_opts.kind == "codeaction" and {
-						winopts = {
-							layout = "vertical",
-							-- height is number of items minus 15 lines for the preview, with a max of 80% screen height
-							height = math.floor(math.min(vim.o.lines * 0.8 - 16, #items + 2) + 0.5) + 16,
-							width = 0.5,
-							preview = not vim.tbl_isempty(LazyVim.lsp.get_clients({ bufnr = 0, name = "vtsls" })) and {
-								layout = "vertical",
-								vertical = "down:15,border-top",
-								hidden = "hidden",
-							} or {
-								layout = "vertical",
-								vertical = "down:15,border-top",
-							},
+						bcommits = {
+							["default"] = actions.git_buf_edit,
+							["ctrl-s"] = actions.git_buf_split,
+							["ctrl-v"] = actions.git_buf_vsplit,
+							["ctrl-t"] = actions.git_buf_tabedit,
+							["ctrl-y"] = { fn = actions.git_yank_commit, exec_silent = true },
 						},
-					} or {
-						winopts = {
-							width = 0.5,
-							-- height is number of items, with a max of 80% screen height
-							height = math.floor(math.min(vim.o.lines * 0.8, #items + 2) + 0.5),
+						branches = {
+							["default"] = actions.git_switch,
+							["ctrl-x"] = { fn = actions.git_branch_del, reload = true },
+							["ctrl-a"] = { fn = actions.git_branch_add, field_index = "{q}", reload = true },
 						},
-					})
-				end,
+					},
+				},
 				files = {
 					prompt = "Files❯ ",
 					multiprocess = true,
 					git_icons = false,
-					file_icons = true,
+					file_icons = "mini",
 					color_icons = true,
-					-- path_shorten   = 1,              -- 'true' or number, shorten path?
+					-- path_shorten   = 1,
 					formatter = "path.filename_first",
 					find_opts = [[-type f -type d -type l -not -path '*/\.git/*' -printf '%P\n']],
 					fd_opts = [[--color=never --type f --type d --type l --follow --exclude .git]],
 					rg_opts = [[--color=never --files --follow -g '!.git'"]],
 					cwd_prompt = false,
-					cwd_prompt_shorten_len = 32, -- shorten prompt beyond this length
-					cwd_prompt_shorten_val = 1, -- shortened path parts length
-					toggle_ignore_flag = "--no-ignore", -- flag toggled in `actions.toggle_ignore`
-					toggle_hidden_flag = "--hidden", -- flag toggled in `actions.toggle_hidden`
-					actions = {
-						["alt-h"] = { actions.toggle_hidden },
-					},
+					cwd_prompt_shorten_len = 32,
+					cwd_prompt_shorten_val = 1,
+					toggle_ignore_flag = "--no-ignore",
+					toggle_hidden_flag = "--hidden",
 				},
 				grep = {
 					prompt = "Rg❯ ",
 					input_prompt = "Grep For❯ ",
 					multiprocess = true,
 					git_icons = false,
-					file_icons = true,
+					file_icons = "mini",
 					color_icons = true,
 					grep_opts = [[--binary-files=without-match --line-number --recursive --color=auto --perl-regexp -e]],
 					rg_opts = [[--column --hidden --follow --line-number --no-heading --color=always --smart-case --max-columns=4096 -g=!git/ -e]],
-					rg_glob = false, -- default to glob parsing?
-					glob_flag = "--iglob", -- for case sensitive globs use '--glob'
-					glob_separator = "%s%-%-", -- query separator pattern (lua): ' --'
+					rg_glob = true,
+					glob_flag = "--iglob",
+					glob_separator = "%s%-%-",
 					-- multiline = 1, -- Display as: PATH:LINE:COL\nTEXT\n
-					no_header = false, -- hide grep|cwd header?
-					no_header_i = false, -- hide interactive header?
-					actions = {
-						["alt-h"] = { actions.toggle_hidden },
-					},
+					no_header = false,
+					no_header_i = false,
+				},
+				oldfiles = {
+					prompt = "History❯ ",
+					cwd_only = false,
+					stat_file = require("fzf-lua").utils.file_is_readable,
+					include_current_session = false, -- include bufs from current session
+				},
+				buffers = {
+					prompt = "Buffers❯ ",
+					show_unlisted = true,
+					show_unloaded = true,
+					ignore_current_buffer = false,
+					no_action_set_cursor = true,
+					current_tab_only = false,
+					no_term_buffers = false,
+					cwd_only = false,
+					ls_cmd = "ls",
+				},
+				keymaps = {
+					prompt = "Keymaps> ",
+					winopts = { preview = { layout = "vertical" } },
+					fzf_opts = { ["--tiebreak"] = "index" },
+					ignore_patterns = { "^<SNR>", "^<Plug>" },
 				},
 				lsp = {
 					symbols = {
+						symbol_icons = utils.icons.kinds,
 						symbol_hl = function(s)
 							return "TroubleIcon" .. s
 						end,
@@ -221,65 +259,164 @@ return {
 						child_prefix = false,
 					},
 					code_actions = {
-						previewer = vim.fn.executable("delta") == 1 and "codeaction_native" or nil,
+						previewer = vim.fn.executable("delta") == 1 and "codeaction_native",
 					},
 				},
-			})
+				diagnostics = {
+					prompt = "Diagnostics❯ ",
+					cwd_only = false,
+					file_icons = true,
+					git_icons = false,
+					diag_icons = true,
+					diag_source = true,
+					icon_padding = " ",
+					multiline = true,
+					signs = {
+						["Error"] = { text = utils.icons.diagnostics.ERROR, texthl = "DiagnosticError" },
+						["Warn"] = { text = utils.icons.diagnostics.WARN, texthl = "DiagnosticWarn" },
+						["Info"] = { text = utils.icons.diagnostics.INFO, texthl = "DiagnosticInfo" },
+						["Hint"] = { text = utils.icons.diagnostics.HINT, texthl = "DiagnosticHint" },
+					},
+				},
+				git = {
+					files = {
+						prompt = "GitFiles❯ ",
+						cmd = "git ls-files --exclude-standard",
+						multiprocess = true,
+						git_icons = true,
+						file_icons = "mini",
+						color_icons = true,
+						cwd_header = true,
+					},
+					icons = {
+						["M"] = { icon = utils.icons.git.modified, color = "yellow" },
+						["D"] = { icon = utils.icons.git.remove, color = "red" },
+						["A"] = { icon = utils.icons.git.add, color = "green" },
+						["R"] = { icon = utils.icons.git.rename, color = "yellow" },
+						["C"] = { icon = utils.icons.git.change, color = "yellow" },
+						["T"] = { icon = utils.icons.git.task, color = "magenta" },
+						["?"] = { icon = utils.icons.git.qmark, color = "magenta" },
+					},
+				},
+			}
 		end,
 		config = function(_, opts)
-			local fzf = require("fzf-lua")
-			local enabled
-			vim.keymap.set("n", "<leader>uz", function()
-				enabled = not enabled
-				if enabled then
-					vim.notify("Enabled FZF Preview", 2, { title = "Fzflua" })
-					return fzf.setup(vim.tbl_extend("force", opts, {
-						winopts = {
-							height = 0.70,
-							width = 0.90,
-							row = 0.50,
-							col = 0.45,
-							border = "single",
-							fullscreen = false,
-							preview = {
-								border = "noborder",
-								wrap = "nowrap",
-								hidden = "nohidden",
-								horizontal = "right:55%",
-								layout = "flex",
-								flip_columns = 120,
-								title = false,
-								scrollbar = false,
-								delay = 100,
-								winopts = {
-									number = false,
-									relativenumber = false,
-									cursorline = false,
-									cursorlineopt = "both",
-									cursorcolumn = false,
-									signcolumn = "no",
-									list = false,
-									foldenable = false,
-								},
+			require("fzf-lua").setup(opts)
+		end,
+		init = vim.schedule_wrap(function()
+			---@diagnostic disable-next-line: duplicate-set-field
+			vim.ui.select = function(...)
+				local fzf_ui = require("fzf-lua.providers.ui_select")
+				if not fzf_ui.is_registered() then
+					local _ui_select = fzf_ui.ui_select
+					---@diagnostic disable-next-line: duplicate-set-field
+					fzf_ui.ui_select = function(items, opts, on_choice)
+						opts.prompt = opts.prompt and vim.fn.substitute(opts.prompt, ":\\?\\s*$", ":\xc2\xa0", "")
+						_ui_select(items, opts, on_choice)
+					end
+					fzf_ui.register(function(_, items)
+						return {
+							winopts = {
+								split = string.format(
+									"botright %dnew | setlocal bt=nofile bh=wipe nobl noswf wfh",
+									math.min(10 + vim.go.ch + (vim.go.ls == 0 and 0 or 2), #items + 2)
+								),
 							},
-						},
-					}))
-				else
-					vim.notify("Disabled FZF preview", 2, { title = "Fzflua" })
-					return fzf.setup(opts)
+						}
+					end)
 				end
-			end, { desc = "Toggle FZF Preview" })
-			fzf.setup(opts)
+				vim.ui.select(...)
+			end
+		end),
+		keys = function()
+			return {
+				-- SEARCH
+				{ "<leader>s/", "<cmd>FzfLua grep<cr>", desc = "Grep" },
+				{ "<leader>sS", "<cmd>FzfLua grep_last<cr>", desc = "Grep Last" },
+				{ "<leader>sc", "<cmd>FzfLua grep_cword<cr>", desc = "Grep Current Word" },
+				{ "<leader>sv", "<cmd>FzfLua grep_visual<cr>", desc = "Grep Visual", mode = "x" },
+				{ "<leader>s.", "<cmd>FzfLua grep_curbuf<cr>", desc = "Grep Current Buf" },
+				{ "<leader>s,", "<cmd>FzfLua lgrep_curbuf<cr>", desc = "LGrep Current Buf" },
+				{ "<leader>sg", "<cmd>FzfLua live_grep<cr>", desc = "Live Grep" },
+				{ "<leader>sr", "<cmd>FzfLua live_grep_resume<cr>", desc = "LGrep Resume" },
+				{ "<leader>sG", "<cmd>FzfLua live_grep_glob<cr>", desc = ">Lgrep Glob" },
+				{ "<leader>sn", "<cmd>FzfLua live_grep_native<cr>", desc = "LGrep Native" },
+
+				-- TAGS
+				{ "<leader>st", "<cmd>FzfLua tags<cr>", desc = "Tags" },
+				{ "<leader>sT", "<cmd>FzfLua tags_grep<cr>", desc = "Tags Grep" },
+				{ "<leader>ss", "<cmd>FzfLua tags_live_grep<cr>", desc = "Tags LGrep" },
+
+				-- GIT
+				{ "<leader>hf", "<cmd>FzfLua git_files<cr>", desc = "Git Files" },
+				{ "<leader>hs", "<cmd>FzfLua git_status<cr>", desc = "Git Status" },
+				{ "<leader>hc", "<cmd>FzfLua git_commits<cr>", desc = "Git Commit" },
+				{ "<leader>hb", "<cmd>FzfLua git_bcommits<cr>", desc = "Git Bcommit" },
+				{ "<leader>hB", "<cmd>FzfLua git_branches<cr>", desc = "Git Branches" },
+				{ "<leader>ht", "<cmd>FzfLua git_tags<cr>", desc = "Git Tags" },
+				{ "<leader>hS", "<cmd>FzfLua git_stash<cr>", desc = "Git Statsh" },
+
+				-- DAP
+				{ "<leader>dfx", "<cmd>FzfLua dap_commands<cr>", desc = "Dap Commend" },
+				{ "<leader>dfc", "<cmd>FzfLua dap_configurations<cr>", desc = "Dap Conf" },
+				{ "<leader>dfb", "<cmd>FzfLua dap_breakpoints<cr>", desc = "Dap Breakpoint" },
+				{ "<leader>dfv", "<cmd>FzfLua dap_variables<cr>", desc = "Dap Variable" },
+				{ "<leader>dff", "<cmd>FzfLua dap_frames<cr>", desc = "Dap Frame" },
+
+				-- BUFFER and FILES
+				{ "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
+				{ "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Files" },
+				{ "<leader>fo", "<cmd>FzfLua oldfiles<cr>", desc = "Oldfiles" },
+				{ "<leader>fq", "<cmd>FzfLua quickfix<cr>", desc = "Qf" },
+				{ "<leader>fQ", "<cmd>FzfLua loclist<cr>", desc = "Loclist" },
+				{ "<leader>fl", "<cmd>FzfLua lines<cr>", desc = "Lines" },
+				{ "<leader>fL", "<cmd>FzfLua blines<cr>", desc = "Blines" },
+				{ "<leader>ft", "<cmd>FzfLua tabs<cr>", desc = "Tabs" },
+				{ "<leader>fA", "<cmd>FzfLua args<cr>", desc = "Args" },
+
+				-- MICS
+				{ "<leader>fr ", "<cmd>FzfLua resume<cr>", desc = "Resume Stuff" },
+				{ "<leader>fh", "<cmd>FzfLua helptags<cr>", desc = "Help" },
+				{ "<leader>fC", "<cmd>FzfLua awesome_colorschemes<cr>", desc = "Awesome Colorscheme" },
+				{ "<leader>fH", "<cmd>FzfLua highlights<cr>", desc = "Highlight" },
+				{ "<leader>fx", "<cmd>FzfLua command_history<cr>", desc = "Command History" },
+				{ "<leader>fS", "<cmd>FzfLua search_history<cr>", desc = "Search History" },
+				{ "<leader>fm", "<cmd>FzfLua marks<cr>", desc = "Marks" },
+				{ "<leader>fj", "<cmd>FzfLua jumps<cr>", desc = "Jumps" },
+				{ "<leader>fc", "<cmd>FzfLua changes<cr>", desc = "Change" },
+				{ "<leader>fR", "<cmd>FzfLua registers<cr>", desc = "Registers" },
+				{ "<leader>fa", "<cmd>FzfLua autocmds<cr>", desc = "Autocmds" },
+				{ "<leader>fk", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
+				{ "<leader>fp", "<cmd>FzfLua spell_suggest<cr>", desc = "Spell Suggest" },
+			}
 		end,
 	},
-
 	{
 		"stevearc/oil.nvim",
-		lazy = false,
+		cmd = "Oil",
 		keys = { { "<leader>e", vim.cmd.Oil, desc = "Open Oil Buffer" } },
+		lazy = false,
+		init = vim.schedule_wrap(function()
+			vim.api.nvim_create_autocmd("BufWinEnter", {
+				nested = true,
+				callback = function(info)
+					local path = info.file
+					if path == "" then
+						return
+					end
+					local stat = vim.uv.fs_stat(path)
+					if stat and stat.type == "directory" then
+						vim.api.nvim_del_autocmd(info.id)
+						require("oil")
+						vim.cmd.edit({ bang = true, mods = { keepjumps = true } })
+						return true
+					end
+				end,
+			})
+		end),
 		opts = function()
 			local oil = require("oil")
-			local icons = LazyVim.config.icons.kinds
+			local icons = require("utils.icons").kinds
 
 			local preview_wins = {} ---@type table<integer, integer>
 			local preview_bufs = {} ---@type table<integer, integer>
@@ -299,9 +436,7 @@ return {
 
 			---Generate lines for preview window when preview is not available
 			---@param msg string
-			---@param height integer
-			---@param width integer
-			---@return string[]
+			---@param height integer @param width integer @return string[]
 			local function nopreview(msg, height, width)
 				local lines = {}
 				local fillchar = vim.opt_local.fillchars:get().diff or "-"
@@ -556,46 +691,33 @@ return {
 				},
 				{ "size", highlight = "OilSize" },
 				{ "mtime", highlight = "OilMtime" },
-				{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
+				{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = true },
 			}
 
 			return {
 				default_file_explorer = true,
 				columns = columns,
+				buf_options = { buflisted = false, bufhidden = "hide" },
 				win_options = {
+					wrap = false,
+					signcolumn = "no",
+					cursorcolumn = false,
+					foldcolumn = "0",
+					spell = false,
 					number = false,
 					relativenumber = false,
-					signcolumn = "no",
-					foldcolumn = "0",
-					wrap = false,
-					cursorcolumn = false,
-					spell = false,
 					list = false,
 					conceallevel = 3,
 					concealcursor = "nvic",
-					statuscolumn = "",
+					winbar = "",
 				},
-				cleanup_delay_ms = false,
 				delete_to_trash = true,
 				skip_confirm_for_simple_edits = false,
-				experimental_watch_for_changes = true,
-				-- Set to `false` to disable, or "name" to keep it on the file names
-				constrain_cursor = "name",
 				prompt_save_on_select_new_entry = true,
+				cleanup_delay_ms = false,
+				lsp_file_methods = { timeout_ms = 1000, autosave_changes = false },
+				constrain_cursor = "name",
 				watch_for_changes = true,
-				use_default_keymaps = false,
-				lsp_file_methods = {
-					timeout_ms = 1000,
-					autosave_changes = false,
-				},
-				view_options = {
-					is_hidden_file = function(name)
-						return vim.startswith(name, ".") --[[or vim.tbl_contains(require("directory").ignore_folder, name)]]
-					end,
-					is_always_hidden = function(name)
-						return name == ".."
-					end,
-				},
 				keymaps = {
 					["-"] = "actions.parent",
 					["g?"] = "actions.show_help",
@@ -675,9 +797,27 @@ return {
 						end,
 					},
 				},
-				float = { border = vim.g.border, win_options = { winblend = 0 } },
-				preview = { border = vim.g.border, win_options = { winblend = 0 } },
-				progress = { border = vim.g.border, win_options = { winblend = 0 } },
+				use_default_keymaps = false,
+				view_options = {
+					show_hidden = false,
+					is_hidden_file = function(name, bufnr)
+						return vim.startswith(name, ".")
+					end,
+					is_always_hidden = function(name, bufnr)
+						return false
+					end,
+					natural_order = true,
+					case_insensitive = false,
+					sort = { { "type", "asc" }, { "name", "asc" } },
+				},
+				progress = {
+					max_width = 0.7,
+					border = "rounded",
+					minimized_border = "none",
+					win_options = { winblend = 0 },
+				},
+				ssh = { border = "rounded" },
+				keymaps_help = { border = "rounded" },
 			}
 		end,
 		config = function(_, opts)
@@ -736,6 +876,367 @@ return {
 					end
 				end,
 			})
+		end,
+	},
+
+	{
+		"lewis6991/gitsigns.nvim",
+		event = "VeryLazy",
+		opts = function()
+			return {
+				signs = {
+					add = { text = "▎" },
+					change = { text = "▎" },
+					delete = { text = "" },
+					topdelete = { text = "" },
+					changedelete = { text = "▎" },
+					untracked = { text = "▎" },
+				},
+				signs_staged = {
+					add = { text = "▎" },
+					change = { text = "▎" },
+					delete = { text = "" },
+					topdelete = { text = "" },
+					changedelete = { text = "▎" },
+				},
+				on_attach = function(buffer)
+					local gs = package.loaded.gitsigns
+
+					local function map(mode, l, r, desc)
+						vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
+					end
+
+                    -- stylua: ignore start
+					map("n", "]h", function() if vim.wo.diff then vim.cmd.normal({ "]c", bang = true }) else gs.nav_hunk("next") end end, "Next Hunk")
+					map("n", "[h", function() if vim.wo.diff then vim.cmd.normal({ "[c", bang = true }) else gs.nav_hunk("prev") end end, "Prev Hunk")
+					map("n", "]H", function() gs.nav_hunk("last") end, "Last Hunk") map("n", "[H", function() gs.nav_hunk("first") end, "First Hunk")
+					map({ "n", "v" }, "<leader>hA", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
+					map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
+					map("n", "<leader>ha", gs.stage_buffer, "Stage Buffer")
+					map("n", "<leader>hu", gs.undo_stage_hunk, "Undo Stage Hunk")
+					map("n", "<leader>hR", gs.reset_buffer, "Reset Buffer")
+					map("n", "<leader>hp", gs.preview_hunk_inline, "Preview Hunk Inline")
+					map("n", "<leader>hB", function() gs.blame_line({ full = true }) end, "Blame Line") map("n", "<leader>hB", function() gs.blame() end, "Blame Buffer")
+					map("n", "<leader>hd", gs.diffthis, "Diff This") map("n", "<leader>hD", function() gs.diffthis("~") end, "Diff This ~")
+					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
+					-- stylua: ignore end
+				end,
+			}
+		end,
+	},
+
+	{
+		"kylechui/nvim-surround",
+		event = "BufRead",
+		keys = function()
+			return {
+				"ys",
+				"ds",
+				"cs",
+				{ "S", mode = "x" },
+				{ "<C-g>s", mode = "i" },
+			}
+		end,
+		opts = function()
+			return {
+				keymaps = {
+					insert = "<C-g>s",
+					insert_line = "<C-g>S",
+					normal = "ys",
+					normal_cur = "yss",
+					normal_line = "yS",
+					normal_cur_line = "ySS",
+					visual = "S",
+					visual_line = "gS",
+					delete = "ds",
+					change = "cs",
+					change_line = "cS",
+				},
+			}
+		end,
+	},
+	{
+		"altermo/ultimate-autopair.nvim",
+		event = "InsertEnter",
+		opts = function()
+			local compltype = {}
+			vim.api.nvim_create_autocmd("CmdlineChanged", {
+				desc = "Record cmd compltype to determine whether to autopair.",
+				group = vim.api.nvim_create_augroup("AutopairRecordCmdCompltype", {}),
+				callback = function()
+					local type = vim.fn.getcmdcompltype()
+					if compltype[1] == type then
+						return
+					end
+					compltype[2] = compltype[1]
+					compltype[1] = type
+				end,
+			})
+
+			---Get next two characters after cursor, whether in cmdline or normal buffer
+			---@return string: next two characters
+			local function get_next_two_chars()
+				local col, line
+				if vim.fn.mode():match("^c") then
+					col = vim.fn.getcmdpos()
+					line = vim.fn.getcmdline()
+				else
+					col = vim.fn.col(".")
+					line = vim.api.nvim_get_current_line()
+				end
+				return line:sub(col, col + 1)
+			end
+
+			-- Matches strings that start with:
+			-- keywords: \k
+			-- opening pairs: (, [, {, \(, \[, \{
+			local IGNORE_REGEX = vim.regex([=[^\%(\k\|\\\?[([{]\)]=])
+
+			return {
+				extensions = {
+					-- Improve performance when typing fast, see
+					-- https://github.com/altermo/ultimate-autopair.nvim/issues/74
+					tsnode = false,
+					utf8 = false,
+					suround = false,
+					filetype = { tree = false },
+					cond = {
+						cond = function(f)
+							return not f.in_macro()
+								-- Disable autopairs if followed by a keyword or an opening pair
+								and not IGNORE_REGEX:match_str(get_next_two_chars())
+								-- Disable autopairs when inserting a regex,
+								-- e.g. `:s/{pattern}/{string}/[flags]` or
+								-- `:g/{pattern}/[cmd]`, etc.
+								and (not f.in_cmdline() or compltype[1] ~= "" or compltype[2] ~= "command")
+						end,
+					},
+				},
+				{ "\\(", "\\)" },
+				{ "\\[", "\\]" },
+				{ "\\{", "\\}" },
+				{ "[=[", "]=]", ft = { "lua" } },
+				{ "<<<", ">>>", ft = { "cuda" } },
+				{ "/*", "*/", ft = { "c", "cpp", "cuda" }, newline = true, space = true },
+				{ "<", ">", disable_start = true, disable_end = true },
+				-- Paring '$' and '*' are handled by snippets,
+				-- only use autopair to delete matched pairs here
+				{ "$", "$", ft = { "markdown", "tex" }, disable_start = true, disable_end = true },
+				{ "*", "*", ft = { "markdown" }, disable_start = true, disable_end = true },
+				{ "\\left(", "\\right)", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left[", "\\right]", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left{", "\\right}", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left<", "\\right>", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left\\lfloor", "\\right\\rfloor", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left\\lceil", "\\right\\rceil", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left\\vert", "\\right\\vert", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left\\lVert", "\\right\\rVert", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\left\\lVert", "\\right\\rVert", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\begin{bmatrix}", "\\end{bmatrix}", newline = true, space = true, ft = { "markdown", "tex" } },
+				{ "\\begin{pmatrix}", "\\end{pmatrix}", newline = true, space = true, ft = { "markdown", "tex" } },
+			}
+		end,
+	},
+	{
+		"willothy/flatten.nvim",
+		lazy = false,
+		priority = 1000,
+		opts = function()
+			---Check if a file is a git (commit, rebase, etc.) file
+			---@param fpath string
+			---@return boolean
+			local function should_block_file(fpath)
+				local fname = vim.fs.basename(fpath)
+				return fname == "rebase-merge"
+					or fname == "COMMIT_EDITMSG"
+					or vim.startswith(vim.fs.normalize(fpath), "/tmp/")
+			end
+
+			if tonumber(vim.fn.system({ "id", "-u" })) == 0 then
+				vim.env["NVIM_ROOT_" .. vim.fn.getpid()] = "1"
+			end
+			return {
+				window = { open = "alternate" },
+				block_for = { gitcommit = true, gitrebase = true },
+				callbacks = {
+					should_nest = function()
+						local pid = vim.fn.getpid()
+						local parent_pid = vim.env.NVIM and vim.env.NVIM:match("nvim%.(%d+)")
+						if vim.env["NVIM_ROOT_" .. pid] and parent_pid and not vim.env["NVIM_ROOT_" .. parent_pid] then
+							return true
+						end
+					end,
+					should_block = function()
+						local files = vim.fn.argv() --[=[@as string[]]=]
+						for _, file in ipairs(files) do
+							if should_block_file(file) then
+								return true
+							end
+						end
+						return false
+					end,
+					post_open = function(buf, win)
+						vim.api.nvim_set_current_win(win)
+						local bufname = vim.api.nvim_buf_get_name(buf)
+						if should_block_file(bufname) then
+							vim.bo[buf].bufhidden = "wipe"
+							local keymap_utils = require("utils.keys")
+							keymap_utils.command_abbrev("x", "b#", { buffer = buf })
+							keymap_utils.command_abbrev("wq", "b#", { buffer = buf })
+							keymap_utils.command_abbrev("bw", "b#", { buffer = buf })
+							keymap_utils.command_abbrev("bd", "b#", { buffer = buf })
+						end
+					end,
+				},
+				one_per = { kitty = false, wezterm = false },
+			}
+		end,
+	},
+	{
+		"RRethy/vim-illuminate",
+		event = "BufRead",
+		opts = function()
+			return {
+				delay = 200,
+				providers = { "lsp", "treesitter", "regex" },
+				large_file_cutoff = 2000,
+				filetypes_denylist = {
+					"oil",
+					"harpoon",
+				},
+				modes_denylist = { "i", "v", "vs", "V", "Vs", "\22", "\22s" },
+				large_file_overrides = { providers = { "lsp" } },
+			}
+		end,
+		config = function(_, opts)
+			require("illuminate").configure(opts)
+		end,
+	},
+	{
+		"echasnovski/mini-git",
+		version = false,
+		main = "mini.git",
+		cmd = "Git",
+		opts = function()
+			return {
+				job = { git_executable = "git", timeout = 30000 },
+				command = { split = "auto" },
+			}
+		end,
+	},
+	{
+		"isakbm/gitgraph.nvim",
+		cmd = "Gitgraph",
+		opts = function()
+			vim.api.nvim_create_user_command("Gitgraph", function()
+				return require("gitgraph").draw({}, { all = true, max_count = 5000 })
+			end, {})
+			return {
+				hooks = {
+					on_select_commit = function(commit)
+						vim.notify("Selected Commit: " .. commit.hash .. "^!", 1, { title = "DiffviewOpen" })
+					end,
+					on_select_range_commit = function(from, to)
+						vim.notify("Selected Range: " .. from.hash .. "~1.." .. to.hash, 1, { title = "DiffviewOpen" })
+					end,
+				},
+			}
+		end,
+	},
+	{
+		"folke/trouble.nvim",
+		cmd = "Trouble",
+		opts = function()
+			return { modes = { lsp = { win = { position = "right" } } } }
+		end,
+		keys = {
+			{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+			{ "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+			{ "<leader>xs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },
+			{ "<leader>xS", "<cmd>Trouble lsp toggle<cr>", desc = "LSP references/definitions/... (Trouble)" },
+			{ "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+			{ "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+			{
+				"[q",
+				function()
+					if require("trouble").is_open() then
+						require("trouble").prev({ skip_groups = true, jump = true })
+					else
+						local ok, err = pcall(vim.cmd.cprev)
+						if not ok then
+							vim.notify(err, vim.log.levels.ERROR)
+						end
+					end
+				end,
+				desc = "Previous Trouble/Quickfix Item",
+			},
+			{
+				"]q",
+				function()
+					if require("trouble").is_open() then
+						require("trouble").next({ skip_groups = true, jump = true })
+					else
+						local ok, err = pcall(vim.cmd.cnext)
+						if not ok then
+							vim.notify(err, vim.log.levels.ERROR)
+						end
+					end
+				end,
+				desc = "Next Trouble/Quickfix Item",
+			},
+		},
+	},
+	{
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		keys = function()
+			local harpoon = require("harpoon")
+			return {
+                -- stylua: ignore start
+				{ "<leader>l", function() harpoon.ui:toggle_quick_menu( harpoon:list(), { ui_width_ratio = 0.40, border = "none", title = "" }) end, desc = "Harpoon List" },
+				{ "<leader>a", function() harpoon:list():add() end, desc = "Add to Mark" },
+				{ "<leader>1", function() harpoon:list():select(1) end, desc = "Mark 1" },
+				{ "<leader>2", function() harpoon:list():select(2) end, desc = "Mark 2" },
+				{ "<leader>3", function() harpoon:list():select(3) end, desc = "Mark 3" },
+				{ "<leader>4", function() harpoon:list():select(4) end, desc = "Mark 4" },
+				{ "<leader>5", function() harpoon:list():select(5) end, desc = "Mark 5" },
+				-- stylua: ignore end
+			}
+		end,
+		config = function()
+			local harpoon = require("harpoon")
+			require("harpoon.config").DEFAULT_LIST = "files"
+			harpoon:setup({
+				settings = {
+					save_on_toggle = true,
+					key = function()
+						return vim.uv.cwd() --[[@as string]]
+					end,
+				},
+			})
+		end,
+	},
+	{
+		"3rd/image.nvim",
+		ft = { "markdown", "neorg" },
+		build = "luarocks --local --lua-version=5.1 install magick --force",
+		init = vim.schedule_wrap(function()
+			package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua"
+			package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua"
+		end),
+		opts = function()
+			return {
+				backend = "kitty",
+				integrations = {
+					markdown = {
+						enabled = true,
+						clear_in_insert_mode = false,
+						download_remote_images = true,
+						only_render_image_at_cursor = false,
+						filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+					},
+				},
+			}
 		end,
 	},
 }

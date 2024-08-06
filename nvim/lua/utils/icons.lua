@@ -1,34 +1,6 @@
 local M = {}
 
-M.dap = {
-	Stopped = " ",
-	Breakpoint = " ",
-	BreakpointCondition = " ",
-	BreakpointRejected = " ",
-	LogPoint = " ",
-}
-
-M.diagnostics = {
-	Error = " ",
-	Warn = " ",
-	Info = " ",
-	Hint = " ",
-}
-
-M.git = {
-	added = " ",
-	modified = " ",
-	removed = " ",
-	renamed = " ",
-	unstage = " ",
-	stage = " ",
-	untracked = " ",
-	conflict = " ",
-	ignored = " ",
-}
-
 M.kinds = {
-	RipGrep = " ",
 	Array = "󰅪 ",
 	Boolean = " ",
 	BreakStatement = "󰙧 ",
@@ -101,4 +73,33 @@ M.kinds = {
 	WhileStatement = "󰑖 ",
 }
 
+M.misc = {
+	bug = " ",
+	ellipsis = "…",
+	git = " ",
+	search = " ",
+	vertical_bar = "│",
+	vertical_bar_bold = "▐",
+	two_big_arrow_right = "   ",
+	single_big_arrow_right = " ",
+}
+
+--- Diagnostic severities.
+M.diagnostics = {
+	ERROR = " ",
+	WARN = " ",
+	HINT = " ",
+	INFO = " ",
+}
+
+M.git = {
+	branch = " ",
+	add = " ",
+	modified = " ",
+	remove = " ",
+	rename = "󰑕 ",
+	change = "󱩼 ",
+	task = " ",
+	qmark = " ",
+}
 return M
