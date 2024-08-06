@@ -276,6 +276,7 @@ return {
 							}
 						end,
 					},
+					space,
 					{
 						provider = function()
 							local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":~:.")

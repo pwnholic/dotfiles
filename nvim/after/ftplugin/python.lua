@@ -1,13 +1,7 @@
 require("utils.lsp").start({
 	cmd = { "basedpyright-langserver", "--stdio" },
 	name = "basedpyright",
-	root_patterns = {
-		"Pipfile",
-		"pyproject.toml",
-		"requirements.txt",
-		"setup.cfg",
-		"setup.py",
-	},
+	root_patterns = { "Pipfile", "pyproject.toml", "requirements.txt", "setup.cfg", "setup.py" },
 	on_attach = function(client, _)
 		client.server_capabilities.documentFormattingProvider = false
 	end,

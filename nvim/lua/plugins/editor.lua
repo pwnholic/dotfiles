@@ -123,7 +123,7 @@ return {
 				fzf_colors = true,
 				keymap = {
 					builtin = {
-						["<M-Esc>"] = "hide",
+						["<Esc><Esc>"] = "hide",
 						["<F1>"] = "toggle-help",
 					},
 					fzf = {
@@ -711,7 +711,7 @@ return {
 
 			return {
 				default_file_explorer = true,
-				columns = columns,
+				columns = { { "icon", default_file = icons.File, directory = icons.Folder, add_padding = true } },
 				buf_options = { buflisted = false, bufhidden = "hide" },
 				win_options = {
 					wrap = false,

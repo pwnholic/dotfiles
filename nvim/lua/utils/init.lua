@@ -75,10 +75,10 @@ function M.bufremove(buf)
 end
 
 local terminals = {}
-function M.term(cmd, opts)
+function M.terminal(cmd, opts)
 	opts = vim.tbl_deep_extend("force", {
 		ft = "lazyterm",
-		size = { width = 0.95, height = 0.95 },
+		size = { width = 1, height = 1 },
 		backdrop = nil,
 	}, opts or {}, { persistent = true })
 

@@ -105,11 +105,11 @@ vim.keymap.set("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree
 
 -- floating terminal
 local terminal = function()
-	utils.term(nil, { cwd = vim.uv.cwd() })
+	utils.terminal(nil, { cwd = vim.uv.cwd() })
 end
 vim.keymap.set("n", "<leader>ft", terminal, { desc = "Terminal (Root Dir)" })
 vim.keymap.set("n", "<leader>fT", function()
-	utils.term()
+	utils.terminal()
 end, { desc = "Terminal (cwd)" })
 vim.keymap.set("n", "<c-/>", terminal, { desc = "Terminal (Root Dir)" })
 vim.keymap.set("n", "<c-_>", terminal, { desc = "which_key_ignore" })

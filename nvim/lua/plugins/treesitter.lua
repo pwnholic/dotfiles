@@ -74,8 +74,6 @@ return {
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		event = "VeryLazy",
 		config = function()
-			-- When in diff mode, we want to use the default
-			-- vim text objects c & C instead of the treesitter ones.
 			local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
 			local configs = require("nvim-treesitter.configs")
 			for name, fn in pairs(move) do

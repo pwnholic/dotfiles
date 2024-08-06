@@ -1,3 +1,5 @@
+vim.opt_local.expandtab = true
+
 require("utils.lsp").start({
 	filetypes = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
 	message_level = vim.lsp.protocol.MessageType.Error,

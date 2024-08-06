@@ -8,7 +8,7 @@ return {
 		end),
 		opts = function()
 			return {
-				formatters_by_ft = { lua = { "stylua" }, python = { "ruff_format" } },
+				formatters_by_ft = { lua = { "stylua" }, python = { "ruff_format" }, go = { "goimports" } },
 				format_after_save = { lsp_format = "fallback" },
 				formatters = {},
 			}
@@ -55,6 +55,8 @@ return {
 
 					"marksman",
 					"vale",
+
+					"csharp-language-server",
 				},
 			}
 		end,
@@ -568,7 +570,7 @@ return {
 					{ "_", desc = "underscore" },
 					{ "`", desc = "` string" },
 					{ "a", desc = "argument" },
-					{ "b", desc = ")]} block" },
+					{ "b", desc = ")} block" },
 					{ "c", desc = "class" },
 					{ "d", desc = "digit(s)" },
 					{ "e", desc = "CamelCase / snake_case" },
