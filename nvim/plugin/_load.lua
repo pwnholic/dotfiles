@@ -5,8 +5,26 @@ vim.keymap.set({ "i", "c" }, "<S-Tab>", function()
 	require("utils.cmp").jump(-1)
 end)
 
+local methods = vim.lsp.protocol.Methods
 require("utils.lsp").on_attach(function(client, buffer)
 	require("utils.lsp").keys_on_attach(client, buffer)
+
+	if client.supports_method(methods.textDocument_inlayHint) then
+		if
+			vim.api.nvim_buf_is_valid(buffer)
+			and vim.bo[buffer].buftype == ""
+			and not vim.tbl_contains({}, vim.bo[buffer].filetype)
+		then
+			vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+		end
+	end
+
+	if client.supports_method(methods.textDocument_codeLens) then
+		vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+			buffer = buffer,
+			callback = vim.lsp.codelens.refresh,
+		})
+	end
 end)
 
 vim.diagnostic.config(require("utils.lsp").diagnostics_config)
