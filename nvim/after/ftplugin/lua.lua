@@ -2,6 +2,10 @@ require("utils.lsp").start({
 	cmd = { "lua-language-server" },
 	name = "lua_lsp",
 	root_patterns = { ".luarc.json", ".luarc.jsonc", "stylua.toml", ".stylua.toml" },
+	on_attach = function(client, _)
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+	end,
 	settings = {
 		Lua = {
 			codeLens = { enable = true },

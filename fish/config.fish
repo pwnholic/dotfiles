@@ -38,3 +38,6 @@ set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 
 fish_add_path -a /home/lilwigy/.foundry/bin
+
+# Created by `pipx` on 2024-08-06 11:59:49
+set PATH $PATH /home/lilwigy/.local/bin

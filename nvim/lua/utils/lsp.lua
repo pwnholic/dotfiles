@@ -1,4 +1,5 @@
 local utils = require("utils")
+local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
@@ -20,7 +21,7 @@ M.root_patterns = {
 
 ---@type lsp_client_config_t
 ---@diagnostic disable-next-line: missing-fields
-M.default_config = { root_patterns = M.root_patterns }
+M.default_config = { root_patterns = M.root_patterns, capabilities = require("cmp_nvim_lsp").default_capabilities() }
 
 ---@class vim.lsp.ClientConfig: lsp_client_config_t
 ---@class lsp_client_config_t
@@ -56,13 +57,11 @@ function M.start(config, opts)
 	if vim.b.bigfile or vim.bo.bt == "nofile" then
 		return
 	end
-
 	local cmd_type = type(config.cmd)
 	local cmd_exec = cmd_type == "table" and config.cmd[1]
 	if cmd_type == "table" and vim.fn.executable(cmd_exec or "") == 0 then
 		return
 	end
-
 	local name = cmd_exec
 	local bufname = vim.api.nvim_buf_get_name(0)
 	local root_dir = vim.fn.fnamemodify(
@@ -70,19 +69,12 @@ function M.start(config, opts)
 			or vim.fs.dirname(bufname),
 		"%:p"
 	)
-
 	if not vim.uv.fs_stat(root_dir) then
 		return
 	end
-
 	return vim.lsp.start(
 		---@diagnostic disable-next-line: param-type-mismatch
-		vim.tbl_deep_extend(
-			"keep",
-			config or {},
-			{ name = name, root_dir = root_dir, capabilities = require("cmp_nvim_lsp").default_capabilities() },
-			M.default_config
-		),
+		vim.tbl_deep_extend("keep", config or {}, { name = name, root_dir = root_dir }, M.default_config),
 		opts
 	)
 end
@@ -435,6 +427,7 @@ M.subcommands = {
 			end,
 		},
 		references = {
+			has = methods.textDocument_references,
 			---@param args lsp_command_parsed_arg_t
 			arg_handler = function(args)
 				return args.context, args.options
@@ -442,6 +435,7 @@ M.subcommands = {
 			opts = { "context", "options.on_list" },
 		},
 		rename = {
+			has = methods.textDocument_rename,
 			---@param args lsp_command_parsed_arg_t
 			arg_handler = function(args)
 				return args.new_name or args[1], args.options
@@ -453,6 +447,7 @@ M.subcommands = {
 			},
 		},
 		workspace_symbol = {
+			has = methods.workspace_symbol,
 			---@param args lsp_command_parsed_arg_t
 			arg_handler = function(args)
 				return args.query, args.options
@@ -460,6 +455,7 @@ M.subcommands = {
 			opts = { "query", "options.on_list" },
 		},
 		format = {
+			has = methods.textDocument_formatting,
 			arg_handler = subcommand_arg_handler.range,
 			opts = {
 				"id",
@@ -478,6 +474,7 @@ M.subcommands = {
 			},
 		},
 		code_action = {
+			has = methods.textDocument_codeAction,
 			opts = {
 				"filter",
 				"range",
@@ -488,6 +485,7 @@ M.subcommands = {
 			},
 		},
 		add_workspace_folder = {
+			has = methods.workspace_workspaceFolders,
 			arg_handler = subcommand_arg_handler.item,
 			completion = function(arglead, _, _)
 				local basedir = arglead == "" and vim.fn.getcwd() or arglead
@@ -514,6 +512,7 @@ M.subcommands = {
 			end,
 		},
 		remove_workspace_folder = {
+			has = methods.workspace_workspaceFolders,
 			arg_handler = subcommand_arg_handler.item,
 			completion = function(_, _, _)
 				return vim.tbl_map(function(path)
@@ -523,48 +522,68 @@ M.subcommands = {
 			end,
 		},
 		execute_command = {
+			has = methods.workspace_executeCommand,
 			arg_handler = subcommand_arg_handler.item,
 		},
 		type_definition = {
+			has = methods.textDocument_typeDefinition,
 			opts = {
 				"reuse_win",
 				["on_list"] = subcommand_opt_vals.bool,
 			},
 		},
 		declaration = {
+			has = methods.textDocument_declaration,
 			opts = {
 				"reuse_win",
 				["on_list"] = subcommand_opt_vals.bool,
 			},
 		},
 		definition = {
+			has = methods.textDocument_definition,
 			opts = {
 				"reuse_win",
 				["on_list"] = subcommand_opt_vals.bool,
 			},
 		},
 		document_symbol = {
+			has = methods.textDocument_documentSymbol,
 			opts = {
 				["on_list"] = subcommand_opt_vals.bool,
 			},
 		},
 		implementation = {
+			has = methods.textDocument_implementation,
 			opts = {
 				["on_list"] = subcommand_opt_vals.bool,
 			},
 		},
-		hover = {},
-		document_highlight = {},
-		clear_references = {},
+		hover = {
+			has = methods.textDocument_hover,
+		},
+		document_highlight = {
+			has = methods.textDocument_documentHighlight,
+		},
+		clear_references = {
+			has = methods.textDocument_documentHighlight,
+		},
 		list_workspace_folders = {
+			has = methods.workspace_workspaceFolders,
 			fn_override = function()
 				vim.print(vim.lsp.buf.list_workspace_folders())
 			end,
 		},
-		incoming_calls = {},
-		outgoing_calls = {},
-		signature_help = {},
+		incoming_calls = {
+			has = methods.callHierarchy_incomingCalls,
+		},
+		outgoing_calls = {
+			has = methods.callHierarchy_outgoingCalls,
+		},
+		signature_help = {
+			has = methods.textDocument_signatureHelp,
+		},
 		codelens_clear = {
+			has = methods.textDocument_codeLens,
 			fn_override = function(args)
 				vim.lsp.codelens.clear(args.client_id, args.bufnr)
 			end,
@@ -574,6 +593,7 @@ M.subcommands = {
 			},
 		},
 		codelens_display = {
+			has = methods.textDocument_codeLens,
 			fn_override = function(args)
 				vim.lsp.codelens.display(args.lenses, args.bufnr, args.client_id)
 			end,
@@ -584,18 +604,21 @@ M.subcommands = {
 			},
 		},
 		codelens_get = {
+			has = methods.textDocument_codeLens,
 			fn_override = function(args)
 				vim.lsp.codelens.get(args[1])
 			end,
 			completion = subcommand_completions.bufs,
 		},
 		codelens_on_codelens = {
+			has = methods.textDocument_codeLens,
 			fn_override = function(args)
 				vim.lsp.codelens.on_codelens(args.err, args.result, args.ctx)
 			end,
 			opts = { "err", "result", "ctx" },
 		},
 		codelens_refresh = {
+			has = methods.textDocument_codeLens,
 			fn_override = function(args)
 				vim.lsp.codelens.refresh(args.opts)
 			end,
@@ -605,9 +628,11 @@ M.subcommands = {
 			},
 		},
 		codelens_run = {
+			has = methods.textDocument_codeLens,
 			fn_override = vim.lsp.codelens.run,
 		},
 		codelens_save = {
+			has = methods.textDocument_codeLens,
 			fn_override = function(args)
 				vim.lsp.codelens.save(args.lenses, args.bufnr, args.client_id)
 			end,
@@ -618,6 +643,7 @@ M.subcommands = {
 			},
 		},
 		inlay_hint_enable = {
+			has = methods.textDocument_inlayHint,
 			fn_override = function(args)
 				vim.lsp.inlay_hint.enable(true, args.filter)
 			end,
@@ -627,6 +653,7 @@ M.subcommands = {
 			},
 		},
 		inlay_hint_disable = {
+			has = methods.textDocument_inlayHint,
 			fn_override = function(args)
 				vim.lsp.inlay_hint.enable(false, args.filter)
 			end,
@@ -636,6 +663,7 @@ M.subcommands = {
 			},
 		},
 		inlay_hint_toggle = {
+			has = methods.textDocument_inlayHint,
 			fn_override = function(args)
 				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), args.filter)
 			end,
@@ -645,6 +673,7 @@ M.subcommands = {
 			},
 		},
 		inlay_hint_get = {
+			has = methods.textDocument_inlayHint,
 			fn_override = function(args)
 				vim.print(vim.lsp.inlay_hint.get(args.filter))
 			end,
@@ -655,6 +684,7 @@ M.subcommands = {
 			},
 		},
 		inlay_hint_is_enabled = {
+			has = methods.textDocument_inlayHint,
 			fn_override = function(args)
 				vim.print(vim.lsp.inlay_hint.is_enabled(args.filter))
 			end,
@@ -664,12 +694,14 @@ M.subcommands = {
 			},
 		},
 		semantic_tokens_force_refresh = {
+			has = methods.textDocument_semanticTokens_full,
 			fn_override = function(args)
 				vim.lsp.semantic_tokens.force_refresh(args[1])
 			end,
 			completion = subcommand_completions.bufs,
 		},
 		semantic_tokens_get_at_pos = {
+			has = methods.textDocument_semanticTokens_full,
 			fn_override = function(args)
 				vim.print(vim.lsp.semantic_tokens.get_at_pos(args.bufnr or 0, args.row, args.col))
 			end,
@@ -680,6 +712,7 @@ M.subcommands = {
 			},
 		},
 		semantic_tokens_highlight_token = {
+			has = methods.textDocument_semanticTokens_full,
 			fn_override = function(args)
 				vim.lsp.semantic_tokens.highlight_token(
 					args.token,
@@ -701,6 +734,7 @@ M.subcommands = {
 			},
 		},
 		semantic_tokens_start = {
+			has = methods.textDocument_semanticTokens_full,
 			fn_override = function(args)
 				vim.lsp.semantic_tokens.start(args.bufnr or 0, args.client_id, args.opts)
 			end,
@@ -712,6 +746,7 @@ M.subcommands = {
 			},
 		},
 		semantic_tokens_stop = {
+			has = methods.textDocument_semanticTokens_full,
 			fn_override = function(args)
 				vim.lsp.semantic_tokens.stop(args.bufnr or 0, args.client_id)
 			end,
@@ -1211,7 +1246,7 @@ end
 ---@param subcommand_info_list table<string, subcommand_info_t> subcommands information
 ---@param fn_scope table|fun(name: string): function scope of corresponding functions for subcommands
 ---@return nil
-function M.setup_commands(meta, subcommand_info_list, fn_scope)
+function M.setup_commands(meta, subcommand_info_list, fn_scope, buffer)
 	-- metacommand -> MetaCommand abbreviation
 	utils.keys.command_abbrev(meta:lower(), meta)
 	-- Format: MetaCommand sub_command opts ...
@@ -1222,17 +1257,20 @@ function M.setup_commands(meta, subcommand_info_list, fn_scope)
 		complete = command_complete(meta, subcommand_info_list),
 	})
 	-- Format: MetaCommandSubcommand opts ...
-	for subcommand, _ in pairs(subcommand_info_list) do
-		vim.api.nvim_create_user_command(
-			meta .. utils.snake_to_camel(subcommand),
-			command_meta(subcommand_info_list, fn_scope, subcommand),
-			{
-				bang = true,
-				range = true,
-				nargs = "*",
-				complete = command_complete(meta, subcommand_info_list),
-			}
-		)
+	for subcommand, cap in pairs(subcommand_info_list) do
+		local has = not cap.has or M.has_lsp_methods(buffer, cap.has)
+		if has then
+			vim.api.nvim_create_user_command(
+				meta .. utils.snake_to_camel(subcommand),
+				command_meta(subcommand_info_list, fn_scope, subcommand),
+				{
+					bang = true,
+					range = true,
+					nargs = "*",
+					complete = command_complete(meta, subcommand_info_list),
+				}
+			)
+		end
 	end
 end
 
@@ -1305,7 +1343,6 @@ end
 
 function M.keys_on_attach(_, buffer)
 	local Keys = require("lazy.core.handler.keys")
-	local methods = vim.lsp.protocol.Methods
 	if not Keys.resolve then
 		return {}
 	end
@@ -1381,13 +1418,13 @@ M.diagnostics_config = {
 	float = {
 		header = setmetatable({}, {
 			__index = function(_, k)
-				local icon, hl = require("mini.icons").get("file", vim.api.nvim_buf_get_name(0))
+				local icon, icons_hl = require("mini.icons").get("file", vim.api.nvim_buf_get_name(0))
 				local arr = {
 					function()
 						return string.format("Diagnostics: %s  %s", icon, vim.bo.filetype)
 					end,
 					function()
-						return hl
+						return icons_hl
 					end,
 				}
 				return arr[k]()

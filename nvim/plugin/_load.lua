@@ -11,28 +11,32 @@ end)
 
 vim.diagnostic.config(require("utils.lsp").diagnostics_config)
 
-vim.api.nvim_create_autocmd({ "LspAttach", "DiagnosticChanged" }, {
+local register_capability = vim.lsp.handlers["client/registerCapability"]
+vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
+	local ret = register_capability(err, res, ctx)
+	local lsp = require("utils.lsp")
+	local client = vim.lsp.get_client_by_id(ctx.client_id)
+	if client then
+		for buffer in pairs(client.attached_buffers) do
+			lsp.keys_on_attach(client, buffer)
+			lsp.setup_commands("Lsp", lsp.subcommands.lsp, function(name)
+				return vim.lsp[name] or vim.lsp.buf[name]
+			end, buffer)
+		end
+	end
+	return ret
+end
+
+vim.api.nvim_create_autocmd("LspAttach", {
 	once = true,
 	desc = "Apply lsp and diagnostic settings.",
 	group = vim.api.nvim_create_augroup("LspDiagnosticSetup", {}),
-	callback = function()
+	callback = function(opts)
 		local lsp = require("utils.lsp")
-		local register_capability = vim.lsp.handlers["client/registerCapability"]
-		vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
-			local ret = register_capability(err, res, ctx)
-			local client = vim.lsp.get_client_by_id(ctx.client_id)
-			if client then
-				for buffer in pairs(client.attached_buffers) do
-					require("utils.lsp").keys_on_attach(client, buffer)
-				end
-			end
-			return ret
-		end
-
 		lsp.setup_lsp_stopidle()
 		lsp.setup_commands("Lsp", lsp.subcommands.lsp, function(name)
 			return vim.lsp[name] or vim.lsp.buf[name]
-		end)
+		end, opts.buf)
 		lsp.setup_commands("Diagnostic", lsp.subcommands.diagnostic, vim.diagnostic)
 		return true
 	end,
@@ -45,6 +49,7 @@ vim.schedule(function()
 	end
 	vim.g.loaded_tmux = true
 
+    -- stylua: ignore start
 	utils.tmux_mapkey_fallback("<M-h>", utils.navigate_wrap("h"), utils.tmux_mapkey_navigate_condition("h"))
 	utils.tmux_mapkey_fallback("<M-j>", utils.navigate_wrap("j"), utils.tmux_mapkey_navigate_condition("j"))
 	utils.tmux_mapkey_fallback("<M-k>", utils.navigate_wrap("k"), utils.tmux_mapkey_navigate_condition("k"))
@@ -61,16 +66,9 @@ vim.schedule(function()
 	utils.tmux_mapkey_fallback("<M->>", "resize-pane -R 4", utils.tmux_mapkey_resize_pane_horiz_condition)
 	utils.tmux_mapkey_fallback("<M-,>", "resize-pane -L 4", utils.tmux_mapkey_resize_pane_horiz_condition)
 	utils.tmux_mapkey_fallback("<M-.>", "resize-pane -R 4", utils.tmux_mapkey_resize_pane_horiz_condition)
-	utils.tmux_mapkey_fallback(
-		"<M-->",
-		[[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') - 2))"]],
-		utils.tmux_mapkey_resize_pane_vert_condition
-	)
-	utils.tmux_mapkey_fallback(
-		"<M-+>",
-		[[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') + 2))"]],
-		utils.tmux_mapkey_resize_pane_vert_condition
-	)
+	utils.tmux_mapkey_fallback( "<M-->", [[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') - 2))"]], utils.tmux_mapkey_resize_pane_vert_condition)
+	utils.tmux_mapkey_fallback( "<M-+>", [[run "tmux resize-pane -y $(($(tmux display -p '#{pane_height}') + 2))"]], utils.tmux_mapkey_resize_pane_vert_condition)
+	-- stylua: ignore end
 
 	-- Set @is_vim and register relevant autocmds callbacks if not already
 	-- in a vim/nvim session
