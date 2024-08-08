@@ -443,7 +443,11 @@ return {
 					sidebars = "dark",
 					floats = "dark",
 				},
-				-- on_colors = function(c) end,
+				on_colors = function(c)
+					c.red2 = "#ed3326"
+					c.green3 = "#30ed26"
+					c.yellow1 = "#eaed26"
+				end,
 				on_highlights = function(hl, c)
 					hl.Visual = { bg = c.bg_visual, bold = true, italic = true }
 					hl.VisualNOS = { bg = c.bg_visual, bold = true, italic = true }
@@ -753,6 +757,31 @@ return {
 					rules = false,
 					colors = true,
 				},
+			}
+		end,
+	},
+
+	{
+
+		"NvChad/nvim-colorizer.lua",
+		event = "VeryLazy",
+		opts = function()
+			return {
+				user_default_options = {
+					RGB = true,
+					RRGGBB = true,
+					names = false,
+					RRGGBBAA = false,
+					AARRGGBB = false,
+					rgb_fn = false,
+					hsl_fn = false,
+					css = true,
+					css_fn = true,
+					mode = "virtualtext",
+					virtualtext = " ",
+					always_update = false,
+				},
+				buftypes = {},
 			}
 		end,
 	},

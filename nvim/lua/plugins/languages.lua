@@ -243,7 +243,7 @@ return {
 				goimports = "gopls",
 				gofmt = "gopls",
 				fillstruct = "gopls",
-				tag_options = "json=omitempty",
+				tag_options = "",
 				icons = { breakpoint = "🧘", currentpos = "🏃" },
 				verbose = false,
 				lsp_cfg = true,
