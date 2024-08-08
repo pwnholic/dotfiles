@@ -6,6 +6,16 @@ require("utils.lsp").start({
 	cmd = { vim.fn.stdpath("data") .. "/mason/bin/gopls", "-remote.debug=:0" },
 	root_patterns = { "go.work", "go.mod", ".git" },
 	flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
+	on_attach = function(client, _)
+		if not client.server_capabilities.semanticTokensProvider then
+			local semantic = client.config.capabilities.textDocument.semanticTokens
+			client.server_capabilities.semanticTokensProvider = {
+				full = true,
+				legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
+				range = true,
+			}
+		end
+	end,
 	settings = {
 		gopls = {
 			analyses = {
