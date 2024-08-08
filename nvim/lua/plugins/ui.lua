@@ -29,8 +29,9 @@ return {
 			vim.api.nvim_create_autocmd("ModeChanged", {
 				pattern = "*:*",
 				callback = function()
-					vim.api.nvim_set_hl(0, "WinBar", { sp = mode_colors[vim.fn.mode():sub(1, 1)], underline = true })
-					vim.api.nvim_set_hl(0, "WinBarNC", { sp = mode_colors[vim.fn.mode():sub(1, 1)], underline = true })
+					local color = mode_colors[vim.fn.mode():sub(1, 1)]
+					vim.api.nvim_set_hl(0, "WinBar", { sp = color, underline = true, bg = colors.bg_statusline })
+					vim.api.nvim_set_hl(0, "WinBarNC", { sp = color, underline = true })
 				end,
 			})
 
@@ -739,6 +740,7 @@ return {
 					{ "<leader>h", desc = "Git" },
 					{ "<leader>t", desc = "Test" },
 					{ "<leader>u", desc = "Toggle" },
+					{ "<leader>w", desc = "Window" },
 					{ "<leader>df", desc = "Find Debug" },
 				},
 				icons = {

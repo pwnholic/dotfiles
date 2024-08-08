@@ -3,6 +3,7 @@ vim.loader.enable()
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+vim.opt.foldexpr = "v:lua.require'utils.stc'.foldexpr()"
 vim.opt.cmdheight = 0
 vim.opt.autoindent = true
 vim.opt.autowrite = true -- Enable auto write
@@ -20,7 +21,6 @@ vim.opt.fillchars = { foldopen = "", foldclose = "", fold = " ", foldsep =
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.smoothscroll = true
-vim.opt.foldexpr = "v:lua.require'utils.stc'.foldexpr()"
 vim.opt.foldmethod = "expr"
 vim.opt.foldtext = ""
 vim.opt.formatoptions = "jcroqlnt" -- tcqj
@@ -37,20 +37,20 @@ vim.opt.listchars = { tab = "▏ ", trail = "·", nbsp = "␣" }
 vim.opt.mouse = "a" -- Enable mouse mode
 vim.opt.mousemoveevent = true
 vim.opt.number = true
-vim.opt.pumblend = 0 -- Popup blend
-vim.opt.pumheight = 10 -- Maximum number of entries in a popup
-vim.opt.relativenumber = true -- Relative line numbers
+vim.opt.pumblend = 0
+vim.opt.pumheight = 13
+vim.opt.relativenumber = true
 vim.opt.ruler = true
 vim.opt.scrolloff = 4
 vim.opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
-vim.opt.shiftround = true -- Round indent
+vim.opt.shiftround = true
 vim.opt.shiftwidth = 4
 vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })
 vim.opt.showmode = false
 vim.opt.sidescrolloff = 8
-vim.opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
+vim.opt.signcolumn = "yes"
 vim.opt.smartcase = true
-vim.opt.smartindent = true -- Insert indents automatically
+vim.opt.smartindent = true
 vim.opt.softtabstop = 4
 vim.opt.spelllang = { "en" }
 vim.opt.spelloptions:append("noplainbuffer")
@@ -63,10 +63,10 @@ vim.opt.termguicolors = true
 vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
-vim.opt.updatetime = 200 -- Save swap file and trigger CursorHold
+vim.opt.updatetime = 200
 vim.opt.virtualedit = "block"
-vim.opt.wildmode = "longest:full,full" -- Command-line completion mode
-vim.opt.winminwidth = 5 -- Minimum window width
+vim.opt.wildmode = "longest:full,full"
+vim.opt.winminwidth = 5
 vim.opt.showtabline = 0
 vim.opt.wrap = false
 

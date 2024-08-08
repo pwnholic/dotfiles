@@ -1,33 +1,45 @@
-vim.keymap.set({ "i", "c" }, "<Tab>", function()
-	require("utils.cmp").jump(1)
-end)
-vim.keymap.set({ "i", "c" }, "<S-Tab>", function()
-	require("utils.cmp").jump(-1)
-end)
+-- stylua: ignore start
+vim.keymap.set({ "i", "c" }, "<Tab>", function() require("utils.cmp").jump(1) end)
+vim.keymap.set({ "i", "c" }, "<S-Tab>", function() require("utils.cmp").jump(-1) end)
+-- stylua: ignore end
 
 local methods = vim.lsp.protocol.Methods
+vim.diagnostic.config(require("utils.lsp").diagnostics_config)
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	once = true,
+	desc = "Apply lsp and diagnostic settings.",
+	group = vim.api.nvim_create_augroup("LspDiagnosticSetup", {}),
+	callback = function(opts)
+		local lsp = require("utils.lsp")
+		lsp.setup_lsp_stopidle()
+		lsp.setup_commands("Lsp", lsp.subcommands.lsp, function(name)
+			return vim.lsp[name] or vim.lsp.buf[name]
+		end, opts.buf)
+		lsp.setup_commands("Diagnostic", lsp.subcommands.diagnostic, vim.diagnostic)
+		return true
+	end,
+})
+
 require("utils.lsp").on_attach(function(client, buffer)
 	require("utils.lsp").keys_on_attach(client, buffer)
-
 	if client.supports_method(methods.textDocument_inlayHint) then
 		if
-			vim.api.nvim_buf_is_valid(buffer)
+			vim.api.nvim_buf_is_loaded(buffer)
 			and vim.bo[buffer].buftype == ""
 			and not vim.tbl_contains({}, vim.bo[buffer].filetype)
 		then
-			vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+			vim.lsp.inlay_hint.enable(false, { bufnr = buffer })
 		end
 	end
 
-	if client.supports_method(methods.textDocument_codeLens) then
-		vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-			buffer = buffer,
-			callback = vim.lsp.codelens.refresh,
-		})
-	end
+	-- if client.supports_method(methods.textDocument_codeLens) then
+	-- 	vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+	-- 		buffer = buffer,
+	-- 		callback = vim.lsp.codelens.refresh,
+	-- 	})
+	-- end
 end)
-
-vim.diagnostic.config(require("utils.lsp").diagnostics_config)
 
 local register_capability = vim.lsp.handlers["client/registerCapability"]
 vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
@@ -44,21 +56,6 @@ vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx)
 	end
 	return ret
 end
-
-vim.api.nvim_create_autocmd("LspAttach", {
-	once = true,
-	desc = "Apply lsp and diagnostic settings.",
-	group = vim.api.nvim_create_augroup("LspDiagnosticSetup", {}),
-	callback = function(opts)
-		local lsp = require("utils.lsp")
-		lsp.setup_lsp_stopidle()
-		lsp.setup_commands("Lsp", lsp.subcommands.lsp, function(name)
-			return vim.lsp[name] or vim.lsp.buf[name]
-		end, opts.buf)
-		lsp.setup_commands("Diagnostic", lsp.subcommands.diagnostic, vim.diagnostic)
-		return true
-	end,
-})
 
 vim.schedule(function()
 	local utils = require("utils.tmux")

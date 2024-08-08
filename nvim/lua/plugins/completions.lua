@@ -13,7 +13,7 @@ return {
 			local utils = require("utils")
 			local auto_select = true
 			return {
-				auto_brackets = {},
+				auto_brackets = { "go" },
 				completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
 				preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
 				mapping = {

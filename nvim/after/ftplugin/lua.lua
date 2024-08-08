@@ -1,6 +1,6 @@
 require("utils.lsp").start({
 	cmd = { "lua-language-server" },
-	name = "lua_lsp",
+	name = "lua_ls",
 	root_patterns = { ".luarc.json", ".luarc.jsonc", "stylua.toml", ".stylua.toml" },
 	on_attach = function(client, _)
 		client.server_capabilities.documentFormattingProvider = false
@@ -14,7 +14,7 @@ require("utils.lsp").start({
 			runtime = { version = "LuaJIT" },
 			workspace = {
 				checkThirdParty = false,
-				library = { vim.env.VIMRUNTIME .. "/lua" },
+				library = { vim.env.VIMRUNTIME .. "/lua", vim.fn.stdpath("data") .. "/lazy/lazy.nvim" },
 			},
 			hint = {
 				enable = true,

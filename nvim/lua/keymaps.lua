@@ -64,9 +64,6 @@ vim.keymap.set("i", ";", ";<c-g>u")
 -- save file
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 
---keywordprg
-vim.keymap.set("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
-
 -- better indenting
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
@@ -76,7 +73,6 @@ vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = 
 vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
 
 -- new file
-vim.keymap.set("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 vim.keymap.set("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
 vim.keymap.set("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
 
@@ -104,15 +100,13 @@ vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 vim.keymap.set("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 -- floating terminal
-local terminal = function()
-	utils.terminal(nil, { cwd = vim.uv.cwd() })
-end
+-- stylua: ignore start
+local terminal = function() utils.terminal(nil, { cwd = vim.uv.cwd() }) end
 vim.keymap.set("n", "<leader>ft", terminal, { desc = "Terminal (Root Dir)" })
-vim.keymap.set("n", "<leader>fT", function()
-	utils.terminal()
-end, { desc = "Terminal (cwd)" })
+vim.keymap.set("n", "<leader>fT", function() utils.terminal() end, { desc = "Terminal (cwd)" })
 vim.keymap.set("n", "<c-/>", terminal, { desc = "Terminal (Root Dir)" })
 vim.keymap.set("n", "<c-_>", terminal, { desc = "which_key_ignore" })
+-- stylua: ignore end
 
 -- Terminal Mappings
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
@@ -124,7 +118,6 @@ vim.keymap.set("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 vim.keymap.set("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- windows
-vim.keymap.set("n", "<leader>w", "<c-w>", { desc = "Windows", remap = true })
 vim.keymap.set("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })
 vim.keymap.set("n", "<leader>|", "<C-W>v", { desc = "Split Window Right", remap = true })
 vim.keymap.set("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
@@ -138,19 +131,15 @@ vim.keymap.set("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 vim.keymap.set("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
+-- stylua: ignore start
 utils.toggle.map("<leader>us", utils.toggle("spell", { name = "Spelling" }))
 utils.toggle.map("<leader>uw", utils.toggle("wrap", { name = "Wrap" }))
 utils.toggle.map("<leader>uL", utils.toggle("relativenumber", { name = "Relative Number" }))
 utils.toggle.map("<leader>ud", utils.toggle.diagnostics)
 utils.toggle.map("<leader>ul", utils.toggle.number)
-utils.toggle.map(
-	"<leader>uc",
-	utils.toggle("conceallevel", { values = { 0, vim.o.conceallevel > 0 and vim.o.conceallevel or 2 } })
-)
+utils.toggle.map( "<leader>uc", utils.toggle("conceallevel", { values = { 0, vim.o.conceallevel > 0 and vim.o.conceallevel or 2 } }))
 utils.toggle.map("<leader>uT", utils.toggle.treesitter)
 utils.toggle.map("<leader>ub", utils.toggle("background", { values = { "light", "dark" }, name = "Background" }))
-if vim.lsp.inlay_hint then
-	utils.toggle.map("<leader>uh", utils.toggle.inlay_hints)
-end
-
+if vim.lsp.inlay_hint then utils.toggle.map("<leader>uh", utils.toggle.inlay_hints) end
 utils.toggle.map("<c-w>m", utils.toggle.maximize)
+-- stylua: ignore end

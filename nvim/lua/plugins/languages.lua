@@ -45,7 +45,7 @@ return {
 							suffix = suffix .. string.char(math.random(65, 90))
 						end
 					end
-					return tostring(os.time()) .. "-" .. suffix
+					return tostring(os.date("%Y%m%d")) .. "-" .. suffix
 				end,
 				note_path_func = function(spec)
 					local path = spec.dir / tostring(spec.id)
@@ -72,10 +72,8 @@ return {
 
 					return out
 				end,
-
-				-- Optional, for templates (see below).
 				templates = {
-					folder = "templates",
+					folder = "templetes",
 					date_format = "%Y-%m-%d",
 					time_format = "%H:%M",
 					substitutions = {},

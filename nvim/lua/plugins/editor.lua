@@ -1113,7 +1113,7 @@ return {
 		event = "BufRead",
 		opts = function()
 			return {
-				delay = 200,
+				delay = 0,
 				providers = { "lsp", "treesitter", "regex" },
 				large_file_cutoff = 2000,
 				filetypes_denylist = {
@@ -1209,8 +1209,8 @@ return {
 			local harpoon = require("harpoon")
 			return {
                 -- stylua: ignore start
-				{ "<leader>l", function() harpoon.ui:toggle_quick_menu( harpoon:list(), { ui_width_ratio = 0.40, border = "none", title = "" }) end, desc = "Harpoon List" },
-				{ "<leader>a", function() harpoon:list():add() end, desc = "Add to Mark" },
+				{ "<leader>l", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List" },
+				{ "<leader>a", function() vim.notify("Add to Mark", 2) harpoon:list():add() end, desc = "Add to Mark" },
 				{ "<leader>1", function() harpoon:list():select(1) end, desc = "Mark 1" },
 				{ "<leader>2", function() harpoon:list():select(2) end, desc = "Mark 2" },
 				{ "<leader>3", function() harpoon:list():select(3) end, desc = "Mark 3" },
@@ -1247,9 +1247,9 @@ return {
 					markdown = {
 						enabled = true,
 						clear_in_insert_mode = false,
-						download_remote_images = true,
+						download_remote_images = false,
 						only_render_image_at_cursor = false,
-						filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+						filetypes = { "markdown", "vimwiki" },
 					},
 				},
 			}
