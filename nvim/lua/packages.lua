@@ -15,7 +15,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	root = vim.fn.stdpath("data") .. "/lazy", -- directory where plugins will be installed
+	root = vim.fn.stdpath("data") .. "/lazy",
 	defaults = { lazy = false, version = false },
 	spec = {
 		{ "nvim-lua/plenary.nvim", lazy = true },

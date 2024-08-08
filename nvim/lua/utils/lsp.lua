@@ -1413,7 +1413,12 @@ M.diagnostics_config = {
 			for key, value in pairs(require("utils.icons").diagnostics) do
 				dicons[key:upper()] = value
 			end
-			return string.format(" %s %s : [%s] ", dicons[vim.diagnostic.severity[d.severity]], d.message, d.source)
+			return string.format(
+				" %s %s [%s] ",
+				dicons[vim.diagnostic.severity[d.severity]],
+				d.message,
+				not vim.tbl_contains({ "lazy" }, vim.o.ft) and d.source or ""
+			)
 		end,
 	},
 	float = {

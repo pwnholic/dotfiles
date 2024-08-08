@@ -1235,7 +1235,7 @@ return {
 	{
 		"3rd/image.nvim",
 		ft = { "markdown", "neorg" },
-		build = "luarocks --local --lua-version=5.1 install magick --force",
+		-- build = "luarocks --local --lua-version=5.1 install magick --force",
 		init = vim.schedule_wrap(function()
 			package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua"
 			package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua"

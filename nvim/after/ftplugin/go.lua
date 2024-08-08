@@ -9,7 +9,7 @@ require("utils.lsp").start({
 	flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
 	on_attach = function(client, _)
 		if not client.server_capabilities.semanticTokensProvider then
-			local semantic = client.config.capabilities.textDocument.semanticTokens
+			local semantic = client.config.capabilities.textDocument.semanticTokens or {}
 			client.server_capabilities.semanticTokensProvider = {
 				full = true,
 				legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
