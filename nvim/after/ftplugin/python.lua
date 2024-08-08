@@ -1,5 +1,5 @@
 require("utils.lsp").start({
-	cmd = { "basedpyright-langserver", "--stdio" },
+	cmd = { vim.fn.stdpath("data") .. "/mason/bin/basedpyright-langserver", "--stdio" },
 	name = "basedpyright",
 	root_patterns = { "Pipfile", "pyproject.toml", "requirements.txt", "setup.cfg", "setup.py" },
 	on_attach = function(client, _)

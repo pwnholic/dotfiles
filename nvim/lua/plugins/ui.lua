@@ -741,6 +741,7 @@ return {
 					{ "<leader>t", desc = "Test" },
 					{ "<leader>u", desc = "Toggle" },
 					{ "<leader>w", desc = "Window" },
+					{ "<leader>x", desc = "Diagnostics" },
 					{ "<leader>df", desc = "Find Debug" },
 				},
 				icons = {

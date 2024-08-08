@@ -1,5 +1,5 @@
 require("utils.lsp").start({
-	cmd = { "lua-language-server" },
+	cmd = { vim.fn.stdpath("data") .. "/mason/bin/lua-language-server" },
 	name = "lua_ls",
 	root_patterns = { ".luarc.json", ".luarc.jsonc", "stylua.toml", ".stylua.toml" },
 	on_attach = function(client, _)

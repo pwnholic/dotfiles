@@ -20,8 +20,9 @@ vim.opt.colorcolumn = "80"
 vim.opt.completeopt = "menu,menuone,noselect"
 vim.opt.conceallevel = 2
 vim.opt.confirm = true
+vim.opt.cursorcolumn = true
 vim.opt.cursorline = true
-vim.opt.cursorlineopt = "number"
+vim.opt.cursorlineopt = "both"
 vim.opt.expandtab = true
 vim.opt.fillchars = { foldopen = "", foldclose = "", fold = " ", foldsep = " ", diff = "╱", eob = " " }
 vim.opt.foldexpr = "v:lua.require'utils.stc'.foldexpr()"

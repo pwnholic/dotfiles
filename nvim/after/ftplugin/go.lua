@@ -3,7 +3,7 @@ vim.opt_local.expandtab = true
 require("utils.lsp").start({
 	filetypes = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
 	message_level = vim.lsp.protocol.MessageType.Error,
-	cmd = { "gopls", "-remote.debug=:0" },
+	cmd = { vim.fn.stdpath("data") .. "/mason/bin/gopls", "-remote.debug=:0" },
 	root_patterns = { "go.work", "go.mod", ".git" },
 	flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
 	settings = {

@@ -72,6 +72,7 @@ function M.start(config, opts)
 	if not vim.uv.fs_stat(root_dir) then
 		return
 	end
+
 	return vim.lsp.start(
 		---@diagnostic disable-next-line: param-type-mismatch
 		vim.tbl_deep_extend("keep", config or {}, { name = name, root_dir = root_dir }, M.default_config),
@@ -1412,7 +1413,7 @@ M.diagnostics_config = {
 			for key, value in pairs(require("utils.icons").diagnostics) do
 				dicons[key:upper()] = value
 			end
-			return string.format(" %s : %s ", dicons[vim.diagnostic.severity[d.severity]], d.message)
+			return string.format(" %s %s : [%s] ", dicons[vim.diagnostic.severity[d.severity]], d.message, d.source)
 		end,
 	},
 	float = {

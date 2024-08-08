@@ -1,5 +1,5 @@
 require("utils.lsp").start({
-	cmd = { "csharp-ls" },
+	cmd = { vim.fn.stdpath("data") .. "/mason/bin/csharp-ls" },
 	name = "csharp_ls",
 	init_options = { AutomaticWorkspaceInit = true },
 	root_patterns = { "*.sln", "*.csproj" },
