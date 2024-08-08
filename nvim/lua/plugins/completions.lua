@@ -4,6 +4,7 @@ return {
 	{ "tzachar/cmp-fuzzy-path", event = "CmdlineEnter", dependencies = "tzachar/fuzzy.nvim" },
 	{ "lukas-reineke/cmp-rg", event = "BufRead" },
 	{ "saadparwaiz1/cmp_luasnip", event = "InsertEnter" },
+	{ "stevearc/vim-vscode-snippets", event = "InsertEnter" },
 	{
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
@@ -11,11 +12,10 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local utils = require("utils")
-			local auto_select = true
 			return {
 				auto_brackets = { "go" },
-				completion = { completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect") },
-				preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None,
+				completion = { completeopt = "menu,menuone,noinsert" },
+				preselect = true,
 				mapping = {
 					["<S-Tab>"] = {
 						["c"] = function()
@@ -324,9 +324,9 @@ return {
 		opts = function()
 			local ls_types = require("luasnip.util.types")
 			local utils = require("utils")
-
-			local paths = vim.fn.stdpath("config") .. "/snippets" --[[@as string]]
-			require("luasnip.loaders.from_vscode").lazy_load({ paths = paths })
+			require("luasnip.loaders.from_vscode").lazy_load({
+				paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets",
+			})
 			return {
 				keep_roots = true,
 				link_roots = false,
