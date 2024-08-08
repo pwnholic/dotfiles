@@ -4,6 +4,7 @@ require("utils.lsp").start({
 	filetypes = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
 	message_level = vim.lsp.protocol.MessageType.Error,
 	cmd = { vim.fn.stdpath("data") .. "/mason/bin/gopls", "-remote.debug=:0" },
+	name = "gopls",
 	root_patterns = { "go.work", "go.mod", ".git" },
 	flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
 	on_attach = function(client, _)
