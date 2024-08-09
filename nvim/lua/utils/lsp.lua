@@ -1367,8 +1367,8 @@ function M.keys_on_attach(_, buffer)
         { "<leader>ga", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = methods.textDocument_codeLens },
 		{ "<leader>gA", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", has = methods.textDocument_codeLens },
 		{ "<leader>gn", vim.lsp.buf.rename, desc = "Rename", has = methods.textDocument_rename },
-		{ "]]", function() require("illuminate").goto_next_reference(false) end, has = methods.textDocument_documentHighlight, desc = "Next Reference" },
-		{ "[[", function() require("illuminate").goto_prev_reference(false) end, has = methods.textDocument_documentHighlight, desc = "Prev Reference" },
+		{ "]]", function() require("illuminate").goto_next_reference(true) end, has = methods.textDocument_documentHighlight, desc = "Next Reference" },
+		{ "[[", function() require("illuminate").goto_prev_reference(true) end, has = methods.textDocument_documentHighlight, desc = "Prev Reference" },
 		-- stylua: ignore end
 	})
 
@@ -1414,10 +1414,10 @@ M.diagnostics_config = {
 				dicons[key:upper()] = value
 			end
 			return string.format(
-				" %s %s [%s] ",
+				" %s %s %s ",
 				dicons[vim.diagnostic.severity[d.severity]],
 				d.message,
-				not vim.tbl_contains({ "lazy" }, vim.o.ft) and d.source or ""
+				not vim.tbl_contains({ "lazy" }, vim.o.ft) and "[" .. d.source .. "]" or ""
 			)
 		end,
 	},
