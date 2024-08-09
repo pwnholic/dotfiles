@@ -79,9 +79,9 @@ vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.guicursor = {
 	"i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor",
-	"n-v:block-Curosr/lCursor",
-	"o:hor50-Curosr/lCursor",
-	"r-cr:hor20-Curosr/lCursor",
+	"n-v:block-TermCursor/lCursor",
+	"o:hor50-TermCursor/lCursor",
+	"r-cr:hor20-TermCursor/lCursor",
 }
 
 vim.g.border = "rounded"

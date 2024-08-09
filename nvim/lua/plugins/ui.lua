@@ -5,33 +5,39 @@ return {
 		opts = function(_, opts)
 			local conditions = require("heirline.conditions")
 			local hutils = require("heirline.utils")
-			local colors = require("tokyonight.colors").setup()
+			local c = require("tokyonight.colors").setup()
 			local cutil = require("tokyonight.util")
 			local utils = require("utils")
+			local set_hl = vim.api.nvim_set_hl
 			local align, space = { provider = "%=" }, { provider = " " }
 
 			local mode_colors = {
-				n = colors.blue1,
-				i = colors.green,
-				v = colors.magenta,
-				V = colors.magenta,
-				["\22"] = colors.cyan,
-				c = colors.orange,
-				s = colors.purple,
-				S = colors.purple,
-				["\19"] = colors.purple,
-				R = colors.red,
-				r = colors.red,
-				["!"] = colors.red,
-				t = colors.red,
+				n = c.blue1,
+				i = c.green,
+				v = c.yellow,
+				V = c.magenta2,
+				["\22"] = c.teal,
+				c = c.orange,
+				s = c.purple,
+				S = c.purple,
+				["\19"] = c.purple,
+				R = c.red,
+				r = c.red,
+				["!"] = c.red,
+				t = c.red,
 			}
 
 			vim.api.nvim_create_autocmd("ModeChanged", {
 				pattern = "*:*",
 				callback = function()
 					local color = mode_colors[vim.fn.mode():sub(1, 1)]
-					vim.api.nvim_set_hl(0, "WinBar", { sp = color, underline = true, bg = colors.bg_statusline })
-					vim.api.nvim_set_hl(0, "WinBarNC", { sp = color, underline = true })
+					set_hl(0, "TermCursor", { bg = color })
+					set_hl(0, "lCursor", { bg = color })
+					set_hl(0, "WinBarNC", { sp = color, underline = true })
+					set_hl(0, "WinBar", { sp = color, underline = true, bg = c.bg_statusline })
+					set_hl(0, "Visual", { bg = cutil.darken(color, 0.35), bold = true, italic = true })
+					set_hl(0, "VisualNOS", { bg = cutil.darken(color, 0.35), bold = true, italic = true })
+					set_hl(0, "TreesitterContext", { bg = cutil.darken(color, 0.2), bold = true })
 				end,
 			})
 
@@ -94,7 +100,7 @@ return {
 							return string.format(" %s ", self.mode_names[vim.fn.mode(1)])
 						end,
 						hl = function(self)
-							return { bg = self.mode_colors[vim.fn.mode(1):sub(1, 1)], bold = true, fg = colors.bg_dark }
+							return { bg = self.mode_colors[vim.fn.mode(1):sub(1, 1)], bold = true, fg = c.bg_dark }
 						end,
 					},
 					space,
@@ -116,7 +122,7 @@ return {
 							return {
 								fg = cutil.darken(self.mode_colors[vim.fn.mode(1):sub(1, 1)], 0.8),
 								bold = true,
-								bg = colors.fg_gutter,
+								bg = c.fg_gutter,
 							}
 						end,
 					},
@@ -125,21 +131,21 @@ return {
 							local count = self.status_dict.added or 0
 							return count > 0 and string.format(" %s %s", utils.icons.git.add, count)
 						end,
-						hl = { fg = colors.green2, bg = colors.bg_statusline, bold = true },
+						hl = { fg = c.green2, bg = c.bg_statusline, bold = true },
 					},
 					{
 						provider = function(self)
 							local count = self.status_dict.removed or 0
 							return count > 0 and string.format(" %s %s", utils.icons.git.remove, count)
 						end,
-						hl = { fg = colors.red, bg = colors.bg_statusline, bold = true },
+						hl = { fg = c.red, bg = c.bg_statusline, bold = true },
 					},
 					{
 						provider = function(self)
 							local count = self.status_dict.changed or 0
 							return count > 0 and string.format(" %s %s", utils.icons.git.modified, count)
 						end,
-						hl = { fg = colors.yellow, bg = colors.bg_statusline, bold = true },
+						hl = { fg = c.yellow, bg = c.bg_statusline, bold = true },
 					},
 				},
 				align,
@@ -157,10 +163,10 @@ return {
 								return {
 									bg = self.mode_colors[vim.fn.mode():sub(1, 1)],
 									bold = true,
-									fg = colors.bg_dark,
+									fg = c.bg_dark,
 								}
 							else
-								return { bg = colors.fg_gutter, bold = true, fg = colors.bg_dark }
+								return { bg = c.fg_gutter, bold = true, fg = c.bg_dark }
 							end
 						end,
 					}),
@@ -181,28 +187,28 @@ return {
 								return self.errors > 0
 									and string.format("%s %s", utils.icons.diagnostics.ERROR, self.errors)
 							end,
-							hl = { fg = colors.error, bg = colors.bg_statusline, bold = true },
+							hl = { fg = c.error, bg = c.bg_statusline, bold = true },
 						},
 						{
 							provider = function(self)
 								return self.warnings > 0
 									and string.format(" %s %s", utils.icons.diagnostics.WARN, self.warnings)
 							end,
-							hl = { fg = colors.warning, bg = colors.bg_statusline, bold = true },
+							hl = { fg = c.warning, bg = c.bg_statusline, bold = true },
 						},
 						{
 							provider = function(self)
 								return self.info > 0
 									and string.format(" %s %s", utils.icons.diagnostics.INFO, self.info)
 							end,
-							hl = { fg = colors.info, bg = colors.bg_statusline, bold = true },
+							hl = { fg = c.info, bg = c.bg_statusline, bold = true },
 						},
 						{
 							provider = function(self)
 								return self.hints > 0
 									and string.format(" %s %s", utils.icons.diagnostics.HINT, self.hints)
 							end,
-							hl = { fg = colors.hint, bg = colors.bg_statusline, bold = true },
+							hl = { fg = c.hint, bg = c.bg_statusline, bold = true },
 						},
 					},
 					space,
@@ -221,7 +227,7 @@ return {
 							return {
 								fg = cutil.darken(self.mode_colors[vim.fn.mode(1):sub(1, 1)], 0.8),
 								bold = true,
-								bg = colors.fg_gutter,
+								bg = c.fg_gutter,
 							}
 						end,
 					},
@@ -243,7 +249,7 @@ return {
 							return {
 								fg = cutil.darken(self.mode_colors[vim.fn.mode(1):sub(1, 1)], 0.8),
 								bold = true,
-								bg = colors.fg_gutter,
+								bg = c.fg_gutter,
 							}
 						end,
 					},
@@ -253,7 +259,7 @@ return {
 					provider = " %l:%c %P ",
 					static = { mode_colors = mode_colors },
 					hl = function(self)
-						return { bg = self.mode_colors[vim.fn.mode():sub(1, 1)], bold = true, fg = colors.bg_dark }
+						return { bg = self.mode_colors[vim.fn.mode():sub(1, 1)], bold = true, fg = c.bg_dark }
 					end,
 				},
 			}
@@ -271,7 +277,7 @@ return {
 						hl = function(self)
 							return {
 								fg = hutils.get_highlight(self.icon_hl).fg,
-								bg = colors.bg_statusline,
+								bg = c.bg_statusline,
 								underline = true,
 								sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
 							}
@@ -289,7 +295,7 @@ return {
 						hl = function(self)
 							return {
 								fg = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
-								bg = colors.bg_statusline,
+								bg = c.bg_statusline,
 								underline = true,
 								sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
 								bold = true,
@@ -333,8 +339,8 @@ return {
 						enc = function(line, col, winnr)
 							return bit.bor(bit.lshift(line, 16), bit.lshift(col, 6), winnr)
 						end,
-						dec = function(c)
-							return bit.rshift(c, 16), bit.band(bit.rshift(c, 6), 1023), bit.band(c, 63)
+						dec = function(cl)
+							return bit.rshift(cl, 16), bit.band(bit.rshift(cl, 6), 1023), bit.band(cl, 63)
 						end,
 						mode_colors = mode_colors,
 					},
@@ -348,7 +354,7 @@ return {
 									provider = string.format("%s ", d.icon),
 									hl = {
 										fg = hutils.get_highlight(self.type_hl[d.type]).fg,
-										bg = colors.bg_statusline,
+										bg = c.bg_statusline,
 										underline = true,
 										sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
 									},
@@ -357,7 +363,7 @@ return {
 									provider = d.name:gsub("%%", "%%%%"):gsub("%s*->%s*", ""),
 									hl = {
 										fg = hutils.get_highlight(self.type_hl[d.type]).fg,
-										bg = colors.bg_statusline,
+										bg = c.bg_statusline,
 										underline = true,
 										sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
 									},
@@ -379,7 +385,7 @@ return {
 										bold = true,
 										underline = true,
 										sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
-										bg = colors.bg_statusline,
+										bg = c.bg_statusline,
 									},
 								})
 							end
@@ -396,7 +402,7 @@ return {
 								bold = true,
 								underline = true,
 								sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
-								bg = colors.bg_statusline,
+								bg = c.bg_statusline,
 							}
 						end,
 					},
@@ -449,8 +455,6 @@ return {
 					c.yellow1 = "#eaed26"
 				end,
 				on_highlights = function(hl, c)
-					hl.Visual = { bg = c.bg_visual, bold = true, italic = true }
-					hl.VisualNOS = { bg = c.bg_visual, bold = true, italic = true }
 					hl.WinBar = { bg = c.bg_statusline, underline = true, sp = c.blue2 }
 					hl.WinBarNC = { link = "WinBar" }
 					hl.StatusLine = { bg = c.bg_statusline }
