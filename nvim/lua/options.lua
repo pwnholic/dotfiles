@@ -4,11 +4,6 @@ vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_ruby_provider = 0
-vim.g.loaded_node_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.markdown_recommended_style = 0
 
 vim.opt.autoindent = true
 vim.opt.autowrite = true
@@ -83,5 +78,11 @@ vim.opt.guicursor = {
 	"o:hor50-TermCursor/lCursor",
 	"r-cr:hor20-TermCursor/lCursor",
 }
+
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.markdown_recommended_style = 0
 
 vim.g.border = "rounded"
