@@ -463,7 +463,7 @@ return {
 					hl.FloatBorder = { fg = c.bg_statusline, bg = c.bg_statusline }
 					hl.MarkIcons = { fg = c.cyan, bold = true }
 
-					hl.DashboardHeader = { fg = c.cyan, bg = c.none }
+					hl.DashboardHeader = { fg = c.teal, bg = c.none }
 					hl.DashboardIcon = { fg = c.yellow, bg = c.none }
 					hl.DashboardFooter = { fg = c.green, bg = c.none, bold = true }
 					hl.DashboardDesc = { fg = c.grey, bg = c.none, bold = true }
@@ -501,6 +501,10 @@ return {
 					hl.OilTypeSocket = { link = "OilSocket" }
 					hl.OilSize = { fg = c.teal, bg = c.none }
 					hl.OilMtime = { fg = c.purple, bg = c.none }
+
+					hl.FzfLuaDirPart = { fg = c.blue2 }
+					hl.FzfLuaFilePart = { fg = "#ffffff" }
+					hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter, bold = true }
 				end,
 				cache = true,
 			}

@@ -1209,6 +1209,7 @@ return {
 			local harpoon = require("harpoon")
 			return {
                 -- stylua: ignore start
+				{ "<leader><leader>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List" },
 				{ "<leader>l", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List" },
 				{ "<leader>a", function() vim.notify("Add to Mark", 2) harpoon:list():add() end, desc = "Add to Mark" },
 				{ "<leader>1", function() harpoon:list():select(1) end, desc = "Mark 1" },
