@@ -504,7 +504,7 @@ return {
 
 					hl.FzfLuaDirPart = { fg = c.blue2 }
 					hl.FzfLuaFilePart = { fg = "#ffffff" }
-					hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter, bold = true }
+					hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
 				end,
 				cache = true,
 			}
