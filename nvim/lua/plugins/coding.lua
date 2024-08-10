@@ -118,11 +118,17 @@ return {
 				linters_by_ft = {
 					lua = { "selene" },
 					python = { "ruff" },
+					go = { "golangcilint" },
 				},
 				linters = {
 					selene = {
 						condition = function(ctx)
 							return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+						end,
+					},
+					golangcilint = {
+						condition = function(ctx)
+							return vim.fs.find({ ".golangci.yml" }, { path = ctx.filename, upward = true })[1]
 						end,
 					},
 					ruff = {

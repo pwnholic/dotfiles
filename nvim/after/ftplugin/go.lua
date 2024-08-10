@@ -70,3 +70,21 @@ require("utils.lsp").start({
 		},
 	},
 })
+
+vim.api.nvim_create_user_command("GoAddLintRules", function()
+	local clone = vim.system({
+		"git",
+		"clone",
+		"https://gist.github.com/47a4d00457a92aa426dbd48a18776322.git",
+		"linter",
+	}):wait()
+	if vim.v.shell_error ~= 0 then
+		vim.api.nvim_echo({
+			{ "Failed to clone :\n", "ErrorMsg" },
+			{ clone, "WarningMsg" },
+			{ "\nPress any key to exit..." },
+		}, true, {})
+		vim.fn.getchar()
+		os.exit(1)
+	end
+end, {})

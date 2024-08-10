@@ -20,7 +20,7 @@ return {
 				highlight = { enable = true },
 				indent = { enable = true },
 				ensure_installed = "all",
-				sync_install = false,
+				sync_install = true,
 				auto_install = true,
 				ignore_install = {},
 				incremental_selection = {

@@ -111,7 +111,7 @@ return {
 		end,
 	},
 	{
-		"MeanderingProgrammer/markdown.nvim",
+		"MeanderingProgrammer/render-markdown.nvim",
 		ft = { "ipynb", "markdown" },
 		opts = function()
 			return {
