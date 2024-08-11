@@ -39,20 +39,16 @@ return {
 				note_id_func = function(title)
                     -- stylua: ignore start
 					local lowercase = {
-						["a"] = true, ["an"] = true, ["and"] = true, ["as"] = true, ["at"] = true, ["but"] = true, ["by"] = true, ["is"] = true,
-						["for"] = true, ["if"] = true, ["in"] = true, ["nor"] = true, ["of"] = true, ["off"] = true, ["on"] = true,
+						["a"] = true, ["an"] = true, ["and"] = true, ["as"] = true, ["at"] = true, ["but"] = true, ["by"] = true, ["is"] = true, ["for"] = true, ["if"] = true, ["in"] = true, ["nor"] = true, ["of"] = true, ["off"] = true, ["on"] = true,
 						["or"] = true, ["per"] = true, ["so"] = true, ["the"] = true, ["than"] = true, ["to"] = true, ["up"] = true,
 
-						["via"] = true, ["vs"] = true, ["yet"] = true, ["dan"] = true, ["di"] = true, ["tapi"] = true, ["oleh"] = true, ["adalah"] = true,
-						["untuk"] = true, ["jika"] = true, ["dalam"] = true, ["dari"] = true, ["dengan"] = true, ["pada"] = true, ["atau"] = true,
-						["jadi"] = true, ["itu"] = true, ["daripada"] = true, ["ke"] = true, ["naik"] = true, ["melalui"] = true, ["namun"] = true,
-                        ["hanya"] = true
+						["via"] = true, ["vs"] = true, ["yet"] = true, ["dan"] = true, ["di"] = true, ["tapi"] = true, ["oleh"] = true, ["adalah"] = true, ["untuk"] = true, ["jika"] = true, ["dalam"] = true, ["dari"] = true, ["dengan"] = true, ["pada"] = true, ["atau"] = true,
+						["jadi"] = true, ["itu"] = true, ["daripada"] = true, ["ke"] = true, ["naik"] = true, ["melalui"] = true, ["namun"] = true, ["hanya"] = true
 					}
 					-- stylua: ignore end
-
 					local suffix = ""
 					if title ~= nil then
-						suffix = title:gsub(" ", "_"):gsub("(%a)(%w*)", function(firstLetter, rest)
+						suffix = title:gsub("%s+", " "):gsub("(%a)(%w*)", function(firstLetter, rest)
 							local word = firstLetter .. rest
 							if lowercase[word:lower()] then
 								return word:lower()
