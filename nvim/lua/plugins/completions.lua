@@ -12,6 +12,12 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local utils = require("utils")
+
+			local fuzzy_path_ok, fuzzy_path = require("cmp_fuzzy_path.compare")
+			if not fuzzy_path_ok then
+				fuzzy_path = function() end
+			end
+
 			return {
 				auto_brackets = { "go" },
 				completion = { completeopt = "menu,menuone,noinsert" },
@@ -133,7 +139,7 @@ return {
 							fallback()
 						end
 					end, { "i", "c" }),
-					["<CR>"] = cmp.mapping(utils.cmp.confirm({ select = auto_select }), { "i" }),
+					["<CR>"] = cmp.mapping(utils.cmp.confirm({ select = true }), { "i" }),
 					["<C-y>"] = cmp.mapping(utils.cmp.confirm({ select = true }), { "i" }),
 					["<S-CR>"] = cmp.mapping(utils.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
 					["<C-CR>"] = function(fallback)
@@ -198,7 +204,7 @@ return {
 				sorting = {
 					priority_weight = 100,
 					comparators = {
-						require("cmp_fuzzy_path.compare"),
+						fuzzy_path,
 						cmp.config.compare.offset,
 						cmp.config.compare.exact,
 						cmp.config.compare.score,
