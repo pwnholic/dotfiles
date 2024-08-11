@@ -37,31 +37,15 @@ return {
 				},
 				new_notes_location = "current_dir",
 				note_id_func = function(title)
-                    -- stylua: ignore start
-					local lowercase = {
-						["a"] = true, ["an"] = true, ["and"] = true, ["as"] = true, ["at"] = true, ["but"] = true, ["by"] = true, ["is"] = true, ["for"] = true, ["if"] = true, ["in"] = true, ["nor"] = true, ["of"] = true, ["off"] = true, ["on"] = true,
-						["or"] = true, ["per"] = true, ["so"] = true, ["the"] = true, ["than"] = true, ["to"] = true, ["up"] = true,
-
-						["via"] = true, ["vs"] = true, ["yet"] = true, ["dan"] = true, ["di"] = true, ["tapi"] = true, ["oleh"] = true, ["adalah"] = true, ["untuk"] = true, ["jika"] = true, ["dalam"] = true, ["dari"] = true, ["dengan"] = true, ["pada"] = true, ["atau"] = true,
-						["jadi"] = true, ["itu"] = true, ["daripada"] = true, ["ke"] = true, ["naik"] = true, ["melalui"] = true, ["namun"] = true, ["hanya"] = true
-					}
-					-- stylua: ignore end
 					local suffix = ""
 					if title ~= nil then
-						suffix = title:gsub("%s+", " "):gsub("(%a)(%w*)", function(firstLetter, rest)
-							local word = firstLetter .. rest
-							if lowercase[word:lower()] then
-								return word:lower()
-							else
-								return firstLetter:upper() .. rest:lower()
-							end
-						end)
+						suffix = title:gsub("%s+", " ")
 					else
 						for _ = 1, 4 do
 							suffix = suffix .. string.char(math.random(65, 90))
 						end
 					end
-					return tostring(os.date("%Y%m%d")) .. "_" .. suffix
+					return tostring(os.date("%Y%m%d")) .. " " .. suffix
 				end,
 				note_path_func = function(spec)
 					local path = spec.dir / tostring(spec.id)

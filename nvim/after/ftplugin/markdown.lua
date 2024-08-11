@@ -13,9 +13,6 @@ require("utils.lsp").start({
 local function Obsidian(cmd)
 	return function()
 		vim.ui.input({ prompt = "Enter your " .. cmd .. " Notes: " }, function(args)
-			args = args:gsub("(%a)(%w*)", function(firstLetter, rest)
-				return firstLetter:upper() .. rest:lower()
-			end)
 			if args == "" then
 				return vim.cmd["Obsidian" .. cmd]()
 			else
@@ -30,7 +27,7 @@ vim.keymap.set("n", "<leader>nl", "<cmd>ObsidianFollowLink<cr>", { desc = "Follo
 vim.keymap.set("n", "<leader>nb", "<cmd>ObsidianBacklinks<cr>", { desc = "Backlink" })
 vim.keymap.set("n", "<leader>nT", Obsidian("Tags"), { desc = "Tags [tags]" })
 vim.keymap.set("n", "<leader>nt", Obsidian("Template"), { desc = "Tamplate [name]" })
-vim.keymap.set("n", "<leader>ns", Obsidian("Search"), { desc = " Search [query]" })
+vim.keymap.set("n", "<leader>ns", Obsidian("Search"), { desc = "Search [query]" })
 vim.keymap.set("n", "<leader>ni", Obsidian("PasteImg"), { desc = "Paste Image [name]" })
 vim.keymap.set("n", "<leader>nr", Obsidian("Rename"), { desc = "Rename [new name]" })
 vim.keymap.set("n", "<leader>no", Obsidian("NewFromTemplate"), { desc = "New from Template [name]" })
