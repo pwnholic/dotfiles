@@ -1130,32 +1130,12 @@ return {
 	},
 	{
 		"echasnovski/mini-git",
-		version = false,
 		main = "mini.git",
 		cmd = "Git",
 		opts = function()
 			return {
 				job = { git_executable = "git", timeout = 30000 },
 				command = { split = "auto" },
-			}
-		end,
-	},
-	{
-		"isakbm/gitgraph.nvim",
-		cmd = "Gitgraph",
-		opts = function()
-			vim.api.nvim_create_user_command("Gitgraph", function()
-				return require("gitgraph").draw({}, { all = true, max_count = 5000 })
-			end, {})
-			return {
-				hooks = {
-					on_select_commit = function(commit)
-						vim.notify("Selected Commit: " .. commit.hash .. "^!", 1, { title = "DiffviewOpen" })
-					end,
-					on_select_range_commit = function(from, to)
-						vim.notify("Selected Range: " .. from.hash .. "~1.." .. to.hash, 1, { title = "DiffviewOpen" })
-					end,
-				},
 			}
 		end,
 	},

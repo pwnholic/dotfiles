@@ -40,8 +40,9 @@ require("utils.lsp").start({
 		"build.ninja",
 	},
 	capabilities = { offsetEncoding = { "utf-16" } },
+	name = "clangd",
 	cmd = {
-		"clangd",
+		vim.fn.stdpath("data") .. "/mason/bin/clangd",
 		"--background-index",
 		"--clang-tidy",
 		"--header-insertion=iwyu",
