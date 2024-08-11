@@ -163,6 +163,10 @@ return {
 						},
 						ueberzug_scaler = "fit_contain",
 					},
+					codeaction_native = {
+						diff_opts = { ctxlen = 3 },
+						pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]],
+					},
 				},
 				actions = {
 					files = {
@@ -263,6 +267,7 @@ return {
 					ignore_patterns = { "^<SNR>", "^<Plug>" },
 				},
 				lsp = {
+					-- async_or_timeout = 3000,
 					symbols = {
 						symbol_icons = utils.icons.kinds,
 						symbol_hl = function(s)

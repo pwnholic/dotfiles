@@ -33,12 +33,12 @@ require("utils.lsp").on_attach(function(client, buffer)
 		end
 	end
 
-	-- if client.supports_method(methods.textDocument_codeLens) then
-	-- 	vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-	-- 		buffer = buffer,
-	-- 		callback = vim.lsp.codelens.refresh,
-	-- 	})
-	-- end
+	if client.supports_method(methods.textDocument_codeLens) then
+		vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+			buffer = buffer,
+			callback = vim.lsp.codelens.refresh,
+		})
+	end
 end)
 
 local register_capability = vim.lsp.handlers["client/registerCapability"]

@@ -1,50 +1,25 @@
 vim.opt_local.expandtab = true
 
-require("utils.lsp").start({
+local lsp = require("utils.lsp")
+
+lsp.start({
 	filetypes = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
-	message_level = vim.lsp.protocol.MessageType.Error,
 	cmd = { vim.fn.stdpath("data") .. "/mason/bin/gopls", "-remote.debug=:0" },
 	name = "gopls",
-	root_patterns = { "go.work", "go.mod", ".git" },
+	root_patterns = { "go.work", "go.mod" },
 	flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
-	on_attach = function(client, _)
-		if not client.server_capabilities.semanticTokensProvider then
-			local semantic = client.config.capabilities.textDocument.semanticTokens or {}
-			client.server_capabilities.semanticTokensProvider = {
-				full = true,
-				legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
-				range = true,
-			}
-		end
-	end,
 	settings = {
 		gopls = {
-			analyses = {
-				append = true,
-				asmdecl = true,
-				assign = true,
-				atomic = true,
-				unreachable = true,
-				nilness = true,
-				ST1003 = true,
-				undeclaredname = true,
-				fillreturns = true,
-				nonewvars = true,
-				fieldalignment = true,
-				shadow = true,
-				unusedvariable = true,
-				unusedparams = true,
-				useany = true,
-				unusedwrite = true,
-			},
+			gofumpt = false,
 			codelenses = {
-				generate = true, -- show the `go generate` lens.
-				gc_details = true, -- Show a code lens toggling the display of gc's choices.
+				gc_details = true,
+				generate = true,
+				regenerate_cgo = true,
+				run_govulncheck = true,
 				test = true,
 				tidy = true,
-				vendor = true,
-				regenerate_cgo = true,
 				upgrade_dependency = true,
+				vendor = true,
 			},
 			hints = {
 				assignVariableTypes = true,
@@ -55,36 +30,29 @@ require("utils.lsp").start({
 				parameterNames = true,
 				rangeVariableTypes = true,
 			},
+			analyses = {
+				fieldalignment = true,
+				nilness = true,
+				unusedparams = true,
+				unusedwrite = true,
+				useany = true,
+			},
 			usePlaceholders = true,
 			completeUnimported = true,
 			staticcheck = true,
-			matcher = "Fuzzy",
-			diagnosticsDelay = "1s",
-			diagnosticsTrigger = "200ms",
-			symbolMatcher = "FastFuzzy",
+			directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
 			semanticTokens = true,
-			noSemanticString = true, -- disable semantic string tokens so we can use treesitter highlight injection
-			vulncheck = "Imports",
-			gofumpt = false,
-			buildFlags = { "-tags", "integration" },
 		},
 	},
 })
 
-vim.api.nvim_create_user_command("GoAddLintRules", function()
-	local clone = vim.system({
-		"git",
-		"clone",
-		"https://gist.github.com/47a4d00457a92aa426dbd48a18776322.git",
-		"linter",
-	}):wait()
-	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_echo({
-			{ "Failed to clone :\n", "ErrorMsg" },
-			{ clone, "WarningMsg" },
-			{ "\nPress any key to exit..." },
-		}, true, {})
-		vim.fn.getchar()
-		os.exit(1)
+lsp.on_attach(function(client, _)
+	if not client.server_capabilities.semanticTokensProvider then
+		local semantic = client.config.capabilities.textDocument.semanticTokens or {}
+		client.server_capabilities.semanticTokensProvider = {
+			full = true,
+			legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
+			range = true,
+		}
 	end
-end, {})
+end, "gopls")

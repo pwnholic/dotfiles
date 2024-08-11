@@ -29,113 +29,26 @@ return {
 		end,
 	},
 	{
-		"williamboman/mason.nvim",
-		cmd = "Mason",
-		build = ":MasonUpdate",
-		opts = function()
-			return {
-				PATH = "prepend",
-				max_concurrent_installers = 20,
-				ensure_installed = {
-					"lua-language-server",
-					"stylua",
-
-					"gopls",
-					"goimports-reviser",
-					"delve",
-					"go-debug-adapter",
-
-					"clangd",
-					"clang-format",
-					"codelldb",
-
-					"debugpy",
-					"ruff",
-					"basedpyright",
-
-					"vtsls",
-					"prettier",
-					"js-debug-adapter",
-
-					"rust-analyzer",
-					"bacon",
-
-					"html-lsp",
-					"templ",
-					"css-lsp",
-
-					"vscode-solidity-server",
-					"solhint",
-
-					"marksman",
-					"vale",
-
-					"csharp-language-server",
-				},
-			}
-		end,
-		---@param opts MasonSettings | {ensure_installed: string[]}
-		config = function(_, opts)
-			require("mason").setup(opts)
-			local mr = require("mason-registry")
-			mr:on("package:install:success", function()
-				vim.defer_fn(function()
-					-- trigger FileType event to possibly load this newly installed LSP server
-					require("lazy.core.handler.event").trigger({
-						event = "FileType",
-						buf = vim.api.nvim_get_current_buf(),
-					})
-				end, 100)
-			end)
-
-			mr.refresh(function()
-				for _, tool in ipairs(opts.ensure_installed) do
-					local p = mr.get_package(tool)
-					if not p:is_installed() then
-						p:install()
-					end
-				end
-			end)
-		end,
-	},
-	{
-		"echasnovski/mini.comment",
-		event = "VeryLazy",
-		dependencies = { { "JoosepAlviste/nvim-ts-context-commentstring", opts = { enable_autocmd = false } } },
-		opts = function()
-			return {
-				pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-			}
-		end,
-	},
-
-	{
 		"mfussenegger/nvim-lint",
 		event = "BufWritePre",
 		opts = function()
 			return {
-				events = { "BufWritePost" },
 				linters_by_ft = {
 					lua = { "selene" },
-					python = { "ruff" },
 					go = { "golangcilint" },
+					markdown = { "vale" },
+					typescript = { "biomejs" },
+					javascript = { "biomejs" },
+					rust = { "clippy" },
+					python = { "ruff" },
+					solidity = { "solhint" },
 				},
 				linters = {
-					selene = {
-						condition = function(ctx)
-							return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
-						end,
-					},
-					golangcilint = {
-						condition = function(ctx)
-							return vim.fs.find({ ".golangci.yml" }, { path = ctx.filename, upward = true })[1]
-						end,
-					},
-					ruff = {
-						condition = function(ctx)
-							return vim.fs.find({ "ruff.toml" }, { path = ctx.filename, upward = true })[1]
-						end,
-					},
+					-- selene = {
+					--   condition = function(ctx)
+					--     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+					--   end,
+					-- },
 				},
 			}
 		end,
@@ -187,12 +100,89 @@ return {
 					lint.try_lint(names)
 				end
 			end
-			vim.api.nvim_create_autocmd(opts.events, {
+
+			vim.api.nvim_create_autocmd("BufWritePost", {
 				group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
-				callback = M.debounce(100, M.lint),
+				callback = M.debounce(200, M.lint),
 			})
 		end,
 	},
+	{
+		"williamboman/mason.nvim",
+		cmd = "Mason",
+		build = ":MasonUpdate",
+		opts = function()
+			return {
+				PATH = "prepend",
+				max_concurrent_installers = 20,
+				ensure_installed = {
+					"lua-language-server",
+					"stylua",
+					"selene",
+
+					"gopls",
+					"goimports-reviser",
+					"delve",
+					"go-debug-adapter",
+
+					"clangd",
+					"clang-format",
+					"codelldb",
+
+					"debugpy",
+					"ruff",
+					"basedpyright",
+
+					"vtsls",
+					"prettier",
+					"js-debug-adapter",
+
+					"rust-analyzer",
+					"bacon",
+
+					"vscode-solidity-server",
+					"solhint",
+
+					"marksman",
+					"vale",
+				},
+			}
+		end,
+		---@param opts MasonSettings | {ensure_installed: string[]}
+		config = function(_, opts)
+			require("mason").setup(opts)
+			local mr = require("mason-registry")
+			mr:on("package:install:success", function()
+				vim.defer_fn(function()
+					-- trigger FileType event to possibly load this newly installed LSP server
+					require("lazy.core.handler.event").trigger({
+						event = "FileType",
+						buf = vim.api.nvim_get_current_buf(),
+					})
+				end, 100)
+			end)
+
+			mr.refresh(function()
+				for _, tool in ipairs(opts.ensure_installed) do
+					local p = mr.get_package(tool)
+					if not p:is_installed() then
+						p:install()
+					end
+				end
+			end)
+		end,
+	},
+	{
+		"echasnovski/mini.comment",
+		event = "VeryLazy",
+		dependencies = { { "JoosepAlviste/nvim-ts-context-commentstring", opts = { enable_autocmd = false } } },
+		opts = function()
+			return {
+				pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+			}
+		end,
+	},
+
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
