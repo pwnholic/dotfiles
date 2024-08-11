@@ -13,6 +13,7 @@ require("utils.lsp").start({
 local function Obsidian(cmd)
 	return function()
 		vim.ui.input({ prompt = "Enter your " .. cmd .. " Notes: " }, function(args)
+			args = args:gsub("%s+", " ")
 			if args == "" then
 				return vim.cmd["Obsidian" .. cmd]()
 			else
