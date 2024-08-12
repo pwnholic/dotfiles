@@ -1,5 +1,12 @@
 local utils = require("utils")
 
+vim.keymap.set({ "i", "c" }, "<Tab>", function()
+	utils.cmp.jump(1)
+end)
+vim.keymap.set({ "i", "c" }, "<S-Tab>", function()
+	utils.cmp.jump(-1)
+end)
+
 -- better up/down
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -85,7 +92,7 @@ local diagnostic_goto = function(next, severity)
 	end
 end
 
-vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
+vim.keymap.set("n", "d", diagnostic_goto(true), { desc = "Next Diagnostic" })
 vim.keymap.set("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
 vim.keymap.set("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
 vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
