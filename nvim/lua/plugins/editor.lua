@@ -368,13 +368,13 @@ return {
 				{ "<leader>ss", "<cmd>FzfLua tags_live_grep<cr>", desc = "Tags LGrep" },
 
 				-- GIT
-				{ "<leader>hf", "<cmd>FzfLua git_files<cr>", desc = "Git Files" },
-				{ "<leader>hs", "<cmd>FzfLua git_status<cr>", desc = "Git Status" },
-				{ "<leader>hc", "<cmd>FzfLua git_commits<cr>", desc = "Git Commit" },
-				{ "<leader>hb", "<cmd>FzfLua git_bcommits<cr>", desc = "Git Bcommit" },
-				{ "<leader>hB", "<cmd>FzfLua git_branches<cr>", desc = "Git Branches" },
-				{ "<leader>ht", "<cmd>FzfLua git_tags<cr>", desc = "Git Tags" },
-				{ "<leader>hS", "<cmd>FzfLua git_stash<cr>", desc = "Git Statsh" },
+				{ "<leader>hf", "<cmd>FzfLua git_files<cr>", desc = "FzF Git Files" },
+				{ "<leader>hs", "<cmd>FzfLua git_status<cr>", desc = "FzF Git Status" },
+				{ "<leader>hc", "<cmd>FzfLua git_commits<cr>", desc = "FzF Git Commit" },
+				{ "<leader>hb", "<cmd>FzfLua git_bcommits<cr>", desc = "FzF Git Bcommit" },
+				{ "<leader>hB", "<cmd>FzfLua git_branches<cr>", desc = "FzF Git Branches" },
+				{ "<leader>ht", "<cmd>FzfLua git_tags<cr>", desc = "FzF Git Tags" },
+				{ "<leader>hS", "<cmd>FzfLua git_stash<cr>", desc = "FzF Git Statsh" },
 
 				-- DAP
 				{ "<leader>dfx", "<cmd>FzfLua dap_commands<cr>", desc = "Dap Commend" },
