@@ -503,6 +503,7 @@ return {
 					hl.OilMtime = { fg = c.purple, bg = c.none }
 
 					hl.FzfLuaDirPart = { fg = c.blue2 }
+					hl.FzfLuaBorder = { fg = c.bg_dark, bg = c.bg_dark }
 					hl.FzfLuaFilePart = { fg = "#ffffff" }
 					hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
 				end,

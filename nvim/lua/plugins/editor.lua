@@ -151,7 +151,6 @@ return {
 					["--highlight-line"] = true,
 					["--preview-window"] = "hidden",
 				},
-
 				previewers = {
 					builtin = {
 						extensions = {
@@ -322,6 +321,49 @@ return {
 		end,
 		config = function(_, opts)
 			require("fzf-lua").setup(opts)
+
+			local enabled = true
+			vim.keymap.set("n", "<leader>uz", function()
+				enabled = not enabled
+				if enabled then
+					require("fzf-lua").setup(opts)
+					vim.notify("Disabled Preview", 2, { title = "Fzflua" })
+				else
+					require("fzf-lua").setup(vim.tbl_extend("force", opts, {
+						winopts = {
+							height = 0.85,
+							width = 0.90,
+							row = 0.40,
+							col = 0.50,
+							border = "single",
+							fullscreen = false,
+							preview = {
+								border = "noborder",
+								wrap = "nowrap",
+								hidden = "nohidden",
+								vertical = "down:45%",
+								horizontal = "right:55%",
+								winopts = {
+									number = false,
+									relativenumber = false,
+									signcolumn = "no",
+									list = false,
+									foldenable = false,
+									foldmethod = "manual",
+								},
+							},
+						},
+						fzf_opts = {
+							["--ansi"] = true,
+							["--info"] = "inline-right",
+							["--height"] = "100%",
+							["--layout"] = "reverse",
+							["--highlight-line"] = true,
+						},
+					}))
+					vim.notify("Enabled Preview", 2, { title = "Fzflua" })
+				end
+			end, { desc = "Toggle FzF Preview" })
 		end,
 		init = vim.schedule_wrap(function()
 			---@diagnostic disable-next-line: duplicate-set-field
