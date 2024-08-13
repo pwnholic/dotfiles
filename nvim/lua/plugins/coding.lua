@@ -182,7 +182,7 @@ return {
 	},
 	{
 		"echasnovski/mini.comment",
-		event = "VeryLazy",
+		event = "BufRead",
 		dependencies = { { "JoosepAlviste/nvim-ts-context-commentstring", opts = { enable_autocmd = false } } },
 		opts = function()
 			return {
@@ -491,7 +491,7 @@ return {
 	},
 	{
 		"echasnovski/mini.ai",
-		event = "VeryLazy",
+		event = "BufRead",
 		opts = function()
 			local ai = require("mini.ai")
 			return {

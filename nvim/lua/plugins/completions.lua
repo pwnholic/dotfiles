@@ -310,13 +310,12 @@ return {
 		build = "make install_jsregexp",
 		event = "ModeChanged *:[iRss\x13vV\x16]*",
 		keys = function()
-			local ls = require("luasnip")
 			return {
                 -- stylua: ignore start
-				{ "<Tab>", function() ls.jump(1) end, mode = "s" },
-				{ "<S-Tab>", function() ls.jump(-1) end, mode = "s" },
-				{ "<C-n>", function() return ls.choice_active() and "<Plug>luasnip-next-choice" or "<C-n>" end, expr = true, mode = "s" },
-				{ "<C-p>", function() return ls.choice_active() and "<Plug>luasnip-prev-choice" or "<C-p>" end, expr = true, mode = "s" },
+				{ "<Tab>", function() require("luasnip").jump(1) end, mode = "s", },
+				{ "<S-Tab>", function() require("luasnip").jump(-1) end, mode = "s", },
+				{ "<C-n>", function() return require("luasnip").choice_active() and "<Plug>luasnip-next-choice" or "<C-n>" end, expr = true, mode = "s", },
+				{ "<C-p>", function() return require("luasnip").choice_active() and "<Plug>luasnip-prev-choice" or "<C-p>" end, expr = true, mode = "s", },
 				-- stylua: ignore end
 			}
 		end,

@@ -1247,17 +1247,16 @@ return {
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
 		keys = function()
-			local harpoon = require("harpoon")
 			return {
                 -- stylua: ignore start
-				{ "<leader><leader>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List" },
-				{ "<leader>l", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List" },
-				{ "<leader>a", function() vim.notify("Add to Mark", 2) harpoon:list():add() end, desc = "Add to Mark" },
-				{ "<leader>1", function() harpoon:list():select(1) end, desc = "Mark 1" },
-				{ "<leader>2", function() harpoon:list():select(2) end, desc = "Mark 2" },
-				{ "<leader>3", function() harpoon:list():select(3) end, desc = "Mark 3" },
-				{ "<leader>4", function() harpoon:list():select(4) end, desc = "Mark 4" },
-				{ "<leader>5", function() harpoon:list():select(5) end, desc = "Mark 5" },
+				{ "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
+				{ "<leader>l", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
+				{ "<leader>a", function() vim.notify("Add to Mark", 2) require("harpoon"):list():add() end, desc = "Add to Mark", },
+				{ "<leader>1", function() require("harpoon"):list():select(1) end, desc = "Mark 1" },
+				{ "<leader>2", function() require("harpoon"):list():select(2) end, desc = "Mark 2" },
+				{ "<leader>3", function() require("harpoon"):list():select(3) end, desc = "Mark 3" },
+				{ "<leader>4", function() require("harpoon"):list():select(4) end, desc = "Mark 4" },
+				{ "<leader>5", function() require("harpoon"):list():select(5) end, desc = "Mark 5" },
 				-- stylua: ignore end
 			}
 		end,
@@ -1332,6 +1331,44 @@ return {
 					hlgroup = { "Error", "bg" },
 				},
 				extra = { follow_tw = nil },
+			}
+		end,
+	},
+
+	{
+		"isakbm/gitgraph.nvim",
+		opts = function()
+			return {
+				symbols = { merge_commit = "M", commit = "*" },
+				format = {
+					timestamp = "%H:%M:%S %d-%m-%Y",
+					fields = { "hash", "timestamp", "author", "branch_name", "tag" },
+				},
+				hooks = {
+					on_select_commit = function(commit)
+						vim.cmd.Git(string.format("diff %s", commit.hash))
+						vim.notify(string.format("Commit hash %s selected", commit.hash), 2, { title = "GitGraph" })
+					end,
+					on_select_range_commit = function(from, to)
+						vim.cmd.Git(string.format("diff %s..%s", from.hash, to.hash))
+						vim.notify(
+							string.format("Commit hash form %s to %s selected", from.hash, to.hash),
+							2,
+							{ title = "GitGraph" }
+						)
+					end,
+				},
+			}
+		end,
+		keys = function()
+			return {
+				{
+					"<leader>hl",
+					function()
+						require("gitgraph").draw({}, { all = true, max_count = 5000 })
+					end,
+					desc = "GitGraph",
+				},
 			}
 		end,
 	},
