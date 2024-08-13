@@ -87,17 +87,17 @@ function M.statuscolumn()
 
 		vim.api.nvim_win_call(0, function()
 			if vim.fn.foldclosed(vim.v.lnum) >= 0 then
-				fold = { text = vim.opt.fillchars:get().foldclose or "", texthl = githl or "Folded" }
+				fold = { text = "", texthl = githl or "Folded" }
 			elseif
 				show_open_folds
 				and not M.skip_foldexpr[buf]
 				and tostring(vim.treesitter.foldexpr(vim.v.lnum)):sub(1, 1) == ">"
-			then -- fold start
-				fold = { text = vim.opt.fillchars:get().foldopen or "", texthl = githl }
+			then
+				fold = { text = "  ", texthl = githl }
 			end
 		end)
 		components[1] = M.icon(M.get_mark(buf, vim.v.lnum) or left)
-		components[3] = is_file and M.icon(fold or right) or ""
+		components[3] = is_file and M.icon(fold or right, 3) or ""
 	end
 
 	-- Numbers in Neovim are weird
@@ -106,12 +106,12 @@ function M.statuscolumn()
 	local is_relnum = vim.wo[0].relativenumber
 	if (is_num or is_relnum) and vim.v.virtnum == 0 then
 		if vim.fn.has("nvim-0.11") == 1 then
-			components[2] = "%l"
+			components[2] = "%l" -- 0.11 handles both the current and other lines with %l
 		else
 			if vim.v.relnum == 0 then
-				components[2] = is_num and "%l" or "%r"
+				components[2] = is_num and "%l" or "%r" -- the current line
 			else
-				components[2] = is_relnum and "%r" or "%l"
+				components[2] = is_relnum and "%r" or "%l" -- other lines
 			end
 		end
 		components[2] = "%=" .. components[2] .. " " -- right align
@@ -120,6 +120,7 @@ function M.statuscolumn()
 	if vim.v.virtnum ~= 0 then
 		components[2] = "%= "
 	end
+
 	return table.concat(components, "")
 end
 
@@ -128,31 +129,19 @@ local skip_check = assert(vim.uv.new_check())
 
 function M.foldexpr()
 	local buf = vim.api.nvim_get_current_buf()
-
-	-- still in the same tick and no parser
 	if M.skip_foldexpr[buf] then
 		return "0"
 	end
-
-	-- don't use treesitter folds for non-file buffers
 	if vim.bo[buf].buftype ~= "" then
 		return "0"
 	end
-
-	-- as long as we don't have a filetype, don't bother
-	-- checking if treesitter is available (it won't)
 	if vim.bo[buf].filetype == "" then
 		return "0"
 	end
-
 	local ok = pcall(vim.treesitter.get_parser, buf)
-
 	if ok then
 		return vim.treesitter.foldexpr()
 	end
-
-	-- no parser available, so mark it as skip
-	-- in the next tick, all skip marks will be reset
 	M.skip_foldexpr[buf] = true
 	skip_check:start(function()
 		M.skip_foldexpr = {}
