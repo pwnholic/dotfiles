@@ -64,7 +64,7 @@ function M.statuscolumn()
 	local is_file = vim.bo[buf].buftype == ""
 	local show_signs = vim.wo[0].signcolumn ~= "no"
 
-	local components = { "", "", "" } -- left, middle, right
+	local components = { "", "", "" }
 
 	local show_open_folds = true
 	local use_githl = true
@@ -106,12 +106,12 @@ function M.statuscolumn()
 	local is_relnum = vim.wo[0].relativenumber
 	if (is_num or is_relnum) and vim.v.virtnum == 0 then
 		if vim.fn.has("nvim-0.11") == 1 then
-			components[2] = "%l" -- 0.11 handles both the current and other lines with %l
+			components[2] = "%l"
 		else
 			if vim.v.relnum == 0 then
-				components[2] = is_num and "%l" or "%r" -- the current line
+				components[2] = is_num and "%l" or "%r"
 			else
-				components[2] = is_relnum and "%r" or "%l" -- other lines
+				components[2] = is_relnum and "%r" or "%l"
 			end
 		end
 		components[2] = "%=" .. components[2] .. " " -- right align
@@ -120,7 +120,6 @@ function M.statuscolumn()
 	if vim.v.virtnum ~= 0 then
 		components[2] = "%= "
 	end
-
 	return table.concat(components, "")
 end
 

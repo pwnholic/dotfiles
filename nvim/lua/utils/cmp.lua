@@ -557,4 +557,38 @@ function M.backspace_autoindent(fallback)
 	end
 end
 
+M.fd_cmd = {
+	vim.fn.executable("fd") == 1 and "fd" or "fdfind",
+	"-p",
+	"-H",
+	"-L",
+	"-td",
+	"-tf",
+	"-tl",
+	"--mount",
+	"-c=never",
+	"-E=*.git/",
+	"-E=*.venv/",
+	"-E=*Cache*/",
+	"-E=*cache*/",
+	"-E=.*Cache*/",
+	"-E=.*cache*/",
+	"-E=.cargo/",
+	"-E=.dot/",
+	"-E=.fonts/",
+	"-E=.ipython/",
+	"-E=.jupyter/",
+	"-E=.luarocks/",
+	"-E=.npm/",
+	"-E=.nvm/",
+	"-E=.steam*/",
+	"-E=.thunderbird/",
+	"-E=.tmp/",
+	"-E=__pycache__/",
+	"-E=dosdevices/",
+	"-E=node_modules/",
+	"-E=vendor/",
+	"-E=venv/",
+}
+
 return M

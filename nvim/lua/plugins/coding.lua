@@ -39,14 +39,14 @@ return {
 		opts = function()
 			return {
 				linters_by_ft = {
-					lua = { "selene" },
-					go = { "golangcilint" },
-					markdown = { "vale" },
-					typescript = { "biomejs" },
-					javascript = { "biomejs" },
-					rust = { "clippy" },
-					python = { "ruff" },
-					solidity = { "solhint" },
+					-- lua = { "selene" },
+					-- go = { "golangcilint" },
+					-- markdown = { "vale" },
+					-- typescript = { "biomejs" },
+					-- javascript = { "biomejs" },
+					-- rust = { "clippy" },
+					-- python = { "ruff" },
+					-- solidity = { "solhint" },
 				},
 				linters = {
 					-- selene = {

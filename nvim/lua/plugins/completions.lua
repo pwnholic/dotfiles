@@ -12,14 +12,9 @@ return {
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local utils = require("utils")
-
-			local fuzzy_path_ok, fuzzy_path = require("cmp_fuzzy_path.compare")
-			if not fuzzy_path_ok then
-				fuzzy_path = function() end
-			end
-
 			return {
 				auto_brackets = { "go" },
+				performance = { async_budget = 64, max_view_entries = 64 },
 				completion = { completeopt = "menu,menuone,noinsert" },
 				preselect = true,
 				mapping = {
@@ -149,7 +144,7 @@ return {
 					["<BS>"] = cmp.mapping(utils.cmp.backspace_autoindent, { "i" }),
 				},
 				sources = cmp.config.sources({
-					{ name = "fuzzy_path" },
+					{ name = "fuzzy_path", option = utils.cmp.fd_cmd },
 					{ name = "nvim_lsp" },
 					{ name = "luasnip", max_item_count = 3 },
 				}, {
@@ -204,15 +199,13 @@ return {
 				sorting = {
 					priority_weight = 100,
 					comparators = {
-						fuzzy_path,
+						require("cmp_fuzzy_path.compare") or function() end,
 						cmp.config.compare.offset,
 						cmp.config.compare.exact,
 						cmp.config.compare.score,
-						cmp.config.compare.recently_used,
 						cmp.config.compare.kind,
-						cmp.config.compare.sort_text,
-						cmp.config.compare.length,
-						cmp.config.compare.order,
+						cmp.config.compare.recently_used,
+						cmp.config.compare.locality,
 					},
 				},
 			}
@@ -289,7 +282,7 @@ return {
 				---@diagnostic disable-next-line: missing-fields
 				formatting = { fields = { "abbr" } },
 				sources = {
-					{ name = "fuzzy_path", group_index = 2 },
+					{ name = "fuzzy_path", option = utils.cmp.fd_cmd, group_index = 2 },
 					{ name = "cmdline", option = { ignore_cmds = {} }, group_index = 1 },
 				},
 			})
