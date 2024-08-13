@@ -365,6 +365,7 @@ return {
 										fg = hutils.get_highlight(self.type_hl[d.type]).fg,
 										bg = c.bg_statusline,
 										underline = true,
+										bold = false,
 										sp = self.mode_colors[vim.fn.mode(1):sub(1, 1)],
 									},
 									on_click = {
