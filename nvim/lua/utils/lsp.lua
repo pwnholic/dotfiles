@@ -1414,10 +1414,10 @@ M.diagnostics_config = {
 				dicons[key:upper()] = value
 			end
 			return string.format(
-				" %s %s %s ",
+				" %s %s [%s] ",
 				dicons[vim.diagnostic.severity[d.severity]],
 				d.message,
-				not vim.tbl_contains({ "lazy" }, vim.o.ft) and "[" .. d.source .. "]" or ""
+				not vim.tbl_contains({ "lazy" }, vim.o.ft) and d.source or ""
 			)
 		end,
 	},
