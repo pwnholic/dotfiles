@@ -14,7 +14,6 @@ return {
 			{ "<c-space>", desc = "Increment Selection" },
 			{ "<bs>", desc = "Decrement Selection", mode = "x" },
 		},
-		dependencies = { { "windwp/nvim-ts-autotag", config = true } },
 		opts = function()
 			return {
 				highlight = { enable = true },
@@ -93,5 +92,10 @@ return {
 				end
 			end
 		end,
+	},
+	{
+		"windwp/nvim-ts-autotag",
+		config = true,
+		ft = { "html", "javascriptreact", "typescriptreact", "markdown", "htmx" },
 	},
 }
