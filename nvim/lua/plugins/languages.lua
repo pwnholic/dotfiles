@@ -8,7 +8,7 @@ return {
 				notes_subdir = nil,
 				log_level = vim.log.levels.INFO,
 				daily_notes = {
-					folder = "01_FLEETING",
+					folder = "00_Inbox",
 					date_format = "%Y-%m-%d",
 					alias_format = "%B %-d, %Y",
 					default_tags = { "daily-notes" },
@@ -39,13 +39,13 @@ return {
 				note_id_func = function(title)
 					local suffix = ""
 					if title ~= nil then
-						suffix = title:gsub("%s+", " ")
+						suffix = title:gsub("%s+", " "):gsub(" ", "-")
 					else
 						for _ = 1, 4 do
 							suffix = suffix .. string.char(math.random(65, 90))
 						end
 					end
-					return tostring(os.date("%Y%m%d")) .. " " .. suffix
+					return tostring(os.date("%Y%m%d")) .. "-" .. suffix
 				end,
 				note_path_func = function(spec)
 					local path = spec.dir / tostring(spec.id)
@@ -73,7 +73,7 @@ return {
 					return out
 				end,
 				templates = {
-					folder = "templates",
+					folder = "05_Templates",
 					date_format = "%Y-%m-%d",
 					time_format = "%H:%M",
 					substitutions = {},
@@ -112,103 +112,14 @@ return {
 	},
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
-		ft = { "ipynb", "markdown" },
+		ft = { "ipynb", "markdown", "tex" },
 		opts = function()
 			return {
-				enabled = true,
-				max_file_size = 10.0,
-				debounce = 100,
-				markdown_query = [[
-                        (atx_heading [
-                            (atx_h1_marker)
-                            (atx_h2_marker)
-                            (atx_h3_marker)
-                            (atx_h4_marker)
-                            (atx_h5_marker)
-                            (atx_h6_marker)
-                        ] @heading)
-
-                        (thematic_break) @dash
-
-                        (fenced_code_block) @code
-
-                        [
-                            (list_marker_plus)
-                            (list_marker_minus)
-                            (list_marker_star)
-                        ] @list_marker
-
-                        (task_list_marker_unchecked) @checkbox_unchecked
-                        (task_list_marker_checked) @checkbox_checked
-
-                        (block_quote) @quote
-
-                        (pipe_table) @table
-                ]],
-				-- Capture groups that get pulled from quote nodes
-				markdown_quote_query = [[
-                         [
-                             (block_quote_marker)
-                             (block_continuation)
-                         ] @quote_marker
-                     ]],
-				-- Capture groups that get pulled from inline markdown
-				inline_query = [[
-                        (code_span) @code
-
-                        (shortcut_link) @shortcut
-
-                        [(inline_link) (full_reference_link) (image)] @link
-                    ]],
-				log_level = "error",
-				file_types = { "markdown" },
-				render_modes = { "n", "c" },
-				acknowledge_conflicts = false,
-				anti_conceal = {
-					enabled = true,
-				},
-				heading = {
-					enabled = true,
-					sign = true,
-					position = "overlay",
-					icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
-					signs = { "󰫎 " },
-					width = "full",
-					backgrounds = {
-						"RenderMarkdownH1Bg",
-						"RenderMarkdownH2Bg",
-						"RenderMarkdownH3Bg",
-						"RenderMarkdownH4Bg",
-						"RenderMarkdownH5Bg",
-						"RenderMarkdownH6Bg",
-					},
-					-- The 'level' is used to index into the array using a clamp
-					-- Highlight for the heading and sign icons
-					foregrounds = {
-						"RenderMarkdownH1",
-						"RenderMarkdownH2",
-						"RenderMarkdownH3",
-						"RenderMarkdownH4",
-						"RenderMarkdownH5",
-						"RenderMarkdownH6",
-					},
-				},
-				bullet = {
-					enabled = true,
-					icons = { "●", "○", "◆", "◇" },
-					right_pad = 1,
-					highlight = "RenderMarkdownBullet",
-				},
-				pipe_table = {
-					enabled = true,
-					style = "full",
-					cell = "padded",
-					alignment_indicator = "━",
-					border = { "┌", "┬", "┐", "├", "┼", "┤", "└", "┴", "┘", "│", "─" },
-					head = "RenderMarkdownTableHead",
-					row = "RenderMarkdownTableRow",
-					filler = "RenderMarkdownTableFill",
-				},
+				preset = "obsidian",
+				heading = { border = "thick", left_pad = 1 },
+				code = { width = "full", style = "language", left_pad = 2 },
+				bullet = { left_pad = 4 },
+				sign = { enabled = true, highlight = "RenderMarkdownSign" },
 				callout = {
 					note = { raw = "[!NOTE]", rendered = "󰋽  Note", highlight = "RenderMarkdownInfo" },
 					tip = { raw = "[!TIP]", rendered = "󰌶  Tip", highlight = "RenderMarkdownSuccess" },
