@@ -183,25 +183,25 @@ return {
 				},
 				actions = {
 					files = {
-						["default"] = actions.file_edit_or_qf,
+						["default"] = actions.file_edit,
 						["ctrl-s"] = actions.file_split,
-						["ctrl-v"] = actions.file_vsplit,
-						["ctrl-t"] = actions.file_tabedit,
-						["alt-q"] = actions.file_sel_to_qf,
 						["alt-o"] = actions.toggle_hidden,
+						["ctrl-v"] = actions.file_vsplit,
+						["alt-q"] = actions.file_sel_to_qf,
+						["alt-g"] = actions.switch_cwd,
 					},
 					grep = {
 						["default"] = actions.file_edit,
 						["ctrl-s"] = actions.file_split,
 						["ctrl-v"] = actions.file_vsplit,
-						["ctrl-t"] = actions.file_tabedit,
 						["alt-o"] = actions.toggle_hidden,
+						["alt-q"] = actions.file_sel_to_qf,
+						["alt-g"] = actions.switch_cwd,
 					},
 					buffers = {
 						["default"] = actions.buf_edit,
 						["ctrl-s"] = actions.buf_split,
 						["ctrl-v"] = actions.buf_vsplit,
-						["ctrl-t"] = actions.buf_tabedit,
 						["ctrl-x"] = { fn = actions.buf_del, reload = true },
 					},
 					git = {
@@ -213,7 +213,6 @@ return {
 							["default"] = actions.git_buf_edit,
 							["ctrl-s"] = actions.git_buf_split,
 							["ctrl-v"] = actions.git_buf_vsplit,
-							["ctrl-t"] = actions.git_buf_tabedit,
 							["ctrl-y"] = { fn = actions.git_yank_commit, exec_silent = true },
 						},
 						branches = {

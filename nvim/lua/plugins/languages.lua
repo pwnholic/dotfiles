@@ -118,7 +118,7 @@ return {
 				preset = "obsidian",
 				heading = { border = "thick", left_pad = 1 },
 				code = { width = "full", style = "language", left_pad = 2 },
-				bullet = { left_pad = 4 },
+				bullet = { left_pad = 4, highlight = "RenderMarkdownBullet" },
 				sign = { enabled = true, highlight = "RenderMarkdownSign" },
 				callout = {
 					note = { raw = "[!NOTE]", rendered = "󰋽  Note", highlight = "RenderMarkdownInfo" },

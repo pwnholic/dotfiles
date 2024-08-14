@@ -507,6 +507,8 @@ return {
 					hl.FzfLuaBorder = { fg = c.bg_dark, bg = c.bg_dark }
 					hl.FzfLuaFilePart = { fg = "#ffffff" }
 					hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
+
+					hl.RenderMarkdownBullet = { fg = c.red, bg = c.none }
 				end,
 				cache = true,
 			}
