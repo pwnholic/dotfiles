@@ -26,7 +26,6 @@ return {
 				return _mt_cmd_wrapper(_opts)
 			end
 
-			---Switch cwd while preserving the last query
 			---@return nil
 			function actions.switch_cwd()
 				fzf.config.__resume_data.opts = fzf.config.__resume_data.opts or {}

@@ -49,10 +49,7 @@ augroup("YankHighlight", {
 	{
 		desc = "Highlight the selection on yank.",
 		callback = function()
-			pcall(vim.highlight.on_yank, {
-				higroup = "Visual",
-				timeout = 200,
-			})
+			pcall(vim.highlight.on_yank, { higroup = "Visual", timeout = 200 })
 		end,
 	},
 })
@@ -64,9 +61,7 @@ augroup("Autosave", {
 		desc = "Autosave on focus change.",
 		callback = function(info)
 			if vim.bo[info.buf].bt == "" then
-				vim.cmd.update({
-					mods = { emsg_silent = true },
-				})
+				vim.cmd.update({ mods = { emsg_silent = true } })
 			end
 		end,
 	},
@@ -88,8 +83,9 @@ augroup("LastPosJmp", {
 		callback = function(info)
 			if vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo[info.buf].ft) then
 				return
+			else
+				return vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })
 			end
-			vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })
 		end,
 	},
 })
