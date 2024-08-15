@@ -6,8 +6,8 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 vim.opt.autoindent = true
-vim.opt.autowrite = true
-vim.opt.autowriteall = true
+-- vim.opt.autowrite = true
+-- vim.opt.autowriteall = true
 vim.opt.breakindent = true
 vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 vim.opt.cmdheight = 0

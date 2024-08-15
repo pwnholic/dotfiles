@@ -12,6 +12,25 @@ local function augroup(group, ...)
 	end
 end
 
+augroup("LastPosJmp", {
+	"BufReadPost",
+	{
+		desc = "Last position jump.",
+		callback = function(info)
+			local exclude = { "gitcommit" }
+			if vim.tbl_contains(exclude, vim.bo[info.buf].filetype) or vim.b[info.buf].last_location then
+				return
+			end
+			vim.b[info.buf].last_location = true
+			local mark = vim.api.nvim_buf_get_mark(info.buf, '"')
+			local lcount = vim.api.nvim_buf_line_count(info.buf)
+			if mark[1] > 0 and mark[1] <= lcount then
+				pcall(vim.api.nvim_win_set_cursor, 0, mark)
+			end
+		end,
+	},
+})
+
 augroup("BigFileSettings", {
 	"BufReadPre",
 	{
@@ -73,20 +92,6 @@ augroup("WinCloseJmp", {
 		nested = true,
 		desc = "Jump to last accessed window on closing the current one.",
 		command = "if expand('<amatch>') == win_getid() | wincmd p | endif",
-	},
-})
-
-augroup("LastPosJmp", {
-	"BufReadPost",
-	{
-		desc = "Last position jump.",
-		callback = function(info)
-			if vim.tbl_contains({ "gitcommit", "gitrebase" }, vim.bo[info.buf].ft) then
-				return
-			else
-				return vim.cmd.normal({ 'g`"zvzz', bang = true, mods = { emsg_silent = true } })
-			end
-		end,
 	},
 })
 
@@ -215,6 +220,19 @@ augroup("FixCmdLineIskeyword", {
 				vim.g._lisp_save = nil
 				vim.g._isk_lisp_buf = nil
 			end
+		end,
+	},
+})
+
+augroup("Auto_Create_Dir", {
+	"BufWritePre",
+	{
+		callback = function(event)
+			if event.match:match("^%w%w+:[\\/][\\/]") then
+				return
+			end
+			local file = vim.uv.fs_realpath(event.match) or event.match
+			vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 		end,
 	},
 })
