@@ -1,4 +1,4 @@
-require("options")
+require("generals")
 require("packages")
 require("setup")
 require("keymaps")
