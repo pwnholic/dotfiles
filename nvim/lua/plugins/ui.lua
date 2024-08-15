@@ -772,7 +772,6 @@ return {
 			}
 		end,
 	},
-
 	{
 
 		"NvChad/nvim-colorizer.lua",
