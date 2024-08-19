@@ -73,6 +73,20 @@ return {
 				fzf.autocmds({ fzf_opts = { ["--query"] = query ~= "" and query or nil } })
 			end
 
+			local function _file_edit_or_qf(selected, opts)
+				if #selected > 1 then
+					for i = 1, #selected do
+						local file = require("fzf-lua.path").entry_to_file(selected[i], opts)
+						local stat = vim.uv.fs_stat(file.path)
+						if stat and stat.type == "file" then
+							require("trouble.sources.fzf").open(selected, opts)
+						end
+					end
+				else
+					return actions.file_edit(selected, opts)
+				end
+			end
+
 			core.ACTION_DEFINITIONS[actions.toggle_ignore] = { "Disable .gitignore", fn_reload = "Respect .gitignore" }
 			core.ACTION_DEFINITIONS[actions.toggle_hidden] = { "Disable dotfile", fn_reload = "Respect dotfile" }
 			core.ACTION_DEFINITIONS[actions.switch_cwd] = { "Change Cwd", pos = 1 }
@@ -182,7 +196,7 @@ return {
 				},
 				actions = {
 					files = {
-						["enter"] = actions.file_edit,
+						["enter"] = _file_edit_or_qf,
 						["ctrl-s"] = actions.file_split,
 						["alt-o"] = actions.toggle_hidden,
 						["ctrl-v"] = actions.file_vsplit,
@@ -190,7 +204,7 @@ return {
 						["alt-g"] = actions.switch_cwd,
 					},
 					grep = {
-						["enter"] = actions.file_edit,
+						["enter"] = _file_edit_or_qf,
 						["ctrl-s"] = actions.file_split,
 						["ctrl-v"] = actions.file_vsplit,
 						["alt-o"] = actions.toggle_hidden,
