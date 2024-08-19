@@ -180,31 +180,16 @@ return {
 			end)
 		end,
 	},
-	{
-		"echasnovski/mini.comment",
-		event = "BufRead",
-		dependencies = { { "JoosepAlviste/nvim-ts-context-commentstring", opts = { enable_autocmd = false } } },
-		opts = function()
-			return {
-				pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-			}
-		end,
-	},
-
+	{ "folke/ts-comments.nvim", opts = {}, event = "VeryLazy" },
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
-			{ "nvim-neotest/neotest-python", ft = "python" },
 			{ "nvim-neotest/neotest-go", ft = "go" },
 		},
 		opts = function()
 			local utils = require("utils")
 			return {
 				adapters = {
-					["neotest-python"] = {
-						runner = "pytest",
-						python = ".venv/bin/python",
-					},
 					["neotest-golang"] = {
 						go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
 						dap_go_enabled = true,

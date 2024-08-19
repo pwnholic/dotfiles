@@ -509,6 +509,10 @@ return {
 					hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
 
 					hl.RenderMarkdownBullet = { fg = c.red, bg = c.none }
+
+					hl.ChoiceNode = { fg = c.orange, bg = c.bg_dark }
+					hl.InsertNode = { fg = c.green, bg = c.bg_dark }
+					hl.ExitNode = { fg = c.red, bg = c.bg_dark }
 				end,
 				cache = true,
 			}

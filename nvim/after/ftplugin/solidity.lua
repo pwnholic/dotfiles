@@ -9,7 +9,6 @@ require("utils.lsp").start({
 		"truffle.js",
 		"truffle-config.js",
 		"ape-config.yaml",
-		".git",
 		"package.json",
 	},
 })
