@@ -180,7 +180,13 @@ return {
 			end)
 		end,
 	},
-	{ "folke/ts-comments.nvim", opts = {}, event = "VeryLazy" },
+	{
+		"folke/ts-comments.nvim",
+		opts = {
+			lang = { http = "# %s", json = { "# %s", "/* %s */" } },
+		},
+		event = "VeryLazy",
+	},
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
@@ -470,7 +476,23 @@ return {
 						error = "󰬅 ",
 					},
 				},
-				additional_curl_options = {},
+				contenttypes = {
+					["application/json"] = {
+						ft = "json",
+						formatter = { "jq", "." },
+						pathresolver = require("kulala.parser.jsonpath").parse,
+					},
+					["application/xml"] = {
+						ft = "xml",
+						formatter = { "xmllint", "--format", "-" },
+						pathresolver = { "xmllint", "--xpath", "{{path}}", "-" },
+					},
+					["text/html"] = {
+						ft = "html",
+						formatter = { "xmllint", "--format", "--html", "-" },
+						pathresolver = {},
+					},
+				},
 			}
 		end,
 	},
