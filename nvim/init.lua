@@ -1,5 +1,5 @@
 require("generals")
 require("packages")
 require("setup")
-require("keymaps")
 require("autocmds")
+require("keymaps")
