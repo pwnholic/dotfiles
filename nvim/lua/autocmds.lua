@@ -89,6 +89,37 @@ augroup("WinCloseJmp", {
 })
 
 augroup("AutoCwd", {
+	"LspAttach",
+	{
+		desc = "Record LSP root directories in `vim.g._lsp_root_dirs`.",
+		callback = function(info)
+			local client = vim.lsp.get_client_by_id(info.data.client_id)
+			local root_dir = client and client.config and client.config.root_dir
+			if not root_dir or root_dir == vim.fs.normalize("~") or root_dir == vim.fs.dirname(root_dir) then
+				return
+			end
+
+			-- Keep only shortest root dir in `vim.g._lsp_root_dirs`,
+			-- e.g. if we have `~/project` and `~/project/subdir`, keep only
+			-- `~/project`
+			local lsp_root_dirs = vim.g._lsp_root_dirs or {}
+			for i, dir in ipairs(lsp_root_dirs) do
+				-- If the new root dir is a subdirectory of an existing root dir,
+				-- return early and don't add it
+				if vim.startswith(root_dir, dir) then
+					return
+				end
+				if vim.startswith(dir, root_dir) then
+					table.remove(lsp_root_dirs, i)
+				end
+			end
+			table.insert(lsp_root_dirs, root_dir)
+			vim.g._lsp_root_dirs = lsp_root_dirs
+			-- Execute BufWinEnter event on current buffer to trigger cwd change
+			vim.api.nvim_exec_autocmds("BufWinEnter", { buffer = info.buf })
+		end,
+	},
+}, {
 	{ "BufWinEnter", "FileChangedShellPost" },
 	{
 		pattern = "*",

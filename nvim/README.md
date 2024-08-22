@@ -1,9 +1,1 @@
-# Hello
-
-```lua
-print("hello")
-```
-
-# Hello
-
-- a
+`local mark_list = harpoon:list().items` ini adalah table didalam saya mau dengan actions ctrl-n saya ketika saya membuka table itu menggunakan fzf_exec dan jika saya gunakan key ctrl-n maka item yang terselect akan pindah kebawah item sesudahnya.

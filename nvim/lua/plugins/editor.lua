@@ -87,12 +87,21 @@ return {
 				end
 			end
 
+			local function add_to_harpoon(selected, opts)
+				for i = 1, #selected do
+					local file = fzf.path.entry_to_file(selected[i], opts)
+					require("harpoon"):list():add({ value = file.bufname or file.path or file.uri, context = {} })
+				end
+			end
+
 			core.ACTION_DEFINITIONS[actions.toggle_ignore] = { "Disable .gitignore", fn_reload = "Respect .gitignore" }
 			core.ACTION_DEFINITIONS[actions.toggle_hidden] = { "Disable dotfile", fn_reload = "Respect dotfile" }
+			core.ACTION_DEFINITIONS[add_to_harpoon] = { "Add Harpoon" }
 			core.ACTION_DEFINITIONS[actions.switch_cwd] = { "Change Cwd", pos = 1 }
 
 			config._action_to_helpstr[actions.toggle_ignore] = "toggle-ignore"
 			config._action_to_helpstr[actions.toggle_hidden] = "toggle-hidden"
+			config._action_to_helpstr[add_to_harpoon] = "add-harpoon"
 			config._action_to_helpstr[actions.switch_cwd] = "change-cwd"
 			config._action_to_helpstr[actions.del_autocmd] = "delete-autocmd"
 
@@ -202,6 +211,7 @@ return {
 						["ctrl-v"] = actions.file_vsplit,
 						["alt-q"] = actions.file_sel_to_qf,
 						["alt-g"] = actions.switch_cwd,
+						["alt-m"] = add_to_harpoon,
 					},
 					grep = {
 						["enter"] = _file_edit_or_qf,
@@ -484,24 +494,36 @@ return {
 		cmd = "Oil",
 		keys = { { "<leader>e", vim.cmd.Oil, desc = "Open Oil Buffer" } },
 		lazy = false,
-		init = vim.schedule_wrap(function()
+		init = function()
 			vim.api.nvim_create_autocmd("BufWinEnter", {
 				nested = true,
 				callback = function(info)
-					local path = info.file
-					if path == "" then
-						return
-					end
-					local stat = vim.uv.fs_stat(path)
-					if stat and stat.type == "directory" then
-						vim.api.nvim_del_autocmd(info.id)
-						require("oil")
-						vim.cmd.edit({ bang = true, mods = { keepjumps = true } })
-						return true
+					local dirbuf_found
+					for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+						vim.schedule(function()
+							if not vim.api.nvim_buf_is_valid(buf) then
+								return
+							end
+							local bufname = vim.api.nvim_buf_get_name(buf)
+							if
+								not vim.startswith(bufname, "oil://")
+								and (vim.uv.fs_stat(bufname) or {}).type ~= "directory"
+							then
+								return
+							end
+							if not dirbuf_found then
+								dirbuf_found = true
+								pcall(require, "oil")
+								pcall(vim.api.nvim_del_autocmd, info.id)
+							end
+							vim.api.nvim_buf_call(buf, function()
+								vim.cmd.edit({ bang = true, mods = { keepjumps = true } })
+							end)
+						end)
 					end
 				end,
 			})
-		end),
+		end,
 		opts = function()
 			local oil = require("oil")
 			local icons = require("utils.icons").kinds
@@ -973,6 +995,14 @@ return {
 		opts = function()
 			local icons = require("utils.icons").misc
 			return {
+				current_line_blame = true,
+				current_line_blame_opts = {
+					virt_text = true,
+					virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
+					delay = 1000,
+					ignore_whitespace = false,
+					virt_text_priority = 100,
+				},
 				signs = {
 					add = { text = icons.vertical_bar_bold },
 					change = { text = icons.vertical_bar_bold },
@@ -1278,7 +1308,7 @@ return {
 		keys = function()
 			return {
                 -- stylua: ignore start
-				{ "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
+				{ "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
 				{ "<leader>l", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
 				{ "<leader>a", function() vim.notify("Add to Mark", 2) require("harpoon"):list():add() end, desc = "Add to Mark", },
 				{ "<leader>1", function() require("harpoon"):list():select(1) end, desc = "Mark 1" },
@@ -1291,7 +1321,6 @@ return {
 		end,
 		config = function()
 			local harpoon = require("harpoon")
-			require("harpoon.config").DEFAULT_LIST = "files"
 			harpoon:setup({
 				settings = {
 					save_on_toggle = true,
@@ -1301,16 +1330,16 @@ return {
 				},
 			})
 			harpoon:extend({
-				UI_CREATE = function(cx)
+				UI_CREATE = function(ctx)
 					vim.keymap.set("n", "<C-v>", function()
 						harpoon.ui:select_menu_item({ vsplit = true })
-					end, { buffer = cx.bufnr })
+					end, { buffer = ctx.bufnr })
 					vim.keymap.set("n", "<C-s>", function()
 						harpoon.ui:select_menu_item({ split = true })
-					end, { buffer = cx.bufnr })
+					end, { buffer = ctx.bufnr })
 					vim.keymap.set("n", "<C-t>", function()
 						harpoon.ui:select_menu_item({ tabedit = true })
-					end, { buffer = cx.bufnr })
+					end, { buffer = ctx.bufnr })
 				end,
 			})
 		end,
@@ -1428,6 +1457,34 @@ return {
                 { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash", },
                 { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search", },
                 { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+				-- stylua: ignore end
+			}
+		end,
+	},
+	{
+		"folke/todo-comments.nvim",
+		cmd = "TodoTrouble",
+		event = "BufRead",
+		opts = function()
+			return {
+				keywords = {
+					FIX = { icon = " ", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+					TODO = { icon = " ", color = "info" },
+					HACK = { icon = " ", color = "warning" },
+					WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+					PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+					NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+					TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+				},
+			}
+		end,
+		keys = function()
+			return {
+                -- stylua: ignore start
+				{ "]t", function() require("todo-comments").jump_next() end, desc = "Next Todo Comment", },
+				{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous Todo Comment", },
+				{ "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
+				{ "<leader>xT", "<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>", desc = "Todo/Fix/Fixme (Trouble)", },
 				-- stylua: ignore end
 			}
 		end,

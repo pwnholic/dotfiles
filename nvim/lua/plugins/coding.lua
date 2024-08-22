@@ -469,13 +469,7 @@ return {
 			vim.api.nvim_create_user_command("KulalaPrev", require("kulala").jump_prev, {})
 			vim.api.nvim_create_user_command("KulalaNext", require("kulala").jump_next, {})
 			return {
-				icons = {
-					inlay = {
-						loading = "󱦟 ",
-						done = " ",
-						error = "󰬅 ",
-					},
-				},
+				icons = { inlay = { loading = "󱦟 ", done = " ", error = "󰬅 " } },
 				contenttypes = {
 					["application/json"] = {
 						ft = "json",
