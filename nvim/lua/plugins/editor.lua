@@ -131,7 +131,42 @@ return {
 			return {
 				winopts = {
 					backdrop = 100,
-					split = "botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh",
+					split = [[
+                        let tabpage_win_list = nvim_tabpage_list_wins(0) |
+                        \ call v:lua.require'utils.win'.saveheights(tabpage_win_list) |
+                        \ call v:lua.require'utils.win'.saveviews(tabpage_win_list) |
+                        \ unlet tabpage_win_list |
+                        \ let g:_fzf_vim_lines = &lines |
+                        \ let g:_fzf_leave_win = win_getid(winnr()) |
+                        \ botright 10new |
+                        \ setlocal bt=nofile bh=wipe nobl noswf wfh
+                    ]],
+					on_create = function()
+						vim.keymap.set(
+							"t",
+							"<C-r>",
+							[['<C-\><C-N>"' . nr2char(getchar()) . 'pi']],
+							{ expr = true, buffer = true }
+						)
+					end,
+					on_close = function()
+						if
+							vim.g._fzf_leave_win
+							and vim.api.nvim_win_is_valid(vim.g._fzf_leave_win)
+							and vim.api.nvim_get_current_win() ~= vim.g._fzf_leave_win
+						then
+							vim.api.nvim_set_current_win(vim.g._fzf_leave_win)
+						end
+						vim.g._fzf_leave_win = nil
+
+						if vim.go.lines == vim.g._fzf_vim_lines then
+							utils.win.restheights()
+						end
+						vim.g._fzf_vim_lines = nil
+						utils.win.clearheights()
+						utils.win.restviews()
+						utils.win.clearviews()
+					end,
 					preview = { hidden = "hidden" },
 				},
 				file_icon_padding = " ",
@@ -416,8 +451,17 @@ return {
 						return {
 							winopts = {
 								split = string.format(
-									"botright %dnew | setlocal bt=nofile bh=wipe nobl noswf wfh",
-									math.min(10 + vim.go.ch + (vim.go.ls == 0 and 0 or 2), #items + 2)
+									[[
+                                        let tabpage_win_list = nvim_tabpage_list_wins(0) |
+                                        \ call v:lua.require'utils.win'.saveheights(tabpage_win_list) |
+                                        \ call v:lua.require'utils.win'.saveviews(tabpage_win_list) |
+                                        \ unlet tabpage_win_list |
+                                        \ let g:_fzf_vim_lines = &lines |
+                                        \ let g:_fzf_leave_win = win_getid(winnr()) |
+                                        \ botright %dnew |
+                                        \ setlocal bt=nofile bh=wipe nobl noswf wfh
+                                    ]],
+									math.min(10 + vim.go.ch + (vim.go.ls == 0 and 0 or 1), #items + 1)
 								),
 							},
 						}

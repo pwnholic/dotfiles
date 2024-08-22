@@ -98,14 +98,8 @@ augroup("AutoCwd", {
 			if not root_dir or root_dir == vim.fs.normalize("~") or root_dir == vim.fs.dirname(root_dir) then
 				return
 			end
-
-			-- Keep only shortest root dir in `vim.g._lsp_root_dirs`,
-			-- e.g. if we have `~/project` and `~/project/subdir`, keep only
-			-- `~/project`
 			local lsp_root_dirs = vim.g._lsp_root_dirs or {}
 			for i, dir in ipairs(lsp_root_dirs) do
-				-- If the new root dir is a subdirectory of an existing root dir,
-				-- return early and don't add it
 				if vim.startswith(root_dir, dir) then
 					return
 				end
@@ -115,41 +109,37 @@ augroup("AutoCwd", {
 			end
 			table.insert(lsp_root_dirs, root_dir)
 			vim.g._lsp_root_dirs = lsp_root_dirs
-			-- Execute BufWinEnter event on current buffer to trigger cwd change
 			vim.api.nvim_exec_autocmds("BufWinEnter", { buffer = info.buf })
 		end,
 	},
 }, {
 	{ "BufWinEnter", "FileChangedShellPost" },
 	{
-		pattern = "*",
 		desc = "Automatically change local current directory.",
 		callback = function(info)
 			if info.file == "" or vim.bo[info.buf].bt ~= "" then
 				return
 			end
-			local buf = info.buf
-			local win = vim.api.nvim_get_current_win()
 
-			vim.schedule(function()
-				if
-					not vim.api.nvim_buf_is_valid(buf)
-					or not vim.api.nvim_win_is_valid(win)
-					or not vim.api.nvim_win_get_buf(win) == buf
-				then
-					return
+			local lsp_root_dir
+			local bufname = vim.api.nvim_buf_get_name(info.buf)
+			for _, dir in ipairs(vim.g._lsp_root_dirs or {}) do
+				if vim.startswith(bufname, dir) then
+					lsp_root_dir = dir
+					break
 				end
-				vim.api.nvim_win_call(win, function()
-					local current_dir = vim.fn.getcwd(0)
-					local target_dir = vim.fs.root(info.file, require("utils.lsp").root_patterns)
-						or vim.fs.dirname(info.file)
-					local stat = target_dir and vim.uv.fs_stat(target_dir)
-					-- Prevent unnecessary directory change, which triggers
-					-- DirChanged autocmds that may update winbar unexpectedly
-					if stat and stat.type == "directory" and current_dir ~= target_dir then
-						pcall(vim.cmd.lcd, target_dir)
-					end
-				end)
+			end
+
+			local root_dir = lsp_root_dir
+				or vim.fs.root(info.file, require("utils.lsp").root_patterns)
+				or vim.fs.dirname(info.file)
+			-- Prevent unnecessary directory change, which triggers
+			-- DirChanged autocmds that may update winbar unexpectedly
+			if not root_dir or root_dir == vim.fn.getcwd(0) then
+				return
+			end
+			vim.api.nvim_win_call(0, function()
+				pcall(vim.cmd.lcd, { root_dir, mods = { silent = true, emsg_silent = true } })
 			end)
 		end,
 	},
@@ -257,6 +247,34 @@ augroup("Auto_Create_Dir", {
 			end
 			local file = vim.uv.fs_realpath(event.match) or event.match
 			vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+		end,
+	},
+})
+
+augroup("KeepWinRatio", {
+	{ "VimResized", "TabEnter" },
+	{
+		desc = "Keep window ratio after resizing nvim.",
+		callback = function()
+			vim.cmd.wincmd("=")
+			require("utils.win").restratio(vim.api.nvim_tabpage_list_wins(0))
+		end,
+	},
+}, {
+	{ "TermOpen", "WinResized", "WinNew" },
+	{
+		desc = "Record window ratio.",
+		callback = function()
+			-- Don't record ratio if window resizing is caused by vim resizing
+			-- (changes in &lines or &columns)
+			local lines, columns = vim.go.lines, vim.go.columns
+			local _lines, _columns = vim.g._lines, vim.g._columns
+			if _lines and lines ~= _lines or _columns and columns ~= _columns then
+				vim.g._lines = lines
+				vim.g._columns = columns
+				return
+			end
+			require("utils.win").saveratio(vim.v.event.windows)
 		end,
 	},
 })

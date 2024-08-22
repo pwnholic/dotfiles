@@ -8,6 +8,7 @@ require("keymaps")
 vim.keymap.set("n", "<A-space>", function()
 	local fzf = require("fzf-lua")
 	local hp = require("harpoon")
+
 	fzf.fzf_exec(function(cb)
 		for _, item in ipairs(hp:list().items) do
 			cb(item.value)
