@@ -1361,6 +1361,65 @@ return {
 				{ "<leader>4", function() require("harpoon"):list():select(4) end, desc = "Mark 4" },
 				{ "<leader>5", function() require("harpoon"):list():select(5) end, desc = "Mark 5" },
 				-- stylua: ignore end
+				{
+					"<A-space>",
+					function()
+						local fzf = require("fzf-lua")
+						local hp = require("harpoon")
+						fzf.fzf_exec(function(cb)
+							for _, item in ipairs(hp:list().items) do
+								cb(item.value)
+							end
+							cb()
+						end, {
+							prompt = "Harpoon : ",
+							cwd_header = false,
+							actions = {
+								["enter"] = fzf.actions.file_edit,
+								["ctrl-s"] = fzf.actions.file_split,
+								["ctrl-v"] = fzf.actions.file_vsplit,
+								["ctrl-x"] = function(s)
+									for i, v in ipairs(s) do
+										table.remove(hp:list().items, i)
+										vim.notify(string.format("Remove %s from mark", v), 2, { title = "Harpoon" })
+									end
+								end,
+								["alt-n"] = {
+									function(s)
+										local items = hp:list().items
+										for i, _ in ipairs(s) do
+											if i < 1 or i >= #items then
+												return vim.notify("index out of bounds", 1)
+											end
+											local temp = items[#items]
+											for k = #items, i + 1, -1 do
+												items[k] = items[k - 1]
+											end
+											items[i] = temp
+										end
+									end,
+									fzf.actions.resume,
+								},
+								["alt-p"] = {
+									function(s)
+										local items = hp:list().items
+										for i, _ in ipairs(s) do
+											if i < 1 or i >= #items then
+												return vim.notify("index out of bounds", 1)
+											end
+											local temp = items[i]
+											for k = i, #items - 1 do
+												items[k] = items[k + 1]
+											end
+											items[#items] = temp
+										end
+									end,
+									fzf.actions.resume,
+								},
+							},
+						})
+					end,
+				},
 			}
 		end,
 		config = function()
