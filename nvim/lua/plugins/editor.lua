@@ -91,6 +91,7 @@ return {
 				for i = 1, #selected do
 					local file = fzf.path.entry_to_file(selected[i], opts)
 					require("harpoon"):list():add({ value = file.bufname or file.path or file.uri, context = {} })
+					vim.notify(string.format("Added to Harpoon %s", file.bufname or file.path or file.uri), 2)
 				end
 			end
 
@@ -1352,7 +1353,7 @@ return {
 		keys = function()
 			return {
                 -- stylua: ignore start
-				{ "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
+				{ "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" }) end, desc = "Harpoon List", },
 				{ "<leader>l", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
 				{ "<leader>a", function() vim.notify("Add to Mark", 2) require("harpoon"):list():add() end, desc = "Add to Mark", },
 				{ "<leader>1", function() require("harpoon"):list():select(1) end, desc = "Mark 1" },
@@ -1360,6 +1361,10 @@ return {
 				{ "<leader>3", function() require("harpoon"):list():select(3) end, desc = "Mark 3" },
 				{ "<leader>4", function() require("harpoon"):list():select(4) end, desc = "Mark 4" },
 				{ "<leader>5", function() require("harpoon"):list():select(5) end, desc = "Mark 5" },
+				{ "<leader>6", function() require("harpoon"):list():select(5) end, desc = "Mark 6" },
+				{ "<leader>7", function() require("harpoon"):list():select(5) end, desc = "Mark 7" },
+				{ "<leader>8", function() require("harpoon"):list():select(5) end, desc = "Mark 8" },
+				{ "<leader>9", function() require("harpoon"):list():select(5) end, desc = "Mark 9" },
 				-- stylua: ignore end
 				{
 					"<A-space>",
@@ -1546,7 +1551,7 @@ return {
 						"flash_prompt",
 						"qf",
 						function(win)
-							return not vim.api.nvim_win_get_config(win).focusable
+							return not vim.api.nvim_win_get_config(win).focusable -- this floating windows
 						end,
 					},
 				},

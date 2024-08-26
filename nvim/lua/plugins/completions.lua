@@ -13,7 +13,7 @@ return {
 			local luasnip = require("luasnip")
 			local utils = require("utils")
 			return {
-				auto_brackets = { "go" },
+				auto_brackets = {},
 				performance = { async_budget = 64, max_view_entries = 64 },
 				completion = { completeopt = "menu,menuone,noinsert" },
 				preselect = true,
