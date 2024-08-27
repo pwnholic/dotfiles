@@ -1,0 +1,30 @@
+return {
+	"ray-x/go.nvim",
+	branch = "master",
+	ft = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
+	dependencies = { "ray-x/guihua.lua", branch = "master", build = "cd lua/fzy && make" },
+	opts = function()
+		return {
+			disable_defaults = false,
+			go = "go",
+			goimports = "goimports",
+			gofmt = false,
+			fillstruct = "fillstruct",
+			tag_options = "",
+			icons = { breakpoint = "🧘", currentpos = "🏃" },
+			verbose = false,
+			lsp_cfg = true,
+			lsp_gofumpt = false,
+			lsp_keymaps = false,
+			lsp_codelens = true,
+			diagnostic = require("utils.lsp").diagnostics_config,
+			go_input = vim.ui.input,
+			go_select = vim.ui.select,
+			lsp_document_formatting = false,
+			lsp_inlay_hints = { enable = false },
+			textobjects = false,
+			trouble = true,
+			luasnip = true,
+		}
+	end,
+}

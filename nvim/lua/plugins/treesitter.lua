@@ -5,10 +5,10 @@ return {
 		build = ":TSUpdate",
 		event = "VeryLazy",
 		lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-		init = function(plugin)
+		init = vim.schedule_wrap(function(plugin)
 			require("lazy.core.loader").add_to_rtp(plugin)
 			require("nvim-treesitter.query_predicates")
-		end,
+		end),
 		cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
 		keys = {
 			{ "<c-space>", desc = "Increment Selection" },
@@ -63,13 +63,6 @@ return {
 		end,
 	},
 	{
-		"nvim-treesitter/nvim-treesitter-context",
-		event = "BufRead",
-		opts = function()
-			return { mode = "cursor", max_lines = 3 }
-		end,
-	},
-	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		event = "VeryLazy",
 		config = function()
@@ -97,5 +90,12 @@ return {
 		"windwp/nvim-ts-autotag",
 		config = true,
 		ft = { "html", "javascriptreact", "typescriptreact", "markdown", "htmx" },
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = "BufRead",
+		opts = function()
+			return { mode = "cursor", max_lines = 3 }
+		end,
 	},
 }
