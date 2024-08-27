@@ -64,7 +64,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
-		event = "VeryLazy",
+		event = "BufRead",
 		opts = function()
 			return { mode = "cursor", max_lines = 3 }
 		end,

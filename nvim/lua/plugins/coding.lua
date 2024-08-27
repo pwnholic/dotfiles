@@ -185,7 +185,7 @@ return {
 		opts = {
 			lang = { http = "# %s", json = { "# %s", "/* %s */" } },
 		},
-		event = "VeryLazy",
+		event = "BufRead",
 	},
 	{
 		"nvim-neotest/neotest",

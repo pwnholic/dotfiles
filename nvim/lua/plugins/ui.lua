@@ -747,7 +747,7 @@ return {
 	},
 	{
 		"folke/which-key.nvim",
-		event = "VeryLazy",
+		event = "BufRead",
 		opts = function()
 			return {
 				preset = "helix",
@@ -779,7 +779,7 @@ return {
 	{
 
 		"NvChad/nvim-colorizer.lua",
-		event = "VeryLazy",
+		event = "BufReadPre",
 		opts = function()
 			return {
 				user_default_options = {

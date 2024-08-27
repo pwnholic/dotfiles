@@ -20,29 +20,6 @@ function M.map(lhs, toggle)
 	vim.keymap.set("n", lhs, function()
 		t()
 	end, { desc = "Toggle " .. toggle.name })
-	M.wk(lhs, toggle)
-end
-
-function M.wk(lhs, toggle)
-	if not require("utils").has_plugin("which-key.nvim") then
-		return
-	end
-	local function safe_get()
-		local ok, enabled = pcall(toggle.get)
-		if not ok then
-			vim.notify_once("Failed to get toggle state for **" .. toggle.name .. "**:\n", 1, { title = "which key" })
-		end
-		return enabled
-	end
-	require("which-key").add({
-		{
-			lhs,
-			icon = false,
-			desc = function()
-				return (safe_get() and "Disable " or "Enable ") .. toggle.name
-			end,
-		},
-	})
 end
 
 M.treesitter = M.wrap({

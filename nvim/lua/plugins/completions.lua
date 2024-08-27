@@ -1,20 +1,44 @@
 return {
-	{ "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
-	{ "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
-	{ "tzachar/cmp-fuzzy-path", event = "CmdlineEnter", dependencies = "tzachar/fuzzy.nvim" },
-	{ "lukas-reineke/cmp-rg", event = "BufRead" },
-	{ "saadparwaiz1/cmp_luasnip", event = "InsertEnter" },
-	{ "stevearc/vim-vscode-snippets", event = "InsertEnter" },
 	{
-		"hrsh7th/nvim-cmp",
+		"yioneko/nvim-cmp",
+		branch = "perf",
 		event = "InsertEnter",
+		dependencies = {
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-cmdline" },
+			{ "tzachar/cmp-fuzzy-path", dependencies = "tzachar/fuzzy.nvim" },
+			{ "lukas-reineke/cmp-rg" },
+			{ "saadparwaiz1/cmp_luasnip" },
+			{ "stevearc/vim-vscode-snippets" },
+		},
+		keys = function()
+			return {
+				{ "<S-Tab>", mode = { "c", "i" } },
+				{ "<Tab>", mode = { "c", "i" } },
+				{ "<C-p>", mode = { "c", "i" } },
+				{ "<C-n>", mode = { "c", "i" } },
+				{ "<Down>", mode = { "c", "i" } },
+				{ "<Up>", mode = { "c", "i" } },
+				{ "<PageDown>", mode = { "c", "i" } },
+				{ "<C-u>", mode = { "c", "i" } },
+				{ "<C-d>", mode = { "c", "i" } },
+				{ "<C-e>", mode = { "c", "i" } },
+				{ "<CR>", mode = "i" },
+				{ "<C-y>", mode = "i" },
+			}
+		end,
 		opts = function()
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local utils = require("utils")
 			return {
 				auto_brackets = {},
-				performance = { async_budget = 64, max_view_entries = 64 },
+				performance = {
+					async_budget = 1,
+					max_view_entries = 64,
+					debounce = 1,
+					throttle = 1,
+				},
 				completion = { completeopt = "menu,menuone,noinsert" },
 				preselect = true,
 				mapping = {
@@ -135,13 +159,7 @@ return {
 						end
 					end, { "i", "c" }),
 					["<CR>"] = cmp.mapping(utils.cmp.confirm({ select = true }), { "i" }),
-					["<C-y>"] = cmp.mapping(utils.cmp.confirm({ select = true }), { "i" }),
-					["<S-CR>"] = cmp.mapping(utils.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
-					["<C-CR>"] = function(fallback)
-						cmp.abort()
-						fallback()
-					end,
-					["<BS>"] = cmp.mapping(utils.cmp.backspace_autoindent, { "i" }),
+					["<C-y>"] = cmp.mapping(utils.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
 				},
 				sources = cmp.config.sources({
 					{ name = "fuzzy_path", option = utils.cmp.fd_cmd },
@@ -156,6 +174,7 @@ return {
 					end,
 				},
 				formatting = {
+					expandable_indicator = true,
 					fields = { "kind", "abbr", "menu" },
 					format = function(entry, items)
 						local sname = entry.source.name
@@ -191,21 +210,18 @@ return {
 						return items
 					end,
 				},
-				experimental = {
-					ghost_text = {
-						hl_group = "CmpGhostText",
-					},
-				},
+				experimental = { ghost_text = { hl_group = "CmpGhostText" } },
 				sorting = {
-					priority_weight = 100,
+					priority_weight = 2,
 					comparators = {
 						require("cmp_fuzzy_path.compare") or function() end,
 						cmp.config.compare.offset,
 						cmp.config.compare.exact,
 						cmp.config.compare.score,
-						cmp.config.compare.kind,
 						cmp.config.compare.recently_used,
 						cmp.config.compare.locality,
+						cmp.config.compare.kind,
+						cmp.config.compare.lenght,
 					},
 				},
 			}
@@ -216,6 +232,7 @@ return {
 				source.group_index = source.group_index or 1
 			end
 
+			local cmp = require("cmp")
 			local parse = require("cmp.utils.snippet").parse
 			require("cmp.utils.snippet").parse = function(input)
 				local ok, ret = pcall(parse, input)
@@ -223,50 +240,6 @@ return {
 					return ret
 				end
 				return utils.cmp.snippet_preview(input)
-			end
-
-			local cmp = require("cmp")
-			local cmp_core = require("cmp.core")
-			---@type string?
-			local last_key
-
-			vim.on_key(function(k)
-				last_key = k
-			end)
-
-			---@type integer
-			local last_changed = 0
-			local _cmp_on_change = cmp_core.on_change
-
-			---Improves performance when inserting in large files
-			---@diagnostic disable-next-line: duplicate-set-field
-			function cmp_core.on_change(self, trigger_event)
-				-- Don't know why but inserting spaces/tabs causes higher latency than other
-				-- keys, e.g. when holding down 's' the interval between keystrokes is less
-				-- than 32ms (80 repeats/s keyboard), but when holding spaces/tabs the
-				-- interval increases to 100ms, guess is is due ot some other plugins that
-				-- triggers on spaces/tabs
-				-- Spaces/tabs are not useful in triggering completions in insert mode but can
-				-- be useful in command-line autocompletion, so ignore them only when not in
-				-- command-line mode
-				if (last_key == " " or last_key == "\t") and string.sub(vim.fn.mode(), 1, 1) ~= "c" then
-					return
-				end
-
-				local now = vim.uv.now()
-				local fast_typing = now - last_changed < 32
-				last_changed = now
-
-				if not fast_typing or trigger_event ~= "TextChanged" or cmp.visible() then
-					_cmp_on_change(self, trigger_event)
-					return
-				end
-
-				vim.defer_fn(function()
-					if last_changed == now then
-						_cmp_on_change(self, trigger_event)
-					end
-				end, 200)
 			end
 
 			cmp.setup.cmdline({ "/", "?" }, {

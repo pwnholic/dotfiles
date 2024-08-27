@@ -21,7 +21,55 @@ M.root_patterns = {
 
 ---@type lsp_client_config_t
 ---@diagnostic disable-next-line: missing-fields
-M.default_config = { root_patterns = M.root_patterns, capabilities = require("cmp_nvim_lsp").default_capabilities() }
+M.default_config = {
+	root_patterns = M.root_patterns,
+	capabilities = {
+		textDocument = {
+			completion = {
+				dynamicRegistration = false,
+				completionItem = {
+					snippetSupport = true,
+					commitCharactersSupport = true,
+					deprecatedSupport = true,
+					preselectSupport = true,
+					tagSupport = { valueSet = { 1 } },
+					insertReplaceSupport = true,
+					resolveSupport = {
+						properties = {
+							"documentation",
+							"detail",
+							"additionalTextEdits",
+							"sortText",
+							"filterText",
+							"insertText",
+							"textEdit",
+							"insertTextFormat",
+							"insertTextMode",
+						},
+					},
+					insertTextModeSupport = {
+						valueSet = {
+							1, -- asIs
+							2, -- adjustIndentation
+						},
+					},
+					labelDetailsSupport = true,
+				},
+				contextSupport = true,
+				insertTextMode = 1,
+				completionList = {
+					itemDefaults = {
+						"commitCharacters",
+						"editRange",
+						"insertTextFormat",
+						"insertTextMode",
+						"data",
+					},
+				},
+			},
+		},
+	},
+}
 
 ---@class vim.lsp.ClientConfig: lsp_client_config_t
 ---@class lsp_client_config_t
