@@ -261,7 +261,7 @@ return {
 			},
 		}
 
-		local function winbar_harpoon(tab_component)
+		local function harpoon_winbar(tab_component)
 			return {
 				init = function(self)
 					local items = require("harpoon"):list().items
@@ -444,11 +444,11 @@ return {
 				condition = function()
 					return require("harpoon"):list():length() > 1
 				end,
-				winbar_harpoon({
+				static = { mode_colors = mode_colors },
+				harpoon_winbar({
 					provider = function(self)
 						return string.format(" %s ", self.hpnr) or ""
 					end,
-					static = { mode_colors = mode_colors },
 					hl = function(self)
 						if not self.is_active then
 							return {
