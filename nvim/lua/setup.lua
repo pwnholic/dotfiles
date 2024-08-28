@@ -16,6 +16,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+require("utils.lsp").words.setup({ enabled = true })
+
 require("utils.lsp").on_attach(function(client, buffer)
 	require("utils.lsp").keys_on_attach(client, buffer)
 	if client.supports_method(methods.textDocument_inlayHint) then
@@ -27,7 +29,6 @@ require("utils.lsp").on_attach(function(client, buffer)
 			vim.lsp.inlay_hint.enable(false, { bufnr = buffer })
 		end
 	end
-
 	-- if client.supports_method(methods.textDocument_codeLens) then
 	-- 	vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
 	-- 		buffer = buffer,

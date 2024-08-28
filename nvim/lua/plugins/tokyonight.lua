@@ -42,9 +42,6 @@ return {
 				hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
 				hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
 				hl.LspCodeLensSeparator = { link = "Boolean", default = true }
-				hl.IlluminatedWordText = { link = "LspReferenceText" }
-				hl.IlluminatedWordRead = { link = "LspReferenceRead" }
-				hl.IlluminatedWordWrite = { link = "LspReferenceWrite" }
 
 				hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
 				hl.OilDirIcon = { fg = c.orange, bg = c.none }
