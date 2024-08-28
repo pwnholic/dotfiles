@@ -129,22 +129,6 @@ return {
 						end
 					end,
 				},
-				["<Down>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
-				["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
-				["<PageDown>"] = cmp.mapping(
-					cmp.mapping.select_next_item({
-						count = vim.o.pumheight ~= 0 and math.ceil(vim.o.pumheight / 2) or 8,
-					}),
-					{ "i", "c" }
-				),
-				["<PageUp>"] = cmp.mapping(
-					cmp.mapping.select_prev_item({
-						count = vim.o.pumheight ~= 0 and math.ceil(vim.o.pumheight / 2) or 8,
-					}),
-					{ "i", "c" }
-				),
-				["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-				["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
 				["<C-e>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.abort()
@@ -152,6 +136,8 @@ return {
 						fallback()
 					end
 				end, { "i", "c" }),
+				["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
+				["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
 				["<CR>"] = cmp.mapping(utils.cmp.confirm({ select = true }), { "i" }),
 				["<C-y>"] = cmp.mapping(utils.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
 			},
@@ -170,8 +156,7 @@ return {
 			formatting = {
 				expandable_indicator = true,
 				fields = { "kind", "abbr", "menu" },
-				format = function(entry, items)
-					local sname = entry.source.name
+				format = function(_, items)
 					if items.kind == "Folder" then
 						items.menu = items.kind
 						items.menu_hl_group = "Directory"
@@ -184,7 +169,6 @@ return {
 						items.kind = icon or utils.icons.kinds.File
 						items.kind_hl_group = hl_group or "CmpItemKindFile"
 					else
-						items.dup = ({ buffer = 1, nvim_lsp = 0, luasnip = 1, path = 1 })[sname] or 0
 						items.menu = items.kind
 						items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
 						items.kind = vim.fn.strcharpart(utils.icons.kinds[items.kind] or "", 0, 2)
@@ -208,7 +192,7 @@ return {
 			sorting = {
 				priority_weight = 2,
 				comparators = {
-					require("cmp_fuzzy_path.compare") or function() end,
+					require("cmp_fuzzy_path.compare"),
 					cmp.config.compare.offset,
 					cmp.config.compare.exact,
 					cmp.config.compare.score,
@@ -262,11 +246,13 @@ return {
 		cmp.setup.filetype({ "sql", "mysql" }, { sources = { { name = "nvim_lsp" } } })
 
 		cmp.setup(opts)
+
 		cmp.event:on("confirm_done", function(event)
 			if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
 				utils.cmp.auto_brackets(event.entry)
 			end
 		end)
+
 		cmp.event:on("menu_opened", function(event)
 			utils.cmp.add_missing_snippet_docs(event.window)
 		end)
