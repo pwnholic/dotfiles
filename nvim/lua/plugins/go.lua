@@ -2,7 +2,6 @@ return {
 	"ray-x/go.nvim",
 	branch = "master",
 	ft = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
-	dependencies = { "ray-x/guihua.lua", branch = "master", build = "cd lua/fzy && make" },
 	opts = function()
 		return {
 			disable_defaults = false,

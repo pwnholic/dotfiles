@@ -86,9 +86,15 @@ return {
 		end
 
 		local function add_to_harpoon(selected, opts)
+			local pos = { 1, 0 }
 			for i = 1, #selected do
 				local file = fzf.path.entry_to_file(selected[i], opts)
-				require("harpoon"):list():add({ value = file.bufname or file.path or file.uri, context = {} })
+				if file.bufnr ~= -1 then
+					pos = vim.api.nvim_win_get_cursor(0)
+				end
+				require("harpoon")
+					:list()
+					:add({ value = file.bufname or file.path or file.uri, context = { row = pos[1], col = pos[2] } })
 				vim.notify(string.format("Added to Harpoon %s", file.bufname or file.path or file.uri), 2)
 			end
 		end

@@ -77,6 +77,8 @@ return {
 				u = ai.gen_spec.function_call(), -- u for "Usage"
 				U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
 			},
+			silent = true,
+			search_method = "cover",
 		}
 	end,
 	config = function(_, opts)
@@ -100,7 +102,7 @@ return {
 				{ "b", desc = ")} block" },
 				{ "c", desc = "class" },
 				{ "d", desc = "digit(s)" },
-				{ "e", desc = "CamelCase / snake_case" },
+				{ "e", desc = "camelCase / snake_case" },
 				{ "f", desc = "function" },
 				{ "g", desc = "entire file" },
 				{ "i", desc = "indent" },
@@ -117,10 +119,10 @@ return {
 			local mappings = vim.tbl_extend("force", {}, {
 				around = "a",
 				inside = "i",
-				around_next = "an",
-				inside_next = "in",
-				around_last = "al",
-				inside_last = "il",
+				around_next = "",
+				inside_next = "",
+				around_last = "",
+				inside_last = "",
 			}, opts.mappings or {})
 			mappings.goto_left = nil
 			mappings.goto_right = nil
