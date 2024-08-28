@@ -2,9 +2,9 @@ return {
 	"stevearc/conform.nvim",
 	event = "BufWritePre",
 	cmd = "ConformInfo",
-	init = vim.schedule_wrap(function()
-		vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-	end),
+	init = function()
+		vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
+	end,
 	opts = function()
 		return {
 			formatters_by_ft = {

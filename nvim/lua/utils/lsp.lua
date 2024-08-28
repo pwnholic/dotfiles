@@ -1534,19 +1534,16 @@ function M.words.setup(opts)
 
 	M.on_attach(function(client, bufnr)
 		if client.supports_method(methods.textDocument_documentHighlight) then
-			vim.api.nvim_create_autocmd({ "CursorHold", "CursorMoved" }, {
-				group = vim.api.nvim_create_augroup("lsp_word_" .. bufnr, { clear = true }),
-				buffer = bufnr,
-				callback = function(ev)
-					if not ({ M.words.get() })[2] then
-						if ev.event:find("CursorMoved") then
-							vim.lsp.buf.clear_references()
-						elseif vim.fn.pumvisible() == 0 then
-							vim.lsp.buf.document_highlight()
-						end
-					end
-				end,
-			})
+			if not ({ M.words.get() })[2] then
+				vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave" }, {
+					buffer = bufnr,
+					callback = vim.lsp.buf.document_highlight,
+				})
+				vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
+					buffer = bufnr,
+					callback = vim.lsp.buf.clear_references,
+				})
+			end
 		end
 	end)
 end

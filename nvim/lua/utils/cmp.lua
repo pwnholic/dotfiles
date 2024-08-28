@@ -510,53 +510,6 @@ function M.clamp_cmp_item(field, min_width, max_width, cmp_item)
 	end
 end
 
-function M.backspace_autoindent(fallback)
-	local ts_indent = require("nvim-treesitter.indent")
-	local cmp = require("cmp")
-	local cursor_row, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
-	if cursor_row == 1 and cursor_col == 0 then
-		return
-	end
-	cmp.close()
-	local current_line = vim.api.nvim_buf_get_lines(0, cursor_row - 1, cursor_row, true)[1]
-	local ok, get_indent = pcall(ts_indent.get_indent, cursor_row)
-	if not ok then
-		get_indent = 0
-	end
-	if vim.fn.strcharpart(current_line, get_indent - 1, cursor_col - get_indent + 1):gsub("%s+", "") == "" then
-		if get_indent > 0 and cursor_col > get_indent then
-			local new_line = vim.fn.strcharpart(current_line, 0, get_indent)
-				.. vim.fn.strcharpart(current_line, cursor_col)
-
-			vim.api.nvim_buf_set_lines(0, cursor_row - 1, cursor_row, true, { new_line })
-			vim.api.nvim_win_set_cursor(0, { cursor_row, math.min(get_indent or 0, vim.fn.strcharlen(new_line)) })
-		elseif cursor_row > 1 and (get_indent > 0 and cursor_col + 1 > get_indent) then
-			local prev_line = vim.api.nvim_buf_get_lines(0, cursor_row - 2, cursor_row - 1, true)[1]
-			if vim.trim(prev_line) == "" then
-				local prev_indent = ts_indent.get_indent(cursor_row - 1) or 0
-				local new_line = vim.fn.strcharpart(current_line, 0, prev_indent)
-					.. vim.fn.strcharpart(current_line, cursor_col)
-
-				vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
-				vim.api.nvim_win_set_cursor(0, {
-					cursor_row - 1,
-					math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))),
-				})
-			else
-				local len = vim.fn.strcharlen(prev_line)
-				local new_line = prev_line .. vim.fn.strcharpart(current_line, cursor_col)
-
-				vim.api.nvim_buf_set_lines(0, cursor_row - 2, cursor_row, true, { new_line })
-				vim.api.nvim_win_set_cursor(0, { cursor_row - 1, math.max(0, len) })
-			end
-		else
-			fallback()
-		end
-	else
-		fallback()
-	end
-end
-
 M.fd_cmd = {
 	vim.fn.executable("fd") == 1 and "fd" or "fdfind",
 	"-p",
