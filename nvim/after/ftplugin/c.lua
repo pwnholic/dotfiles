@@ -7,7 +7,7 @@ cmp.setup.filetype({ "c", "cpp" }, {
 	sorting = {
 		priority_weight = 100,
 		comparators = {
-			require("cmp_fuzzy_path.compare") or function() end,
+			require("cmp_fuzzy_path.compare"),
 			function(lhs, rhs)
 				local diff
 				if lhs.completion_item.score and rhs.completion_item.score then

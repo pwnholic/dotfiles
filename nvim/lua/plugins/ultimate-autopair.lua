@@ -58,9 +58,6 @@ return {
 			{ "\\(", "\\)" },
 			{ "\\[", "\\]" },
 			{ "\\{", "\\}" },
-			{ "[=[", "]=]", ft = { "lua" } },
-			{ "<<<", ">>>", ft = { "cuda" } },
-			{ "/*", "*/", ft = { "c", "cpp", "cuda" }, newline = true, space = true },
 			{ "<", ">", disable_start = true, disable_end = true },
 			-- Paring '$' and '*' are handled by snippets,
 			-- only use autopair to delete matched pairs here

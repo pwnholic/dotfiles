@@ -261,6 +261,35 @@ return {
 			},
 		}
 
+		local function winbar_harpoon(tab_component)
+			return {
+				init = function(self)
+					local items = require("harpoon"):list().items
+					local current_buf = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":~:.")
+					for idx = 1, #items do
+						local child = self[idx]
+						if not (child and child.hpnr == idx) then
+							self[idx] = self:new(tab_component, idx)
+							child = self[idx]
+							child.hpnr = idx
+						end
+						if tostring(items[idx].value) == current_buf then
+							child.is_active = true
+							self.active_child = items[idx].value
+						else
+							child.is_active = false
+						end
+					end
+
+					if #self > #items then
+						for i = #self, #items + 1, -1 do
+							self[i] = nil
+						end
+					end
+				end,
+			}
+		end
+
 		opts.winbar = {
 			{
 				init = function(self)
@@ -409,6 +438,37 @@ return {
 						return self.child:eval()
 					end,
 				},
+			},
+			align,
+			{
+				condition = function()
+					return require("harpoon"):list():length() > 1
+				end,
+				winbar_harpoon({
+					provider = function(self)
+						return string.format(" %s ", self.hpnr) or ""
+					end,
+					static = { mode_colors = mode_colors },
+					hl = function(self)
+						if not self.is_active then
+							return {
+								bg = c.fg_gutter,
+								bold = true,
+								fg = self.mode_colors[vim.fn.mode():sub(1, 1)],
+								underline = true,
+								sp = self.mode_colors[vim.fn.mode():sub(1, 1)],
+							}
+						else
+							return {
+								bg = self.mode_colors[vim.fn.mode():sub(1, 1)],
+								bold = true,
+								fg = c.bg_dark,
+								underline = true,
+								sp = self.mode_colors[vim.fn.mode():sub(1, 1)],
+							}
+						end
+					end,
+				}),
 			},
 		}
 

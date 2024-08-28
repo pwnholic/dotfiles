@@ -3,7 +3,7 @@ return {
 	branch = "harpoon2",
 	keys = function()
 		return {
-                -- stylua: ignore start
+             -- stylua: ignore start
 			 { "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" }) end, desc = "Harpoon List", },
 			 { "<leader>l", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
 			 { "<leader>a", function() vim.notify("Add to Mark", 2) require("harpoon"):list():add() end, desc = "Add to Mark", },
@@ -17,65 +17,6 @@ return {
 			 { "<leader>8", function() require("harpoon"):list():select(5) end, desc = "Mark 8" },
 			 { "<leader>9", function() require("harpoon"):list():select(5) end, desc = "Mark 9" },
 			-- stylua: ignore end
-			{
-				"<A-space>",
-				function()
-					local fzf = require("fzf-lua")
-					local hp = require("harpoon")
-					fzf.fzf_exec(function(cb)
-						for _, item in ipairs(hp:list().items) do
-							cb(item.value)
-						end
-						cb()
-					end, {
-						prompt = "Harpoon : ",
-						cwd_header = false,
-						actions = {
-							["enter"] = fzf.actions.file_edit,
-							["ctrl-s"] = fzf.actions.file_split,
-							["ctrl-v"] = fzf.actions.file_vsplit,
-							["ctrl-x"] = function(s)
-								for i, v in ipairs(s) do
-									table.remove(hp:list().items, i)
-									vim.notify(string.format("Remove %s from mark", v), 2, { title = "Harpoon" })
-								end
-							end,
-							["alt-n"] = {
-								function(s)
-									local items = hp:list().items
-									for i, _ in ipairs(s) do
-										if i < 1 or i >= #items then
-											return vim.notify("index out of bounds", 1)
-										end
-										local temp = items[#items]
-										for k = #items, i + 1, -1 do
-											items[k] = items[k - 1]
-										end
-										items[i] = temp
-									end
-								end,
-								fzf.actions.resume,
-							},
-							["alt-p"] = {
-								function(s)
-									local items = hp:list().items
-									for i, _ in ipairs(s) do
-										if i < 1 or i >= #items then
-											return vim.notify("index out of bounds", 1)
-										end
-										local temp = items[i]
-										for k = i, #items - 1 do
-											items[k] = items[k + 1]
-										end
-										items[#items] = temp
-									end
-								end,
-								fzf.actions.resume,
-							},
-						},
-					})
-				end,
-			},
 		}
 	end,
 	config = function()
