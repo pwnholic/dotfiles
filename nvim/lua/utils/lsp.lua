@@ -1523,13 +1523,13 @@ function M.words.setup(opts)
 		return
 	end
 	M.words.enabled = true
-	local handler = vim.lsp.handlers["textDocument/documentHighlight"]
+	local handler_doc_hl = vim.lsp.handlers["textDocument/documentHighlight"]
 	vim.lsp.handlers["textDocument/documentHighlight"] = function(err, result, ctx, config)
 		if not vim.api.nvim_buf_is_loaded(ctx.bufnr) then
 			return
 		end
 		vim.lsp.buf.clear_references()
-		return handler(err, result, ctx, config)
+		return handler_doc_hl(err, result, ctx, config)
 	end
 
 	M.on_attach(function(client, bufnr)
