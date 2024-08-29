@@ -1,8 +1,8 @@
 return {
-	"ThePrimeagen/harpoon",
-	branch = "harpoon2",
-	keys = function()
-		return {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    keys = function()
+        return {
              -- stylua: ignore start
 			 { "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" }) end, desc = "Harpoon List", },
 			 { "<leader>l", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" }) end, desc = "Harpoon List", },
@@ -16,31 +16,31 @@ return {
 			 { "<leader>7", function() require("harpoon"):list():select(7) end, desc = "Mark 7" },
 			 { "<leader>8", function() require("harpoon"):list():select(8) end, desc = "Mark 8" },
 			 { "<leader>9", function() require("harpoon"):list():select(9) end, desc = "Mark 9" },
-			-- stylua: ignore end
-		}
-	end,
-	config = function()
-		local harpoon = require("harpoon")
-		harpoon:setup({
-			settings = {
-				save_on_toggle = true,
-				key = function()
-					return vim.uv.cwd() --[[@as string]]
-				end,
-			},
-		})
-		harpoon:extend({
-			UI_CREATE = function(ctx)
-				vim.keymap.set("n", "<C-v>", function()
-					harpoon.ui:select_menu_item({ vsplit = true })
-				end, { buffer = ctx.bufnr })
-				vim.keymap.set("n", "<C-s>", function()
-					harpoon.ui:select_menu_item({ split = true })
-				end, { buffer = ctx.bufnr })
-				vim.keymap.set("n", "<C-t>", function()
-					harpoon.ui:select_menu_item({ tabedit = true })
-				end, { buffer = ctx.bufnr })
-			end,
-		})
-	end,
+            -- stylua: ignore end
+        }
+    end,
+    config = function()
+        local harpoon = require("harpoon")
+        harpoon:setup({
+            settings = {
+                save_on_toggle = true,
+                key = function()
+                    return vim.uv.cwd() --[[@as string]]
+                end,
+            },
+        })
+        harpoon:extend({
+            UI_CREATE = function(ctx)
+                vim.keymap.set("n", "<C-v>", function()
+                    harpoon.ui:select_menu_item({ vsplit = true })
+                end, { buffer = ctx.bufnr })
+                vim.keymap.set("n", "<C-s>", function()
+                    harpoon.ui:select_menu_item({ split = true })
+                end, { buffer = ctx.bufnr })
+                vim.keymap.set("n", "<C-t>", function()
+                    harpoon.ui:select_menu_item({ tabedit = true })
+                end, { buffer = ctx.bufnr })
+            end,
+        })
+    end,
 }
