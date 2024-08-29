@@ -52,8 +52,7 @@ return {
                 },
             },
             lsp_gofumpt = false,
-            lsp_on_attach = function(client, bufnr)
-                require("utils.lsp").keys_on_attach(_, bufnr)
+            lsp_on_attach = function(client, _)
                 if not client.server_capabilities.semanticTokensProvider then
                     local semantic = client.config.capabilities.textDocument.semanticTokens
                     client.server_capabilities.semanticTokensProvider = {
