@@ -186,8 +186,8 @@ return {
                         items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
                         items.kind = vim.fn.strcharpart(utils.icons.kinds[items.kind] or "", 0, 2)
                     end
-                    utils.cmp.clamp_cmp_item("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), items)
-                    utils.cmp.clamp_cmp_item("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), items)
+                    -- utils.cmp.clamp_cmp_item("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), items)
+                    -- utils.cmp.clamp_cmp_item("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), items)
                     return items
                 end,
             },
