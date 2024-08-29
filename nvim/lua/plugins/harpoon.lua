@@ -12,10 +12,10 @@ return {
 			 { "<leader>3", function() require("harpoon"):list():select(3) end, desc = "Mark 3" },
 			 { "<leader>4", function() require("harpoon"):list():select(4) end, desc = "Mark 4" },
 			 { "<leader>5", function() require("harpoon"):list():select(5) end, desc = "Mark 5" },
-			 { "<leader>6", function() require("harpoon"):list():select(5) end, desc = "Mark 6" },
-			 { "<leader>7", function() require("harpoon"):list():select(5) end, desc = "Mark 7" },
-			 { "<leader>8", function() require("harpoon"):list():select(5) end, desc = "Mark 8" },
-			 { "<leader>9", function() require("harpoon"):list():select(5) end, desc = "Mark 9" },
+			 { "<leader>6", function() require("harpoon"):list():select(6) end, desc = "Mark 6" },
+			 { "<leader>7", function() require("harpoon"):list():select(7) end, desc = "Mark 7" },
+			 { "<leader>8", function() require("harpoon"):list():select(8) end, desc = "Mark 8" },
+			 { "<leader>9", function() require("harpoon"):list():select(9) end, desc = "Mark 9" },
 			-- stylua: ignore end
 		}
 	end,
