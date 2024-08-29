@@ -24,7 +24,6 @@ M.root_patterns = {
 ---@diagnostic disable-next-line: missing-fields
 M.default_config = {
     init_options = { hostInfo = "neovim" },
-    root_patterns = M.root_patterns,
     capabilities = {
         textDocument = {
             completion = {
@@ -184,18 +183,6 @@ function M.restart(client_or_id)
                 vim.api.nvim_buf_call(buf, function()
                     M.start(config)
                 end)
-            end
-        end,
-    })
-end
-
-function M.on_attach(on_attach, name)
-    return vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(args)
-            local buffer = args.buf ---@type number
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client and (not name or client.name == name) then
-                return on_attach(client, buffer)
             end
         end,
     })
@@ -1557,4 +1544,15 @@ function M.words.jump(count, cycle)
     end
 end
 
+function M.on_attach(on_attach, name)
+    return vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+            local buffer = args.buf ---@type number
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client and (not name or client.name == name) then
+                return on_attach(client, buffer)
+            end
+        end,
+    })
+end
 return M
