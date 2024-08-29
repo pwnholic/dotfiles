@@ -4,23 +4,23 @@ vim.opt_local.signcolumn = "no"
 vim.opt_local.stc = nil
 
 require("utils.lsp").start({
-	cmd = { vim.fn.stdpath("data") .. "/mason/bin/marksman", "server" },
-	name = "marksman",
-	root_patterns = { ".git", ".marksman.toml" },
-	single_file_support = true,
+    cmd = { vim.fn.stdpath("data") .. "/mason/bin/marksman", "server" },
+    name = "marksman",
+    root_patterns = { ".marksman.toml" },
+    single_file_support = true,
 })
 
 local function Obsidian(cmd)
-	return function()
-		vim.ui.input({ prompt = "Enter your " .. cmd .. " Notes: " }, function(args)
-			args = args:gsub("%s+", " ")
-			if args == "" then
-				return vim.cmd["Obsidian" .. cmd]()
-			else
-				return vim.cmd["Obsidian" .. cmd](args)
-			end
-		end)
-	end
+    return function()
+        vim.ui.input({ prompt = "Enter your " .. cmd .. " Notes: " }, function(args)
+            args = args:gsub("%s+", " ")
+            if args == "" then
+                return vim.cmd["Obsidian" .. cmd]()
+            else
+                return vim.cmd["Obsidian" .. cmd](args)
+            end
+        end)
+    end
 end
 
 vim.keymap.set("n", "<leader>nn", Obsidian("New"), { desc = "New Note [name]" })

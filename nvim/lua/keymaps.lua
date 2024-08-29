@@ -1,10 +1,10 @@
 local utils = require("utils")
 
 vim.keymap.set({ "i", "c" }, "<Tab>", function()
-	utils.cmp.jump(1)
+    utils.completion.jump(1)
 end)
 vim.keymap.set({ "i", "c" }, "<S-Tab>", function()
-	utils.cmp.jump(-1)
+    utils.completion.jump(-1)
 end)
 
 -- better up/down
@@ -45,12 +45,7 @@ vim.keymap.set("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Wi
 
 -- Clear search with <esc>
 vim.keymap.set({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and Clear hlsearch" })
-vim.keymap.set(
-	"n",
-	"<leader>ur",
-	"<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
-	{ desc = "Redraw / Clear hlsearch / Diff Update" }
-)
+vim.keymap.set("n", "<leader>ur", "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>", { desc = "Redraw / Clear hlsearch / Diff Update" })
 
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })
@@ -85,11 +80,11 @@ vim.keymap.set("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
 
 -- diagnostic
 local diagnostic_goto = function(next, severity)
-	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-	severity = severity and vim.diagnostic.severity[severity] or nil
-	return function()
-		go({ severity = severity })
-	end
+    local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
+    severity = severity and vim.diagnostic.severity[severity] or nil
+    return function()
+        go({ severity = severity })
+    end
 end
 
 vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
