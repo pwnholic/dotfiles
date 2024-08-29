@@ -29,7 +29,7 @@ return {
     opts = function()
         local cmp = require("cmp")
         local luasnip = require("luasnip")
-        local utils = require("utils")
+        local utils = require("utils.completion")
         return {
             auto_brackets = {},
             performance = { async_budget = 1, max_view_entries = 64, debounce = 1, throttle = 1 },
@@ -38,8 +38,8 @@ return {
             mapping = {
                 ["<S-Tab>"] = {
                     ["c"] = function()
-                        if utils.cmp.get_jump_pos(-1) then
-                            utils.cmp.jump(-1)
+                        if utils.get_jump_pos(-1) then
+                            utils.jump(-1)
                             return
                         end
                         if cmp.visible() then
@@ -53,8 +53,8 @@ return {
                             local prev = luasnip.jump_destination(-1)
                             local _, snip_dest_end = prev:get_buf_position()
                             snip_dest_end[1] = snip_dest_end[1] + 1 -- (1, 0) indexed
-                            local tabout_dest = utils.cmp.get_jump_pos(-1)
-                            if not utils.cmp.jump_to_closer(snip_dest_end, tabout_dest, -1) then
+                            local tabout_dest = utils.get_jump_pos(-1)
+                            if not utils.jump_to_closer(snip_dest_end, tabout_dest, -1) then
                                 fallback()
                             end
                         else
@@ -64,8 +64,8 @@ return {
                 },
                 ["<Tab>"] = {
                     ["c"] = function()
-                        if utils.cmp.get_jump_pos(1) then
-                            utils.cmp.jump(1)
+                        if utils.get_jump_pos(1) then
+                            utils.jump(1)
                             return
                         end
                         if cmp.visible() then
@@ -81,18 +81,18 @@ return {
                             local buf = vim.api.nvim_get_current_buf()
                             local cursor = vim.api.nvim_win_get_cursor(0)
                             local current = luasnip.session.current_nodes[buf]
-                            if utils.cmp.node_has_length(current) then
-                                if current.next_choice or utils.cmp.cursor_at_end_of_range({ current:get_buf_position() }, cursor) then
+                            if utils.node_has_length(current) then
+                                if current.next_choice or utils.cursor_at_end_of_range({ current:get_buf_position() }, cursor) then
                                     luasnip.jump(1)
                                 else
                                     fallback()
                                 end
                             else -- node has zero length
-                                local parent = utils.cmp.node_find_parent(current)
+                                local parent = utils.node_find_parent(current)
                                 local range = parent and { parent:get_buf_position() }
-                                local tabout_dest = utils.cmp.get_jump_pos(1)
-                                if tabout_dest and range and utils.cmp.in_range(range, tabout_dest) then
-                                    utils.cmp.jump(1)
+                                local tabout_dest = utils.get_jump_pos(1)
+                                if tabout_dest and range and utils.in_range(range, tabout_dest) then
+                                    utils.jump(1)
                                 else
                                     luasnip.jump(1)
                                 end
@@ -135,11 +135,11 @@ return {
                 end, { "i", "c" }),
                 ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
                 ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-                ["<CR>"] = cmp.mapping(utils.cmp.confirm({ select = true }), { "i" }),
-                ["<C-y>"] = cmp.mapping(utils.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
+                ["<CR>"] = cmp.mapping(utils.confirm({ select = true }), { "i" }),
+                ["<C-y>"] = cmp.mapping(utils.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
             },
             sources = cmp.config.sources({
-                { name = "fuzzy_path", option = utils.cmp.fd_cmd, max_item_count = 5, group_index = 1, priority = 1000 },
+                { name = "fuzzy_path", option = utils.fd_cmd, max_item_count = 5, group_index = 1, priority = 1000 },
                 { name = "luasnip", max_item_count = 3, group_index = 1, priority = 600 },
                 { name = "rg", keyword_length = 4, group_index = 2, priority = 400 },
                 {
@@ -165,29 +165,30 @@ return {
                 expandable_indicator = true, -- ist mean show this ~ char when item to long
                 fields = { "kind", "abbr", "menu" },
                 format = function(entry, items)
+                    local kind_icons = require("utils.icons").kinds
                     if items.kind == "Folder" then
                         items.menu = items.kind
                         items.menu_hl_group = "Directory"
-                        items.kind = utils.icons.kinds.Folder
+                        items.kind = kind_icons.Folder
                         items.kind_hl_group = "Directory"
                     elseif items.kind == "File" then
                         local icon, hl_group = require("mini.icons").get("file", vim.fs.basename(items.word))
                         items.menu = items.kind
                         items.menu_hl_group = hl_group or "CmpItemKindFile"
-                        items.kind = icon or utils.icons.kinds.File
+                        items.kind = icon or kind_icons.File
                         items.kind_hl_group = hl_group or "CmpItemKindFile"
                     elseif entry.source.name == "rg" then
                         items.menu = "RipGrep"
                         items.menu_hl_group = "@tag.tsx"
-                        items.kind = utils.icons.kinds.RipGrep
+                        items.kind = kind_icons.RipGrep
                         items.kind_hl_group = "@tag.tsx"
                     else
                         items.menu = items.kind
                         items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
-                        items.kind = vim.fn.strcharpart(utils.icons.kinds[items.kind] or "", 0, 2)
+                        items.kind = vim.fn.strcharpart(kind_icons[items.kind] or "", 0, 2)
                     end
-                    -- utils.cmp.clamp_cmp_item("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), items)
-                    -- utils.cmp.clamp_cmp_item("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), items)
+                    -- utils.clamp_cmp_item("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)), items)
+                    -- utils.clamp_cmp_item("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)), items)
                     return items
                 end,
             },
@@ -208,15 +209,15 @@ return {
         }
     end,
     config = function(_, opts)
-        local utils = require("utils")
         local cmp = require("cmp")
+        local utils = require("utils.completion")
         local parse = require("cmp.utils.snippet").parse
         require("cmp.utils.snippet").parse = function(input)
             local ok, ret = pcall(parse, input)
             if ok then
                 return ret
             end
-            return utils.cmp.snippet_preview(input)
+            return utils.snippet_preview(input)
         end
 
         cmp.setup.cmdline({ "/", "?" }, {
@@ -232,7 +233,7 @@ return {
             ---@diagnostic disable-next-line: missing-fields
             formatting = { fields = { "abbr" } },
             sources = {
-                { name = "fuzzy_path", option = utils.cmp.fd_cmd, group_index = 2 },
+                { name = "fuzzy_path", option = utils.fd_cmd, group_index = 2 },
                 { name = "cmdline", group_index = 1 },
             },
         })
@@ -248,12 +249,12 @@ return {
 
         cmp.event:on("confirm_done", function(event)
             if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-                utils.cmp.auto_brackets(event.entry)
+                utils.auto_brackets(event.entry)
             end
         end)
 
         cmp.event:on("menu_opened", function(event)
-            utils.cmp.add_missing_snippet_docs(event.window)
+            utils.add_missing_snippet_docs(event.window)
         end)
     end,
 }
