@@ -23,6 +23,7 @@ M.root_patterns = {
 ---@type lsp_client_config_t
 ---@diagnostic disable-next-line: missing-fields
 M.default_config = {
+    init_options = { hostInfo = "neovim" },
     root_patterns = M.root_patterns,
     capabilities = {
         textDocument = {
