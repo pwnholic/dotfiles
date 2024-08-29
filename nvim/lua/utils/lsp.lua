@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field, param-type-mismatch
 local utils = require("utils")
 local methods = vim.lsp.protocol.Methods
 

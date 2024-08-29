@@ -107,7 +107,7 @@ function M.expand(snippet)
 		ok = pcall(vim.snippet.expand, fixed)
 		local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
 			or ("Failed to parse snippet.\n" .. err)
-		vim.notify(([[%s ```%s %s ```]]):format(msg, vim.bo.filetype, snippet), { title = "vim.snippet" })
+		vim.notify(([[%s ```%s %s ```]]):format(msg, vim.bo.filetype, snippet), 2, { title = "vim.snippet" })
 	end
 	if session then
 		vim.snippet._session = session
@@ -504,7 +504,7 @@ function M.clamp_cmp_item(field, min_width, max_width, cmp_item)
 	if field_width > max_width then
 		local former_width = math.floor(max_width * 0.6)
 		local latter_width = math.max(0, max_width - former_width - 1)
-		cmp_item[field] = string.format("%s…%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
+		cmp_item[field] = string.format("%s...%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
 	elseif field_width < min_width then
 		cmp_item[field] = string.format("%-" .. min_width .. "s", field_str)
 	end
