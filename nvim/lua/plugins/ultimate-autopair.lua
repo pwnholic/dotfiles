@@ -61,6 +61,7 @@ return {
 			{ "<", ">", disable_start = true, disable_end = true },
 			-- Paring '$' and '*' are handled by snippets,
 			-- only use autopair to delete matched pairs here
+            -- stylua: ignore start
 			{ "$", "$", ft = { "markdown", "tex" }, disable_start = true, disable_end = true },
 			{ "*", "*", ft = { "markdown" }, disable_start = true, disable_end = true },
 			{ "\\left(", "\\right)", newline = true, space = true, ft = { "markdown", "tex" } },
@@ -74,6 +75,7 @@ return {
 			{ "\\left\\lVert", "\\right\\rVert", newline = true, space = true, ft = { "markdown", "tex" } },
 			{ "\\begin{bmatrix}", "\\end{bmatrix}", newline = true, space = true, ft = { "markdown", "tex" } },
 			{ "\\begin{pmatrix}", "\\end{pmatrix}", newline = true, space = true, ft = { "markdown", "tex" } },
+			{ ">", "<", ft = { "html", "xml", "markdown" }, disable_start = true, disable_end = true, newline = true, space = true, },
 		}
 	end,
 }
