@@ -5,7 +5,7 @@ return {
 		return {
              -- stylua: ignore start
 			 { "<leader><leader>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" }) end, desc = "Harpoon List", },
-			 { "<leader>l", function() require("harpoon").ui:toggle_quick_menu( require("harpoon"):list(), { ui_width_ratio = 0.40, border = "single", title = "" }) end, desc = "Harpoon List", },
+			 { "<leader>l", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" }) end, desc = "Harpoon List", },
 			 { "<leader>a", function() vim.notify("Add to Mark", 2) require("harpoon"):list():add() end, desc = "Add to Mark", },
 			 { "<leader>1", function() require("harpoon"):list():select(1) end, desc = "Mark 1" },
 			 { "<leader>2", function() require("harpoon"):list():select(2) end, desc = "Mark 2" },
