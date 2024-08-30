@@ -459,6 +459,56 @@ return {
                     filetype = { "dashboard", "fzf", "harpoon", "oil", "diff" },
                 })
             end,
+            static = {
+                click_args = function(minwid, clicks, button, mods)
+                    local args = { minwid = minwid, clicks = clicks, button = button, mods = mods, mousepos = vim.fn.getmousepos() }
+                    local signs = {}
+                    local sign = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol)
+                    if sign == " " then
+                        sign = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol - 1)
+                    end
+                    args.sign = signs[sign]
+                    vim.api.nvim_set_current_win(args.mousepos.winid)
+                    vim.api.nvim_win_set_cursor(0, { args.mousepos.line, 0 })
+                    return args
+                end,
+                resolve = function(self, name)
+                    for pattern, callback in pairs(self.handlers.Signs) do
+                        if name:match(pattern) then
+                            return vim.defer_fn(callback, 100)
+                        end
+                    end
+                end,
+                handlers = {
+                    Signs = {
+                        ["Neotest.*"] = function()
+                            require("neotest").run.run()
+                        end,
+                        ["Debug.*"] = function()
+                            require("dap").toggle_breakpoint()
+                        end,
+                        ["Diagnostic.*"] = function()
+                            vim.diagnostic.open_float()
+                        end,
+                        GitSigns = function()
+                            vim.defer_fn(function()
+                                require("gitsigns").blame_line({ full = true })
+                            end, 100)
+                        end,
+                    },
+                },
+            },
+            on_click = {
+                name = "sc_sign_click",
+                update = true,
+                callback = function(self, ...)
+                    local line = self.click_args(...).mousepos.line
+                    local sign = utils.stc.get_signs(vim.api.nvim_win_get_buf(0), line)[1]
+                    if sign then
+                        self:resolve(sign.name)
+                    end
+                end,
+            },
             provider = utils.stc.statuscolumn,
         }
         opts.opts = {
