@@ -37,11 +37,12 @@ return {
                 hl.LspReferenceText = { italic = true, bold = true, reverse = true }
                 hl.LspReferenceRead = { italic = true, bold = true, reverse = true }
                 hl.LspReferenceWrite = { italic = true, bold = true, reverse = true }
-                hl.LspSignatureActiveParameter = { italic = true, bold = true, reverse = true }
                 hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensSeparator = { link = "Boolean", default = true }
+                hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
+                hl.LspSignatureActiveParameter = { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
 
                 hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
                 hl.OilDirIcon = { fg = c.orange, bg = c.none }
