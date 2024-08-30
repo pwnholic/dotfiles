@@ -23,7 +23,7 @@ M.root_patterns = {
 ---@type lsp_client_config_t
 ---@diagnostic disable-next-line: missing-fields
 M.default_config = {
-    init_options = { hostInfo = "neovim" },
+    -- init_options = { hostInfo = "neovim" },
     capabilities = {
         textDocument = {
             completion = {
@@ -473,11 +473,7 @@ M.subcommands = {
             arg_handler = function(args)
                 return args.new_name or args[1], args.options
             end,
-            opts = {
-                "new_name",
-                "options.filter",
-                "options.name",
-            },
+            opts = { "new_name", "options.filter", "options.name" },
         },
         workspace_symbol = {
             has = methods.workspace_symbol,
@@ -508,14 +504,7 @@ M.subcommands = {
         },
         code_action = {
             has = methods.textDocument_codeAction,
-            opts = {
-                "filter",
-                "range",
-                "context.only",
-                "context.triggerKind",
-                "context.diagnostics",
-                ["apply"] = subcommand_opt_vals.bool,
-            },
+            opts = { "filter", "range", "context.only", "context.triggerKind", "context.diagnostics", ["apply"] = subcommand_opt_vals.bool },
         },
         add_workspace_folder = {
             has = methods.workspace_workspaceFolders,
@@ -551,87 +540,37 @@ M.subcommands = {
                 end, vim.lsp.buf.list_workspace_folders())
             end,
         },
-        execute_command = {
-            has = methods.workspace_executeCommand,
-            arg_handler = subcommand_arg_handler.item,
-        },
-        type_definition = {
-            has = methods.textDocument_typeDefinition,
-            opts = {
-                "reuse_win",
-                ["on_list"] = subcommand_opt_vals.bool,
-            },
-        },
-        declaration = {
-            has = methods.textDocument_declaration,
-            opts = {
-                "reuse_win",
-                ["on_list"] = subcommand_opt_vals.bool,
-            },
-        },
-        definition = {
-            has = methods.textDocument_definition,
-            opts = {
-                "reuse_win",
-                ["on_list"] = subcommand_opt_vals.bool,
-            },
-        },
-        document_symbol = {
-            has = methods.textDocument_documentSymbol,
-            opts = {
-                ["on_list"] = subcommand_opt_vals.bool,
-            },
-        },
-        implementation = {
-            has = methods.textDocument_implementation,
-            opts = {
-                ["on_list"] = subcommand_opt_vals.bool,
-            },
-        },
-        hover = {
-            has = methods.textDocument_hover,
-        },
-        document_highlight = {
-            has = methods.textDocument_documentHighlight,
-        },
-        clear_references = {
-            has = methods.textDocument_documentHighlight,
-        },
+        execute_command = { has = methods.workspace_executeCommand, arg_handler = subcommand_arg_handler.item },
+        type_definition = { has = methods.textDocument_typeDefinition, opts = { "reuse_win", ["on_list"] = subcommand_opt_vals.bool } },
+        declaration = { has = methods.textDocument_declaration, opts = { "reuse_win", ["on_list"] = subcommand_opt_vals.bool } },
+        definition = { has = methods.textDocument_definition, opts = { "reuse_win", ["on_list"] = subcommand_opt_vals.bool } },
+        document_symbol = { has = methods.textDocument_documentSymbol, opts = { ["on_list"] = subcommand_opt_vals.bool } },
+        implementation = { has = methods.textDocument_implementation, opts = { ["on_list"] = subcommand_opt_vals.bool } },
+        hover = { has = methods.textDocument_hover },
+        document_highlight = { has = methods.textDocument_documentHighlight },
+        clear_references = { has = methods.textDocument_documentHighlight },
         list_workspace_folders = {
             has = methods.workspace_workspaceFolders,
             fn_override = function()
                 vim.print(vim.lsp.buf.list_workspace_folders())
             end,
         },
-        incoming_calls = {
-            has = methods.callHierarchy_incomingCalls,
-        },
-        outgoing_calls = {
-            has = methods.callHierarchy_outgoingCalls,
-        },
-        signature_help = {
-            has = methods.textDocument_signatureHelp,
-        },
+        incoming_calls = { has = methods.callHierarchy_incomingCalls },
+        outgoing_calls = { has = methods.callHierarchy_outgoingCalls },
+        signature_help = { has = methods.textDocument_signatureHelp },
         codelens_clear = {
             has = methods.textDocument_codeLens,
             fn_override = function(args)
                 vim.lsp.codelens.clear(args.client_id, args.bufnr)
             end,
-            opts = {
-                ["client_id"] = subcommand_opt_vals.lsp_clients,
-                ["bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { ["client_id"] = subcommand_opt_vals.lsp_clients, ["bufnr"] = subcommand_opt_vals.bufs },
         },
         codelens_display = {
             has = methods.textDocument_codeLens,
             fn_override = function(args)
                 vim.lsp.codelens.display(args.lenses, args.bufnr or 0, args.client_id)
             end,
-            opts = {
-                ["client_id"] = subcommand_opt_vals.lsp_clients,
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                "lenses",
-            },
+            opts = { ["client_id"] = subcommand_opt_vals.lsp_clients, ["bufnr"] = subcommand_opt_vals.bufs, "lenses" },
         },
         codelens_get = {
             has = methods.textDocument_codeLens,
@@ -652,76 +591,50 @@ M.subcommands = {
             fn_override = function(args)
                 vim.lsp.codelens.refresh(args.opts)
             end,
-            opts = {
-                "opts",
-                ["opts.bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "opts", ["opts.bufnr"] = subcommand_opt_vals.bufs },
         },
-        codelens_run = {
-            has = methods.textDocument_codeLens,
-            fn_override = vim.lsp.codelens.run,
-        },
+        codelens_run = { has = methods.textDocument_codeLens, fn_override = vim.lsp.codelens.run },
         codelens_save = {
             has = methods.textDocument_codeLens,
             fn_override = function(args)
                 vim.lsp.codelens.save(args.lenses, args.bufnr, args.client_id)
             end,
-            opts = {
-                "lenses",
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                ["client_id"] = subcommand_opt_vals.lsp_clients,
-            },
+            opts = { "lenses", ["bufnr"] = subcommand_opt_vals.bufs, ["client_id"] = subcommand_opt_vals.lsp_clients },
         },
         inlay_hint_enable = {
             has = methods.textDocument_inlayHint,
             fn_override = function(args)
                 vim.lsp.inlay_hint.enable(true, args.filter)
             end,
-            opts = {
-                "filter",
-                ["filter.bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "filter", ["filter.bufnr"] = subcommand_opt_vals.bufs },
         },
         inlay_hint_disable = {
             has = methods.textDocument_inlayHint,
             fn_override = function(args)
                 vim.lsp.inlay_hint.enable(false, args.filter)
             end,
-            opts = {
-                "filter",
-                ["filter.bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "filter", ["filter.bufnr"] = subcommand_opt_vals.bufs },
         },
         inlay_hint_toggle = {
             has = methods.textDocument_inlayHint,
             fn_override = function(args)
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), args.filter)
             end,
-            opts = {
-                "filter",
-                ["filter.bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "filter", ["filter.bufnr"] = subcommand_opt_vals.bufs },
         },
         inlay_hint_get = {
             has = methods.textDocument_inlayHint,
             fn_override = function(args)
                 vim.print(vim.lsp.inlay_hint.get(args.filter))
             end,
-            opts = {
-                "filter",
-                "filter.range",
-                ["filter.bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "filter", "filter.range", ["filter.bufnr"] = subcommand_opt_vals.bufs },
         },
         inlay_hint_is_enabled = {
             has = methods.textDocument_inlayHint,
             fn_override = function(args)
                 vim.print(vim.lsp.inlay_hint.is_enabled(args.filter))
             end,
-            opts = {
-                "filter",
-                ["filter.bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "filter", ["filter.bufnr"] = subcommand_opt_vals.bufs },
         },
         semantic_tokens_force_refresh = {
             has = methods.textDocument_semanticTokens_full,
@@ -735,11 +648,7 @@ M.subcommands = {
             fn_override = function(args)
                 vim.print(vim.lsp.semantic_tokens.get_at_pos(args.bufnr or 0, args.row, args.col))
             end,
-            opts = {
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                "row",
-                "col",
-            },
+            opts = { ["bufnr"] = subcommand_opt_vals.bufs, "row", "col" },
         },
         semantic_tokens_highlight_token = {
             has = methods.textDocument_semanticTokens_full,
@@ -762,22 +671,14 @@ M.subcommands = {
             fn_override = function(args)
                 vim.lsp.semantic_tokens.start(args.bufnr or 0, args.client_id, args.opts)
             end,
-            opts = {
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                ["client_id"] = subcommand_opt_vals.lsp_clients,
-                "opts",
-                "opts.debounce",
-            },
+            opts = { ["bufnr"] = subcommand_opt_vals.bufs, ["client_id"] = subcommand_opt_vals.lsp_clients, "opts", "opts.debounce" },
         },
         semantic_tokens_stop = {
             has = methods.textDocument_semanticTokens_full,
             fn_override = function(args)
                 vim.lsp.semantic_tokens.stop(args.bufnr or 0, args.client_id)
             end,
-            opts = {
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                ["client_id"] = subcommand_opt_vals.lsp_clients,
-            },
+            opts = { ["bufnr"] = subcommand_opt_vals.bufs, ["client_id"] = subcommand_opt_vals.lsp_clients },
         },
     },
 
@@ -840,20 +741,14 @@ M.subcommands = {
             arg_handler = function(args)
                 return args.bufnr, args.namespace
             end,
-            opts = {
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                "namespace",
-            },
+            opts = { ["bufnr"] = subcommand_opt_vals.bufs, "namespace" },
         },
         enable = {
             ---@param args lsp_command_parsed_arg_t
             arg_handler = function(args)
                 return args.bufnr, args.namespace
             end,
-            opts = {
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                "namespace",
-            },
+            opts = { ["bufnr"] = subcommand_opt_vals.bufs, "namespace" },
         },
         fromqflist = {
             arg_handler = subcommand_arg_handler.item,
@@ -867,12 +762,7 @@ M.subcommands = {
             arg_handler = function(args)
                 return args.bufnr, args.opts
             end,
-            opts = {
-                ["bufnr"] = subcommand_opt_vals.bufs,
-                "opts.namespace",
-                "opts.lnum",
-                ["opts.severity"] = subcommand_opt_vals.severity,
-            },
+            opts = { ["bufnr"] = subcommand_opt_vals.bufs, "opts.namespace", "opts.lnum", ["opts.severity"] = subcommand_opt_vals.severity },
             fn_override = function(...)
                 vim.print(vim.diagnostic.get(...))
             end,
@@ -1032,20 +922,14 @@ M.subcommands = {
             arg_handler = function(args)
                 return args.namespace, args.bufnr
             end,
-            opts = {
-                "namespace",
-                ["bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "namespace", ["bufnr"] = subcommand_opt_vals.bufs },
         },
         is_enabled = {
             ---@param args lsp_command_parsed_arg_t
             arg_handler = function(args)
                 return args.bufnr, args.namespace
             end,
-            opts = {
-                "namespace",
-                ["bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "namespace", ["bufnr"] = subcommand_opt_vals.bufs },
             fn_override = function(...)
                 vim.print(vim.diagnostic.is_enabled(...))
             end,
@@ -1055,13 +939,7 @@ M.subcommands = {
             arg_handler = function(args)
                 return args.str, args.pat, args.groups, args.severity_map, args.defaults
             end,
-            opts = {
-                "str",
-                "pat",
-                "groups",
-                "severity_map",
-                "defaults",
-            },
+            opts = { "str", "pat", "groups", "severity_map", "defaults" },
             fn_override = function(...)
                 vim.print(vim.diagnostic.match(...))
             end,
@@ -1086,10 +964,7 @@ M.subcommands = {
             arg_handler = function(args)
                 return args.namespace, args.bufnr
             end,
-            opts = {
-                "namespace",
-                ["bufnr"] = subcommand_opt_vals.bufs,
-            },
+            opts = { "namespace", ["bufnr"] = subcommand_opt_vals.bufs },
         },
         set = {
             ---@param args lsp_command_parsed_arg_t
@@ -1130,21 +1005,10 @@ M.subcommands = {
             },
         },
         setloclist = {
-            opts = {
-                "namespace",
-                "winnr",
-                "open",
-                "title",
-                ["severity"] = subcommand_opt_vals.severity,
-            },
+            opts = { "namespace", "winnr", "open", "title", ["severity"] = subcommand_opt_vals.severity },
         },
         setqflist = {
-            opts = {
-                "namespace",
-                "open",
-                "title",
-                ["severity"] = subcommand_opt_vals.severity,
-            },
+            opts = { "namespace", "open", "title", ["severity"] = subcommand_opt_vals.severity },
         },
         show = {
             ---@param args lsp_command_parsed_arg_t
@@ -1270,22 +1134,20 @@ function M.setup_commands(meta, subcommand_info_list, fn_scope, buffer)
     -- metacommand -> MetaCommand abbreviation
     utils.keys.command_abbrev(meta:lower(), meta)
     -- Format: MetaCommand sub_command opts ...
-    vim.api.nvim_create_user_command(meta, command_meta(subcommand_info_list, fn_scope), {
-        bang = true,
-        range = true,
-        nargs = "*",
-        complete = command_complete(meta, subcommand_info_list),
-    })
+    vim.api.nvim_create_user_command(
+        meta,
+        command_meta(subcommand_info_list, fn_scope),
+        { bang = true, range = true, nargs = "*", complete = command_complete(meta, subcommand_info_list) }
+    )
     -- Format: MetaCommandSubcommand opts ...
     for subcommand, cap in pairs(subcommand_info_list) do
         local has = not cap.has or M.has_lsp_methods(buffer, cap.has)
         if has then
-            vim.api.nvim_create_user_command(meta .. utils.snake_to_camel(subcommand), command_meta(subcommand_info_list, fn_scope, subcommand), {
-                bang = true,
-                range = true,
-                nargs = "*",
-                complete = command_complete(meta, subcommand_info_list),
-            })
+            vim.api.nvim_create_user_command(
+                meta .. utils.snake_to_camel(subcommand),
+                command_meta(subcommand_info_list, fn_scope, subcommand),
+                { bang = true, range = true, nargs = "*", complete = command_complete(meta, subcommand_info_list) }
+            )
         end
     end
 end
@@ -1385,8 +1247,8 @@ function M.keys_on_attach(_, buffer)
         { "]]", function() M.words.jump(vim.v.count1) end, has = methods.textDocument_documentHighlight, desc = "Next Reference" },
         { "[[", function() M.words.jump(-vim.v.count1) end, has = methods.textDocument_documentHighlight, desc = "Prev Reference" }
 ,
-        -- stylua: ignore end
     })
+    -- stylua: ignore end
 
     for _, keys in pairs(keymaps) do
         local has = not keys.has or M.has_lsp_methods(buffer, keys.has)
@@ -1555,4 +1417,5 @@ function M.on_attach(on_attach, name)
         end,
     })
 end
+
 return M

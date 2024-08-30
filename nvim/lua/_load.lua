@@ -75,23 +75,15 @@ require("utils.lsp").on_attach(function(client, buffer)
             vim.lsp.inlay_hint.enable(false, { bufnr = buffer })
         end
     end
+
     -- if client.supports_method(methods.textDocument_codeLens) then
-    --     vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
+    --     vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
     --         buffer = buffer,
-    --         callback = vim.lsp.codelens.refresh,
+    --         callback = function()
+    --             vim.lsp.codelens.refresh({ bufnr = 0 })
+    --         end,
     --     })
     -- end
-
-    if client.name == "gopls" then
-        if not client.server_capabilities.semanticTokensProvider then
-            local semantic = client.config.capabilities.textDocument.semanticTokens or {}
-            client.server_capabilities.semanticTokensProvider = {
-                full = true,
-                legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
-                range = true,
-            }
-        end
-    end
 end)
 
 local register_capability = vim.lsp.handlers["client/registerCapability"]

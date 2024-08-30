@@ -66,7 +66,7 @@ return {
                 end
             end,
             lsp_keymaps = false,
-            lsp_codelens = true,
+            lsp_codelens = false,
             diagnostic = require("utils.lsp").diagnostics_config,
             go_input = vim.ui.input,
             go_select = vim.ui.select,
