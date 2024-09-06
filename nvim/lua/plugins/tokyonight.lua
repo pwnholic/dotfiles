@@ -75,6 +75,8 @@ return {
                 hl.ChoiceNode = { fg = c.orange, bg = c.bg_dark }
                 hl.InsertNode = { fg = c.green, bg = c.bg_dark }
                 hl.ExitNode = { fg = c.red, bg = c.bg_dark }
+
+                hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
             end,
             cache = true,
         }

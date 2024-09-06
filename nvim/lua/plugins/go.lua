@@ -2,6 +2,7 @@ return {
     "ray-x/go.nvim",
     branch = "master",
     ft = { "go", "gomod", "gosum", "gotmpl", "gohtmltmpl", "gotexttmpl" },
+    dependencies = { "ray-x/guihua.lua", build = "cd lua/fzy && make" },
     opts = function()
         return {
             disable_defaults = false,
@@ -57,10 +58,7 @@ return {
                     local semantic = client.config.capabilities.textDocument.semanticTokens
                     client.server_capabilities.semanticTokensProvider = {
                         full = true,
-                        legend = {
-                            tokenTypes = semantic.tokenTypes,
-                            tokenModifiers = semantic.tokenModifiers,
-                        },
+                        legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
                         range = true,
                     }
                 end

@@ -515,7 +515,7 @@ return {
             disable_winbar_cb = function(args)
                 return conditions.buffer_matches({
                     buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-                    filetype = { "dashboard", "oil", "lspinfo", "toggleterm", "fzf", "diff", "dbui", "dbout" },
+                    filetype = { "dashboard", "oil", "lspinfo", "toggleterm", "fzf", "diff", "dbui", "dbout", "lazyterm" },
                 }, args.buf)
             end,
         }

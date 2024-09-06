@@ -331,9 +331,9 @@ return {
                     end,
                 },
                 ["gp"] = {
-                    desc = "Go to Current Working Dir",
+                    desc = "Go to Root Project",
                     callback = function()
-                        return oil.open(os.getenv("PWD"))
+                        return oil.open(vim.g._lsp_root_dirs[1])
                     end,
                 },
                 ["g."] = {

@@ -21,7 +21,6 @@ return {
                 css = { "prettier" },
                 scss = { "prettier" },
                 markdown = { "prettier" },
-                sql = { "sqlfluff" },
             },
             format_after_save = { lsp_format = "fallback" },
             formatters = { sqlfluff = { args = { "format", "--dialect=ansi", "-" } } },
