@@ -1,6 +1,6 @@
 return {
     "rebelot/heirline.nvim",
-    event = "UIEnter",
+    lazy = false,
     opts = function(_, opts)
         local conditions = require("heirline.conditions")
         local hutils = require("heirline.utils")
@@ -515,7 +515,7 @@ return {
             disable_winbar_cb = function(args)
                 return conditions.buffer_matches({
                     buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-                    filetype = { "dashboard", "oil", "lspinfo", "toggleterm", "fzf", "diff", "dbui", "dbout", "lazyterm" },
+                    filetype = { "dashboard", "oil", "lspinfo", "toggleterm", "fzf", "diff", "dbui", "dbout", "lazyterm", "dap-repl" },
                 }, args.buf)
             end,
         }

@@ -20,7 +20,6 @@ require("lazy").setup({
     defaults = { lazy = false, version = false },
     spec = {
         { "nvim-lua/plenary.nvim", lazy = true },
-        { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = true },
         { "nvim-neotest/nvim-nio", lazy = true },
         { "echasnovski/mini.icons", opts = true, lazy = true },
         { "MunifTanjim/nui.nvim", lazy = true },

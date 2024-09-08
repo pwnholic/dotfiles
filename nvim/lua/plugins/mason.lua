@@ -9,7 +9,6 @@ return {
             ensure_installed = {
                 "lua-language-server",
                 "stylua",
-                "selene",
 
                 "gopls",
                 "goimports-reviser",
@@ -31,18 +30,14 @@ return {
                 "rust-analyzer",
                 "bacon",
 
-                "vscode-solidity-server",
-                "solhint",
-
                 "marksman",
-                "vale",
 
-                "sqls",
-                "sqlfluff",
+                "php-debug-adapter",
+                "phpactor",
+                "php_cs_fixer",
             },
         }
     end,
-    ---@param opts MasonSettings | {ensure_installed: string[]}
     config = function(_, opts)
         require("mason").setup(opts)
         local mr = require("mason-registry")

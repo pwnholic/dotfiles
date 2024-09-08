@@ -5,7 +5,6 @@ return {
     dependencies = {
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-cmdline" },
-        { "tzachar/cmp-fuzzy-path", dependencies = "tzachar/fuzzy.nvim" },
         { "lukas-reineke/cmp-rg" },
         { "saadparwaiz1/cmp_luasnip" },
         { "stevearc/vim-vscode-snippets" },
@@ -139,7 +138,6 @@ return {
                 ["<C-y>"] = cmp.mapping(utils.confirm({ behavior = cmp.ConfirmBehavior.Replace }), { "i" }),
             },
             sources = cmp.config.sources({
-                { name = "fuzzy_path", option = utils.fd_cmd, max_item_count = 5, group_index = 1, priority = 1000 },
                 { name = "luasnip", max_item_count = 3, group_index = 1, priority = 600 },
                 { name = "rg", keyword_length = 4, group_index = 2, priority = 400 },
                 {
@@ -196,7 +194,6 @@ return {
             sorting = {
                 priority_weight = 2,
                 comparators = {
-                    require("cmp_fuzzy_path.compare"),
                     cmp.config.compare.offset,
                     cmp.config.compare.exact,
                     cmp.config.compare.score,
@@ -233,7 +230,6 @@ return {
             ---@diagnostic disable-next-line: missing-fields
             formatting = { fields = { "abbr" } },
             sources = {
-                { name = "fuzzy_path", option = utils.fd_cmd, group_index = 2 },
                 { name = "cmdline", group_index = 1 },
             },
         })
