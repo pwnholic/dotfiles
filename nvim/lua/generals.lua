@@ -73,10 +73,10 @@ vim.opt.wildmode = "longest:full,full"
 vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.guicursor = {
-	"i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor",
-	"n-v:block-TermCursor/lCursor",
-	"o:hor50-TermCursor/lCursor",
-	"r-cr:hor20-TermCursor/lCursor",
+    "i-c-ci-ve:blinkoff500-blinkon500-block-TermCursor",
+    "n-v:block-TermCursor/lCursor",
+    "o:hor50-TermCursor/lCursor",
+    "r-cr:hor20-TermCursor/lCursor",
 }
 
 vim.g.loaded_python3_provider = 0

@@ -2,8 +2,8 @@ return {
     "folke/tokyonight.nvim",
     priority = 1000,
     lazy = false,
-    opts = function()
-        return {
+    config = function()
+        require("tokyonight").setup({
             style = "night",
             transparent = false,
             terminal_colors = true,
@@ -44,6 +44,8 @@ return {
                 hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
                 hl.LspSignatureActiveParameter = { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
 
+                hl.GitSignsCurrentLineBlame = { fg = c.dark5, bg = c.none }
+
                 hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
                 hl.OilDirIcon = { fg = c.orange, bg = c.none }
                 hl.OilLink = { link = "Constant" }
@@ -65,7 +67,7 @@ return {
                 hl.OilSize = { fg = c.teal, bg = c.none }
                 hl.OilMtime = { fg = c.purple, bg = c.none }
 
-                hl.FzfLuaDirPart = { fg = c.blue2 }
+                hl.FzfLuaDirPart = { fg = c.yellow1 }
                 hl.FzfLuaBorder = { fg = c.bg_dark, bg = c.bg_dark }
                 hl.FzfLuaFilePart = { fg = "#ffffff" }
                 hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
@@ -79,10 +81,7 @@ return {
                 hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
             end,
             cache = true,
-        }
-    end,
-    config = function(_, opts)
-        require("tokyonight").setup(opts)
+        })
         vim.cmd.colorscheme("tokyonight")
     end,
 }

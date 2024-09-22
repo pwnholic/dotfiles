@@ -87,11 +87,6 @@ return {
 		end,
 	},
 	{
-		"windwp/nvim-ts-autotag",
-		config = true,
-		ft = { "html", "javascriptreact", "typescriptreact", "markdown", "htmx" },
-	},
-	{
 		"nvim-treesitter/nvim-treesitter-context",
 		event = "BufRead",
 		opts = function()

@@ -2,6 +2,7 @@ return {
     "stevearc/oil.nvim",
     cmd = "Oil",
     keys = { { "<leader>e", vim.cmd.Oil, desc = "Open Oil Buffer" } },
+    version = false,
     lazy = false,
     init = function()
         local stat = vim.uv.fs_stat(vim.fn.argv(0))

@@ -23,7 +23,6 @@ require("lazy").setup({
         { "nvim-neotest/nvim-nio", lazy = true },
         { "echasnovski/mini.icons", opts = true, lazy = true },
         { "MunifTanjim/nui.nvim", lazy = true },
-        { "neovim/nvim-lspconfig", lazy = true },
         { import = "plugins" },
     },
     local_spec = true,

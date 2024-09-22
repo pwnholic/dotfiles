@@ -1,5 +1,6 @@
 return {
     "3rd/image.nvim",
+    version = false,
     ft = { "markdown", "neorg" },
     -- build = "luarocks --local --lua-version=5.1 install magick --force",
     init = vim.schedule_wrap(function()

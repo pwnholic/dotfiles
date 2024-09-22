@@ -15,9 +15,9 @@ return {
                 "delve",
                 "go-debug-adapter",
 
-                "clangd",
-                "clang-format",
-                "codelldb",
+                -- "clangd",
+                -- "clang-format",
+                -- "codelldb",
 
                 "debugpy",
                 "ruff",
@@ -28,13 +28,15 @@ return {
                 "js-debug-adapter",
 
                 "rust-analyzer",
-                "bacon",
+                -- "bacon",
 
                 "marksman",
+                "markdownlint-cli2",
+                "markdown-toc",
 
-                "php-debug-adapter",
-                "phpactor",
-                "php_cs_fixer",
+                -- "php-debug-adapter",
+                -- "phpactor",
+                -- "php-cs-fixer",
             },
         }
     end,

@@ -1,6 +1,7 @@
 return {
     "L3MON4D3/LuaSnip",
     build = "make install_jsregexp",
+    version = false,
     event = "ModeChanged *:[iRss\x13vV\x16]*",
     keys = function()
         return {

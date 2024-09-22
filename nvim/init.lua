@@ -1,5 +1,5 @@
 require("generals")
 require("packages")
-require("_load")
+require("tmux")
 require("autocmds")
 require("keymaps")

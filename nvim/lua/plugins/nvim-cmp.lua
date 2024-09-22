@@ -2,6 +2,7 @@ return {
     "yioneko/nvim-cmp",
     branch = "perf",
     event = "InsertEnter",
+    version = false,
     dependencies = {
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-cmdline" },

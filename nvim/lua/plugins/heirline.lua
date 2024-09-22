@@ -141,6 +141,21 @@ return {
                     hl = { fg = c.yellow, bg = c.bg_statusline, bold = true },
                 },
             },
+            {
+                condition = function()
+                    if vim.bo.filetype == "oil" then
+                        return true
+                    end
+                    return false
+                end,
+                static = { mode_colors = mode_colors },
+                provider = function()
+                    return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":~:."):gsub("oil://", ""):gsub(tostring(os.getenv("PWD")) .. "/", "")
+                end,
+                hl = function(self)
+                    return { fg = self.mode_colors[vim.fn.mode(1):sub(1, 1)], bold = true, bg = c.bg_statusline }
+                end,
+            },
             align,
             {
                 condition = function()
