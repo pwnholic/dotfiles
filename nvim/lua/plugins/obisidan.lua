@@ -63,7 +63,7 @@ return {
                 return out
             end,
             templates = {
-                folder = "06 Templates",
+                folder = "60 Templates",
                 date_format = "%Y-%m-%d",
                 time_format = "%H:%M",
                 substitutions = {},
@@ -87,16 +87,6 @@ return {
             search_max_lines = 1000,
             open_notes_in = "current",
             ui = { enable = false },
-            attachments = {
-                img_folder = "assets/imgs", -- This is the default
-                img_name_func = function()
-                    return string.format("%s-", os.time())
-                end,
-                img_text_func = function(client, path)
-                    path = client:vault_relative_path(path) or path
-                    return string.format("![%s](%s)", path.name, path)
-                end,
-            },
         }
     end,
 }
