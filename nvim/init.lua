@@ -1,5 +1,2 @@
-require("generals")
-require("packages")
-require("tmux")
-require("autocmds")
-require("keymaps")
+vim.loader.enable()
+require("config.lazy")

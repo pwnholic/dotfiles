@@ -72,11 +72,7 @@ return {
             follow_url_func = function(url)
                 vim.fn.jobstart({ "xdg-open", url }) -- linux
             end,
-
-            -- Optional, set to true if you use the Obsidian Advanced URI plugin.
-            -- https://github.com/Vinzent03/obsidian-advanced-uri
             use_advanced_uri = true,
-
             picker = {
                 name = "fzf-lua",
                 note_mappings = { new = "<C-x>", insert_link = "<C-l>" },

@@ -2,17 +2,45 @@ return {
     "stevearc/oil.nvim",
     cmd = "Oil",
     keys = { { "<leader>e", vim.cmd.Oil, desc = "Open Oil Buffer" } },
-    version = false,
-    lazy = false,
     init = function()
-        local stat = vim.uv.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == "directory" then
-            require("lazy").load({ plugins = { "oil.nvim" } })
-        end
+        vim.api.nvim_create_autocmd("BufWinEnter", {
+            nested = true,
+            callback = function(info)
+                local dirbuf_found
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                    vim.schedule(function()
+                        if not vim.api.nvim_buf_is_valid(buf) then
+                            return
+                        end
+
+                        local bufname = vim.api.nvim_buf_get_name(buf)
+                        if
+                            not vim.startswith(bufname, "oil://")
+                            and (vim.uv.fs_stat(bufname) or {}).type ~= "directory"
+                        then
+                            return
+                        end
+
+                        if not dirbuf_found then
+                            dirbuf_found = true
+                            pcall(require, "oil")
+                            pcall(vim.api.nvim_del_autocmd, info.id)
+                        end
+
+                        if not vim.api.nvim_buf_is_valid(buf) then
+                            return
+                        end
+                        vim.api.nvim_buf_call(buf, function()
+                            vim.cmd.edit({ bang = true, mods = { keepjumps = true } })
+                        end)
+                    end)
+                end
+            end,
+        })
     end,
-    opts = function()
+    config = function()
         local oil = require("oil")
-        local icons = require("utils.icons").kinds
+        local icons = LazyVim.config.icons.kinds
 
         local preview_wins = {} ---@type table<integer, integer>
         local preview_bufs = {} ---@type table<integer, integer>
@@ -32,7 +60,9 @@ return {
 
         ---Generate lines for preview window when preview is not available
         ---@param msg string
-        ---@param height integer @param width integer @return string[]
+        ---@param height integer
+        ---@param width integer
+        ---@return string[]
         local function nopreview(msg, height, width)
             local lines = {}
             local fillchar = vim.opt_local.fillchars:get().diff or "-"
@@ -67,7 +97,11 @@ return {
             oil_win = oil_win or vim.api.nvim_get_current_win()
             local preview_win = preview_wins[oil_win]
             local preview_buf = preview_bufs[oil_win]
-            if preview_win and vim.api.nvim_win_is_valid(preview_win) and vim.fn.winbufnr(preview_win) == preview_buf then
+            if
+                preview_win
+                and vim.api.nvim_win_is_valid(preview_win)
+                and vim.fn.winbufnr(preview_win) == preview_buf
+            then
                 vim.api.nvim_win_close(preview_win, true)
             end
             if preview_buf and vim.api.nvim_win_is_valid(preview_buf) then
@@ -94,17 +128,19 @@ return {
             local oil_win = vim.api.nvim_get_current_win()
             local preview_win = preview_wins[oil_win]
             local preview_buf = preview_bufs[oil_win]
-            if not preview_win or not preview_buf or not vim.api.nvim_win_is_valid(preview_win) or not vim.api.nvim_buf_is_valid(preview_buf) then
+            if
+                not preview_win
+                or not preview_buf
+                or not vim.api.nvim_win_is_valid(preview_win)
+                or not vim.api.nvim_buf_is_valid(preview_buf)
+            then
                 local oil_win_height = vim.api.nvim_win_get_height(oil_win)
                 local oil_win_width = vim.api.nvim_win_get_width(oil_win)
-
                 vim.cmd.new({ mods = { vertical = oil_win_width > 6 * oil_win_height } })
-
                 preview_win = vim.api.nvim_get_current_win()
                 preview_buf = vim.api.nvim_get_current_buf()
                 preview_wins[oil_win] = preview_win
                 preview_bufs[oil_win] = preview_buf
-
                 vim.bo[preview_buf].swapfile = false
                 vim.bo[preview_buf].buflisted = false
                 vim.bo[preview_buf].buftype = "nofile"
@@ -116,8 +152,6 @@ return {
                 vim.opt_local.signcolumn = "no"
                 vim.opt_local.foldcolumn = "0"
                 vim.opt_local.winbar = ""
-                vim.opt_local.list = true
-                vim.opt.listchars = { tab = "  " }
                 vim.api.nvim_set_current_win(oil_win)
             end
             -- Set keymap for opening the file from preview buffer
@@ -137,8 +171,16 @@ return {
             local lines = {}
             lines = stat.type == "directory" and vim.fn.systemlist("ls -lhA " .. vim.fn.shellescape(fpath))
                 or stat.size == 0 and nopreview("Empty file", preview_win_height, preview_win_width)
-                or stat.size > preview_max_fsize and nopreview("File too large to preview", preview_win_height, preview_win_width)
-                or not vim.fn.system({ "file", fpath }):match("text") and nopreview("Binary file, no preview available", preview_win_height, preview_win_width)
+                or stat.size > preview_max_fsize and nopreview(
+                    "File too large to preview",
+                    preview_win_height,
+                    preview_win_width
+                )
+                or not vim.fn.system({ "file", fpath }):match("text") and nopreview(
+                    "Binary file, no preview available",
+                    preview_win_height,
+                    preview_win_width
+                )
                 or (function()
                         add_syntax = true
                         return true
@@ -148,7 +190,11 @@ return {
                             return (line:gsub("\x0d$", ""))
                         end)
                         :totable()
-            vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, lines)
+            do
+                vim.bo[preview_buf].modifiable = true
+                vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, lines)
+                vim.bo[preview_buf].modifiable = false
+            end
             vim.api.nvim_buf_set_name(preview_buf, preview_bufnewname)
             -- If previewing a directory, change cwd to that directory
             -- so that we can `gf` to files in the preview buffer;
@@ -158,6 +204,9 @@ return {
                 if not vim.fn.getcwd(0) ~= target_dir then
                     lcd(target_dir)
                 end
+                -- Move cursor to the first line of the preview buffer, so that we always
+                -- see the beginning of the file when we start previewing a new file
+                vim.cmd("0")
             end)
             vim.api.nvim_buf_call(preview_buf, function()
                 vim.treesitter.stop(preview_buf)
@@ -176,7 +225,7 @@ return {
         vim.api.nvim_create_autocmd({ "CursorMoved", "WinScrolled" }, {
             desc = "Update floating preview window when cursor moves or window scrolls.",
             group = groupid_preview,
-            pattern = "oil:///*",
+            pattern = "oil://*",
             callback = function()
                 local oil_win = vim.api.nvim_get_current_win()
                 local preview_win = preview_wins[oil_win]
@@ -193,6 +242,7 @@ return {
                 end, preview_debounce)
             end,
         })
+
         vim.api.nvim_create_autocmd("BufEnter", {
             desc = "Close preview window when leaving oil buffers.",
             group = groupid_preview,
@@ -226,6 +276,7 @@ return {
             end_preview()
         end
 
+        local preview_mapping = { mode = { "n", "x" }, desc = "Toggle preview", callback = toggle_preview }
         local permission_hlgroups = setmetatable({
             ["-"] = "OilPermissionNone",
             ["r"] = "OilPermissionRead",
@@ -270,83 +321,110 @@ return {
             },
             { "size", highlight = "OilSize" },
             { "mtime", highlight = "OilMtime" },
-            { "icon", default_file = icons.File, directory = icons.Folder, add_padding = true },
+            { "icon", default_file = vim.trim(icons.File), directory = vim.trim(icons.Folder), add_padding = true },
         }
 
-        return {
-            default_file_explorer = true,
-            columns = { { "icon", default_file = icons.File, directory = icons.Folder, add_padding = true } },
-            buf_options = { buflisted = false, bufhidden = "hide" },
+        -- helper function to parse output
+        local function parse_output(proc)
+            local result = proc:wait()
+            local ret = {}
+            if result.code == 0 then
+                for line in vim.gsplit(result.stdout, "\n", { plain = true, trimempty = true }) do
+                    -- Remove trailing slash
+                    line = line:gsub("/$", "")
+                    ret[line] = true
+                end
+            end
+            return ret
+        end
+
+        -- build git status cache
+        local function new_git_status()
+            return setmetatable({}, {
+                __index = function(self, key)
+                    local ignore_proc = vim.system(
+                        { "git", "ls-files", "--ignored", "--exclude-standard", "--others", "--directory" },
+                        { cwd = key, text = true }
+                    )
+                    local tracked_proc = vim.system(
+                        { "git", "ls-tree", "HEAD", "--name-only" },
+                        { cwd = key, text = true }
+                    )
+                    local ret = { ignored = parse_output(ignore_proc), tracked = parse_output(tracked_proc) }
+                    rawset(self, key, ret)
+                    return ret
+                end,
+            })
+        end
+
+        local git_status = new_git_status()
+        local refresh = require("oil.actions").refresh
+        local orig_refresh = refresh.callback
+        refresh.callback = function(...)
+            git_status = new_git_status()
+            orig_refresh(...)
+        end
+
+        oil.setup({
+            columns = {
+                { "icon", default_file = vim.trim(icons.File), directory = vim.trim(icons.Folder), add_padding = true },
+            },
             win_options = {
-                wrap = false,
-                signcolumn = "no",
-                cursorcolumn = false,
-                foldcolumn = "0",
-                spell = false,
                 number = false,
                 relativenumber = false,
-                list = false,
-                conceallevel = 3,
-                concealcursor = "nvic",
-                winbar = "",
+                signcolumn = "no",
+                foldcolumn = "0",
+                statuscolumn = "",
             },
-            delete_to_trash = true,
-            skip_confirm_for_simple_edits = false,
-            prompt_save_on_select_new_entry = true,
             cleanup_delay_ms = false,
-            lsp_file_methods = { timeout_ms = 1000, autosave_changes = false },
+            delete_to_trash = true,
+            skip_confirm_for_simple_edits = true,
+            prompt_save_on_select_new_entry = true,
+            use_default_keymaps = false,
+            view_options = {
+                -- is_always_hidden = function(name)
+                --     return name == ".."
+                -- end,
+                is_hidden_file = function(name, bufnr)
+                    local dir = require("oil").get_current_dir(bufnr)
+                    local is_dotfile = vim.startswith(name, ".") and name ~= ".."
+                    if not dir then
+                        return is_dotfile
+                    end
+                    if is_dotfile then
+                        return not git_status[dir].tracked[name]
+                    else
+                        return git_status[dir].ignored[name]
+                    end
+                end,
+            },
+            lsp_file_methods = {
+                enabled = true,
+                timeout_ms = 1000,
+                autosave_changes = false,
+            },
             constrain_cursor = "name",
             watch_for_changes = true,
             keymaps = {
-                ["-"] = "actions.parent",
                 ["g?"] = "actions.show_help",
-                ["g-"] = "actions.toggle_trash",
+                ["K"] = preview_mapping,
+                ["<C-k>"] = preview_mapping,
+                ["-"] = "actions.parent",
+                ["="] = "actions.select",
+                ["+"] = "actions.select",
+                ["<CR>"] = "actions.select",
+                ["<C-h>"] = "actions.toggle_hidden",
                 ["gh"] = "actions.toggle_hidden",
                 ["gs"] = "actions.change_sort",
-                ["gr"] = "actions.refresh",
                 ["gx"] = "actions.open_external",
-                ["<CR>"] = "actions.select",
-                ["K"] = { mode = { "n", "x" }, desc = "Toggle preview", callback = toggle_preview },
-                ["gq"] = {
-                    desc = "Quit Oil Buffer",
-                    callback = function()
-                        local win = vim.api.nvim_get_current_win()
-                        local alt = vim.api.nvim_win_call(win, function()
-                            return vim.fn.winnr("#")
-                        end)
-                        oil.close()
-                        if vim.api.nvim_win_is_valid(win) and vim.g[win].oil_opened and alt ~= 0 then
-                            vim.api.nvim_win_close(win, false)
-                        end
-                    end,
-                },
-                ["gt"] = {
-                    desc = "Toggle detail view",
-                    callback = function()
-                        local config = require("oil.config")
-                        if #config.columns == 1 then
-                            oil.set_columns(columns)
-                        else
-                            oil.set_columns({ "icon" })
-                        end
-                    end,
-                },
-                ["gp"] = {
-                    desc = "Go to Root Project",
-                    callback = function()
-                        return oil.open(vim.g._lsp_root_dirs[1])
-                    end,
-                },
-                ["g."] = {
-                    desc = "Go to Home Dir",
-                    callback = function()
-                        return oil.open(os.getenv("HOME"))
-                    end,
-                },
+                ["gY"] = "actions.copy_entry_filename",
                 ["go"] = {
+                    mode = "n",
+                    buffer = true,
                     desc = "Choose an external program to open the entry under the cursor",
                     callback = function()
-                        local entry, dir = oil.get_cursor_entry(), oil.get_current_dir()
+                        local entry = oil.get_cursor_entry()
+                        local dir = oil.get_current_dir()
                         if not entry or not dir then
                             return
                         end
@@ -363,65 +441,60 @@ return {
                     end,
                 },
                 ["gy"] = {
+                    mode = "n",
+                    buffer = true,
                     desc = "Yank the filepath of the entry under the cursor to a register",
                     callback = function()
-                        local entry, pwd = oil.get_cursor_entry(), oil.get_current_dir()
-                        if not entry or not pwd then
+                        local entry = oil.get_cursor_entry()
+                        local dir = oil.get_current_dir()
+                        if not entry or not dir then
                             return
                         end
-                        local full_path = vim.fs.joinpath(pwd, entry.name)
-                        vim.fn.setreg('"', full_path)
-                        vim.fn.setreg(vim.v.register, full_path)
-                        vim.notify(string.format("[oil] yanked '%s' to register '%s'", full_path, vim.v.register))
+                        local entry_path = vim.fs.joinpath(dir, entry.name)
+                        vim.fn.setreg('"', entry_path)
+                        vim.fn.setreg(vim.v.register, entry_path)
+                        vim.notify(string.format("[oil] yanked '%s' to register '%s'", entry_path, vim.v.register))
+                    end,
+                },
+                ["gt"] = {
+                    desc = "Toggle detail view",
+                    callback = function()
+                        local config = require("oil.config")
+                        if #config.columns == 1 then
+                            oil.set_columns(columns)
+                        else
+                            oil.set_columns({ "icon" })
+                        end
+                    end,
+                },
+                ["gp"] = {
+                    desc = "Go to Root Project",
+                    callback = function()
+                        return oil.open(os.getenv("PWD"))
                     end,
                 },
             },
-            use_default_keymaps = false,
-            view_options = {
-                show_hidden = false,
-                is_hidden_file = function(name, bufnr)
-                    return vim.startswith(name, ".")
-                end,
-                is_always_hidden = function(name, bufnr)
-                    return false
-                end,
-                natural_order = true,
-                case_insensitive = false,
-                sort = { { "type", "asc" }, { "name", "asc" } },
-            },
-            progress = {
-                max_width = 0.7,
-                border = "rounded",
-                minimized_border = "none",
-                win_options = { winblend = 0 },
-            },
-            ssh = { border = "rounded" },
-            keymaps_help = { border = "rounded" },
-        }
-    end,
-    config = function(_, opts)
-        local oil = require("oil")
-        oil.setup(opts)
+            keymaps_help = { border = "single" },
+            float = { border = "single", win_options = { winblend = 0 } },
+            preview = { border = "single", win_options = { winblend = 0 } },
+            progress = { border = "single", win_options = { winblend = 0 } },
+        })
 
         local groupid = vim.api.nvim_create_augroup("OilSyncCwd", {})
         vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
             desc = "Set cwd to follow directory shown in oil buffers.",
             group = groupid,
-            pattern = "oil:///*",
+            pattern = "oil://*",
             callback = function(info)
                 if vim.bo[info.buf].filetype == "oil" then
                     local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
-                    local oildir = vim.fs.normalize(oil.get_current_dir(0))
+                    local oildir = vim.fs.normalize(oil.get_current_dir())
                     if cwd ~= oildir and vim.uv.fs_stat(oildir) then
-                        local ok = pcall(vim.cmd.lcd, oildir)
-                        if not ok then
-                            vim.notify("[oil.nvim] failed to cd to " .. oildir, vim.log.levels.WARN)
-                        end
+                        lcd(oildir)
                     end
                 end
             end,
         })
-
         vim.api.nvim_create_autocmd("DirChanged", {
             desc = "Let oil buffers follow cwd.",
             group = groupid,
@@ -441,7 +514,7 @@ return {
         vim.api.nvim_create_autocmd("BufEnter", {
             desc = "Set last cursor position in oil buffers when editing parent dir.",
             group = vim.api.nvim_create_augroup("OilSetLastCursor", {}),
-            pattern = "oil:///*",
+            pattern = "oil://*",
             callback = function()
                 -- Place cursor on the alternate buffer if we are opening
                 -- the parent directory of the alternate buffer
