@@ -264,19 +264,20 @@ return {
             end,
         })
 
-        ---Toggle preview window
-        ---@return nil
-        local function toggle_preview()
-            local oil_win = vim.api.nvim_get_current_win()
-            local preview_win = preview_wins[oil_win]
-            if not preview_win or not vim.api.nvim_win_is_valid(preview_win) then
-                preview()
-                return
-            end
-            end_preview()
-        end
+        local preview_mapping = {
+            mode = { "n", "x" },
+            desc = "Toggle preview",
+            callback = function()
+                local oil_win = vim.api.nvim_get_current_win()
+                local preview_win = preview_wins[oil_win]
+                if not preview_win or not vim.api.nvim_win_is_valid(preview_win) then
+                    preview()
+                    return
+                end
+                end_preview()
+            end,
+        }
 
-        local preview_mapping = { mode = { "n", "x" }, desc = "Toggle preview", callback = toggle_preview }
         local permission_hlgroups = setmetatable({
             ["-"] = "OilPermissionNone",
             ["r"] = "OilPermissionRead",

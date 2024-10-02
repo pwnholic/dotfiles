@@ -2,6 +2,18 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
         inlay_hints = { enabled = false, exclude = {} },
+        servers = {
+            gopls = {
+                settings = {
+                    gopls = {
+                        experimentalPostfixCompletions = true,
+                        analyses = { unusedparams = true, shadow = true },
+                        staticcheck = true,
+                    },
+                },
+                init_options = { usePlaceholders = true },
+            },
+        },
         diagnostics = {
             underline = true,
             update_in_insert = false,
@@ -20,23 +32,7 @@ return {
                     [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
                 },
             },
-            virtual_text = {
-                spacing = 4,
-                source = "if_many",
-                prefix = "",
-                format = function(d)
-                    local dicons = {}
-                    for key, value in pairs(LazyVim.config.icons.diagnostics) do
-                        dicons[key:upper()] = value
-                    end
-                    return string.format(
-                        " %s %s [%s] ",
-                        dicons[vim.diagnostic.severity[d.severity]],
-                        d.message,
-                        d.source or ""
-                    )
-                end,
-            },
+            virtual_text = { spacing = 4, source = "if_many", prefix = "●", severity_sort = true },
             float = {
                 header = setmetatable({}, {
                     __index = function(_, k)

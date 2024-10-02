@@ -6,8 +6,9 @@ return {
         harpoon:setup({
             settings = {
                 save_on_toggle = true,
+                sync_on_ui_close = true,
                 key = function()
-                    return vim.uv.cwd() --[[@as string]]
+                    return LazyVim.root()
                 end,
             },
         })
@@ -26,24 +27,11 @@ return {
         })
     end,
     keys = function()
-        return {
+        local keys = {
             {
                 "<A-space>",
                 function()
-                    require("harpoon").ui:toggle_quick_menu(
-                        require("harpoon"):list(),
-                        { ui_width_ratio = 0.45, border = "single", title = "" }
-                    )
-                end,
-                desc = "Harpoon List",
-            },
-            {
-                "<leader>l",
-                function()
-                    require("harpoon").ui:toggle_quick_menu(
-                        require("harpoon"):list(),
-                        { ui_width_ratio = 0.45, border = "single", title = "" }
-                    )
+                    require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" })
                 end,
                 desc = "Harpoon List",
             },
@@ -55,69 +43,16 @@ return {
                 end,
                 desc = "Add to Mark",
             },
-            {
-                "<leader>1",
-                function()
-                    require("harpoon"):list():select(1)
-                end,
-                desc = "Mark 1",
-            },
-            {
-                "<leader>2",
-                function()
-                    require("harpoon"):list():select(2)
-                end,
-                desc = "Mark 2",
-            },
-            {
-                "<leader>3",
-                function()
-                    require("harpoon"):list():select(3)
-                end,
-                desc = "Mark 3",
-            },
-            {
-                "<leader>4",
-                function()
-                    require("harpoon"):list():select(4)
-                end,
-                desc = "Mark 4",
-            },
-            {
-                "<leader>5",
-                function()
-                    require("harpoon"):list():select(5)
-                end,
-                desc = "Mark 5",
-            },
-            {
-                "<leader>6",
-                function()
-                    require("harpoon"):list():select(6)
-                end,
-                desc = "Mark 6",
-            },
-            {
-                "<leader>7",
-                function()
-                    require("harpoon"):list():select(7)
-                end,
-                desc = "Mark 7",
-            },
-            {
-                "<leader>8",
-                function()
-                    require("harpoon"):list():select(8)
-                end,
-                desc = "Mark 8",
-            },
-            {
-                "<leader>9",
-                function()
-                    require("harpoon"):list():select(9)
-                end,
-                desc = "Mark 9",
-            },
         }
+        for i = 1, 9 do
+            table.insert(keys, {
+                "<leader>" .. i,
+                function()
+                    require("harpoon"):list():select(i)
+                end,
+                desc = "Harpoon to File " .. i,
+            })
+        end
+        return keys
     end,
 }

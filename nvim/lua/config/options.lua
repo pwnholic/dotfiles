@@ -5,6 +5,7 @@ vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.tabstop = 4
 vim.opt.swapfile = false
+vim.opt.pumblend = 0
 
 vim.g.lazyvim_picker = "fzf"
 vim.g.lazyvim_statuscolumn = {
