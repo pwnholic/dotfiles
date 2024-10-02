@@ -13,16 +13,11 @@ return {
             },
         })
         harpoon:extend({
+            -- stylua: ignore start
             UI_CREATE = function(ctx)
-                vim.keymap.set("n", "<C-v>", function()
-                    harpoon.ui:select_menu_item({ vsplit = true })
-                end, { buffer = ctx.bufnr })
-                vim.keymap.set("n", "<C-s>", function()
-                    harpoon.ui:select_menu_item({ split = true })
-                end, { buffer = ctx.bufnr })
-                vim.keymap.set("n", "<C-t>", function()
-                    harpoon.ui:select_menu_item({ tabedit = true })
-                end, { buffer = ctx.bufnr })
+                vim.keymap.set("n", "<C-v>", function() harpoon.ui:select_menu_item({ vsplit = true }) end, { buffer = ctx.bufnr })
+                vim.keymap.set("n", "<C-s>", function() harpoon.ui:select_menu_item({ split = true }) end, { buffer = ctx.bufnr })
+                vim.keymap.set("n", "<C-t>", function() harpoon.ui:select_menu_item({ tabedit = true }) end, { buffer = ctx.bufnr })
             end,
         })
     end,

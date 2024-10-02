@@ -1,5 +1,5 @@
 return {
-    { "nvim-lualine/lualine.nvim", opts = { extensions = { "oil" } } },
+    { "nvim-lualine/lualine.nvim", opts = { extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf" } } },
     {
         "lukas-reineke/indent-blankline.nvim",
         opts = {
@@ -72,8 +72,7 @@ return {
                 hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensSeparator = { link = "Boolean", default = true }
                 hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
-                hl.LspSignatureActiveParameter =
-                    { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
+                hl.LspSignatureActiveParameter = { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
 
                 hl.GitSignsCurrentLineBlame = { fg = c.dark5, bg = c.none }
 
