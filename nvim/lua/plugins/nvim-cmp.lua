@@ -15,14 +15,21 @@ return {
             local types = require("cmp.types")
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
+            opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
+            opts.preselect = cmp.PreselectMode.None
             opts.matching = {
                 disallow_partial_matching = false,
                 disallow_partial_fuzzy_matching = false,
                 disallow_prefix_unmatching = false,
                 disallow_symbol_nonprefix_matching = false,
             }
-
-            opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
+            opts.confirmation = {
+                default_behavior = cmp.ConfirmBehavior.Replace,
+                get_commit_characters = function(commit_characters)
+                    vim.list_extend(commit_characters, { ".", ":", "(", "{" })
+                    return commit_characters
+                end,
+            }
 
             opts.mapping = vim.tbl_extend("force", opts.mapping, {
                 ["<Tab>"] = cmp.mapping(function(fallback)
@@ -92,35 +99,12 @@ return {
             opts.sorting = vim.tbl_extend("force", opts.sorting, {
                 priority_weight = 2,
                 comparators = {
-                    ---@param entry_left cmp.Entry
-                    ---@param entry_right cmp.Entry
-                    ---@return boolean?
-                    function(entry_left, entry_right)
-                        local kind_left = entry_left:get_kind() --- @type lsp.CompletionItemKind|number
-                        local kind_right = entry_right:get_kind() --- @type lsp.CompletionItemKind|number
-                        kind_left = kind_left == types.lsp.CompletionItemKind.Text and 100 or kind_left
-                        kind_right = kind_right == types.lsp.CompletionItemKind.Text and 100 or kind_right
-                        if kind_left == kind_right then
-                            return
-                        end
-                        if kind_left == types.lsp.CompletionItemKind.Snippet then
-                            return true
-                        end
-                        if kind_right == types.lsp.CompletionItemKind.Snippet then
-                            return false
-                        end
-
-                        if (kind_left - kind_right) < 0 then
-                            return true
-                        elseif (kind_left - kind_right) > 0 then
-                            return false
-                        end
-                    end,
-                    cmp.config.compare.locality,
-                    cmp.config.compare.recently_used,
-                    cmp.config.compare.offset,
                     cmp.config.compare.exact,
                     cmp.config.compare.score,
+                    cmp.config.compare.locality,
+                    cmp.config.compare.recently_used,
+                    cmp.config.compare.kind,
+                    cmp.config.compare.offset,
                 },
             })
 
