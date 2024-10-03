@@ -1,5 +1,6 @@
 return {
     { "nvim-lualine/lualine.nvim", opts = { extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf" } } },
+    { "rcarriga/nvim-notify", opts = { render = "wrapped-compact", stages = "slide" } },
     {
         "lukas-reineke/indent-blankline.nvim",
         opts = {

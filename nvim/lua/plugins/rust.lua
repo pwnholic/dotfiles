@@ -8,16 +8,13 @@ return {
         end,
         combo = {
             alphabetic_label_but_underscore_last = function()
-                local comparators = require("cmp_lsp_rs").comparators
-                return { comparators.sort_by_label_but_underscore_last }
+                return { require("cmp_lsp_rs").comparators.sort_by_label_but_underscore_last }
             end,
             recentlyUsed_sortText = function()
-                local compare = require("cmp").config.compare
-                local comparators = require("cmp_lsp_rs").comparators
                 return {
-                    compare.recently_used,
-                    compare.sort_text,
-                    comparators.sort_by_label_but_underscore_last,
+                    require("cmp").config.compare.recently_used,
+                    require("cmp").config.compare.sort_text,
+                    require("cmp_lsp_rs").comparators.sort_by_label_but_underscore_last,
                 }
             end,
         },

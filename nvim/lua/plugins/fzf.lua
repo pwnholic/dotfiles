@@ -1,5 +1,18 @@
 return {
     "ibhagwan/fzf-lua",
+    keys = {
+        {
+            "<leader>fd",
+            function()
+                require("fzf-lua").files({
+                    find_opts = [[-type d -not -path '*/\.git/*' -not -path '*/\.venv/*' -printf '%P\n']],
+                    fd_opts = [[--color=never --type d --hidden --follow --exclude .git --exclude .venv]],
+                })
+            end,
+            desc = "Find Folder (root)",
+        },
+        { "<leader><Tab>s", "<cmd>FzfLua tabs<CR>", desc = "Search Tabs" },
+    },
     opts = {
         winopts = {
             backdrop = 100,
@@ -7,6 +20,17 @@ return {
             preview = { hidden = "hidden" },
         },
         file_icon_padding = " ",
+        fzf_opts = {
+            ["--info"] = "inline-right",
+            ["--layout"] = "reverse",
+            ["--marker"] = "█",
+            ["--pointer"] = "█",
+            ["--border"] = "none",
+            ["--padding"] = "0,1",
+            ["--margin"] = "0",
+            ["--no-preview"] = true,
+            ["--preview-window"] = "hidden",
+        },
         defaults = {
             -- formatter = "path.filename_first",
             file_icons = "mini",

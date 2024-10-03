@@ -32,7 +32,7 @@ return {
                     [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
                 },
             },
-            virtual_text = { spacing = 4, source = "if_many", prefix = "●", severity_sort = true },
+            virtual_text = { spacing = 4, source = "if_many", prefix = "󰈸 " },
             float = {
                 header = setmetatable({}, {
                     __index = function(_, k)

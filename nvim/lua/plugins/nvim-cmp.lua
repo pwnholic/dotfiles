@@ -16,6 +16,9 @@ return {
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
             opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
+            opts.completion = {
+                completeopt = "menu,menuone,noselect",
+            }
             opts.preselect = cmp.PreselectMode.None
             opts.matching = {
                 disallow_partial_matching = false,
@@ -30,7 +33,6 @@ return {
                     return commit_characters
                 end,
             }
-
             opts.mapping = vim.tbl_extend("force", opts.mapping, {
                 ["<Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
