@@ -4,45 +4,7 @@ return {
         dependencies = {
             { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
             { "dmitmel/cmp-cmdline-history", event = "CmdlineEnter" },
-            {
-                "L3MON4D3/LuaSnip",
-                dependencies = {
-                    { "stevearc/vim-vscode-snippets" },
-                    {
-                        "rafamadriz/friendly-snippets",
-                        config = function()
-                            require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" })
-                        end,
-                    },
-                },
-                opts = {
-                    keep_roots = true,
-                    link_roots = true,
-                    exit_roots = false,
-                    link_children = true,
-                    region_check_events = "CursorMoved,CursorMovedI",
-                    delete_check_events = "TextChanged,TextChangedI",
-                    enable_autosnippets = true,
-                    store_selection_keys = "<Tab>",
-                    ext_opts = {
-                        [require("luasnip.util.types").choiceNode] = {
-                            active = { virt_text = { { "▐", "Number" } } },
-                        },
-                        [require("luasnip.util.types").insertNode] = {
-                            unvisited = {
-                                virt_text = { { "▐", "NonText" } },
-                                virt_text_pos = "inline",
-                            },
-                        },
-                        [require("luasnip.util.types").exitNode] = {
-                            unvisited = {
-                                virt_text = { { "▐", "NonText" } },
-                                virt_text_pos = "inline",
-                            },
-                        },
-                    },
-                },
-            },
+            { "stevearc/vim-vscode-snippets" },
         },
         opts = function(_, opts)
             local cmp = require("cmp")
@@ -254,6 +216,40 @@ return {
                 formatting = { fields = { "abbr" } },
                 sources = { { name = "cmdline", group_index = 1 }, { name = "cmdline_history", group_index = 2 } },
             })
+        end,
+    },
+    {
+        "L3MON4D3/LuaSnip",
+        opts = function()
+            local ls_types = require("luasnip.util.types")
+            require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" })
+            return {
+                keep_roots = true,
+                link_roots = true,
+                exit_roots = false,
+                link_children = true,
+                region_check_events = "CursorMoved,CursorMovedI",
+                delete_check_events = "TextChanged,TextChangedI",
+                enable_autosnippets = true,
+                store_selection_keys = "<Tab>",
+                ext_opts = {
+                    [ls_types.choiceNode] = {
+                        active = { virt_text = { { "▐", "Number" } } },
+                    },
+                    [ls_types.insertNode] = {
+                        unvisited = {
+                            virt_text = { { "▐", "NonText" } },
+                            virt_text_pos = "inline",
+                        },
+                    },
+                    [ls_types.exitNode] = {
+                        unvisited = {
+                            virt_text = { { "▐", "NonText" } },
+                            virt_text_pos = "inline",
+                        },
+                    },
+                },
+            }
         end,
     },
 }

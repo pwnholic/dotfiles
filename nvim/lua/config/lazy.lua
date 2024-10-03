@@ -19,7 +19,6 @@ require("lazy").setup({
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
         { "akinsho/bufferline.nvim", enabled = false },
         { "nvim-neo-tree/neo-tree.nvim", enabled = false },
-        { "garymjr/nvim-snippets", enabled = false },
         { import = "lazyvim.plugins.extras.coding.luasnip" },
         { import = "lazyvim.plugins.extras.dap.core" },
         { import = "lazyvim.plugins.extras.lang.sql" },
