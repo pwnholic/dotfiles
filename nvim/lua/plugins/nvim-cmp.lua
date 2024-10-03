@@ -5,14 +5,50 @@ return {
             { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
             { "dmitmel/cmp-cmdline-history", event = "CmdlineEnter" },
             {
-                "garymjr/nvim-snippets",
-                dependencies = "stevearc/vim-vscode-snippets",
-                opts = { search_paths = { vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" } },
+                "L3MON4D3/LuaSnip",
+                dependencies = {
+                    { "stevearc/vim-vscode-snippets" },
+                    {
+                        "rafamadriz/friendly-snippets",
+                        config = function()
+                            require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" })
+                        end,
+                    },
+                },
+                opts = {
+                    keep_roots = true,
+                    link_roots = true,
+                    exit_roots = false,
+                    link_children = true,
+                    region_check_events = "CursorMoved,CursorMovedI",
+                    delete_check_events = "TextChanged,TextChangedI",
+                    enable_autosnippets = true,
+                    store_selection_keys = "<Tab>",
+                    ext_opts = {
+                        [require("luasnip.util.types").choiceNode] = {
+                            active = { virt_text = { { "▐", "Number" } } },
+                        },
+                        [require("luasnip.util.types").insertNode] = {
+                            unvisited = {
+                                virt_text = { { "▐", "NonText" } },
+                                virt_text_pos = "inline",
+                            },
+                        },
+                        [require("luasnip.util.types").exitNode] = {
+                            unvisited = {
+                                virt_text = { { "▐", "NonText" } },
+                                virt_text_pos = "inline",
+                            },
+                        },
+                    },
+                },
             },
         },
         opts = function(_, opts)
             local cmp = require("cmp")
             local types = require("cmp.types")
+            local luasnip = require("luasnip")
+            local utils = require("utils")
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
             opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
@@ -26,6 +62,9 @@ return {
                 disallow_prefix_unmatching = false,
                 disallow_symbol_nonprefix_matching = false,
             }
+
+            opts.window = { completion = { col_offset = -3, side_padding = 1 } }
+
             opts.confirmation = {
                 default_behavior = cmp.ConfirmBehavior.Replace,
                 get_commit_characters = function(commit_characters)
@@ -34,34 +73,84 @@ return {
                 end,
             }
             opts.mapping = vim.tbl_extend("force", opts.mapping, {
-                ["<Tab>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        if #cmp.get_entries() == 1 then
-                            cmp.confirm({ select = true })
-                        else
-                            cmp.select_next_item()
+                ["<S-Tab>"] = {
+                    ["c"] = function()
+                        if utils.tabout.get_jump_pos(-1) then
+                            utils.tabout.jump(-1)
+                            return
                         end
-                    else
-                        fallback()
-                    end
-                end, { "i", "c" }),
-                ["<S-Tab>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_prev_item()
-                    else
-                        fallback()
-                    end
-                end, { "c", "i" }),
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        else
+                            cmp.complete()
+                        end
+                    end,
+                    ["i"] = function(fallback)
+                        if luasnip.locally_jumpable(-1) then
+                            local prev = luasnip.jump_destination(-1)
+                            local _, snip_dest_end = prev:get_buf_position()
+                            snip_dest_end[1] = snip_dest_end[1] + 1 -- (1, 0) indexed
+                            local tabout_dest = utils.tabout.get_jump_pos(-1)
+                            if not utils.tabout.jump_to_closer(snip_dest_end, tabout_dest, -1) then
+                                fallback()
+                            end
+                        else
+                            fallback()
+                        end
+                    end,
+                },
+                ["<Tab>"] = {
+                    ["c"] = function()
+                        if utils.tabout.get_jump_pos(1) then
+                            utils.tabout.jump(1)
+                            return
+                        end
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        else
+                            cmp.complete()
+                        end
+                    end,
+                    ["i"] = function(fallback)
+                        if luasnip.expandable() then
+                            luasnip.expand()
+                        elseif luasnip.locally_jumpable(1) then
+                            local buf = vim.api.nvim_get_current_buf()
+                            local current = luasnip.session.current_nodes[buf]
+                            if utils.tabout.node_has_length(current) then
+                                local cursor = vim.api.nvim_win_get_cursor(0)
+                                local current_range = { current:get_buf_position() }
+                                if
+                                    utils.tabout.cursor_at_end_of_range(current_range, cursor)
+                                    or utils.tabout.cursor_at_start_of_range(current_range, cursor)
+                                then
+                                    luasnip.jump(1)
+                                else
+                                    fallback()
+                                end
+                            else -- node has zero length
+                                local parent = utils.tabout.node_find_parent(current)
+                                local parent_range = parent and { parent:get_buf_position() }
+                                local tabout_dest = utils.tabout.get_jump_pos(1)
+                                if tabout_dest and parent_range and utils.tabout.in_range(parent_range, tabout_dest) then
+                                    utils.tabout.jump(1)
+                                else
+                                    luasnip.jump(1)
+                                end
+                            end
+                        else
+                            fallback()
+                        end
+                    end,
+                },
                 ["<BS>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.close()
+                    end
                     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
                     if row == 1 and col == 0 then
                         return
                     end
-
-                    if cmp.visible() then
-                        cmp.close()
-                    end
-
                     local line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1]
                     local ts = require("nvim-treesitter.indent")
                     local ok, indent = pcall(ts.get_indent, row)
@@ -137,7 +226,7 @@ return {
 
             opts.sources = cmp.config.sources(vim.tbl_extend("force", {}, {
                 { name = "path", priority = 1000, group_index = 1 },
-                { name = "snippets", priority = 600, group_index = 1, max_item_count = 3 },
+                { name = "luasnip", priority = 600, group_index = 1, max_item_count = 3 },
                 {
                     name = "nvim_lsp",
                     max_item_count = 12,
