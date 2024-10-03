@@ -400,6 +400,7 @@ return {
                 ["gs"] = "actions.change_sort",
                 ["gx"] = "actions.open_external",
                 ["gY"] = "actions.copy_entry_filename",
+                ["g\\"] = "actions.toggle_trash",
                 ["go"] = {
                     mode = "n",
                     buffer = true,
