@@ -1,5 +1,6 @@
 local M = {}
 
+local fmt = string.format
 ---@class fallbak_tbl_t each key shares a default / fallback pattern table
 ---that can be used for pattern matching if corresponding key is not present
 ---or non patterns stored in the key are matched
@@ -156,13 +157,14 @@ local opening_pattern_lookup_tbl = {
 ---@param closing_pattern any closing pattern
 ---@param cursor number[] cursor position
 ---@return number[] cursor position after jump
+
 local function jumpin_idx(leading, closing_pattern, cursor)
     local opening_pattern = opening_pattern_lookup_tbl[closing_pattern]
 
     -- Case 1
-    local _, _, content_str, closing_pattern_str = leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
+    local _, _, content_str, closing_pattern_str = leading:find(fmt("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
     if content_str == nil or closing_pattern_str == nil then
-        _, _, content_str, closing_pattern_str = leading:find(string.format("^(%s)(%s)$", "%s*", closing_pattern))
+        _, _, content_str, closing_pattern_str = leading:find(fmt("^(%s)(%s)$", "%s*", closing_pattern))
     end
 
     if content_str and closing_pattern_str then
@@ -175,10 +177,10 @@ local function jumpin_idx(leading, closing_pattern, cursor)
     end
 
     -- Case 2
-    _, _, _, closing_pattern_str = leading:find(string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
+    _, _, _, closing_pattern_str = leading:find(fmt("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
 
     if content_str == nil or closing_pattern_str == nil then
-        _, _, closing_pattern_str = leading:find(string.format("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
+        _, _, closing_pattern_str = leading:find(fmt("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
     end
 
     return { cursor[1], cursor[2] - #closing_pattern_str }
@@ -271,7 +273,7 @@ local S_TAB = vim.api.nvim_replace_termcodes("<S-Tab>", true, true, true)
 ---Get the position to jump for Tab or Shift-Tab, perform the jump if
 ---there is a position to jump to, otherwise fallback (feedkeys)
 ---@param direction 1|-1 1 for tabout, -1 for tabin
-function M.jump_next(direction)
+function M.jump(direction)
     local pos = M.get_jump_pos(direction)
     if pos then
         set_cursor(pos)
@@ -279,6 +281,10 @@ function M.jump_next(direction)
     end
     vim.api.nvim_feedkeys(direction == 1 and TAB or S_TAB, "nt", false)
 end
+
+------
+--- COMPLETION TAB KEY
+------
 
 ---Choose the closer destination between two destinations
 ---@param dest1 number[]?
@@ -316,7 +322,7 @@ end
 ---@param range1 integer[][] 0-based range
 ---@param range2 integer[][] 0-based range
 ---@return boolean
-local function range_contains(range1, range2)
+function M.range_contains(range1, range2)
     return (range2[1][1] > range1[1][1] or (range2[1][1] == range1[1][1] and range2[1][2] >= range1[1][2]))
         and (range2[1][1] < range1[2][1] or (range2[1][1] == range1[2][1] and range2[1][2] <= range1[2][2]))
         and (range2[2][1] > range1[1][1] or (range2[2][1] == range1[1][1] and range2[2][2] >= range1[1][2]))
@@ -341,7 +347,7 @@ function M.node_find_parent(node)
     local prev = node.parent.snippet and node.parent.snippet.prev.prev
     while prev do
         local range_start_prev, range_end_prev = prev:get_buf_position()
-        if range_contains({ range_start_prev, range_end_prev }, { range_start, range_end }) then
+        if M.range_contains({ range_start_prev, range_end_prev }, { range_start, range_end }) then
             return prev
         end
         prev = prev.parent.snippet and prev.parent.snippet.prev.prev
@@ -369,16 +375,16 @@ end
 ---@param tabout_dest number[]?
 ---@param direction number 1 or -1
 ---@return boolean true if a jump is performed
-function M.jump_to_closer(snip_dest, tabout_dest, direction, luasnip)
+function M.jump_to_closer(snip_dest, tabout_dest, direction)
     direction = direction or 1
     local dest = choose_closer(snip_dest, tabout_dest)
     if not dest then
         return false
     end
     if vim.deep_equal(dest, tabout_dest) then
-        M.jump_next(direction)
+        M.jump(direction)
     else
-        luasnip.jump(direction)
+        require("luasnip").jump(direction)
     end
     return true
 end
