@@ -1,6 +1,5 @@
 local M = {}
 
-local fmt = string.format
 ---@class fallbak_tbl_t each key shares a default / fallback pattern table
 ---that can be used for pattern matching if corresponding key is not present
 ---or non patterns stored in the key are matched
@@ -153,18 +152,15 @@ local opening_pattern_lookup_tbl = {
 ---
 ---2. If there is contents (non-whitespace characters) in between the
 ---   opening and closing pattern, jump to the end of the contents
----@param leading any leading texts on current line
----@param closing_pattern any closing pattern
----@param cursor number[] cursor position
----@return number[] cursor position after jump
 
+---@return number[] cursor position after jump
 local function jumpin_idx(leading, closing_pattern, cursor)
     local opening_pattern = opening_pattern_lookup_tbl[closing_pattern]
 
     -- Case 1
-    local _, _, content_str, closing_pattern_str = leading:find(fmt("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
+    local _, _, content_str, closing_pattern_str = leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
     if content_str == nil or closing_pattern_str == nil then
-        _, _, content_str, closing_pattern_str = leading:find(fmt("^(%s)(%s)$", "%s*", closing_pattern))
+        _, _, content_str, closing_pattern_str = leading:find(string.format("^(%s)(%s)$", "%s*", closing_pattern))
     end
 
     if content_str and closing_pattern_str then
@@ -177,10 +173,10 @@ local function jumpin_idx(leading, closing_pattern, cursor)
     end
 
     -- Case 2
-    _, _, _, closing_pattern_str = leading:find(fmt("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
+    _, _, _, closing_pattern_str = leading:find(string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
 
     if content_str == nil or closing_pattern_str == nil then
-        _, _, closing_pattern_str = leading:find(fmt("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
+        _, _, closing_pattern_str = leading:find(string.format("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
     end
 
     return { cursor[1], cursor[2] - #closing_pattern_str }
