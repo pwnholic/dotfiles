@@ -41,10 +41,7 @@ end
 ---@return fallbak_tbl_t
 function fallback_tbl_t:new(args)
     args = args or {}
-    local fallback_tbl = {
-        __content = args.content or {},
-        __default = args.default or {},
-    }
+    local fallback_tbl = { __content = args.content or {}, __default = args.default or {} }
     return setmetatable(fallback_tbl, self)
 end
 
@@ -180,7 +177,7 @@ local function jumpin_idx(leading, closing_pattern, cursor)
 
         if closing_pattern_str == nil then
             vim.notify("Warning: No closing pattern found.", vim.log.levels.WARN)
-            return cursor -- Return the original cursor position if no match
+            return cursor
         end
 
         return { cursor[1], cursor[2] - #closing_pattern_str }

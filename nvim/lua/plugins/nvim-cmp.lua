@@ -9,13 +9,54 @@ return {
         opts = function(_, opts)
             local cmp = require("cmp")
             local types = require("cmp.types")
+            local cmp_core = require("cmp.core")
             local luasnip = require("luasnip")
             local tabout = require("utils.tabout")
 
+            ---@type string?
+            local last_key
+
+            vim.on_key(function(k)
+                last_key = k
+            end)
+
+            ---@type integer
+            local last_changed = 0
+            local _cmp_on_change = cmp_core.on_change
+
+            ---Improves performance when inserting in large files
+            ---@diagnostic disable-next-line: duplicate-set-field
+            function cmp_core.on_change(self, trigger_event)
+                -- Don't know why but inserting spaces/tabs causes higher latency than other
+                -- keys, e.g. when holding down 's' the interval between keystrokes is less
+                -- than 32ms (80 repeats/s keyboard), but when holding spaces/tabs the
+                -- interval increases to 100ms, guess is is due ot some other plugins that
+                -- triggers on spaces/tabs
+                -- Spaces/tabs are not useful in triggering completions in insert mode but can
+                -- be useful in command-line autocompletion, so ignore them only when not in
+                -- command-line mode
+                if (last_key == " " or last_key == "\t") and string.sub(vim.fn.mode(), 1, 1) ~= "c" then
+                    return
+                end
+
+                local now = vim.uv.now()
+                local fast_typing = now - last_changed < 32
+                last_changed = now
+
+                if not fast_typing or trigger_event ~= "TextChanged" or cmp.visible() then
+                    _cmp_on_change(self, trigger_event)
+                    return
+                end
+
+                vim.defer_fn(function()
+                    if last_changed == now then
+                        _cmp_on_change(self, trigger_event)
+                    end
+                end, 200)
+            end
+
             opts.performance = { async_budget = 64, max_view_entries = 64 }
             opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
-            -- opts.completion = { completeopt = "menu,menuone,noselect" }
-            -- opts.preselect = cmp.PreselectMode.None
             opts.matching = {
                 disallow_partial_matching = false,
                 disallow_partial_fuzzy_matching = false,
@@ -32,6 +73,7 @@ return {
                     return commit_characters
                 end,
             }
+
             opts.mapping = vim.tbl_extend("force", opts.mapping, {
                 ["<S-Tab>"] = {
                     ["c"] = function()
@@ -102,46 +144,66 @@ return {
                 },
                 ["<BS>"] = {
                     i = function(fallback)
-                        if cmp.visible() then
-                            cmp.close()
+                        local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(0))
+                        if not stat or stat.type ~= "file" then
+                            return fallback()
                         end
 
-                        -- TODO: check if we are trying to de-indent at the end of a block or the end of a comment.
-                        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-                        if row == 1 and col == 0 then
-                            return
-                        end
+                        if stat.size == vim.g.bigfile_size then
+                            return fallback()
+                        else
+                            if cmp.visible() then
+                                cmp.close()
+                            end
 
-                        local line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1]
-                        local ts = require("nvim-treesitter.indent")
-                        local ok, indent = pcall(ts.get_indent, row)
-                        if not ok then
-                            indent = 0
-                        end
+                            local treesitter_indent = require("nvim-treesitter.indent")
+                            local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+                            if row == 1 and col == 0 then
+                                return
+                            end
 
-                        if vim.fn.strcharpart(line, indent - 1, col - indent + 1):gsub("%s+", "") == "" then
-                            if indent > 0 and col > indent then
-                                local new_line = vim.fn.strcharpart(line, 0, indent) .. vim.fn.strcharpart(line, col)
-                                vim.api.nvim_buf_set_lines(0, row - 1, row, true, { new_line })
-                                vim.api.nvim_win_set_cursor(0, { row, math.min(indent or 0, vim.fn.strcharlen(new_line)) })
-                            elseif row > 1 and (indent > 0 and col + 1 > indent) then
-                                local prev_line = vim.api.nvim_buf_get_lines(0, row - 2, row - 1, true)[1]
-                                if vim.trim(prev_line) == "" then
-                                    local prev_indent = ts.get_indent(row - 1) or 0
-                                    local new_line = vim.fn.strcharpart(line, 0, prev_indent) .. vim.fn.strcharpart(line, col)
-                                    vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
-                                    vim.api.nvim_win_set_cursor(0, { row - 1, math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))) })
+                            local current_line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1] or ""
+                            local ok, indent = pcall(treesitter_indent.get_indent, row)
+                            indent = ok and indent or 0
+
+                            local function trim_and_set_cursor(new_line, target_row, cursor_col)
+                                vim.api.nvim_buf_set_lines(0, target_row - 1, target_row, true, { new_line })
+                                vim.api.nvim_win_set_cursor(0, { target_row, math.max(0, cursor_col) })
+                            end
+
+                            local function is_block_end(line)
+                                return line:match("^%s*[%}%)]") or line:match("^%s*end")
+                            end
+
+                            local function is_comment(line)
+                                return line:match("^%s*%-%-")
+                            end
+
+                            local trimmed_line = vim.fn.strcharpart(current_line, indent - 1, col - indent + 1):gsub("%s+", "")
+                            if trimmed_line == "" then
+                                if indent > 0 and col > indent then
+                                    local new_line = vim.fn.strcharpart(current_line, 0, indent) .. vim.fn.strcharpart(current_line, col)
+                                    if is_block_end(current_line) or is_comment(current_line) then
+                                        trim_and_set_cursor(new_line, row, vim.fn.strcharlen(new_line))
+                                    else
+                                        trim_and_set_cursor(new_line, row, vim.fn.strcharlen(new_line))
+                                    end
+                                elseif row > 1 and indent > 0 and col + 1 > indent then
+                                    local prev_line = vim.api.nvim_buf_get_lines(0, row - 2, row - 1, true)[1] or ""
+                                    if vim.trim(prev_line) == "" then
+                                        local prev_indent = treesitter_indent.get_indent(row - 1) or 0
+                                        local new_line = vim.fn.strcharpart(current_line, 0, prev_indent) .. vim.fn.strcharpart(current_line, col)
+                                        trim_and_set_cursor(new_line, row - 1, vim.fn.strcharlen(new_line))
+                                    else
+                                        local new_line = prev_line .. vim.fn.strcharpart(current_line, col)
+                                        trim_and_set_cursor(new_line, row - 1, vim.fn.strcharlen(prev_line))
+                                    end
                                 else
-                                    local len = vim.fn.strcharlen(prev_line)
-                                    local new_line = prev_line .. vim.fn.strcharpart(line, col)
-                                    vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
-                                    vim.api.nvim_win_set_cursor(0, { row - 1, math.max(0, len) })
+                                    fallback()
                                 end
                             else
                                 fallback()
                             end
-                        else
-                            fallback()
                         end
                     end,
                 },

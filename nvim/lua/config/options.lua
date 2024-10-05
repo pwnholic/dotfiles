@@ -23,6 +23,7 @@ vim.opt.gcr = {
 vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 
+vim.g.bigfile_size = 1024 * 1024 * 1 -- 1.5 MB
 vim.g.lazyvim_picker = "fzf"
 vim.g.lazyvim_statuscolumn = {
     folds_open = false,
