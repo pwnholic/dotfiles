@@ -100,6 +100,51 @@ return {
                         end
                     end,
                 },
+                ["<BS>"] = {
+                    i = function(fallback)
+                        if cmp.visible() then
+                            cmp.close()
+                        end
+
+                        -- TODO: check if we are trying to de-indent at the end of a block or the end of a comment.
+                        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+                        if row == 1 and col == 0 then
+                            return
+                        end
+
+                        local line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1]
+                        local ts = require("nvim-treesitter.indent")
+                        local ok, indent = pcall(ts.get_indent, row)
+                        if not ok then
+                            indent = 0
+                        end
+
+                        if vim.fn.strcharpart(line, indent - 1, col - indent + 1):gsub("%s+", "") == "" then
+                            if indent > 0 and col > indent then
+                                local new_line = vim.fn.strcharpart(line, 0, indent) .. vim.fn.strcharpart(line, col)
+                                vim.api.nvim_buf_set_lines(0, row - 1, row, true, { new_line })
+                                vim.api.nvim_win_set_cursor(0, { row, math.min(indent or 0, vim.fn.strcharlen(new_line)) })
+                            elseif row > 1 and (indent > 0 and col + 1 > indent) then
+                                local prev_line = vim.api.nvim_buf_get_lines(0, row - 2, row - 1, true)[1]
+                                if vim.trim(prev_line) == "" then
+                                    local prev_indent = ts.get_indent(row - 1) or 0
+                                    local new_line = vim.fn.strcharpart(line, 0, prev_indent) .. vim.fn.strcharpart(line, col)
+                                    vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
+                                    vim.api.nvim_win_set_cursor(0, { row - 1, math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))) })
+                                else
+                                    local len = vim.fn.strcharlen(prev_line)
+                                    local new_line = prev_line .. vim.fn.strcharpart(line, col)
+                                    vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
+                                    vim.api.nvim_win_set_cursor(0, { row - 1, math.max(0, len) })
+                                end
+                            else
+                                fallback()
+                            end
+                        else
+                            fallback()
+                        end
+                    end,
+                },
             })
 
             opts.sorting = vim.tbl_extend("force", opts.sorting, {
@@ -162,12 +207,14 @@ return {
                 window = { documentation = false },
                 formatting = { fields = { "abbr" } },
                 sources = { { name = "buffer", group_index = 1 }, { name = "cmdline_history", group_index = 2 } },
+                view = { entries = { name = "custom", selection_order = "top_down" } },
             })
 
             cmp.setup.cmdline(":", {
                 enabled = true,
                 formatting = { fields = { "abbr" } },
                 sources = { { name = "cmdline", group_index = 1 }, { name = "cmdline_history", group_index = 2 } },
+                view = { entries = { name = "custom", selection_order = "top_down" } },
             })
         end,
     },
