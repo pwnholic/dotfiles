@@ -67,7 +67,6 @@ local patterns = fallback_tbl_t:new({
     content = {
         c = { "%*/" },
         cpp = { "%*/" },
-        cuda = { ">>>" },
         lua = { "%]=*%]" },
         python = { '"""', "'''" },
         html = { "<[^>]*>" },
@@ -153,33 +152,45 @@ local opening_pattern_lookup_tbl = {
 ---2. If there is contents (non-whitespace characters) in between the
 ---   opening and closing pattern, jump to the end of the contents
 
+---@param leading any leading texts on current line
+---@param closing_pattern any closing pattern
+---@param cursor number[] cursor position
 ---@return number[] cursor position after jump
 local function jumpin_idx(leading, closing_pattern, cursor)
-    local opening_pattern = opening_pattern_lookup_tbl[closing_pattern]
+    local success, result = pcall(function()
+        local opening_pattern = opening_pattern_lookup_tbl[closing_pattern]
 
-    -- Case 1
-    local _, _, content_str, closing_pattern_str = leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
-    if content_str == nil or closing_pattern_str == nil then
-        _, _, content_str, closing_pattern_str = leading:find(string.format("^(%s)(%s)$", "%s*", closing_pattern))
-    end
-
-    if content_str and closing_pattern_str then
-        -- Case 1.1
-        if #content_str == 2 then
-            return { cursor[1], cursor[2] - #closing_pattern_str - 1 }
-        else
-            return { cursor[1], cursor[2] - #closing_pattern_str }
+        local _, _, content_str, closing_pattern_str = leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
+        if content_str == nil or closing_pattern_str == nil then
+            _, _, content_str, closing_pattern_str = leading:find(string.format("^(%s)(%s)$", "%s*", closing_pattern))
         end
+
+        if content_str and closing_pattern_str then
+            if #content_str == 2 then
+                return { cursor[1], cursor[2] - #closing_pattern_str - 1 }
+            else
+                return { cursor[1], cursor[2] - #closing_pattern_str }
+            end
+        end
+
+        _, _, _, closing_pattern_str = leading:find(string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
+        if closing_pattern_str == nil then
+            _, _, closing_pattern_str = leading:find(string.format("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
+        end
+
+        if closing_pattern_str == nil then
+            vim.notify("Warning: No closing pattern found.", vim.log.levels.WARN)
+            return cursor -- Return the original cursor position if no match
+        end
+
+        return { cursor[1], cursor[2] - #closing_pattern_str }
+    end)
+
+    if not success then
+        vim.notify("Error in jumpin_idx: " .. result, vim.log.levels.ERROR)
+        return cursor -- Return the original cursor position in case of error
     end
-
-    -- Case 2
-    _, _, _, closing_pattern_str = leading:find(string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
-
-    if content_str == nil or closing_pattern_str == nil then
-        _, _, closing_pattern_str = leading:find(string.format("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
-    end
-
-    return { cursor[1], cursor[2] - #closing_pattern_str }
+    return result
 end
 
 ---Check if the cursor is in cmdline
