@@ -63,7 +63,7 @@ return {
                 return out
             end,
             templates = {
-                folder = "60 Templates",
+                folder = "Templates",
                 date_format = "%Y-%m-%d",
                 time_format = "%H:%M",
                 substitutions = {},

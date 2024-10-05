@@ -3,14 +3,57 @@ return {
         "hrsh7th/nvim-cmp",
         dependencies = {
             { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
-            { "dmitmel/cmp-cmdline-history", event = "CmdlineEnter" },
+            { "dmitmel/cmp-cmdline-history", event = "CmdlineChanged" },
             { "stevearc/vim-vscode-snippets" },
         },
         opts = function(_, opts)
             local cmp = require("cmp")
             local types = require("cmp.types")
+            local cmp_core = require("cmp.core")
             local luasnip = require("luasnip")
-            local utils = require("utils")
+            local tabout = require("utils.tabout")
+
+            ---@type string?
+            local last_key
+
+            vim.on_key(function(k)
+                last_key = k
+            end)
+
+            ---@type integer
+            local last_changed = 0
+            local _cmp_on_change = cmp_core.on_change
+
+            ---Improves performance when inserting in large files
+            ---@diagnostic disable-next-line: duplicate-set-field
+            function cmp_core.on_change(self, trigger_event)
+                -- Don't know why but inserting spaces/tabs causes higher latency than other
+                -- keys, e.g. when holding down 's' the interval between keystrokes is less
+                -- than 32ms (80 repeats/s keyboard), but when holding spaces/tabs the
+                -- interval increases to 100ms, guess is is due ot some other plugins that
+                -- triggers on spaces/tabs
+                -- Spaces/tabs are not useful in triggering completions in insert mode but can
+                -- be useful in command-line autocompletion, so ignore them only when not in
+                -- command-line mode
+                if (last_key == " " or last_key == "\t") and string.sub(vim.fn.mode(), 1, 1) ~= "c" then
+                    return
+                end
+
+                local now = vim.uv.now()
+                local fast_typing = now - last_changed < 32
+                last_changed = now
+
+                if not fast_typing or trigger_event ~= "TextChanged" or cmp.visible() then
+                    _cmp_on_change(self, trigger_event)
+                    return
+                end
+
+                vim.defer_fn(function()
+                    if last_changed == now then
+                        _cmp_on_change(self, trigger_event)
+                    end
+                end, 200)
+            end
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
             opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
@@ -35,14 +78,15 @@ return {
             opts.mapping = vim.tbl_extend("force", opts.mapping, {
                 ["<S-Tab>"] = {
                     ["c"] = function()
-                        if utils.tabout.get_jump_pos(-1) then
-                            utils.tabout.jump(-1)
+                        if tabout.get_jump_pos(-1) then
+                            tabout.jump_next(-1)
                             return
                         end
+
                         if cmp.visible() then
-                            cmp.select_prev_item()
+                            return cmp.select_prev_item()
                         else
-                            cmp.complete()
+                            return cmp.complete()
                         end
                     end,
                     ["i"] = function(fallback)
@@ -50,8 +94,8 @@ return {
                             local prev = luasnip.jump_destination(-1)
                             local _, snip_dest_end = prev:get_buf_position()
                             snip_dest_end[1] = snip_dest_end[1] + 1 -- (1, 0) indexed
-                            local tabout_dest = utils.tabout.get_jump_pos(-1)
-                            if not utils.tabout.jump_to_closer(snip_dest_end, tabout_dest, -1) then
+                            local tabout_dest = tabout.get_jump_pos(-1)
+                            if not tabout.jump_to_closer(snip_dest_end, tabout_dest, -1, luasnip) then
                                 fallback()
                             end
                         else
@@ -61,14 +105,14 @@ return {
                 },
                 ["<Tab>"] = {
                     ["c"] = function()
-                        if utils.tabout.get_jump_pos(1) then
-                            utils.tabout.jump(1)
+                        if tabout.get_jump_pos(1) then
+                            tabout.jump_next(1)
                             return
                         end
                         if cmp.visible() then
-                            cmp.select_next_item()
+                            return cmp.select_next_item()
                         else
-                            cmp.complete()
+                            return cmp.complete()
                         end
                     end,
                     ["i"] = function(fallback)
@@ -77,23 +121,20 @@ return {
                         elseif luasnip.locally_jumpable(1) then
                             local buf = vim.api.nvim_get_current_buf()
                             local current = luasnip.session.current_nodes[buf]
-                            if utils.tabout.node_has_length(current) then
+                            if tabout.node_has_length(current) then
                                 local cursor = vim.api.nvim_win_get_cursor(0)
                                 local current_range = { current:get_buf_position() }
-                                if
-                                    utils.tabout.cursor_at_end_of_range(current_range, cursor)
-                                    or utils.tabout.cursor_at_start_of_range(current_range, cursor)
-                                then
+                                if tabout.cursor_at_end_of_range(current_range, cursor) or tabout.cursor_at_start_of_range(current_range, cursor) then
                                     luasnip.jump(1)
                                 else
                                     fallback()
                                 end
                             else -- node has zero length
-                                local parent = utils.tabout.node_find_parent(current)
+                                local parent = tabout.node_find_parent(current)
                                 local parent_range = parent and { parent:get_buf_position() }
-                                local tabout_dest = utils.tabout.get_jump_pos(1)
-                                if tabout_dest and parent_range and utils.tabout.in_range(parent_range, tabout_dest) then
-                                    utils.tabout.jump(1)
+                                local tabout_dest = tabout.get_jump_pos(1)
+                                if tabout_dest and parent_range and tabout.in_range(parent_range, tabout_dest) then
+                                    tabout.jump_next(1)
                                 else
                                     luasnip.jump(1)
                                 end
@@ -107,16 +148,19 @@ return {
                     if cmp.visible() then
                         cmp.close()
                     end
+
                     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
                     if row == 1 and col == 0 then
                         return
                     end
+
                     local line = vim.api.nvim_buf_get_lines(0, row - 1, row, true)[1]
                     local ts = require("nvim-treesitter.indent")
                     local ok, indent = pcall(ts.get_indent, row)
                     if not ok then
                         indent = 0
                     end
+
                     if vim.fn.strcharpart(line, indent - 1, col - indent + 1):gsub("%s+", "") == "" then
                         if indent > 0 and col > indent then
                             local new_line = vim.fn.strcharpart(line, 0, indent) .. vim.fn.strcharpart(line, col)
@@ -129,6 +173,8 @@ return {
                                 local new_line = vim.fn.strcharpart(line, 0, prev_indent) .. vim.fn.strcharpart(line, col)
                                 vim.api.nvim_buf_set_lines(0, row - 2, row, true, { new_line })
                                 vim.api.nvim_win_set_cursor(0, {
+                                    row - 1,
+                                    math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))),
                                     row - 1,
                                     math.max(0, math.min(prev_indent, vim.fn.strcharlen(new_line))),
                                 })

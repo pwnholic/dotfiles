@@ -48,101 +48,99 @@ function fallback_tbl_t:new(args)
     return setmetatable(fallback_tbl, self)
 end
 
--- stylua: ignore start
 local patterns = fallback_tbl_t:new({
-  default = {
-    '\\%)',
-    '\\%)',
-    '\\%]',
-    '\\}',
-    '%)',
-    '%]',
-    '}',
-    '"',
-    "'",
-    '`',
-    ',',
-    ';',
-    '%.',
-  },
-  content = {
-    c = { '%*/' },
-    cpp = { '%*/' },
-    cuda = { '>>>' },
-    lua = { '%]=*%]' },
-    python = { '"""', "'''" },
-    html = { '<[^>]*>' },
-    xml = { '<[^>]*>' },
-    markdown = {
-      '\\right\\rfloor',
-      '\\right\\rceil',
-      '\\right\\vert',
-      '\\right\\Vert',
-      '\\right%)',
-      '\\right%]',
-      '\\right}',
-      '\\right>',
-      '\\%]',
-      '\\}',
-      '-->',
-      '<[^>]*>',
-      '%*%*%*',
-      '%*%*',
-      '%*',
-      '%$',
-      '|',
+    default = {
+        "\\%)",
+        "\\%)",
+        "\\%]",
+        "\\}",
+        "%)",
+        "%]",
+        "}",
+        '"',
+        "'",
+        "`",
+        ",",
+        ";",
+        "%.",
     },
-    tex = {
-      '\\right\\rfloor',
-      '\\right\\rceil',
-      '\\right\\vert',
-      '\\right\\Vert',
-      '\\right%)',
-      '\\right%]',
-      '\\right}',
-      '\\right>',
-      '\\%]',
-      '\\}',
-      '%$',
+    content = {
+        c = { "%*/" },
+        cpp = { "%*/" },
+        cuda = { ">>>" },
+        lua = { "%]=*%]" },
+        python = { '"""', "'''" },
+        html = { "<[^>]*>" },
+        xml = { "<[^>]*>" },
+        markdown = {
+            "\\right\\rfloor",
+            "\\right\\rceil",
+            "\\right\\vert",
+            "\\right\\Vert",
+            "\\right%)",
+            "\\right%]",
+            "\\right}",
+            "\\right>",
+            "\\%]",
+            "\\}",
+            "-->",
+            "<[^>]*>",
+            "%*%*%*",
+            "%*%*",
+            "%*",
+            "%$",
+            "|",
+        },
+        tex = {
+            "\\right\\rfloor",
+            "\\right\\rceil",
+            "\\right\\vert",
+            "\\right\\Vert",
+            "\\right%)",
+            "\\right%]",
+            "\\right}",
+            "\\right>",
+            "\\%]",
+            "\\}",
+            "%$",
+        },
     },
-  },
 })
 
 local opening_pattern_lookup_tbl = {
-  ["'"]               = "'",
-  ['"']               = '"',
-  [',']               = '.',
-  [';']               = '.',
-  ['`']               = '`',
-  ['|']               = '|',
-  ['}']               = '{',
-  ['%.']              = '.',
-  ['%$']              = '%$',
-  ['%)']              = '%(',
-  ['%]']              = '%[',
-  ['%*']              = '%*',
-  ['<<<']             = '>>>',
-  ['%*%*']            = '%*%*',
-  ['%*%*%*']          = '%*%*%*',
-  ['"""']             = '"""',
-  ["'''"]             = "'''",
-  ['%*/']             = '/%*',
-  ['\\}']             = '\\{',
-  ['-->']             = '<!--',
-  ['\\%)']            = '\\%(',
-  ['\\%]']            = '\\%[',
-  ['%]=*%]']          = '--%[=*%[',
-  ['<[^>]*>']         = '<[^>]*>',
-  ['\\right}']        = '\\left{',
-  ['\\right>']        = '\\left<',
-  ['\\right%)']       = '\\left%(',
-  ['\\right%]']       = '\\left%[',
-  ['\\right\\vert']   = '\\left\\vert',
-  ['\\right\\Vert']   = '\\left\\lVert',
-  ['\\right\\rceil']  = '\\left\\lceil',
-  ['\\right\\rfloor'] = '\\left\\lfloor',
+    ["'"] = "'",
+    ['"'] = '"',
+    [","] = ".",
+    [";"] = ".",
+    ["`"] = "`",
+    ["|"] = "|",
+    ["}"] = "{",
+    ["%."] = ".",
+    ["%$"] = "%$",
+    ["%)"] = "%(",
+    ["%]"] = "%[",
+    ["%*"] = "%*",
+    ["<<<"] = ">>>",
+    ["%*%*"] = "%*%*",
+    ["%*%*%*"] = "%*%*%*",
+    ['"""'] = '"""',
+    ["'''"] = "'''",
+    ["%*/"] = "/%*",
+    ["\\}"] = "\\{",
+    ["-->"] = "<!--",
+    ["\\%)"] = "\\%(",
+    ["\\%]"] = "\\%[",
+    ["%]=*%]"] = "--%[=*%[",
+    ["<[^>]*>"] = "<[^>]*>",
+    ["\\right}"] = "\\left{",
+    ["\\right>"] = "\\left<",
+    ["\\right%)"] = "\\left%(",
+    ["\\right%]"] = "\\left%[",
+    ["\\right\\vert"] = "\\left\\vert",
+    ["\\right\\Vert"] = "\\left\\lVert",
+    ["\\right\\rceil"] = "\\left\\lceil",
+    ["\\right\\rfloor"] = "\\left\\lfloor",
 }
--- stylua: ignore end
 
 ---Get the index where Shift-Tab should jump to
 ---1. If there is only whitespace characters or no character in between
@@ -273,7 +271,7 @@ local S_TAB = vim.api.nvim_replace_termcodes("<S-Tab>", true, true, true)
 ---Get the position to jump for Tab or Shift-Tab, perform the jump if
 ---there is a position to jump to, otherwise fallback (feedkeys)
 ---@param direction 1|-1 1 for tabout, -1 for tabin
-function M.jump(direction)
+function M.jump_next(direction)
     local pos = M.get_jump_pos(direction)
     if pos then
         set_cursor(pos)
@@ -371,16 +369,16 @@ end
 ---@param tabout_dest number[]?
 ---@param direction number 1 or -1
 ---@return boolean true if a jump is performed
-function M.jump_to_closer(snip_dest, tabout_dest, direction)
+function M.jump_to_closer(snip_dest, tabout_dest, direction, luasnip)
     direction = direction or 1
     local dest = choose_closer(snip_dest, tabout_dest)
     if not dest then
         return false
     end
     if vim.deep_equal(dest, tabout_dest) then
-        M.jump(direction)
+        M.jump_next(direction)
     else
-        require("luasnip").jump(direction)
+        luasnip.jump(direction)
     end
     return true
 end
