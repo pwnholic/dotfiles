@@ -249,19 +249,7 @@ return {
             opts.sources = cmp.config.sources(vim.tbl_extend("force", {}, {
                 { name = "path", priority = 1000, group_index = 1 },
                 { name = "luasnip", priority = 600, group_index = 1, max_item_count = 3 },
-                {
-                    name = "nvim_lsp",
-                    max_item_count = 12,
-                    priority = 800,
-                    group_index = 1,
-                    entry_filter = function(entry, _)
-                        local kinds = types.lsp.CompletionItemKind[entry:get_kind()]
-                        if kinds == "Text" then
-                            return false
-                        end
-                        return true
-                    end,
-                },
+                { name = "nvim_lsp", max_item_count = 12, priority = 800, group_index = 1 },
             }))
 
             cmp.setup.cmdline({ "/", "?" }, {
@@ -284,36 +272,11 @@ return {
         "L3MON4D3/LuaSnip",
         keys = function()
             return {
-                {
-                    "<Tab>",
-                    function()
-                        require("luasnip").jump(1)
-                    end,
-                    mode = "s",
-                },
-                {
-                    "<S-Tab>",
-                    function()
-                        require("luasnip").jump(-1)
-                    end,
-                    mode = "s",
-                },
-                {
-                    "<C-n>",
-                    function()
-                        return require("luasnip").choice_active() and "<Plug>luasnip-next-choice" or "<C-n>"
-                    end,
-                    expr = true,
-                    mode = "s",
-                },
-                {
-                    "<C-p>",
-                    function()
-                        return require("luasnip").choice_active() and "<Plug>luasnip-prev-choice" or "<C-p>"
-                    end,
-                    expr = true,
-                    mode = "s",
-                },
+                -- stylua: ignore start
+                { "<Tab>", function() require("luasnip").jump(1) end, mode = "s" },
+                { "<S-Tab>", function() require("luasnip").jump(-1) end, mode = "s" },
+                { "<C-n>", function() return require("luasnip").choice_active() and "<Plug>luasnip-next-choice" or "<C-n>" end, expr = true, mode = "s" },
+                { "<C-p>", function() return require("luasnip").choice_active() and "<Plug>luasnip-prev-choice" or "<C-p>" end, expr = true, mode = "s" },
             }
         end,
         opts = function()
@@ -329,21 +292,9 @@ return {
                 enable_autosnippets = true,
                 store_selection_keys = "<Tab>",
                 ext_opts = {
-                    [ls_types.choiceNode] = {
-                        active = { virt_text = { { "▐", "Number" } } },
-                    },
-                    [ls_types.insertNode] = {
-                        unvisited = {
-                            virt_text = { { "▐", "NonText" } },
-                            virt_text_pos = "inline",
-                        },
-                    },
-                    [ls_types.exitNode] = {
-                        unvisited = {
-                            virt_text = { { "▐", "NonText" } },
-                            virt_text_pos = "inline",
-                        },
-                    },
+                    [ls_types.choiceNode] = { active = { virt_text = { { "▐", "Number" } } } },
+                    [ls_types.insertNode] = { unvisited = { virt_text = { { "▐", "NonText" } }, virt_text_pos = "inline" } },
+                    [ls_types.exitNode] = { unvisited = { virt_text = { { "▐", "NonText" } }, virt_text_pos = "inline" } },
                 },
             }
         end,

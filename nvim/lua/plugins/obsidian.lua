@@ -8,7 +8,7 @@ return {
             notes_subdir = nil,
             log_level = vim.log.levels.INFO,
             daily_notes = {
-                folder = "00 Inbox",
+                folder = "Zettelkasten/00 Inbox",
                 date_format = "%Y-%m-%d",
                 alias_format = "%B %-d, %Y",
                 default_tags = { "daily-notes" },
