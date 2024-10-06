@@ -4,11 +4,32 @@ return {
         inlay_hints = { enabled = false, exclude = {} },
         servers = {
             gopls = {
+                flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
                 settings = {
                     gopls = {
                         experimentalPostfixCompletions = true,
-                        analyses = { unusedparams = true, shadow = true },
+                        usePlaceholders = true,
+                        completeUnimported = true,
                         staticcheck = true,
+                        directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+                        semanticTokens = true,
+                        matcher = "Fuzzy",
+                        diagnosticsDelay = "500ms",
+                        symbolMatcher = "fuzzy",
+                        analyses = {
+                            unreachable = true,
+                            ST1003 = true,
+                            undeclaredname = true,
+                            fillreturns = true,
+                            nonewvars = true,
+                            shadow = true,
+                            fieldalignment = true,
+                            nilness = true,
+                            unusedparams = true,
+                            unusedvariable = true,
+                            unusedwrite = true,
+                            useany = true,
+                        },
                     },
                 },
                 init_options = { usePlaceholders = true },
@@ -37,15 +58,7 @@ return {
                 header = setmetatable({}, {
                     __index = function(_, k)
                         local icon, icons_hl = require("mini.icons").get("file", vim.api.nvim_buf_get_name(0))
-                        local arr = {
-                            function()
-                                return string.format("Diagnostics: %s  %s", icon, vim.bo.filetype)
-                            end,
-                            function()
-                                return icons_hl
-                            end,
-                        }
-                        return arr[k]()
+                        return ({ string.format("Diagnostics: %s  %s", icon, vim.bo.filetype), icons_hl })[k]
                     end,
                 }),
                 format = function(d)

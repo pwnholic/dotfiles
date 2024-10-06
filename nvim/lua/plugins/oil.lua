@@ -248,20 +248,6 @@ return {
             end,
         })
 
-        local preview_mapping = {
-            mode = { "n", "x" },
-            desc = "Toggle preview",
-            callback = function()
-                local oil_win = vim.api.nvim_get_current_win()
-                local preview_win = preview_wins[oil_win]
-                if not preview_win or not vim.api.nvim_win_is_valid(preview_win) then
-                    preview()
-                    return
-                end
-                end_preview()
-            end,
-        }
-
         local permission_hlgroups = setmetatable({
             ["-"] = "OilPermissionNone",
             ["r"] = "OilPermissionRead",
@@ -391,7 +377,6 @@ return {
             watch_for_changes = true,
             keymaps = {
                 ["g?"] = "actions.show_help",
-                ["K"] = preview_mapping,
                 ["-"] = "actions.parent",
                 ["="] = "actions.select",
                 ["+"] = "actions.select",
@@ -401,6 +386,19 @@ return {
                 ["gx"] = "actions.open_external",
                 ["gY"] = "actions.copy_entry_filename",
                 ["g\\"] = "actions.toggle_trash",
+                ["K"] = {
+                    mode = { "n", "x" },
+                    desc = "Toggle preview",
+                    callback = function()
+                        local oil_win = vim.api.nvim_get_current_win()
+                        local preview_win = preview_wins[oil_win]
+                        if not preview_win or not vim.api.nvim_win_is_valid(preview_win) then
+                            preview()
+                            return
+                        end
+                        end_preview()
+                    end,
+                },
                 ["go"] = {
                     mode = "n",
                     buffer = true,
