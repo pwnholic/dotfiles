@@ -8,7 +8,6 @@ return {
         },
         opts = function(_, opts)
             local cmp = require("cmp")
-            local types = require("cmp.types")
             local cmp_core = require("cmp.core")
             local luasnip = require("luasnip")
             local tabout = require("utils.tabout")
@@ -115,27 +114,18 @@ return {
                     end,
                     ["i"] = function(fallback)
                         if luasnip.expandable() then
-                            return luasnip.expand()
+                            luasnip.expand()
                         elseif luasnip.locally_jumpable(1) then
                             local buf = vim.api.nvim_get_current_buf()
                             local current = luasnip.session.current_nodes[buf]
-                            if tabout.node_has_length(current) then
-                                local cursor = vim.api.nvim_win_get_cursor(0)
-                                local current_range = { current:get_buf_position() }
-                                if tabout.cursor_at_end_of_range(current_range, cursor) or tabout.cursor_at_start_of_range(current_range, cursor) then
-                                    luasnip.jump(1)
-                                else
-                                    fallback()
-                                end
-                            else -- node has zero length
-                                local parent = tabout.node_find_parent(current)
-                                local parent_range = parent and { parent:get_buf_position() }
-                                local tabout_dest = tabout.get_jump_pos(1)
-                                if tabout_dest and parent_range and tabout.in_range(parent_range, tabout_dest) then
-                                    tabout.jump(1)
-                                else
-                                    luasnip.jump(1)
-                                end
+                            local parent = tabout.node_find_parent(current)
+                            local range = tabout.node_has_length(current) and { current:get_buf_position() }
+                                or parent and { parent:get_buf_position() }
+                            local tabout_dest = tabout.get_jump_pos(1)
+                            if range and tabout_dest and tabout.in_range(range, tabout_dest) then
+                                tabout.jump(1)
+                            else
+                                luasnip.jump(1)
                             end
                         else
                             fallback()
@@ -214,10 +204,10 @@ return {
                 comparators = {
                     cmp.config.compare.exact,
                     cmp.config.compare.score,
+                    cmp.config.compare.offset,
                     cmp.config.compare.locality,
                     cmp.config.compare.recently_used,
                     cmp.config.compare.kind,
-                    cmp.config.compare.offset,
                 },
             })
 

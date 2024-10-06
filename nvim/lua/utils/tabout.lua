@@ -210,6 +210,7 @@ end
 
 ---Getting the jump position for Tab
 ---@return number[]? cursor position after jump; nil if no jump
+
 local function get_tabout_pos()
     local cursor = get_cursor()
     local current_line = get_line()
@@ -221,11 +222,16 @@ local function get_tabout_pos()
         return
     end
 
+    local min_jump_pos ---@type number?
     for _, pattern in ipairs(patterns[vim.bo.ft or ""]) do
-        local _, jump_pos = trailing:find("^%s*" .. pattern)
+        local _, jump_pos = trailing:find("%s*" .. pattern)
         if jump_pos then
-            return { cursor[1], cursor[2] + jump_pos }
+            min_jump_pos = min_jump_pos and math.min(min_jump_pos, jump_pos) or jump_pos
         end
+    end
+
+    if min_jump_pos then
+        return { cursor[1], cursor[2] + min_jump_pos }
     end
 end
 
@@ -356,22 +362,6 @@ function M.node_find_parent(node)
         end
         prev = prev.parent.snippet and prev.parent.snippet.prev.prev
     end
-end
-
----Check if the cursor is at the end of a node
----@param range table 0-based range
----@param cursor number[] 1,0-based cursor position
----@return boolean
-function M.cursor_at_end_of_range(range, cursor)
-    return range[2][1] + 1 == cursor[1] and range[2][2] == cursor[2]
-end
-
----Check if the cursor is at the end of a node
----@param range table 0-based range
----@param cursor number[] 1,0-based cursor position
----@return boolean
-function M.cursor_at_start_of_range(range, cursor)
-    return range[1][1] + 1 == cursor[1] and range[1][2] == cursor[2]
 end
 
 ---Jump to the closer destination between a snippet and tabout
