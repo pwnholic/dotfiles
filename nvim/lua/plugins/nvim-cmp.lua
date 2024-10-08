@@ -81,9 +81,9 @@ return {
                             return
                         end
                         if cmp.visible() then
-                            return cmp.select_prev_item()
+                            cmp.select_prev_item()
                         else
-                            return cmp.complete()
+                            cmp.complete()
                         end
                     end,
                     ["i"] = function(fallback)
@@ -107,9 +107,9 @@ return {
                             return
                         end
                         if cmp.visible() then
-                            return cmp.select_next_item()
+                            cmp.select_next_item()
                         else
-                            return cmp.complete()
+                            cmp.complete()
                         end
                     end,
                     ["i"] = function(fallback)
@@ -199,15 +199,76 @@ return {
                 },
             })
 
+            local CompletionItemKind = {
+                Method = 1,
+                Function = 2,
+                Constructor = 3,
+                Field = 4,
+                Variable = 5,
+                Class = 6,
+                Interface = 7,
+                Module = 8,
+                Property = 9,
+                Unit = 10,
+                Value = 11,
+                Enum = 12,
+                Keyword = 13,
+                Snippet = 14,
+                Color = 15,
+                File = 16,
+                Reference = 17,
+                Folder = 18,
+                EnumMember = 19,
+                Constant = 20,
+                Struct = 21,
+                Event = 22,
+                Operator = 23,
+                TypeParameter = 24,
+            }
+
             opts.sorting = vim.tbl_extend("force", opts.sorting, {
                 priority_weight = 2,
                 comparators = {
+                    cmp.config.compare.offset,
                     cmp.config.compare.exact,
                     cmp.config.compare.score,
-                    cmp.config.compare.offset,
+                    function(left_entry, right_entry)
+                        local _, left_under = left_entry.completion_item.label:find("^_+")
+                        local _, right_under = right_entry.completion_item.label:find("^_+")
+
+                        left_under = left_under or 0
+                        right_under = right_under or 0
+
+                        if left_under > right_under then
+                            return false
+                        elseif left_under < right_under then
+                            return true
+                        end
+                    end,
+                    function(left_entry, right_entry)
+                        local left_kind = left_entry:get_kind()
+                        local right_kind = right_entry:get_kind()
+
+                        left_kind = CompletionItemKind[left_kind] or left_kind
+                        right_kind = CompletionItemKind[right_kind] or right_kind
+
+                        if left_kind ~= right_kind then
+                            if left_kind == CompletionItemKind.Snippet then
+                                return true
+                            end
+                            if right_kind == CompletionItemKind.Snippet then
+                                return false
+                            end
+
+                            if (left_kind - right_kind) < 0 then
+                                return true
+                            elseif (left_kind - right_kind) > 0 then
+                                return false
+                            end
+                        end
+                    end,
                     cmp.config.compare.locality,
                     cmp.config.compare.recently_used,
-                    cmp.config.compare.kind,
                 },
             })
 
