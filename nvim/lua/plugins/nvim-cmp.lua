@@ -300,7 +300,15 @@ return {
             opts.sources = cmp.config.sources(vim.tbl_extend("force", {}, {
                 { name = "path", priority = 1000, group_index = 1 },
                 { name = "luasnip", priority = 600, group_index = 1, max_item_count = 3 },
-                { name = "nvim_lsp", max_item_count = 12, priority = 800, group_index = 1 },
+                {
+                    name = "nvim_lsp",
+                    max_item_count = 12,
+                    priority = 800,
+                    group_index = 1,
+                    entry_filter = function(entry, _)
+                        return CompletionItemKind[entry:get_kind()] ~= "Text"
+                    end,
+                },
             }))
 
             cmp.setup.cmdline({ "/", "?" }, {

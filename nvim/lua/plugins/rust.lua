@@ -41,7 +41,15 @@ return {
         local sources = cmp.config.sources({
             { name = "path", priority = 1000, group_index = 1 },
             { name = "snippets", priority = 600, group_index = 1, max_item_count = 3 },
-            { name = "nvim_lsp", max_item_count = 12, priority = 800, group_index = 1 },
+            {
+                name = "nvim_lsp",
+                max_item_count = 12,
+                priority = 800,
+                group_index = 1,
+                entry_filter = function(entry, _)
+                    return require("cmp.types").lsp.CompletionItemKind[entry:get_kind()] ~= "Text"
+                end,
+            },
         })
 
         for _, source in ipairs(sources) do
