@@ -7,6 +7,7 @@ return {
         return {
             tag_transform = "snakecase",
             tag_options = "json",
+            gofmt = "goimports",
             lsp_cfg = true,
             lsp_keymaps = false,
             null_ls = false,
@@ -25,6 +26,7 @@ return {
                 end
             end,
             diagnostic = {
+                hdlr = true,
                 underline = true,
                 update_in_insert = false,
                 severity_sort = true,

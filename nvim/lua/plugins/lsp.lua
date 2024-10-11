@@ -2,39 +2,6 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
         inlay_hints = { enabled = false, exclude = {} },
-        servers = {
-            gopls = {
-                flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
-                settings = {
-                    gopls = {
-                        experimentalPostfixCompletions = true,
-                        usePlaceholders = true,
-                        completeUnimported = true,
-                        staticcheck = true,
-                        directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-                        semanticTokens = true,
-                        matcher = "Fuzzy",
-                        diagnosticsDelay = "500ms",
-                        symbolMatcher = "fuzzy",
-                        analyses = {
-                            unreachable = true,
-                            ST1003 = true,
-                            undeclaredname = true,
-                            fillreturns = true,
-                            nonewvars = true,
-                            shadow = true,
-                            fieldalignment = true,
-                            nilness = true,
-                            unusedparams = true,
-                            unusedvariable = true,
-                            unusedwrite = true,
-                            useany = true,
-                        },
-                    },
-                },
-                init_options = { usePlaceholders = true },
-            },
-        },
         diagnostics = {
             underline = true,
             update_in_insert = false,
