@@ -339,8 +339,27 @@ return {
             }
         end,
         opts = function()
+            local luasnip = require("luasnip")
             local ls_types = require("luasnip.util.types")
+
             require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" })
+
+            vim.api.nvim_create_autocmd("ModeChanged", {
+                desc = "Unlink current snippet on leaving insert/selection mode.",
+                group = vim.api.nvim_create_augroup("LuaSnipModeChanged", {}),
+                callback = function(info)
+                    local mode = vim.v.event.new_mode
+                    local omode = vim.v.event.old_mode
+                    if
+                        (omode == "s" and mode == "n" or omode == "i")
+                        and luasnip.session.current_nodes[info.buf]
+                        and not luasnip.session.jump_active
+                    then
+                        luasnip.unlink_current()
+                    end
+                end,
+            })
+
             return {
                 keep_roots = true,
                 link_roots = true,
