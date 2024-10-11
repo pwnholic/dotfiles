@@ -73,9 +73,6 @@ return {
         opts = {
             style = "night",
             on_highlights = function(hl, c)
-                -- hl.LspReferenceText = { italic = true, bold = true, reverse = true }
-                -- hl.LspReferenceRead = { italic = true, bold = true, reverse = true }
-                -- hl.LspReferenceWrite = { italic = true, bold = true, reverse = true }
                 hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }

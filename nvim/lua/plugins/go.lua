@@ -1,8 +1,9 @@
 return {
     "ray-x/go.nvim",
-    dependencies = "ray-x/guihua.lua",
+    dependencies = { "ray-x/guihua.lua", branch = "master" },
     ft = { "go", "gomod" },
-    build = ':lua require("go.install").update_all_sync()',
+    branch = "master",
+    build = ":GoUpdateBinaries",
     opts = function()
         return {
             tag_transform = "snakecase",
@@ -15,16 +16,7 @@ return {
             dap_debug_keymap = false,
             trouble = true,
             luasnip = true,
-            lsp_on_attach = function(client, _)
-                if not client.server_capabilities.semanticTokensProvider then
-                    local semantic = client.config.capabilities.textDocument.semanticTokens
-                    client.server_capabilities.semanticTokensProvider = {
-                        full = true,
-                        legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
-                        range = true,
-                    }
-                end
-            end,
+            lsp_on_attach = nil,
             diagnostic = {
                 hdlr = true,
                 underline = true,

@@ -22,3 +22,38 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" 
         end
     end,
 })
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+    pattern = { "[itRss\x13]*:*", "*:[itRss\x13]*" },
+    callback = function()
+        if vim.v.event.new_mode:match("^[itRss\x13]") then
+            if vim.wo.cul then
+                vim.w._cul = true
+                vim.wo.cul = false
+            end
+            if vim.wo.cuc then
+                vim.w._cuc = true
+                vim.wo.cuc = false
+            end
+
+            local hl = { italic = true, bold = true }
+            vim.api.nvim_set_hl(0, "LspReferenceText", hl)
+            vim.api.nvim_set_hl(0, "LspReferenceRead", hl)
+            vim.api.nvim_set_hl(0, "LspReferenceWrite", hl)
+        else
+            if vim.w._cul and not vim.wo.cul then
+                vim.wo.cul = true
+                vim.w._cul = nil
+            end
+            if vim.w._cuc and not vim.wo.cuc then
+                vim.wo.cuc = true
+                vim.w._cuc = nil
+            end
+
+            local hl = { italic = true, bold = true, reverse = true }
+            vim.api.nvim_set_hl(0, "LspReferenceText", hl)
+            vim.api.nvim_set_hl(0, "LspReferenceRead", hl)
+            vim.api.nvim_set_hl(0, "LspReferenceWrite", hl)
+        end
+    end,
+})
