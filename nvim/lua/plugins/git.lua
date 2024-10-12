@@ -10,14 +10,6 @@ return {
         },
     },
     {
-        "akinsho/git-conflict.nvim",
-        version = false,
-        event = "VeryLazy",
-        opts = {
-            default_mappings = { ours = "c<", theirs = "c>", none = "co", both = "c.", next = "]x", prev = "[x" },
-        },
-    },
-    {
         "lewis6991/gitsigns.nvim",
         opts = {
             signs = {

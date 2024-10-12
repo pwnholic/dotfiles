@@ -126,7 +126,7 @@ return {
                 hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
 
                 hl.FloatBorder = { fg = c.comment, bg = c.bg_statusline }
-                hl.WinSeparator = { link = "Comment" }
+                hl.WinSeparator = { bg = c.bg_dark, fg = c.comment }
             end,
         },
     },

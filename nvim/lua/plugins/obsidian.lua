@@ -1,53 +1,47 @@
 return {
     "epwalsh/obsidian.nvim",
-    ft = "markdown",
     version = false,
+    keys = {
+        {
+            "<leader>oo",
+            function()
+                vim.cmd.ObsidianOpen(vim.api.nvim_buf_get_name(0))
+            end,
+            desc = "Obsidian Open",
+        },
+        { "<leader>on", "<cmd>ObsidianNew<cr>", desc = "Obsidian New " },
+        { "<leader>os", "<cmd>ObsidianQuickSwitch<cr>", desc = "Obsidian Switch" },
+        { "<leader>ob", "<cmd>ObsidianBacklinks<cr>", desc = "Obsidian Backlinks" },
+        { "<leader>od", "<cmd>ObsidianToday<cr>", desc = "Obsidian Today" },
+        { "<leader>oy", "<cmd>ObsidianYesterday<cr>", desc = "Obsidian Yesterday" },
+        { "<leader>oD", "<cmd>ObsidianTomorrow<cr>", desc = "Obsidian Tomorrow" },
+        { "<leader>ot", "<cmd>ObsidianTemplate<cr>", desc = "Obsidian Template" },
+        { "<leader>oT", "<cmd>ObsidianNewFromTemplate<cr>", desc = "Obsidian New Template" },
+        { "<leader>oc", "<cmd>ObsidianTOC<cr>", desc = "Obsidian ToC" },
+    },
     opts = {
         workspaces = { { name = "Notes", path = os.getenv("HOME") .. "/Notes", overrides = {} } },
         notes_subdir = nil,
         log_level = vim.log.levels.INFO,
-        daily_notes = {
-            folder = "00 Inbox",
-            date_format = "%Y-%m-%d",
-            alias_format = "%B %-d, %Y",
-            default_tags = { "daily-notes" },
-            template = nil,
-        },
         completion = { nvim_cmp = true, min_chars = 2 },
         new_notes_location = "current_dir",
-        -- note_id_func = function(title)
-        --     return title
-        -- end,
-        note_path_func = function(spec)
-            local path = spec.dir / tostring(spec.id)
-            return path:with_suffix(".md")
-        end,
         wiki_link_func = "use_path_only",
-        markdown_link_func = function(opts)
-            return require("obsidian.util").markdown_link(opts)
-        end,
         preferred_link_style = "wiki",
-        disable_frontmatter = true,
-        templates = {
-            folder = "Templates",
-            date_format = "%Y-%m-%d",
-            time_format = "%H:%M",
-            substitutions = {},
-        },
-        ---@param url string
-        follow_url_func = function(url)
-            vim.fn.jobstart({ "xdg-open", url }) -- linux
-        end,
         use_advanced_uri = true,
-        picker = {
-            name = "fzf-lua",
-            note_mappings = { new = "<C-x>", insert_link = "<C-l>" },
-            tag_mappings = { tag_note = "<C-x>", insert_tag = "<C-l>" },
-        },
+        disable_frontmatter = true,
         sort_by = "modified",
         sort_reversed = true,
         search_max_lines = 1000,
         open_notes_in = "current",
         ui = { enable = false },
+        templates = { folder = "Templates" },
+        picker = { name = "fzf-lua" },
+        daily_notes = {
+            folder = "00 Inbox",
+            date_format = "%Y%m%d",
+            alias_format = "%Y%m%d",
+            default_tags = { "daily" },
+            template = nil,
+        },
     },
 }
