@@ -29,3 +29,4 @@ vim.g.lazyvim_prettier_needs_config = false
 vim.g.lazyvim_statuscolumn = { folds_open = false, folds_githl = true }
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"
+vim.g.lazyvim_php_lsp = "phpactor"

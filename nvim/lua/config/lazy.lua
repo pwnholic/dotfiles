@@ -38,6 +38,8 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.lang.toml" },
         { import = "lazyvim.plugins.extras.lang.python" },
         { import = "lazyvim.plugins.extras.lang.cmake" },
+        { import = "lazyvim.plugins.extras.lang.php" },
+
         { import = "plugins" },
     },
     defaults = {

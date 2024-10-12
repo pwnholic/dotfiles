@@ -306,7 +306,7 @@ return {
                     priority = 800,
                     group_index = 1,
                     entry_filter = function(entry, _)
-                        return CompletionItemKind[entry:get_kind()] ~= "Text"
+                        return require("cmp.types").lsp.CompletionItemKind[entry:get_kind()] ~= "Text"
                     end,
                 },
             }))
