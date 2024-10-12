@@ -1,12 +1,24 @@
 return {
     {
         "nvim-lualine/lualine.nvim",
-        opts = {
-            extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf" },
-            dim_inactive = true,
-            lualine_bold = true,
-            cache = true,
-        },
+        opts = function(_, opts)
+            opts.extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf" }
+            table.insert(opts.sections.lualine_x, {
+                function()
+                    local names = {}
+                    for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+                        table.insert(names, server.name)
+                    end
+                    return table.concat(names, " ")
+                end,
+                cond = function()
+                    return vim.lsp.get_clients({ bufnr = 0 }) ~= nil
+                end,
+                color = function()
+                    return LazyVim.ui.fg("Special")
+                end,
+            })
+        end,
     },
     { "rcarriga/nvim-notify", opts = { render = "wrapped-compact", stages = "slide" } },
     {
@@ -72,6 +84,9 @@ return {
         "folke/tokyonight.nvim",
         opts = {
             style = "night",
+            dim_inactive = true,
+            lualine_bold = true,
+            cache = true,
             on_highlights = function(hl, c)
                 hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
@@ -103,7 +118,7 @@ return {
                 hl.OilSize = { fg = c.teal, bg = c.none }
                 hl.OilMtime = { fg = c.purple, bg = c.none }
 
-                hl.FzfLuaDirPart = { fg = c.green }
+                hl.FzfLuaDirPart = { fg = c.magenta }
                 hl.FzfLuaBorder = { fg = c.bg_dark, bg = c.bg_dark }
                 hl.FzfLuaFilePart = { fg = "#ffffff" }
                 hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }

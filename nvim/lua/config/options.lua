@@ -25,7 +25,7 @@ vim.opt.backupdir:remove(".")
 
 vim.g.bigfile_size = 1024 * 1024 * 1 -- 1.5 MB
 vim.g.lazyvim_picker = "fzf"
-vim.g.lazyvim_statuscolumn = {
-    folds_open = false,
-    folds_githl = true,
-}
+vim.g.lazyvim_prettier_needs_config = false
+vim.g.lazyvim_statuscolumn = { folds_open = false, folds_githl = true }
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff"
