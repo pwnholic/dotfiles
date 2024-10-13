@@ -69,7 +69,7 @@ return {
                 end,
                 desc = "Find Folder (root)",
             },
-            { "<leader><Tab>s", "<cmd>FzfLua tabs<CR>", desc = "Search Tabs" },
+            { "<leader>fl", "<cmd>FzfLua tabs<CR>", desc = "Search Tabs" },
         },
         opts = {
             winopts = {
@@ -87,6 +87,7 @@ return {
                 ["--padding"] = "0,1",
                 ["--margin"] = "0",
                 ["--no-preview"] = true,
+                ["--highlight-line"] = true,
                 ["--preview-window"] = "hidden",
             },
             defaults = {
@@ -126,6 +127,12 @@ return {
                 -- multiline = 1, -- Display as: PATH:LINE:COL\nTEXT\n
                 no_header = false,
                 no_header_i = false,
+            },
+            lsp = {
+                definitions = { prompt = "Goto Definitions > " },
+                references = { prompt = "Goto References > " },
+                typedefs = { prompt = "Goto TypeDefinition > " },
+                implementations = { prompt = "Goto Implementations > " },
             },
         },
     },

@@ -309,7 +309,7 @@ return {
             cmp.setup.cmdline({ "/", "?" }, {
                 enabled = true,
                 window = { documentation = false },
-                formatting = { fields = { "abbr" } },
+                formatting = { fields = { "abbr" }, expandable_indicator = true },
                 sources = {
                     {
                         name = "buffer",
@@ -327,7 +327,7 @@ return {
 
             cmp.setup.cmdline(":", {
                 enabled = true,
-                formatting = { fields = { "abbr" } },
+                formatting = { fields = { "abbr" }, expandable_indicator = true },
                 sources = { { name = "cmdline", group_index = 1 }, { name = "cmdline_history", group_index = 2 } },
                 view = { entries = { name = "custom", selection_order = "top_down" } },
             })
