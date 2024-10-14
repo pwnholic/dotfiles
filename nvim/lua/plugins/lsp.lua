@@ -7,6 +7,8 @@ return {
                 solidity_ls = {},
                 zls = {},
                 kulala_ls = {},
+                bashls = {},
+                templ = {},
             },
             diagnostics = {
                 underline = true,
