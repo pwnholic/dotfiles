@@ -17,6 +17,37 @@ return {
             trouble = true,
             luasnip = true,
             lsp_on_attach = nil,
+            dap_debug_gui = {
+                layouts = {
+                    {
+                        elements = {
+                            { id = "scopes", size = 0.25 },
+                            { id = "breakpoints", size = 0.25 },
+                            { id = "stacks", size = 0.25 },
+                            { id = "watches", size = 0.25 },
+                        },
+                        position = "right",
+                        size = 45,
+                    },
+                    {
+                        elements = {
+                            { id = "repl", size = 0.55 },
+                            { id = "console", size = 0.45 },
+                        },
+                        position = "bottom",
+                        size = 8,
+                    },
+                },
+            },
+            dap_debug_vt = {
+                enabled = true,
+                enabled_commands = true,
+                all_frames = true,
+                virt_text_pos = "eol",
+            },
+            dap_port = 38697,
+            dap_timeout = 15,
+            dap_retries = 20,
             diagnostic = {
                 hdlr = true,
                 underline = true,
