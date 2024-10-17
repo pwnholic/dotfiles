@@ -176,7 +176,7 @@ local function jumpin_idx(leading, closing_pattern, cursor)
         end
 
         if closing_pattern_str == nil then
-            vim.notify("Warning: No closing pattern found.", vim.log.levels.WARN)
+            vim.notify("Warning: No closing pattern found.", vim.log.levels.WARN, { title = "Tabout" })
             return cursor
         end
 
