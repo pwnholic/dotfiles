@@ -85,8 +85,10 @@ return {
         opts = {
             style = "night",
             dim_inactive = true,
+            transparent = false,
             lualine_bold = true,
             cache = true,
+            styles = { sidebars = "dark", floats = "dark" },
             on_highlights = function(hl, c)
                 hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
@@ -128,7 +130,7 @@ return {
                 hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.orange }
                 hl.Pmenu = { link = "FzfLuaFilePart" }
                 hl.FloatBorder = { fg = c.comment, bg = c.bg_statusline }
-                hl.WinSeparator = { bg = c.bg_dark, fg = c.comment }
+                hl.WinSeparator = { bg = c.none, fg = c.comment }
             end,
         },
     },

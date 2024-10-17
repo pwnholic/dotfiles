@@ -36,7 +36,7 @@ vim.api.nvim_create_autocmd("ModeChanged", {
                 vim.wo.cursorcolumn = false
             end
 
-            local hl = { italic = true, bold = true }
+            local hl = { italic = true, bold = true, underline = true }
             vim.api.nvim_set_hl(0, "LspReferenceText", hl)
             vim.api.nvim_set_hl(0, "LspReferenceRead", hl)
             vim.api.nvim_set_hl(0, "LspReferenceWrite", hl)
