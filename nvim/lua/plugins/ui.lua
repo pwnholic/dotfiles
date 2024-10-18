@@ -30,7 +30,7 @@ return {
                 show_exact_scope = false,
                 priority = 500,
                 show_start = true,
-                show_end = false,
+                show_end = true,
                 highlight = {
                     "@markup.heading.1.markdown",
                     "@markup.heading.2.markdown",

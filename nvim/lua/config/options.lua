@@ -7,6 +7,7 @@ vim.opt.tabstop = 4
 vim.opt.swapfile = false
 vim.opt.pumblend = 0
 vim.opt.spell = true
+vim.opt.smoothscroll = true
 
 vim.opt.spellcapcheck = ""
 vim.opt.spelllang = "en"
