@@ -10,6 +10,11 @@ return {
                 bashls = {},
                 templ = {},
             },
+            setup = {
+                gopls = function()
+                    return true
+                end,
+            },
             diagnostics = {
                 underline = true,
                 update_in_insert = false,
