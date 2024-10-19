@@ -499,13 +499,39 @@ return {
             callback = function()
                 -- Place cursor on the alternate buffer if we are opening
                 -- the parent directory of the alternate buffer
-                local buf_alt = vim.fn.bufnr("#")
-                if vim.api.nvim_buf_is_valid(buf_alt) then
-                    local bufname_alt = vim.api.nvim_buf_get_name(buf_alt)
-                    local parent_url, basename = oil.get_buffer_parent_url(bufname_alt, true)
-                    if basename then
-                        require("oil.view").set_last_cursor(parent_url, basename)
+                local alt_file = vim.fn.bufnr("#")
+                if not vim.api.nvim_buf_is_valid(alt_file) then
+                    return
+                end
+                -- Because we use `:e <dir>` to open oil, the alternate file will be a dir
+                -- buffer. Retrieve the "real" alternate buffer (file buffer) we recorded
+                -- in the dir buffer
+                local _alt_file = vim.b[alt_file]._alt_file
+                if _alt_file and vim.api.nvim_buf_is_valid(_alt_file) then
+                    alt_file = _alt_file
+                end
+                local bufname_alt = vim.api.nvim_buf_get_name(alt_file)
+                local parent_url, basename = oil.get_buffer_parent_url(bufname_alt, true)
+                if basename then
+                    local config = require("oil.config")
+                    local view = require("oil.view")
+                    if
+                        not config.view_options.show_hidden
+                        and config.view_options.is_hidden_file(
+                            basename,
+                            (function()
+                                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                                    if vim.api.nvim_buf_get_name(buf) == basename then
+                                        return buf
+                                    end
+                                end
+                            end)()
+                        )
+                    then
+                        view.toggle_hidden()
                     end
+                    view.set_last_cursor(parent_url, basename)
+                    view.maybe_set_cursor()
                 end
             end,
         })

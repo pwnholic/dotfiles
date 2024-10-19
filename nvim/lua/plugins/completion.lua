@@ -132,6 +132,7 @@ return {
                         end
                     end,
                 },
+
                 ["<BS>"] = {
                     i = function(fallback)
                         if vim.bo.filetype == "bigfile" then
@@ -324,7 +325,6 @@ return {
                 },
                 view = { entries = { name = "custom", selection_order = "top_down" } },
             })
-
             cmp.setup.cmdline(":", {
                 enabled = true,
                 formatting = { fields = { "abbr" }, expandable_indicator = true },

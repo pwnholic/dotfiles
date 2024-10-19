@@ -88,7 +88,7 @@ return {
             transparent = false,
             lualine_bold = true,
             cache = true,
-            styles = { sidebars = "dark", floats = "dark" },
+            styles = { sidebars = "normal", floats = "normal" },
             on_highlights = function(hl, c)
                 hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }

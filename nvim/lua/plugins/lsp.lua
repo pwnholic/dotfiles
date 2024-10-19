@@ -9,6 +9,7 @@ return {
                 kulala_ls = {},
                 bashls = {},
                 templ = {},
+                fish_lsp = {},
             },
             setup = {
                 gopls = function()
@@ -62,6 +63,7 @@ return {
                 solidity = { "forge_fmt" },
                 zig = { "zigfmt" },
                 http = { "kulala-fmt" },
+                fish = { "fish_indent" },
             },
         },
     },
