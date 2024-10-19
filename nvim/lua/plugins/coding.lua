@@ -1,9 +1,82 @@
 return {
     {
         "mfussenegger/nvim-dap",
+        keys = {
+            "<F1>",
+            "<F2>",
+            "<F5>",
+            "<F6>",
+            "<F8>",
+            "<F9>",
+            "<F10>",
+            "<F11>",
+            "<F17>",
+            "<F23>",
+            "<F41>",
+            "<F21>",
+            "<F45>",
+        },
+        opts = function()
+            local dap = require("dap")
+            local keymap = require("utils.keys")
+
+            local last_dap_fn = function() end
+            local function set_logpoint()
+                dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+            end
+
+            local function set_cond_breakpoint()
+                dap.set_breakpoint(nil, vim.fn.input("Breakpoint condition: "))
+            end
+
+            local function wrap(fn)
+                return function()
+                    last_dap_fn = fn
+                    fn()
+                end
+            end
+
+            local keymaps = {
+                ["<F1>"] = { fn = dap.up, desc = "Up" },
+                ["<F2>"] = { fn = dap.down, desc = "Down" },
+                ["<F5>"] = { fn = dap.continue, desc = "Continue" },
+                ["<F6>"] = { fn = dap.pause, desc = "Pause" },
+                ["<F8>"] = { fn = dap.repl.open, desc = "Open REPL" },
+                ["<F9>"] = { fn = dap.toggle_breakpoint, desc = "Toggle Breakpoint" },
+                ["<F10>"] = { fn = dap.step_over, desc = "Step Over" },
+                ["<F11>"] = { fn = dap.step_into, desc = "Step Into" },
+                ["<F17>"] = { fn = dap.terminate, desc = "Terminate Session" },
+                ["<F23>"] = { fn = dap.step_out, desc = "Step Out" },
+                ["<F41>"] = { fn = dap.restart, desc = "Restart Session" },
+                ["<F21>"] = { fn = set_cond_breakpoint, desc = "Set Breakpoint Cond" },
+                ["<F45>"] = { fn = set_logpoint, desc = "Set Logpoint" },
+            }
+
+            for key, map in pairs(keymaps) do
+                vim.keymap.set("n", key, wrap(map.fn), { desc = map.desc })
+            end
+
+            keymap.amend("n", "<CR>", function(fallback)
+                if dap.session() then
+                    last_dap_fn()
+                    return
+                end
+                fallback()
+            end)
+        end,
         dependencies = {
             {
                 "rcarriga/nvim-dap-ui",
+                keys = {
+                    {
+                        "K",
+                        function()
+                            require("dapui").eval()
+                        end,
+                        ft = { "dapui_watches", "dapui_scopes", "dapui_breakpoints", "dapui_stacks" },
+                        desc = "Eval",
+                    },
+                },
                 opts = {
                     layouts = {
                         {

@@ -5,6 +5,7 @@
 --         vim.cmd.update({ mods = { emsg_silent = true } })
 --     end,
 -- })
+--
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" }, {
     desc = "Automatically change local current directory.",
