@@ -10,11 +10,11 @@ return {
             "<F9>",
             "<F10>",
             "<F11>",
-            "<F17>",
-            "<F23>",
-            "<F41>",
-            "<F21>",
-            "<F45>",
+            "<F17>", -- shift + f5
+            "<F23>", -- shift + f11
+            "<F41>", -- ctrl + shift + f5
+            "<F21>", -- shift + f9
+            "<F45>", -- ctrl + shift + f9
         },
         opts = function()
             local dap = require("dap")
@@ -63,6 +63,8 @@ return {
                 end
                 fallback()
             end)
+
+            vim.api.nvim_create_user_command("DapClear", dap.clear_breakpoints, { desc = "Clear all breakpoints" })
         end,
         dependencies = {
             {
