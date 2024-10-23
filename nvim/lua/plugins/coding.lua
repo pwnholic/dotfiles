@@ -71,6 +71,20 @@ return {
                 "rcarriga/nvim-dap-ui",
                 keys = {
                     {
+                        "<F16>",
+                        function()
+                            require("dapui").float_element(vim.o.filetype:gsub("dapui_", ""), {
+                                width = vim.o.columns,
+                                height = vim.o.lines,
+                                title = vim.o.filetype:gsub("dapui_", ""):upper(),
+                                enter = true,
+                                position = "center",
+                            })
+                        end,
+                        ft = { "dapui_watches", "dapui_scopes", "dapui_breakpoints", "dapui_stacks" },
+                        desc = "Float Element",
+                    },
+                    {
                         "K",
                         function()
                             require("dapui").eval()
@@ -80,6 +94,11 @@ return {
                     },
                 },
                 opts = {
+                    expand_lines = false,
+                    floating = {
+                        border = "single",
+                        mappings = { close = { "q", "<Esc>" } },
+                    },
                     layouts = {
                         {
                             elements = {
@@ -110,6 +129,12 @@ return {
                     virt_text_pos = "eol",
                 },
             },
+        },
+    },
+    {
+        "williamboman/mason.nvim",
+        opts = {
+            ensure_installed = {},
         },
     },
 }

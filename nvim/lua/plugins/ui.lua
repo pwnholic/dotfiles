@@ -129,7 +129,7 @@ return {
 
                 hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.orange }
                 hl.Pmenu = { link = "FzfLuaFilePart" }
-                hl.FloatBorder = { fg = c.comment, bg = c.bg_statusline }
+                hl.FloatBorder = { fg = c.comment, bg = c.none }
                 hl.WinSeparator = { bg = c.none, fg = c.comment }
             end,
         },

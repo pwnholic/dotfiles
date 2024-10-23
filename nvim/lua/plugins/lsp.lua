@@ -6,13 +6,19 @@ return {
             servers = {
                 solidity_ls = {},
                 zls = {},
-                kulala_ls = {},
+                -- kulala_ls = {},
                 bashls = {},
                 templ = {},
                 fish_lsp = {},
+                graphql = {},
+                html = {},
+                markdown_oxide = {},
             },
             setup = {
                 gopls = function()
+                    return true
+                end,
+                marksman = function()
                     return true
                 end,
             },
@@ -39,11 +45,11 @@ return {
                     header = setmetatable({}, {
                         __index = function(_, k)
                             local icon, icons_hl = require("mini.icons").get("file", vim.api.nvim_buf_get_name(0))
-                            return ({ string.format("Diagnostics: %s  %s", icon, vim.bo.filetype), icons_hl })[k]
+                            return ({ string.format("Diagnostics= %s  %s", icon, vim.bo.filetype), icons_hl })[k]
                         end,
                     }),
                     format = function(d)
-                        return string.format("[%s] : %s", d.source, d.message)
+                        return string.format("[%s] = %s", d.source, d.message)
                     end,
                     source = "if_many",
                     severity_sort = true,

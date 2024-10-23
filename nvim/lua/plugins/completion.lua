@@ -63,7 +63,10 @@ return {
                 disallow_symbol_nonprefix_matching = false,
             }
 
-            opts.window = { completion = { col_offset = -3, side_padding = 1 } }
+            opts.window = {
+                -- completion = cmp.config.window.bordered({ col_offset = -3, side_padding = 1 }),
+                documentation = false,
+            }
 
             opts.confirmation = {
                 default_behavior = cmp.ConfirmBehavior.Replace,
@@ -165,10 +168,12 @@ return {
                                 return line:match("^%s*%-%-")
                             end
 
-                            local trimmed_line = vim.fn.strcharpart(current_line, indent - 1, col - indent + 1):gsub("%s+", "")
+                            local trimmed_line =
+                                vim.fn.strcharpart(current_line, indent - 1, col - indent + 1):gsub("%s+", "")
                             if trimmed_line == "" then
                                 if indent > 0 and col > indent then
-                                    local new_line = vim.fn.strcharpart(current_line, 0, indent) .. vim.fn.strcharpart(current_line, col)
+                                    local new_line = vim.fn.strcharpart(current_line, 0, indent)
+                                        .. vim.fn.strcharpart(current_line, col)
                                     if is_block_end(current_line) or is_comment(current_line) then
                                         trim_and_set_cursor(new_line, row, vim.fn.strcharlen(new_line))
                                     else
@@ -178,7 +183,8 @@ return {
                                     local prev_line = vim.api.nvim_buf_get_lines(0, row - 2, row - 1, true)[1] or ""
                                     if vim.trim(prev_line) == "" then
                                         local prev_indent = treesitter_indent.get_indent(row - 1) or 0
-                                        local new_line = vim.fn.strcharpart(current_line, 0, prev_indent) .. vim.fn.strcharpart(current_line, col)
+                                        local new_line = vim.fn.strcharpart(current_line, 0, prev_indent)
+                                            .. vim.fn.strcharpart(current_line, col)
                                         trim_and_set_cursor(new_line, row - 1, vim.fn.strcharlen(new_line))
                                     else
                                         local new_line = prev_line .. vim.fn.strcharpart(current_line, col)
@@ -220,6 +226,7 @@ return {
                 Event = 22,
                 Operator = 23,
                 TypeParameter = 24,
+                Text = 25,
             }
 
             opts.sorting = vim.tbl_extend("force", opts.sorting, {
@@ -349,7 +356,9 @@ return {
             local luasnip = require("luasnip")
             local ls_types = require("luasnip.util.types")
 
-            require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" })
+            require("luasnip.loaders.from_vscode").lazy_load({
+                paths = vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets",
+            })
 
             vim.api.nvim_create_autocmd("ModeChanged", {
                 desc = "Unlink current snippet on leaving insert/selection mode.",
@@ -378,8 +387,12 @@ return {
                 store_selection_keys = "<Tab>",
                 ext_opts = {
                     [ls_types.choiceNode] = { active = { virt_text = { { "▐", "Number" } } } },
-                    [ls_types.insertNode] = { unvisited = { virt_text = { { "▐", "NonText" } }, virt_text_pos = "inline" } },
-                    [ls_types.exitNode] = { unvisited = { virt_text = { { "▐", "NonText" } }, virt_text_pos = "inline" } },
+                    [ls_types.insertNode] = {
+                        unvisited = { virt_text = { { "▐", "NonText" } }, virt_text_pos = "inline" },
+                    },
+                    [ls_types.exitNode] = {
+                        unvisited = { virt_text = { { "▐", "NonText" } }, virt_text_pos = "inline" },
+                    },
                 },
             }
         end,
