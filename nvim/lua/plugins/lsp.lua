@@ -70,6 +70,7 @@ return {
                 zig = { "zigfmt" },
                 http = { "kulala-fmt" },
                 fish = { "fish_indent" },
+                json = { "prettier" },
             },
         },
     },
