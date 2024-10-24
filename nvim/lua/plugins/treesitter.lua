@@ -2,7 +2,7 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         opts = {
-            ensure_installed = "all",
+            -- ensure_installed = "all",
             sync_install = false,
             ignore_install = {},
             highlight = {

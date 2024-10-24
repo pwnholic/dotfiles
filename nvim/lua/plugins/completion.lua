@@ -55,12 +55,12 @@ return {
             end
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
-            opts.view = { entries = { name = "custom", selection_order = "near_cursor" } }
+            opts.view = { entries = { name = "custom", selection_order = "top_down", follow_cursor = true } }
             opts.matching = {
-                disallow_partial_matching = false,
+                disallow_fuzzy_matching = false,
                 disallow_partial_fuzzy_matching = false,
+                disallow_partial_matching = false,
                 disallow_prefix_unmatching = false,
-                disallow_symbol_nonprefix_matching = false,
             }
 
             opts.window = {
@@ -201,34 +201,6 @@ return {
                 },
             })
 
-            local CompletionItemKind = {
-                Method = 1,
-                Function = 2,
-                Constructor = 3,
-                Field = 4,
-                Variable = 5,
-                Class = 6,
-                Interface = 7,
-                Module = 8,
-                Property = 9,
-                Unit = 10,
-                Value = 11,
-                Enum = 12,
-                Keyword = 13,
-                Snippet = 14,
-                Color = 15,
-                File = 16,
-                Reference = 17,
-                Folder = 18,
-                EnumMember = 19,
-                Constant = 20,
-                Struct = 21,
-                Event = 22,
-                Operator = 23,
-                TypeParameter = 24,
-                Text = 25,
-            }
-
             opts.sorting = vim.tbl_extend("force", opts.sorting, {
                 priority_weight = 2,
                 comparators = {
@@ -252,14 +224,14 @@ return {
                         local left_kind = left_entry:get_kind()
                         local right_kind = right_entry:get_kind()
 
-                        left_kind = CompletionItemKind[left_kind] or left_kind
-                        right_kind = CompletionItemKind[right_kind] or right_kind
+                        left_kind = vim.g.cmp_item_kinds[left_kind] or left_kind
+                        right_kind = vim.g.cmp_item_kinds[right_kind] or right_kind
 
                         if left_kind ~= right_kind then
-                            if left_kind == CompletionItemKind.Snippet then
+                            if left_kind == vim.g.cmp_item_kinds.Snippet then
                                 return true
                             end
-                            if right_kind == CompletionItemKind.Snippet then
+                            if right_kind == vim.g.cmp_item_kinds.Snippet then
                                 return false
                             end
 
@@ -278,7 +250,7 @@ return {
             opts.formatting = vim.tbl_extend("force", opts.formatting, {
                 expandable_indicator = true,
                 fields = { "kind", "abbr", "menu" },
-                format = function(_, items)
+                format = function(entry, items)
                     local kind_icons = LazyVim.config.icons.kinds
                     if items.kind == "Folder" then
                         items.menu = items.kind
@@ -291,6 +263,11 @@ return {
                         items.menu_hl_group = icon_hl or "CmpItemKindFile"
                         items.kind = icon or kind_icons.File
                         items.kind_hl_group = icon_hl or "CmpItemKindFile"
+                    elseif entry.source.name == "buffer" then
+                        items.menu = "Buffer"
+                        items.kind = " "
+                        items.menu_hl_group = "CmpItemKindText"
+                        items.kind_hl_group = "CmpItemKindText"
                     else
                         items.menu = items.kind
                         items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
@@ -304,12 +281,21 @@ return {
                 { name = "path", priority = 1000, group_index = 1 },
                 { name = "luasnip", priority = 600, group_index = 1, max_item_count = 3 },
                 {
+                    name = "buffer",
+                    priority = 400,
+                    option = {
+                        get_bufnrs = function()
+                            return vim.bo.filetype == "bigfile" and {} or { vim.api.nvim_get_current_buf() }
+                        end,
+                    },
+                },
+                {
                     name = "nvim_lsp",
                     max_item_count = 12,
                     priority = 800,
                     group_index = 1,
                     entry_filter = function(entry, _)
-                        return require("cmp.types").lsp.CompletionItemKind[entry:get_kind()] ~= "Text"
+                        return vim.g.cmp_item_kinds[entry:get_kind()]
                     end,
                 },
             }))
@@ -446,7 +432,7 @@ return {
                     priority = 800,
                     group_index = 1,
                     entry_filter = function(entry, _)
-                        return require("cmp.types").lsp.CompletionItemKind[entry:get_kind()] ~= "Text"
+                        return vim.g.cmp_item_kinds[entry:get_kind()]
                     end,
                 },
             })

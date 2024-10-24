@@ -54,7 +54,7 @@ return {
                     source = "if_many",
                     severity_sort = true,
                     wrap = true,
-                    border = "single",
+                    border = vim.g.border,
                     max_width = math.floor(vim.o.columns / 2),
                     max_height = math.floor(vim.o.lines / 3),
                 },

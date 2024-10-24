@@ -96,7 +96,7 @@ return {
                 opts = {
                     expand_lines = false,
                     floating = {
-                        border = "single",
+                        border = vim.g.border,
                         mappings = { close = { "q", "<Esc>" } },
                     },
                     layouts = {

@@ -2,7 +2,7 @@ return {
     {
         "nvim-lualine/lualine.nvim",
         opts = function(_, opts)
-            opts.extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf" }
+            opts.extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf", "man", "quickfix" }
             table.insert(opts.sections.lualine_x, {
                 function()
                     local names = {}
@@ -95,7 +95,8 @@ return {
                 hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensSeparator = { link = "Boolean", default = true }
                 hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
-                hl.LspSignatureActiveParameter = { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
+                hl.LspSignatureActiveParameter =
+                    { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
 
                 hl.GitSignsCurrentLineBlame = { fg = c.dark5, bg = c.none }
 
@@ -129,6 +130,7 @@ return {
 
                 hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.orange }
                 hl.Pmenu = { link = "FzfLuaFilePart" }
+                hl.CmpItemKindText = { fg = "#82bab5", bg = c.none }
                 hl.FloatBorder = { fg = c.comment, bg = c.none }
                 hl.WinSeparator = { bg = c.none, fg = c.comment }
             end,

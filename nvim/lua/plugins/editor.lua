@@ -31,7 +31,10 @@ return {
                 {
                     "<A-space>",
                     function()
-                        require("harpoon").ui:toggle_quick_menu(require("harpoon"):list(), { ui_width_ratio = 0.45, border = "single", title = "" })
+                        require("harpoon").ui:toggle_quick_menu(
+                            require("harpoon"):list(),
+                            { ui_width_ratio = 0.45, border = vim.g.border, title = "" }
+                        )
                     end,
                     desc = "Harpoon List",
                 },

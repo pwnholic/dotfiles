@@ -24,35 +24,40 @@ keys[#keys + 1] = {
 map("n", "<C-RightMouse>", "<C-o>")
 
 local lazyterm = function()
-    LazyVim.terminal(nil, { cwd = LazyVim.root(), border = "single", size = { height = 1, width = 1 } })
+    LazyVim.terminal(nil, { cwd = LazyVim.root(), border = vim.g.border, size = { height = 1, width = 1 } })
 end
 
 map("n", "<leader>ft", lazyterm, { desc = "Terminal (Root Dir)" })
 map("n", "<leader>fT", function()
-    LazyVim.terminal(nil, { border = "single", size = { height = 1, width = 1 } })
+    LazyVim.terminal(nil, { border = vim.g.border, size = { height = 1, width = 1 } })
 end, { desc = "Terminal (cwd)" })
 map("n", "<c-/>", lazyterm, { desc = "Terminal (Root Dir)" })
 map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 
 map("n", "<leader>gg", function()
-    LazyVim.lazygit({ cwd = LazyVim.root.git(), border = "single", size = { height = 1, width = 1 } })
+    LazyVim.lazygit({ cwd = LazyVim.root.git(), border = vim.g.border, size = { height = 1, width = 1 } })
 end, { desc = "Lazygit (Root Dir)" })
 map("n", "<leader>gG", function()
-    LazyVim.lazygit({ border = "single", size = { height = 1, width = 1 } })
+    LazyVim.lazygit({ border = vim.g.border, size = { height = 1, width = 1 } })
 end, { desc = "Lazygit (cwd)" })
 map("n", "<leader>gb", LazyVim.lazygit.blame_line, { desc = "Git Blame Line" })
 map("n", "<leader>gB", LazyVim.lazygit.browse, { desc = "Git Browse" })
 
 map("n", "<leader>gf", function()
     local git_path = vim.api.nvim_buf_get_name(0)
-    LazyVim.lazygit({ args = { "-f", vim.trim(git_path) }, border = "single", size = { height = 1, width = 1 } })
+    LazyVim.lazygit({ args = { "-f", vim.trim(git_path) }, border = vim.g.border, size = { height = 1, width = 1 } })
 end, { desc = "Lazygit Current File History" })
 
 map("n", "<leader>gl", function()
-    LazyVim.lazygit({ args = { "log" }, cwd = LazyVim.root.git(), border = "single", size = { height = 1, width = 1 } })
+    LazyVim.lazygit({
+        args = { "log" },
+        cwd = LazyVim.root.git(),
+        border = vim.g.border,
+        size = { height = 1, width = 1 },
+    })
 end, { desc = "Lazygit Log" })
 map("n", "<leader>gL", function()
-    LazyVim.lazygit({ args = { "log" }, border = "single", size = { height = 1, width = 1 } })
+    LazyVim.lazygit({ args = { "log" }, border = vim.g.border, size = { height = 1, width = 1 } })
 end, { desc = "Lazygit Log (cwd)" })
 
 map("n", "<A-n>", "<cmd>m .+1<cr>==", { desc = "Move Down" })

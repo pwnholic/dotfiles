@@ -14,7 +14,10 @@ return {
                         end
 
                         local bufname = vim.api.nvim_buf_get_name(buf)
-                        if not vim.startswith(bufname, "oil://") and (vim.uv.fs_stat(bufname) or {}).type ~= "directory" then
+                        if
+                            not vim.startswith(bufname, "oil://")
+                            and (vim.uv.fs_stat(bufname) or {}).type ~= "directory"
+                        then
                             return
                         end
 
@@ -94,7 +97,11 @@ return {
             oil_win = oil_win or vim.api.nvim_get_current_win()
             local preview_win = preview_wins[oil_win]
             local preview_buf = preview_bufs[oil_win]
-            if preview_win and vim.api.nvim_win_is_valid(preview_win) and vim.fn.winbufnr(preview_win) == preview_buf then
+            if
+                preview_win
+                and vim.api.nvim_win_is_valid(preview_win)
+                and vim.fn.winbufnr(preview_win) == preview_buf
+            then
                 vim.api.nvim_win_close(preview_win, true)
             end
             if preview_buf and vim.api.nvim_win_is_valid(preview_buf) then
@@ -121,7 +128,12 @@ return {
             local oil_win = vim.api.nvim_get_current_win()
             local preview_win = preview_wins[oil_win]
             local preview_buf = preview_bufs[oil_win]
-            if not preview_win or not preview_buf or not vim.api.nvim_win_is_valid(preview_win) or not vim.api.nvim_buf_is_valid(preview_buf) then
+            if
+                not preview_win
+                or not preview_buf
+                or not vim.api.nvim_win_is_valid(preview_win)
+                or not vim.api.nvim_buf_is_valid(preview_buf)
+            then
                 local oil_win_height = vim.api.nvim_win_get_height(oil_win)
                 local oil_win_width = vim.api.nvim_win_get_width(oil_win)
                 vim.cmd.new({ mods = { vertical = oil_win_width > 6 * oil_win_height } })
@@ -159,7 +171,11 @@ return {
             local lines = {}
             lines = stat.type == "directory" and vim.fn.systemlist("ls -lhA " .. vim.fn.shellescape(fpath))
                 or stat.size == 0 and nopreview("Empty file", preview_win_height, preview_win_width)
-                or stat.size > preview_max_fsize and nopreview("File too large to preview", preview_win_height, preview_win_width)
+                or stat.size > preview_max_fsize and nopreview(
+                    "File too large to preview",
+                    preview_win_height,
+                    preview_win_width
+                )
                 or not vim.fn.system({ "file", fpath }):match("text") and nopreview(
                     "Binary file, no preview available",
                     preview_win_height,
@@ -317,7 +333,10 @@ return {
                         { "git", "ls-files", "--ignored", "--exclude-standard", "--others", "--directory" },
                         { cwd = key, text = true }
                     )
-                    local tracked_proc = vim.system({ "git", "ls-tree", "HEAD", "--name-only" }, { cwd = key, text = true })
+                    local tracked_proc = vim.system(
+                        { "git", "ls-tree", "HEAD", "--name-only" },
+                        { cwd = key, text = true }
+                    )
                     local ret = { ignored = parse_output(ignore_proc), tracked = parse_output(tracked_proc) }
                     rawset(self, key, ret)
                     return ret
@@ -455,10 +474,10 @@ return {
                     end,
                 },
             },
-            keymaps_help = { border = "single" },
-            float = { border = "single", win_options = { winblend = 0 } },
-            preview = { border = "single", win_options = { winblend = 0 } },
-            progress = { border = "single", win_options = { winblend = 0 } },
+            keymaps_help = { border = vim.g.border },
+            float = { border = vim.g.border, win_options = { winblend = 0 } },
+            preview = { border = vim.g.border, win_options = { winblend = 0 } },
+            progress = { border = vim.g.border, win_options = { winblend = 0 } },
         })
 
         local groupid = vim.api.nvim_create_augroup("OilSyncCwd", {})
