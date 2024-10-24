@@ -55,7 +55,7 @@ return {
             end
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
-            opts.view = { entries = { name = "custom", selection_order = "top_down", follow_cursor = true } }
+            opts.view = { entries = { name = "custom", selection_order = "top_down", follow_cursor = false } }
             opts.matching = {
                 disallow_fuzzy_matching = false,
                 disallow_partial_fuzzy_matching = false,
@@ -64,7 +64,13 @@ return {
             }
 
             opts.window = {
-                -- completion = cmp.config.window.bordered({ col_offset = -3, side_padding = 1 }),
+                completion = cmp.config.window.bordered({
+                    col_offset = 0,
+                    side_padding = 1,
+                    border = "none",
+                    winhighlight = "Normal:PmenuDark,CursorLine:PmenuSel,Search:Special",
+                    scrollbar = false,
+                }),
                 documentation = false,
             }
 

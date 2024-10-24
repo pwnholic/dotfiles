@@ -133,6 +133,7 @@ return {
                 hl.CmpItemKindText = { fg = "#82bab5", bg = c.none }
                 hl.FloatBorder = { fg = c.comment, bg = c.none }
                 hl.WinSeparator = { bg = c.none, fg = c.comment }
+                hl.PmenuDark = { bg = c.bg_dark }
             end,
         },
     },
