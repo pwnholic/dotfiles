@@ -25,6 +25,7 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.coding.luasnip" },
         { import = "lazyvim.plugins.extras.dap.core" },
         { import = "lazyvim.plugins.extras.test.core" },
+        { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
 
         { import = "lazyvim.plugins.extras.lang.sql" },
         { import = "lazyvim.plugins.extras.lang.rust" },
@@ -42,7 +43,6 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.lang.cmake" },
         { import = "lazyvim.plugins.extras.lang.php" },
         { import = "lazyvim.plugins.extras.lang.go" },
-        -- { import = "lazyvim.plugins.extras.lang.tex" }, -- latex
 
         { import = "plugins" },
     },

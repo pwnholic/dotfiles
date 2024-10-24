@@ -1,5 +1,14 @@
 return {
     {
+        "echasnovski/mini.hipatterns",
+        opts = {
+            highlighters = {
+                json = { pattern = "json%s*:%s*", group = "MiniHipatternsJson" },
+                gorm = { pattern = "gorm%s*:%s*", group = "MiniHipatternsGorm" },
+            },
+        },
+    },
+    {
         "nvim-lualine/lualine.nvim",
         opts = function(_, opts)
             opts.extensions = { "oil", "mason", "trouble", "nvim-dap-ui", "fzf", "man", "quickfix" }
@@ -134,6 +143,9 @@ return {
                 hl.FloatBorder = { fg = c.comment, bg = c.none }
                 hl.WinSeparator = { bg = c.none, fg = c.comment }
                 hl.PmenuDark = { bg = c.bg_dark }
+
+                hl.MiniHipatternsJson = { fg = c.purple, bg = c.none, bold = true }
+                hl.MiniHipatternsGorm = { fg = c.red, bg = c.none, bold = true }
             end,
         },
     },
