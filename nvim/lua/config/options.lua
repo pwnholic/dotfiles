@@ -21,6 +21,21 @@ vim.opt.gcr = {
     "r-cr:hor20-Curosr/lCursor",
 }
 
+vim.opt.listchars = {
+    tab = "▏ ",
+    trail = "·",
+    nbsp = "␣",
+}
+
+vim.opt.fillchars = {
+    fold = "·",
+    foldsep = " ",
+    eob = " ",
+    foldopen = "",
+    foldclose = "",
+    diff = "╱",
+}
+
 vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 

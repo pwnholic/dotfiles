@@ -97,7 +97,13 @@ return {
             transparent = false,
             lualine_bold = true,
             cache = true,
-            styles = { sidebars = "normal", floats = "normal" },
+            styles = {
+                sidebars = "normal",
+                floats = "normal",
+                keywords = { italic = true },
+                functions = { bold = true },
+                variables = {},
+            },
             on_highlights = function(hl, c)
                 hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
                 hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
@@ -145,7 +151,11 @@ return {
                 hl.PmenuDark = { bg = c.bg_dark }
 
                 hl.MiniHipatternsJson = { fg = c.purple, bg = c.none, bold = true }
-                hl.MiniHipatternsGorm = { fg = c.red, bg = c.none, bold = true }
+                hl.MiniHipatternsGorm = { fg = c.yellow, bg = c.none, bold = true }
+
+                hl["@variable.parameter"] = { fg = c.yellow, italic = true, bg = c.none }
+                hl["@keyword.return"] = { fg = c.purple, bold = true, bg = c.none }
+                hl["@type.builtin"] = { fg = c.blue1, bold = true, bg = c.none }
             end,
         },
     },
