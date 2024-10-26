@@ -1,3 +1,30 @@
+local CompletionItemKind = {
+    Method = 1,
+    Function = 2,
+    Module = 3,
+    Struct = 4,
+    Variable = 5,
+    Class = 6,
+    Interface = 7,
+    Constructor = 8,
+    Keyword = 9,
+    Constant = 10,
+    Field = 11,
+    EnumMember = 12,
+    Enum = 13,
+    Property = 14,
+    TypeParameter = 15,
+    Unit = 16,
+    Value = 17,
+    Snippet = 18,
+    Color = 19,
+    File = 20,
+    Reference = 21,
+    Folder = 22,
+    Event = 23,
+    Operator = 24,
+}
+
 return {
     {
         "hrsh7th/nvim-cmp",
@@ -230,14 +257,14 @@ return {
                         local left_kind = left_entry:get_kind()
                         local right_kind = right_entry:get_kind()
 
-                        left_kind = vim.g.cmp_item_kinds[left_kind] or left_kind
-                        right_kind = vim.g.cmp_item_kinds[right_kind] or right_kind
+                        left_kind = CompletionItemKind[left_kind] or left_kind
+                        right_kind = CompletionItemKind[right_kind] or right_kind
 
                         if left_kind ~= right_kind then
-                            if left_kind == vim.g.cmp_item_kinds.Snippet then
+                            if left_kind == CompletionItemKind.Snippet then
                                 return true
                             end
-                            if right_kind == vim.g.cmp_item_kinds.Snippet then
+                            if right_kind == CompletionItemKind.Snippet then
                                 return false
                             end
 
@@ -283,12 +310,13 @@ return {
                 end,
             })
 
-            opts.sources = cmp.config.sources(vim.tbl_extend("force", {}, {
+            opts.sources = vim.tbl_extend("force", opts.sources, {
                 { name = "path", priority = 1000, group_index = 1 },
                 { name = "luasnip", priority = 600, group_index = 1, max_item_count = 3 },
                 {
                     name = "buffer",
                     priority = 400,
+                    group_index = 2,
                     option = {
                         get_bufnrs = function()
                             return vim.bo.filetype == "bigfile" and {} or { vim.api.nvim_get_current_buf() }
@@ -301,10 +329,10 @@ return {
                     priority = 800,
                     group_index = 1,
                     entry_filter = function(entry, _)
-                        return vim.g.cmp_item_kinds[entry:get_kind()]
+                        return CompletionItemKind[entry:get_kind()] ~= "Text"
                     end,
                 },
-            }))
+            })
 
             cmp.setup.cmdline({ "/", "?" }, {
                 enabled = true,
@@ -438,7 +466,7 @@ return {
                     priority = 800,
                     group_index = 1,
                     entry_filter = function(entry, _)
-                        return vim.g.cmp_item_kinds[entry:get_kind()]
+                        return CompletionItemKind[entry:get_kind()] ~= "Text"
                     end,
                 },
             })
@@ -447,5 +475,17 @@ return {
                 cmp_rust.filter_out.entry_filter(source)
             end
         end,
+    },
+    {
+        "Snikimonkd/cmp-go-pkgs",
+        ft = { "go", "gomod" },
+        dependencies = {
+            {
+                "nvim-cmp",
+                opts = function(_, opts)
+                    table.insert(opts.sources, { name = "go_pkgs" })
+                end,
+            },
+        },
     },
 }

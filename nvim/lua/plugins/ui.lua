@@ -3,8 +3,8 @@ return {
         "echasnovski/mini.hipatterns",
         opts = {
             highlighters = {
-                json = { pattern = "json%s*:%s*", group = "MiniHipatternsJson" },
-                gorm = { pattern = "gorm%s*:%s*", group = "MiniHipatternsGorm" },
+                json = { pattern = [[json%s*:%s*]], group = "MiniHipatternsJson" },
+                gorm = { pattern = [[gorm%s*:%s*]], group = "MiniHipatternsGorm" },
             },
         },
     },

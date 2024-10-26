@@ -95,6 +95,11 @@ return {
                 },
                 opts = {
                     expand_lines = false,
+                    render = {
+                        indent = 1,
+                        max_value_lines = 10000,
+                        max_type_length = 10000,
+                    },
                     floating = {
                         border = vim.g.border,
                         mappings = { close = { "q", "<Esc>" } },

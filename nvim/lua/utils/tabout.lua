@@ -157,7 +157,8 @@ local function jumpin_idx(leading, closing_pattern, cursor)
     local success, result = pcall(function()
         local opening_pattern = opening_pattern_lookup_tbl[closing_pattern]
 
-        local _, _, content_str, closing_pattern_str = leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
+        local _, _, content_str, closing_pattern_str =
+            leading:find(string.format("%s(%s)(%s)$", opening_pattern, "%s*", closing_pattern))
         if content_str == nil or closing_pattern_str == nil then
             _, _, content_str, closing_pattern_str = leading:find(string.format("^(%s)(%s)$", "%s*", closing_pattern))
         end
@@ -170,7 +171,9 @@ local function jumpin_idx(leading, closing_pattern, cursor)
             end
         end
 
-        _, _, _, closing_pattern_str = leading:find(string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*"))
+        _, _, _, closing_pattern_str = leading:find(
+            string.format("%s%s(%s)$", opening_pattern .. "%s*", ".*%S", "%s*" .. closing_pattern .. "%s*")
+        )
         if closing_pattern_str == nil then
             _, _, closing_pattern_str = leading:find(string.format("%s(%s)$", "%S", "%s*" .. closing_pattern .. "%s*"))
         end
