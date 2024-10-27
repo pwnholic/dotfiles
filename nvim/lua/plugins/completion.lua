@@ -50,6 +50,7 @@ return {
             opts.window = {
                 completion = cmp.config.window.bordered({
                     col_offset = 0,
+                    winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
                     border = vim.g.border,
                     scrollbar = false,
                     side_padding = 1,

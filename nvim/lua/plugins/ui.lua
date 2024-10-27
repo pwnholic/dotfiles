@@ -162,7 +162,7 @@ return {
                 hl.RenderMarkdownBullet = { fg = c.red, bg = c.none }
                 hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
 
-                hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.orange }
+                hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.teal }
                 hl.Pmenu = { link = "FzfLuaFilePart" }
                 hl.CmpItemKindText = { fg = "#82bab5", bg = c.none }
                 hl.FloatBorder = { fg = c.comment, bg = c.none }
