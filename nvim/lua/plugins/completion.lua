@@ -235,24 +235,11 @@ return {
             })
 
             opts.sorting = vim.tbl_extend("force", opts.sorting, {
-                priority_weight = 2,
+                priority_weight = 1,
                 comparators = {
                     cmp.config.compare.offset,
                     cmp.config.compare.exact,
                     cmp.config.compare.score,
-                    function(left_entry, right_entry)
-                        local _, left_under = left_entry.completion_item.label:find("^_+")
-                        local _, right_under = right_entry.completion_item.label:find("^_+")
-
-                        left_under = left_under or 0
-                        right_under = right_under or 0
-
-                        if left_under > right_under then
-                            return false
-                        elseif left_under < right_under then
-                            return true
-                        end
-                    end,
                     function(left_entry, right_entry)
                         local left_kind = left_entry:get_kind()
                         local right_kind = right_entry:get_kind()
@@ -274,6 +261,7 @@ return {
                                 return false
                             end
                         end
+                        return nil
                     end,
                     cmp.config.compare.locality,
                     cmp.config.compare.recently_used,
@@ -446,7 +434,7 @@ return {
 
             cmp.setup.filetype("rust", {
                 sorting = {
-                    priority_weight = 2,
+                    priority_weight = 1,
                     comparators = {
                         cmp.config.compare.offset,
                         cmp.config.compare.exact,
@@ -457,7 +445,7 @@ return {
                 },
             })
 
-            local sources = cmp.config.sources({
+            local sources = {
                 { name = "path", priority = 1000, group_index = 1 },
                 { name = "snippets", priority = 600, group_index = 1, max_item_count = 3 },
                 {
@@ -469,23 +457,11 @@ return {
                         return CompletionItemKind[entry:get_kind()] ~= "Text"
                     end,
                 },
-            })
+            }
 
             for _, source in ipairs(sources) do
                 cmp_rust.filter_out.entry_filter(source)
             end
         end,
-    },
-    {
-        "Snikimonkd/cmp-go-pkgs",
-        ft = { "go", "gomod" },
-        dependencies = {
-            {
-                "nvim-cmp",
-                opts = function(_, opts)
-                    table.insert(opts.sources, { name = "go_pkgs" })
-                end,
-            },
-        },
     },
 }
