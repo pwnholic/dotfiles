@@ -35,51 +35,8 @@ return {
         },
         opts = function(_, opts)
             local cmp = require("cmp")
-            local cmp_core = require("cmp.core")
             local luasnip = require("luasnip")
             local tabout = require("utils.tabout")
-
-            ---@type string?
-            local last_key
-
-            vim.on_key(function(k)
-                last_key = k
-            end)
-
-            ---@type integer
-            local last_changed = 0
-            local _cmp_on_change = cmp_core.on_change
-
-            ---Improves performance when inserting in large files
-            ---@diagnostic disable-next-line: duplicate-set-field
-            function cmp_core.on_change(self, trigger_event)
-                -- Don't know why but inserting spaces/tabs causes higher latency than other
-                -- keys, e.g. when holding down 's' the interval between keystrokes is less
-                -- than 32ms (80 repeats/s keyboard), but when holding spaces/tabs the
-                -- interval increases to 100ms, guess is is due ot some other plugins that
-                -- triggers on spaces/tabs
-                -- Spaces/tabs are not useful in triggering completions in insert mode but can
-                -- be useful in command-line autocompletion, so ignore them only when not in
-                -- command-line mode
-                if (last_key == " " or last_key == "\t") and string.sub(vim.fn.mode(), 1, 1) ~= "c" then
-                    return
-                end
-
-                local now = vim.uv.now()
-                local fast_typing = now - last_changed < 32
-                last_changed = now
-
-                if not fast_typing or trigger_event ~= "TextChanged" or cmp.visible() then
-                    _cmp_on_change(self, trigger_event)
-                    return
-                end
-
-                vim.defer_fn(function()
-                    if last_changed == now then
-                        _cmp_on_change(self, trigger_event)
-                    end
-                end, 200)
-            end
 
             opts.performance = { async_budget = 64, max_view_entries = 64 }
             opts.view = { entries = { name = "custom", selection_order = "top_down", follow_cursor = false } }
@@ -93,12 +50,17 @@ return {
             opts.window = {
                 completion = cmp.config.window.bordered({
                     col_offset = 0,
-                    side_padding = 1,
-                    border = "none",
-                    winhighlight = "Normal:PmenuDark,CursorLine:PmenuSel,Search:Special",
+                    border = vim.g.border,
                     scrollbar = false,
+                    side_padding = 1,
                 }),
                 documentation = false,
+                -- documentation = cmp.config.window.bordered({
+                --     col_offset = 0,
+                --     border = vim.g.border,
+                --     scrollbar = true,
+                --     side_padding = 1,
+                -- }),
             }
 
             opts.confirmation = {
