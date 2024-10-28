@@ -204,27 +204,20 @@ return {
                     cmp.config.compare.exact,
                     cmp.config.compare.score,
                     function(left_entry, right_entry)
-                        local left_kind = left_entry:get_kind()
-                        local right_kind = right_entry:get_kind()
+                        local left_kind = CompletionItemKind[left_entry:get_kind()] or left_entry:get_kind()
+                        local right_kind = CompletionItemKind[right_entry:get_kind()] or right_entry:get_kind()
 
-                        left_kind = CompletionItemKind[left_kind] or left_kind
-                        right_kind = CompletionItemKind[right_kind] or right_kind
-
-                        if left_kind ~= right_kind then
-                            if left_kind == CompletionItemKind.Snippet then
-                                return true
-                            end
-                            if right_kind == CompletionItemKind.Snippet then
-                                return false
-                            end
-
-                            if (left_kind - right_kind) < 0 then
-                                return true
-                            elseif (left_kind - right_kind) > 0 then
-                                return false
-                            end
+                        if left_kind == right_kind then
+                            return nil
                         end
-                        return nil
+
+                        if left_kind == CompletionItemKind.Snippet then
+                            return true
+                        elseif right_kind == CompletionItemKind.Snippet then
+                            return false
+                        end
+
+                        return left_kind < right_kind
                     end,
                     cmp.config.compare.locality,
                     cmp.config.compare.recently_used,
