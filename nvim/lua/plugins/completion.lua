@@ -263,7 +263,11 @@ return {
                     group_index = 2,
                     option = {
                         get_bufnrs = function()
-                            return vim.bo.filetype == "bigfile" and {} or { vim.api.nvim_get_current_buf() }
+                            local bufs = {}
+                            for _, win in ipairs(vim.api.nvim_list_wins()) do
+                                bufs[vim.api.nvim_win_get_buf(win)] = true
+                            end
+                            return vim.bo.filetype == "bigfile" and {} or vim.tbl_keys(bufs)
                         end,
                     },
                 },
@@ -288,7 +292,11 @@ return {
                         group_index = 1,
                         option = {
                             get_bufnrs = function()
-                                return vim.bo.filetype == "bigfile" and {} or { vim.api.nvim_get_current_buf() }
+                                local bufs = {}
+                                for _, win in ipairs(vim.api.nvim_list_wins()) do
+                                    bufs[vim.api.nvim_win_get_buf(win)] = true
+                                end
+                                return vim.bo.filetype == "bigfile" and {} or vim.tbl_keys(bufs)
                             end,
                         },
                     },
