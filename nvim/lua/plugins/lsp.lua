@@ -12,7 +12,37 @@ return {
                 fish_lsp = {},
                 graphql = {},
                 html = {},
-                markdown_oxide = {},
+                markdown_oxide = {
+                    root_dir = function(fname, _)
+                        return require("lspconfig").util.root_pattern(".obsidian", ".moxide.toml", ".git")(fname)
+                            or LazyVim.root()
+                    end,
+                    on_attach = function(client, bufnr)
+                        client.server_capabilities.documentFormattingProvider = false
+                        client.server_capabilities.documentRangeFormattingProvider = false
+                        vim.b[bufnr].autoformat = false
+                    end,
+                    commands = {
+                        Today = {
+                            function()
+                                vim.lsp.buf.execute_command({ command = "jump", arguments = { "today" } })
+                            end,
+                            description = "Open today's daily note",
+                        },
+                        Tomorrow = {
+                            function()
+                                vim.lsp.buf.execute_command({ command = "jump", arguments = { "tomorrow" } })
+                            end,
+                            description = "Open tomorrow's daily note",
+                        },
+                        Yesterday = {
+                            function()
+                                vim.lsp.buf.execute_command({ command = "jump", arguments = { "yesterday" } })
+                            end,
+                            description = "Open yesterday's daily note",
+                        },
+                    },
+                },
             },
             setup = {
                 gopls = function()
@@ -70,8 +100,6 @@ return {
                 zig = { "zigfmt" },
                 http = { "kulala-fmt" },
                 fish = { "fish_indent" },
-                json = { "prettier" },
-                markdown = { "prettier" },
             },
         },
     },
