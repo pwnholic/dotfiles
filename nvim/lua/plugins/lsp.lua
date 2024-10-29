@@ -71,6 +71,7 @@ return {
                 http = { "kulala-fmt" },
                 fish = { "fish_indent" },
                 json = { "prettier" },
+                markdown = { "prettier" },
             },
         },
     },
