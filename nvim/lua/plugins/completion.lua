@@ -31,6 +31,7 @@ return {
         dependencies = {
             { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
             { "stevearc/vim-vscode-snippets" },
+            { "hrsh7th/cmp-calc" },
         },
         opts = function(_, opts)
             local cmp = require("cmp")
@@ -264,9 +265,14 @@ return {
                         items.kind_hl_group = icon_hl or "CmpItemKindFile"
                     elseif entry.source.name == "buffer" then
                         items.menu = "Buffer"
-                        items.kind = " "
+                        items.kind = ""
                         items.menu_hl_group = "CmpItemKindText"
                         items.kind_hl_group = "CmpItemKindText"
+                    elseif entry.source.name == "calc" then
+                        items.menu = "Calc"
+                        items.kind = " "
+                        items.menu_hl_group = "CmpItemKindOperator"
+                        items.kind_hl_group = "CmpItemKindOperator"
                     else
                         items.menu = items.kind
                         items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
@@ -281,6 +287,7 @@ return {
             opts.sources = vim.tbl_extend("force", opts.sources, {
                 { name = "path", priority = 1000, group_index = 1 },
                 { name = "luasnip", priority = 600, group_index = 1, max_item_count = 3 },
+                { name = "calc", priority = 400, group_index = 2 },
                 {
                     name = "buffer",
                     priority = 400,
