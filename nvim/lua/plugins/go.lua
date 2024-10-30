@@ -67,16 +67,27 @@ return {
                         [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
                     },
                 },
-                virtual_text = { spacing = 4, source = "if_many", prefix = "󰈸 " },
+                virtual_text = {
+                    prefix = "",
+                    spacing = 3,
+                    format = function(d)
+                        local severity = vim.diagnostic.severity[d.severity]
+                        severity = severity:lower():gsub("(%a)(%w*)", function(first, rest)
+                            return first:upper() .. rest:lower()
+                        end)
+                        local icons = LazyVim.config.icons.diagnostics[severity]
+                        return string.format("%s %s [%s]", icons, d.message, d.source)
+                    end,
+                },
                 float = {
                     header = setmetatable({}, {
                         __index = function(_, k)
                             local icon, icons_hl = require("mini.icons").get("file", vim.api.nvim_buf_get_name(0))
-                            return ({ string.format("Diagnostics: %s  %s", icon, vim.bo.filetype), icons_hl })[k]
+                            return ({ string.format("Diagnostics= %s  %s", icon, vim.bo.filetype), icons_hl })[k]
                         end,
                     }),
                     format = function(d)
-                        return string.format("[%s] : %s", d.source, d.message)
+                        return string.format("[%s] %s", d.source, d.message)
                     end,
                     source = "if_many",
                     severity_sort = true,
