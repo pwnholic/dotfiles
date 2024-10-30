@@ -38,6 +38,30 @@ return {
             local luasnip = require("luasnip")
             local tabout = require("utils.tabout")
 
+            ---Clamp the length of a field in a cmp item
+            ---@param item table<string, any> cmp item
+            ---@param field string which field in the cmp item to clamp
+            ---@param min_width integer
+            ---@param max_width integer
+            ---@return nil
+            local function clamp_items(item, field, min_width, max_width)
+                if not item[field] then
+                    return
+                end
+                if min_width > max_width then
+                    min_width, max_width = max_width, min_width
+                end
+                local field_str = item[field]
+                local field_width = vim.fn.strdisplaywidth(field_str)
+                if field_width > max_width then
+                    local former_width = math.floor(max_width * 0.6)
+                    local latter_width = math.max(0, max_width - former_width - 1)
+                    item[field] = string.format("%s...%s", field_str:sub(1, former_width), field_str:sub(-latter_width))
+                elseif field_width < min_width then
+                    item[field] = string.format("%-" .. min_width .. "s", field_str)
+                end
+            end
+
             opts.performance = { async_budget = 64, max_view_entries = 64 }
             opts.view = { entries = { name = "custom", selection_order = "top_down", follow_cursor = false } }
             opts.matching = {
@@ -250,6 +274,8 @@ return {
                         items.menu_hl_group = string.format("CmpItemKind%s", items.kind)
                         items.kind = vim.fn.strcharpart(kind_icons[items.kind] or "", 0, 2)
                     end
+                    clamp_items(items, "abbr", vim.o.pumwidth, math.max(60, math.ceil(vim.o.columns * 0.4)))
+                    clamp_items(items, "menu", 0, math.max(16, math.ceil(vim.o.columns * 0.2)))
                     return items
                 end,
             })
