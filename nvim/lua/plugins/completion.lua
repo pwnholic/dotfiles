@@ -30,7 +30,6 @@ return {
         "hrsh7th/nvim-cmp",
         dependencies = {
             { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
-            { "dmitmel/cmp-cmdline-history", event = "CmdlineChanged" },
             { "stevearc/vim-vscode-snippets" },
         },
         opts = function(_, opts)
@@ -155,7 +154,6 @@ return {
                         end
                     end,
                 },
-
                 ["<BS>"] = {
                     i = function(fallback)
                         if vim.bo.filetype == "bigfile" then
@@ -311,6 +309,7 @@ return {
             cmp.setup.cmdline({ "/", "?" }, {
                 enabled = true,
                 window = { documentation = false },
+                mapping = cmp.mapping.preset.cmdline(),
                 formatting = { fields = { "abbr" }, expandable_indicator = true },
                 sources = {
                     {
@@ -326,13 +325,13 @@ return {
                             end,
                         },
                     },
-                    { name = "cmdline_history", group_index = 2 },
                 },
                 view = { entries = { name = "custom", selection_order = "top_down" } },
             })
 
             cmp.setup.cmdline(":", {
                 enabled = true,
+                mapping = cmp.mapping.preset.cmdline(),
                 formatting = { fields = { "abbr" }, expandable_indicator = true },
                 sources = { { name = "cmdline", group_index = 1 }, { name = "cmdline_history", group_index = 2 } },
                 view = { entries = { name = "custom", selection_order = "top_down" } },
