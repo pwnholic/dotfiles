@@ -3,7 +3,7 @@ return {
     dependencies = { "ray-x/guihua.lua", branch = "master" },
     ft = { "go", "gomod" },
     branch = "master",
-    build = ":GoUpdateBinaries",
+    -- build = ":GoUpdateBinaries",
     opts = function()
         return {
             tag_transform = "snakecase",

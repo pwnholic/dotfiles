@@ -139,7 +139,8 @@ return {
     {
         "williamboman/mason.nvim",
         opts = {
-            ensure_installed = {},
+            ensure_installed = { "rust-analyzer" },
+            max_concurrent_installers = 100,
         },
     },
 }

@@ -6,7 +6,6 @@ return {
             servers = {
                 solidity_ls = {},
                 zls = {},
-                -- kulala_ls = {},
                 bashls = {},
                 templ = {},
                 fish_lsp = {},

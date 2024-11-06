@@ -28,9 +28,8 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
 
         { import = "lazyvim.plugins.extras.formatting.prettier" },
-
-        { import = "lazyvim.plugins.extras.lang.git" },
         { import = "lazyvim.plugins.extras.lang.sql" },
+        -- { import = "lazyvim.plugins.extras.lang.git" },
         { import = "lazyvim.plugins.extras.lang.rust" },
         { import = "lazyvim.plugins.extras.lang.markdown" },
         { import = "lazyvim.plugins.extras.lang.typescript" },
@@ -42,9 +41,9 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.lang.toml" },
         { import = "lazyvim.plugins.extras.lang.python" },
         { import = "lazyvim.plugins.extras.lang.cmake" },
-        { import = "lazyvim.plugins.extras.lang.php" },
         { import = "lazyvim.plugins.extras.lang.go" },
 
+        { import = "lazyvim.plugins.extras.coding.blink" },
         { import = "plugins" },
     },
     defaults = { lazy = false, version = false },
