@@ -1,4 +1,0 @@
-
-/* Import color-scheme from `colors` directory */
-
-@import "~/.config/rofi/launchers/color/onedark.rasi"
