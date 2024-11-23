@@ -1,0 +1,11 @@
+[default]
+path = "~/.config/hypr/wallpapers/"
+duration = "5m"
+sorting = "ascending"
+
+[HDMI-A-1]
+path = "~/.config/hypr/wallpapers/"
+duration = "5m"
+sorting = "ascending"
+
+

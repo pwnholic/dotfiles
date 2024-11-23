@@ -5,6 +5,8 @@ return {
             highlighters = {
                 json = { pattern = [[json%s*:%s*]], group = "MiniHipatternsJson" },
                 gorm = { pattern = [[gorm%s*:%s*]], group = "MiniHipatternsGorm" },
+                validate = { pattern = [[validate%s*:%s*]], group = "MiniHipatternsValidate" },
+                binding = { pattern = [[binding%s*:%s*]], group = "MiniHipatternsBinding" },
             },
         },
     },
@@ -29,7 +31,6 @@ return {
             })
         end,
     },
-    { "rcarriga/nvim-notify", opts = { render = "wrapped-compact", stages = "slide" } },
     {
         "lukas-reineke/indent-blankline.nvim",
         opts = {
@@ -90,21 +91,6 @@ return {
                 mappings = true,
                 rules = false,
                 colors = true,
-            },
-        },
-    },
-    {
-        "nvimdev/dashboard-nvim",
-        opts = {
-            config = {
-                header = vim.split(string.rep("\n", 1) .. [[
-██████╗  ██╗ ███████╗ ███╗   ███╗ ██╗ ██╗      ██╗       █████╗  ██╗  ██╗    ██████╗  ██╗   ██╗ ██╗      ██╗   ██╗ ██╗ ██╗
-██╔══██╗ ██║ ██╔════╝ ████╗ ████║ ██║ ██║      ██║      ██╔══██╗ ██║  ██║    ██╔══██╗ ██║   ██║ ██║      ██║   ██║ ██║ ██║
-██████╔╝ ██║ ███████╗ ██╔████╔██║ ██║ ██║      ██║      ███████║ ███████║    ██║  ██║ ██║   ██║ ██║      ██║   ██║ ██║ ██║
-██╔══██╗ ██║ ╚════██║ ██║╚██╔╝██║ ██║ ██║      ██║      ██╔══██║ ██╔══██║    ██║  ██║ ██║   ██║ ██║      ██║   ██║ ╚═╝ ╚═╝
-██████╔╝ ██║ ███████║ ██║ ╚═╝ ██║ ██║ ███████╗ ███████╗ ██║  ██║ ██║  ██║    ██████╔╝ ╚██████╔╝ ███████╗ ╚██████╔╝ ██╗ ██╗
-╚═════╝  ╚═╝ ╚══════╝ ╚═╝     ╚═╝ ╚═╝ ╚══════╝ ╚══════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝    ╚═════╝   ╚═════╝  ╚══════╝  ╚═════╝  ╚═╝ ╚═╝
-    ]] .. "\n", "\n"),
             },
         },
     },
@@ -171,11 +157,29 @@ return {
 
                 hl.MiniHipatternsJson = { fg = c.purple, bg = c.none, bold = true }
                 hl.MiniHipatternsGorm = { fg = c.yellow, bg = c.none, bold = true }
+                hl.MiniHipatternsValidate = { fg = c.blue1, bg = c.none, bold = true }
+                hl.MiniHipatternsBinding = { fg = c.teal, bg = c.none, bold = true }
 
                 hl["@variable.parameter"] = { fg = c.yellow, italic = true, bg = c.none }
                 hl["@keyword.return"] = { fg = c.purple, bold = true, bg = c.none }
                 hl["@type.builtin"] = { fg = c.blue1, bold = true, bg = c.none }
             end,
+        },
+    },
+    {
+        "ThePrimeagen/harpoon",
+        keys = {
+            {
+                "<leader>h",
+                function()
+                    local harpoon = require("harpoon")
+                    harpoon.ui:toggle_quick_menu(
+                        harpoon:list(),
+                        { ui_width_ratio = 0.45, border = vim.g.border, title = "" }
+                    )
+                end,
+                desc = "Harpoon Quick Menu",
+            },
         },
     },
 }

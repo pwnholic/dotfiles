@@ -3,8 +3,6 @@ if not status is-interactive
     return 0
 end
 
-fish_config theme choose "tokyonight_night"
-
 # Neovim.
 abbr -a nv nvim
 abbr -a nvo --set-cursor "cd % && nvim"
@@ -37,7 +35,4 @@ set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 
-fish_add_path -a /home/lilwigy/.foundry/bin
-
-# Created by `pipx` on 2024-08-06 11:59:49
-set PATH $PATH /home/lilwigy/.local/bin
+starship init fish | source

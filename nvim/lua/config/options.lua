@@ -39,11 +39,9 @@ vim.opt.fillchars = {
 vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 
-vim.g.bigfile_size = 1024 * 1024 * 1 --1 mb
+vim.g.lazyvim_blink_main = true -- set to true
 vim.g.lazyvim_picker = "fzf"
-vim.g.lazyvim_prettier_needs_config = false
-vim.g.lazyvim_statuscolumn = { folds_open = false, folds_githl = true }
+vim.g.border = "single"
+
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"
-vim.g.lazyvim_php_lsp = "phpactor"
-vim.g.border = "single"
