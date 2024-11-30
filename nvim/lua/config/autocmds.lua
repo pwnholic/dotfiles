@@ -10,7 +10,6 @@ vim.api.nvim_create_autocmd("ModeChanged", {
                 vim.w._cursorcolumn = true
                 vim.wo.cursorcolumn = false
             end
-
             local hl = { italic = true, bold = true, underline = true }
             vim.api.nvim_set_hl(0, "LspReferenceText", hl)
             vim.api.nvim_set_hl(0, "LspReferenceRead", hl)
@@ -24,7 +23,6 @@ vim.api.nvim_create_autocmd("ModeChanged", {
                 vim.wo.cursorcolumn = true
                 vim.w._cursorcolumn = nil
             end
-
             local hl = { italic = true, bold = true, reverse = true }
             vim.api.nvim_set_hl(0, "LspReferenceText", hl)
             vim.api.nvim_set_hl(0, "LspReferenceRead", hl)
