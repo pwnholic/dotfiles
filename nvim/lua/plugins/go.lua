@@ -3,7 +3,6 @@ return {
     dependencies = { "ray-x/guihua.lua", branch = "master" },
     branch = "master",
     ft = { "go", "gomod" },
-    --       build = ':lua require("go.install").update_all_sync()',
     opts = {
         lsp_keymaps = false,
         lsp_cfg = true,

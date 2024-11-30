@@ -42,6 +42,5 @@ vim.opt.backupdir:remove(".")
 vim.g.lazyvim_blink_main = true -- set to true
 vim.g.lazyvim_picker = "fzf"
 vim.g.border = "single"
-
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"
