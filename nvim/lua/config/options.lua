@@ -8,6 +8,7 @@ vim.opt.swapfile = false
 vim.opt.pumblend = 0
 vim.opt.spell = true
 vim.opt.smoothscroll = true
+vim.opt.pumheight = 15
 
 vim.opt.spellcapcheck = ""
 vim.opt.spelllang = "en"

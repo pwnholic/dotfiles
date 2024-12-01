@@ -6,6 +6,20 @@ return {
             "niuiic/blink-cmp-rg.nvim",
         },
         opts = {
+            keymap = {
+                preset = "default",
+                ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+                ["<C-e>"] = { "hide", "fallback" },
+                ["<CR>"] = { "accept", "fallback" },
+                ["<Tab>"] = { "snippet_forward", "fallback" },
+                ["<S-Tab>"] = { "snippet_backward", "fallback" },
+                ["<Up>"] = { "select_prev", "fallback" },
+                ["<Down>"] = { "select_next", "fallback" },
+                ["<C-p>"] = { "select_prev", "fallback" },
+                ["<C-n>"] = { "select_next", "fallback" },
+                ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+                ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+            },
             fuzzy = { sorts = { "score" } },
             sources = {
                 completion = {
@@ -61,14 +75,6 @@ return {
                                     "--json",
                                     "--word-regexp",
                                     "--ignore-case",
-                                    "--glob=!.git/*",
-                                    "--glob=!client/*", -- change this
-                                    "--glob=!node_modules/*",
-                                    "--glob=!temp/*",
-                                    "--glob=!.temp/*",
-                                    "--glob=!tmp/*",
-                                    "--glob=!.tmp/*",
-                                    "--glob=!.vscode/*",
                                     "--",
                                     prefix .. "[\\w_-]+",
                                     LazyVim.root() or vim.uv.cwd(),
@@ -99,7 +105,7 @@ return {
                                 ellipsis = false,
                                 text = function(ctx)
                                     if ctx.item.source_name == "Ripgrep" then
-                                        ctx.kind_icon = " "
+                                        ctx.kind_icon = ""
                                     end
                                     return ctx.kind_icon .. ctx.icon_gap
                                 end,
