@@ -1,15 +1,15 @@
 return {
     "folke/noice.nvim",
     opts = {
-        cmdline = { enabled = true, view = "cmdline", format = { input = { view = "cmdline" } } },
+        cmdline = { enabled = true, view = "cmdline", format = { input = false } },
         notify = { enabled = true, view = "notify" },
-        popupmenu = { enabled = true, backend = "nui" },
+        popupmenu = { enabled = false },
         presets = {
-            bottom_search = true, -- use a classic bottom cmdline for search
-            command_palette = true, -- position the cmdline and popupmenu together
-            long_message_to_split = false, -- long messages will be sent to a split
+            bottom_search = true,
+            command_palette = true,
+            long_message_to_split = false,
             inc_rename = false,
-            lsp_doc_border = true, -- add a border to hover docs and signature help
+            lsp_doc_border = true,
         },
         lsp = {
             hover = {
@@ -17,6 +17,13 @@ return {
             },
             signature = {
                 enabled = true,
+                view = "hover",
+                auto_open = {
+                    enabled = false,
+                    trigger = false,
+                    luasnip = false,
+                    throttle = 50,
+                },
                 opts = { border = vim.g.border },
             },
             documentation = {

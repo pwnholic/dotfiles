@@ -37,6 +37,8 @@ vim.opt.fillchars = {
     diff = "╱",
 }
 
+vim.opt.diffopt:append({ "algorithm:histogram", "indent-heuristic" })
+
 vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 

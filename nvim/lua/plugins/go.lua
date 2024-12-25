@@ -4,12 +4,13 @@ return {
     branch = "master",
     ft = { "go", "gomod" },
     opts = {
+        goimports = "goimports",
         lsp_keymaps = false,
         lsp_cfg = true,
         icons = false,
         trouble = true,
         tag_transform = "snakecase",
-        goimports = "goimports",
+        tag_options = "json=",
         dap_debug_keymap = false,
         null_ls = false,
         lsp_inlay_hints = { enable = false },
@@ -31,5 +32,7 @@ return {
                 },
             },
         },
+        go_input = vim.ui.input,
+        go_select = vim.ui.select,
     },
 }

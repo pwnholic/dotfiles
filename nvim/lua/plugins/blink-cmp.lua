@@ -6,11 +6,13 @@ return {
             "niuiic/blink-cmp-rg.nvim",
         },
         opts = {
+            enabled = function()
+                return not vim.tbl_contains({ "prompt", "bigfile" }, vim.bo.buftype)
+            end,
             keymap = {
-                preset = "default",
                 ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
                 ["<C-e>"] = { "hide", "fallback" },
-                ["<CR>"] = { "accept", "fallback" },
+                ["<CR>"] = { "select_and_accept", "fallback" },
                 ["<Tab>"] = { "snippet_forward", "fallback" },
                 ["<S-Tab>"] = { "snippet_backward", "fallback" },
                 ["<Up>"] = { "select_prev", "fallback" },
@@ -19,22 +21,38 @@ return {
                 ["<C-n>"] = { "select_next", "fallback" },
                 ["<C-b>"] = { "scroll_documentation_up", "fallback" },
                 ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-            },
-            fuzzy = { sorts = { "score" } },
-            sources = {
-                completion = {
-                    enabled_providers = function()
-                        return { "lsp", "path", "snippets", "ripgrep", "buffer" }
-                    end,
+                cmdline = {
+                    ["<C-p>"] = { "select_prev", "fallback" },
+                    ["<C-n>"] = { "select_next", "fallback" },
+                    ["<S-Tab>"] = { "select_prev", "fallback" },
+                    ["<Tab>"] = { "select_next", "fallback" },
+                    ["<CR>"] = { "accept", "fallback" },
                 },
+            },
+            fuzzy = {
+                sorts = { "score", "kind", "label" },
+            },
+            sources = {
+                default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
+                cmdline = function()
+                    local type = vim.fn.getcmdtype()
+                    if type == "/" or type == "?" then
+                        return { "buffer", "ripgrep" }
+                    end
+                    if type == ":" then
+                        return { "cmdline" }
+                    end
+                    return {}
+                end,
                 providers = {
                     path = {
                         name = "Path",
                         module = "blink.cmp.sources.path",
-                        score_offset = 4,
+                        fallbacks = { "buffer", "ripgrep" },
+                        score_offset = 100,
                         opts = {
                             get_cwd = function()
-                                return LazyVim.root()
+                                return LazyVim.root() or vim.uv.cwd()
                             end,
                             show_hidden_files_by_default = true,
                         },
@@ -43,6 +61,7 @@ return {
                         name = "LSP",
                         module = "blink.cmp.sources.lsp",
                         score_offset = 3,
+                        fallbacks = { "buffer", "ripgrep" },
                     },
                     snippets = {
                         name = "Snippets",
@@ -54,19 +73,32 @@ return {
                             global_snippets = { "all" },
                         },
                     },
+                    buffer = {
+                        name = "Buffer",
+                        score_offset = 1,
+                        module = "blink.cmp.sources.buffer",
+                        opts = {
+                            prefix_min_len = 4,
+                            get_bufnrs = function()
+                                return vim.iter(vim.api.nvim_list_wins())
+                                    :map(function(win)
+                                        return vim.api.nvim_win_get_buf(win)
+                                    end)
+                                    :filter(function(buf)
+                                        return not vim.tbl_contains({ "nofile", "bigfile" }, vim.bo[buf].buftype)
+                                    end)
+                                    :totable()
+                            end,
+                        },
+                    },
                     ripgrep = {
                         module = "blink-cmp-rg",
                         score_offset = 2,
                         name = "Ripgrep",
                         opts = {
-                            prefix_min_len = 5,
-                            context_size = 5,
-                            get_prefix = function()
-                                local curpos = vim.fn.getcurpos()
-                                local col = curpos[5] -- Kolom kursor (1-based indexing)
-                                local line = vim.fn.getline(".")
-                                local prefix = line:sub(1, col - 1):match("[%w_-]+$") or ""
-                                return prefix
+                            prefix_min_len = 4,
+                            get_prefix = function(context)
+                                return context.line:sub(1, context.cursor[2]):match("[%w_-]+$") or ""
                             end,
                             get_command = function(_, prefix)
                                 return {
@@ -85,33 +117,41 @@ return {
                 },
             },
             completion = {
+                list = {
+                    max_items = 20,
+                    selection = function(ctx)
+                        return ctx.mode == "cmdline" and "auto_insert" or "preselect"
+                    end,
+                    cycle = {
+                        from_bottom = true,
+                        from_top = true,
+                    },
+                },
                 menu = {
                     enabled = true,
-                    min_width = 15,
-                    max_height = 10,
                     border = vim.g.border,
                     winblend = 0,
                     winhighlight = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None",
-                    scrolloff = 2,
-                    scrollbar = false,
                     direction_priority = { "s", "n" },
                     draw = {
-                        align_to_component = "label",
+                        align_to = "label",
                         padding = 1,
-                        gap = 2,
-                        columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
+                        gap = 1,
+                        columns = { { "kind_icon", gap = 1 }, { "label", "label_description", gap = 1 } },
                         components = {
                             kind_icon = {
                                 ellipsis = false,
                                 text = function(ctx)
                                     if ctx.item.source_name == "Ripgrep" then
-                                        ctx.kind_icon = ""
+                                        ctx.kind_icon = " "
+                                    elseif ctx.item.source_name == "Buffer" then
+                                        ctx.kind_icon = "󰯁 "
                                     end
                                     return ctx.kind_icon .. ctx.icon_gap
                                 end,
                             },
                             label = {
-                                width = { fill = true, max = 60 },
+                                width = { fill = true, max = 50 },
                                 text = function(ctx)
                                     return ctx.label .. ctx.label_detail
                                 end,
@@ -156,7 +196,7 @@ return {
                 ghost_text = { enabled = true },
             },
             signature = {
-                enabled = false,
+                enabled = true,
                 window = {
                     border = vim.g.border,
                     winhighlight = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None",
