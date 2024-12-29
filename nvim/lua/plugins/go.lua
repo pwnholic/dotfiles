@@ -2,6 +2,26 @@ return {
     "ray-x/go.nvim",
     branch = "master",
     ft = { "go", "gomod" },
+    keys = {
+        { "<A-g>s", "<cmd>GoFillStruct<cr>", desc = "Fill Struct", ft = "go" },
+        { "<A-g>p", "<cmd>GoFixPlurals<cr>", desc = "Fix Plurals", ft = "go" },
+        { "<A-g>S", "<cmd>GoFillSwitch<cr>", desc = "Fill Switch", ft = "go" },
+        { "<A-g>t", "<cmd>GoModTidy<cr>", desc = "go mod tidy", ft = "go" },
+        { "<A-g>I", "<cmd>GoModVendor<cr>", desc = "go mod vendor", ft = "go" },
+        {
+            "<A-g>i",
+            function()
+                vim.ui.input({ prompt = "Enter {r *reciver} -> {interface} : " }, function(input)
+                    if input ~= "" then
+                        local command = string.format("GoImpl %s", input)
+                        vim.cmd(command)
+                    end
+                end)
+            end,
+            desc = "Go Implement",
+            ft = "go",
+        },
+    },
     opts = {
         goimports = "goimports",
         lsp_keymaps = false,

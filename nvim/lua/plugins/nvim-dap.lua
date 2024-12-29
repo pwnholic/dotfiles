@@ -13,8 +13,8 @@ return {
         { "<F17>", function() require("dap").terminate() end, "Terminate debug session", },
         { "<F23>", function() require("dap").step_out() end, "Step out", },
         { "<F41>", function() require("dap").restart() end, "Restart debug session", },
-        { "<F21>", function() require("dap").set_breakpoint(nil, vim.fn.input("Breakpoint condition: ")) end, "Set conditional breakpoint", },
-        { "<F45>", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end, "Set logpoint", },
+        { "<F21>", function() require("dap").set_breakpoint(nil, vim.fn.input("Breakpoint condition: ")) end, "Set conditional breakpoint" },
+        { "<F45>", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end, "Set logpoint" },
         -- stylua: ignore end
     },
 }

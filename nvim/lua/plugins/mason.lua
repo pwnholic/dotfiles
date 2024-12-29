@@ -8,6 +8,8 @@ return {
             "prettier",
             "markdownlint-cli2",
             "markdown-toc",
+            "bacon",
+            "bacon-ls",
         },
         PATH = "prepend",
         max_concurrent_installers = 20,
