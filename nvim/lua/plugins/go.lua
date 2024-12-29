@@ -1,6 +1,5 @@
 return {
     "ray-x/go.nvim",
-    dependencies = { "ray-x/guihua.lua", branch = "master" },
     branch = "master",
     ft = { "go", "gomod" },
     opts = {

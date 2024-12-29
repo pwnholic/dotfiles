@@ -11,25 +11,11 @@ return {
         open_notes_in = "current",
         preferred_link_style = "wiki",
         disable_frontmatter = true,
-        workspaces = {
-            {
-                name = "Local",
-                path = string.format("%s/Notes", os.getenv("HOME")),
-            },
-        },
-        daily_notes = {
-            folder = "00 Inbox",
-            template = nil,
-        },
-        completion = {
-            nvim_cmp = false,
-        },
-        templates = {
-            folder = "40 Templates",
-        },
-        ui = {
-            enable = false,
-        },
+        workspaces = { { name = "Local", path = string.format("%s/Notes", os.getenv("HOME")) } },
+        daily_notes = { folder = "00 Inbox", template = nil },
+        completion = { nvim_cmp = false },
+        templates = { folder = "40 Templates" },
+        ui = { enable = false },
         note_id_func = function(title)
             local suffix = ""
             if title ~= nil then

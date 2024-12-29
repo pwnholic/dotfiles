@@ -5,8 +5,8 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
-                    fd_opts = [[--color=never --type d --hidden --follow --exclude .git --exclude .venv]],
-                    find_opts = [[-type d -not -path '*/\.git/*' -not -path '*/\.venv/*' -printf '%P\n']],
+                    fd_opts = [[--color=never --type d --hidden --follow --exclude .git]],
+                    find_opts = [[-type d -not -path '*/\.git/*' -printf '%P\n']],
                 })
             end,
             desc = "Find Folder (root)",
@@ -15,7 +15,7 @@ return {
         { "<leader>gS", "<cmd>FzfLua git_stash<CR>", desc = "Git stash" },
         { "<leader>gl", "<cmd>FzfLua git_branches<CR>", desc = "Git branches" },
         { "<leader>gj", "<cmd>FzfLua git_bcommits<CR>", desc = "Git commit (buffer)" },
-        "<leader>gx",
+        { "<leader>gx", desc = "Git conflict list" },
     },
     opts = function(_, opts)
         local actions = require("fzf-lua.actions")
@@ -49,21 +49,21 @@ return {
 
         opts.file_icon_padding = " "
         opts.winopts = {
-            backdrop = 100,
             split = "botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh",
             preview = { hidden = "hidden" },
         }
         opts.fzf_opts = {
             ["--info"] = "inline-right",
             ["--layout"] = "reverse",
+            ["--ansi"] = true,
             ["--marker"] = "█",
             ["--pointer"] = "█",
-            ["--border"] = "none",
             ["--padding"] = "0,1",
             ["--margin"] = "0",
-            ["--no-preview"] = true,
             ["--highlight-line"] = true,
             ["--preview-window"] = "hidden",
+            ["--no-preview"] = true,
+            ["--border"] = "none",
         }
         opts.defaults = {
             file_icons = "mini",

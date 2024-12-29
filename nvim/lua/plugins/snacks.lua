@@ -10,16 +10,10 @@ return {
                 only_current = false,
                 hl = "SnacksIndent",
             },
-            animate = {
-                enabled = true,
-                style = "out",
-                easing = "linear",
-                duration = { step = 20, total = 500 },
-            },
             scope = {
                 enabled = true,
                 char = "▏",
-                underline = true,
+                underline = false,
                 hl = {
                     "@markup.heading.1.markdown",
                     "@markup.heading.2.markdown",
@@ -33,7 +27,7 @@ return {
                 return vim.g.snacks_indent ~= false
                     and vim.b[buf].snacks_indent ~= false
                     and vim.bo[buf].buftype == ""
-                    and vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative ~= ""
+                    -- and vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative ~= ""
                     and not vim.tbl_contains({
                         "lazy",
                         "noice",
@@ -55,8 +49,8 @@ return {
 ██╔══██╗ ██╔════╝ ████╗ ████║ ██╔═══██╗ ██║ ██╔╝    ██╔══██╗ ██╔════╝ ██║   ██║
 ██████╔╝ █████╗   ██╔████╔██║ ██║   ██║ █████╔╝     ██║  ██║ █████╗   ██║   ██║
 ██╔══██╗ ██╔══╝   ██║╚██╔╝██║ ██║   ██║ ██╔═██╗     ██║  ██║ ██╔══╝   ╚██╗ ██╔╝
-██║  ██║ ███████╗ ██║ ╚═╝ ██║ ╚██████╔╝ ██║  ██╗    ██████╔╝ ███████╗  ╚████╔╝ 
-╚═╝  ╚═╝ ╚══════╝ ╚═╝     ╚═╝  ╚═════╝  ╚═╝  ╚═╝    ╚═════╝  ╚══════╝   ╚═══╝  
+██║  ██║ ███████╗ ██║ ╚═╝ ██║ ╚██████╔╝ ██║  ██╗    ██████╔╝ ███████╗  ╚████╔╝
+╚═╝  ╚═╝ ╚══════╝ ╚═╝     ╚═╝  ╚═════╝  ╚═╝  ╚═╝    ╚═════╝  ╚══════╝   ╚═══╝
  ]],
             },
         },
