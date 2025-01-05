@@ -4,6 +4,7 @@ return {
         {
             "rcarriga/nvim-dap-ui",
             opts = {
+                expand_lines = false,
                 layouts = {
                     {
                         elements = {
@@ -43,6 +44,20 @@ return {
     keys = {
         { "<leader>dn", "<cmd>DapNew<cr>", desc = "Set Config" },
         { "<leader>dx", "<cmd>DapClearBreakpoints<cr>", desc = "Clear all breakpoints" },
+        {
+            "<leader>dr",
+            function()
+                require("dap").repl.toggle({}, "vsplit")
+            end,
+            desc = "REPL Vertical",
+        },
+        {
+            "<leader>dR",
+            function()
+                require("dap").repl.toggle()
+            end,
+            desc = "REPL Horizontal",
+        },
         {
             "<F1>",
             function()
