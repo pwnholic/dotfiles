@@ -132,5 +132,11 @@
   "theme.bar.buttons.workspaces.occupied": "#fd46ff",
   "theme.bar.buttons.workspaces.active": "#47f7f7",
   "theme.bar.buttons.workspaces.border": "#fd46ff",
-  "theme.bar.buttons.systray.border": "#f66151"
+  "theme.bar.buttons.systray.border": "#f66151",
+  "theme.bar.buttons.media.text": "#ff4280",
+  "theme.bar.buttons.media.border": "#ff4280",
+  "theme.bar.buttons.media.icon": "#ff4280",
+  "theme.bar.buttons.volume.text": "#3be5c0",
+  "theme.bar.buttons.volume.icon": "#3be5c0",
+  "theme.bar.buttons.volume.border": "#3be5c0"
 }

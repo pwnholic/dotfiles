@@ -1,9 +1,32 @@
 return {
     "mfussenegger/nvim-dap",
+    opts = function()
+        local dap = require("dap")
+        dap.defaults.fallback.external_terminal = {
+            command = "/usr/bin/kitty",
+            args = { "-e" },
+        }
+    end,
     dependencies = {
         {
             "rcarriga/nvim-dap-ui",
             opts = {
+
+                controls = {
+                    element = "repl",
+                    enabled = true,
+                    icons = {
+                        disconnect = "  ",
+                        pause = "  ",
+                        play = "  ",
+                        run_last = "  ",
+                        step_back = "  ",
+                        step_into = "  ",
+                        step_out = "  ",
+                        step_over = "  ",
+                        terminate = "  ",
+                    },
+                },
                 expand_lines = false,
                 layouts = {
                     {
@@ -30,13 +53,17 @@ return {
         {
             "nvim-dap-virtual-text",
             opts = {
-                virt_text_pos = "eol",
+                virt_text_pos = "inline",
                 all_frames = true,
-                display_callback = function(variable)
-                    if #variable.value > 15 then
-                        return string.format(" %s... ", string.sub(variable.value, 1, 15))
+                ---@diagnostic disable-next-line: unused-local
+                display_callback = function(variable, buf, stackframe, node, options)
+                    local trim_value = variable.value:gsub("%s+", " ")
+                    if options.virt_text_pos == "inline" then
+                        if #variable.value > 15 then
+                            return string.format(" %s... ", string.sub(trim_value, 1, 15))
+                        end
+                        return string.format(" %s ", trim_value)
                     end
-                    return string.format(" %s", variable.value)
                 end,
             },
         },
