@@ -1,6 +1,7 @@
 return {
     "folke/snacks.nvim",
     opts = {
+        input = { enabled = false },
         indent = {
             indent = {
                 enabled = true,

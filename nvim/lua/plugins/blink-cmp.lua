@@ -7,7 +7,9 @@ return {
         },
         opts = {
             enabled = function()
-                return not vim.tbl_contains({ "prompt", "bigfile" }, vim.bo.buftype)
+                return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype)
+                    and vim.bo.buftype ~= "prompt"
+                    and vim.b.completion ~= false
             end,
             keymap = {
                 ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -30,7 +32,19 @@ return {
                 },
             },
             fuzzy = {
-                sorts = { "score", "kind", "label" },
+                sorts = {
+                    function(l, r)
+                        if l.kind == r.kind then
+                            return
+                        end
+                        local kinds = require("blink.cmp.types").CompletionItemKind
+                        l = l == kinds.Text and 100 or l
+                        r = r == kinds.Text and 100 or r
+                        return l.kind < r.kind
+                    end,
+                    "score",
+                    "label",
+                },
             },
             sources = {
                 default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
@@ -38,11 +52,11 @@ return {
                     local type = vim.fn.getcmdtype()
                     if type == "/" or type == "?" then
                         return { "buffer", "ripgrep" }
-                    end
-                    if type == ":" then
+                    elseif type == ":" or type == "@" then
                         return { "cmdline" }
+                    else
+                        return {}
                     end
-                    return {}
                 end,
                 providers = {
                     path = {
@@ -62,6 +76,17 @@ return {
                         module = "blink.cmp.sources.lsp",
                         score_offset = 3,
                         fallbacks = { "buffer", "ripgrep" },
+                        transform_items = function(_, items)
+                            local kinds = require("blink.cmp.types").CompletionItemKind
+                            for _, item in ipairs(items) do
+                                if item.kind == kinds.Snippet then
+                                    item.score_offset = item.score_offset - 3
+                                end
+                            end
+                            return vim.tbl_filter(function(item)
+                                return item.kind ~= kinds.Text
+                            end, items)
+                        end,
                     },
                     snippets = {
                         name = "Snippets",
@@ -122,10 +147,7 @@ return {
                     selection = function(ctx)
                         return ctx.mode == "cmdline" and "auto_insert" or "preselect"
                     end,
-                    cycle = {
-                        from_bottom = true,
-                        from_top = true,
-                    },
+                    cycle = { from_bottom = true, from_top = true },
                 },
                 menu = {
                     enabled = true,

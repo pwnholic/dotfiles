@@ -1,7 +1,7 @@
 return {
     "folke/noice.nvim",
     opts = {
-        cmdline = { enabled = true, view = "cmdline", format = { input = false } },
+        cmdline = { enabled = true, view = "cmdline", format = { input = { view = "cmdline" } } },
         notify = { enabled = true, view = "notify" },
         popupmenu = { enabled = false },
         presets = {
@@ -12,9 +12,7 @@ return {
             lsp_doc_border = true,
         },
         lsp = {
-            hover = {
-                opts = { border = vim.g.border },
-            },
+            hover = { opts = { border = vim.g.border } },
             signature = {
                 enabled = true,
                 view = "hover",
