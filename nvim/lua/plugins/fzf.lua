@@ -32,6 +32,38 @@ return {
             end
         end
 
+        ---@diagnostic disable-next-line: unused-local
+        local function action_git_create_new_branch()
+            vim.ui.input({ prompt = "New Branch Name : " }, function(input)
+                if input ~= "" then
+                    input = string.lower(string.gsub(input, "%s", "-"))
+                    vim.cmd("Git checkout -b " .. input)
+                    vim.notify("New branch " .. input .. " has been created", 2, { title = "Git FzfLua" })
+                end
+            end)
+        end
+
+        local function action_git_rename_branch(selected, _)
+            local del_branch = selected[1]:match("[^%s%*]+")
+            if vim.fn.confirm("Rename branch " .. del_branch .. "?", "&Yes\n&No") == 1 then
+                vim.ui.input({ prompt = "New Branch Name : " }, function(new_name)
+                    if new_name ~= "" then
+                        -- stylua: ignore start
+                        new_name = string.lower(string.gsub(new_name, "%s", "-"))
+                        vim.cmd(string.format("Git branch -m %s %s", del_branch, new_name))
+                        vim.notify( string.format("Local branch %s has been renamed to %s", del_branch, new_name), 2, { title = "FzfLua Git" })
+
+                        vim.cmd(string.format("Git push origin --delete %s", del_branch))
+                        vim.notify(string.format("Delete the %s branch on remote", del_branch), 2, { title = "FzfLua Git" })
+
+                        vim.cmd(string.format("Git push origin %s", new_name ))
+                        vim.notify(string.format("Pust the new %s branch on remote", new_name), 2, { title = "FzfLua Git" })
+                        -- stylua: ignore end
+                    end
+                end)
+            end
+        end
+
         vim.keymap.set("n", "<leader>gx", function()
             require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
                 prompt = "Git Conflict>",
@@ -46,6 +78,12 @@ return {
 
         core.ACTION_DEFINITIONS[action_git_commit] = { "git commit" }
         config._action_to_helpstr[action_git_commit] = "git-commit"
+
+        core.ACTION_DEFINITIONS[action_git_create_new_branch] = { "new branch" }
+        config._action_to_helpstr[action_git_create_new_branch] = "new-branch"
+
+        core.ACTION_DEFINITIONS[action_git_rename_branch] = { "rename branch" }
+        config._action_to_helpstr[action_git_rename_branch] = "rename-branch"
 
         opts.file_icon_padding = " "
         opts.winopts = {
@@ -96,6 +134,7 @@ return {
             grep_opts = [[--binary-files=without-match --line-number --recursive --color=auto --perl-regexp -e]],
             rg_opts = [[--column --hidden --follow --line-number --no-heading --color=always --smart-case --max-columns=4096 -g=!git/ -e]],
             rg_glob = true,
+            RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH,
             glob_flag = "--iglob",
             glob_separator = "%s%-%-",
             no_header = false,
@@ -114,6 +153,17 @@ return {
                     ["left"] = { fn = actions.git_stage, reload = true },
                     ["ctrl-x"] = { fn = actions.git_reset, reload = true },
                     ["ctrl-m"] = action_git_commit,
+                },
+            },
+            branches = {
+                prompt = "Branches❯ ",
+                cmd = "git branch --all --color",
+                preview = "git log --graph --pretty=oneline --abbrev-commit --color {1}",
+                actions = {
+                    ["enter"] = actions.git_switch,
+                    ["ctrl-x"] = { fn = actions.git_branch_del, reload = true },
+                    ["ctrl-a"] = action_git_create_new_branch,
+                    ["ctrl-r"] = action_git_rename_branch,
                 },
             },
         }
