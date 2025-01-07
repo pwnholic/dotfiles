@@ -44,7 +44,10 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" 
 
         for _, win in ipairs(vim.fn.win_findbuf(info.buf)) do
             vim.api.nvim_win_call(win, function()
-                pcall(vim.cmd.lcd, { LazyVim.root(), mods = { silent = true, emsg_silent = true } })
+                pcall(vim.cmd.lcd, {
+                    LazyVim.root() or vim.uv.cwd(),
+                    mods = { silent = true, emsg_silent = true },
+                })
             end)
         end
     end,
