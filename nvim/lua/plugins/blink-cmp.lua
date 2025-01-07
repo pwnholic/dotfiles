@@ -1,17 +1,17 @@
 return {
     {
         "saghen/blink.cmp",
-        dependencies = {
-            "stevearc/vim-vscode-snippets",
-            "niuiic/blink-cmp-rg.nvim",
-        },
-        opts = {
-            enabled = function()
+        dependencies = { "stevearc/vim-vscode-snippets", "niuiic/blink-cmp-rg.nvim" },
+        opts = function(_, opts)
+            local kinds = require("blink.cmp.types").CompletionItemKind
+            local blink_winhl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
+
+            opts.enabled = function()
                 return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype)
                     and vim.bo.buftype ~= "prompt"
                     and vim.b.completion ~= false
-            end,
-            keymap = {
+            end
+            opts.keymap = {
                 ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
                 ["<C-e>"] = { "hide", "fallback" },
                 ["<CR>"] = { "select_and_accept", "fallback" },
@@ -30,30 +30,18 @@ return {
                     ["<Tab>"] = { "select_next", "fallback" },
                     ["<CR>"] = { "accept", "fallback" },
                 },
-            },
-            fuzzy = {
-                sorts = {
-                    function(l, r)
-                        if l.kind == r.kind then
-                            return
-                        end
-                        local kinds = require("blink.cmp.types").CompletionItemKind
-                        l = l == kinds.Text and 100 or l
-                        r = r == kinds.Text and 100 or r
-                        return l.kind < r.kind
-                    end,
-                    "score",
-                    "label",
-                },
-            },
-            sources = {
+            }
+            opts.fuzzy = {
+                sorts = { "kind", "score", "label" },
+            }
+            opts.sources = {
                 default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
                 cmdline = function()
                     local type = vim.fn.getcmdtype()
                     if type == "/" or type == "?" then
                         return { "buffer", "ripgrep" }
                     elseif type == ":" or type == "@" then
-                        return { "cmdline" }
+                        return { "cmdline", "path" }
                     else
                         return {}
                     end
@@ -63,10 +51,12 @@ return {
                         name = "Path",
                         module = "blink.cmp.sources.path",
                         fallbacks = { "buffer", "ripgrep" },
-                        score_offset = 100,
+                        score_offset = 3,
                         opts = {
+                            trailing_slash = true,
+                            label_trailing_slash = true,
                             get_cwd = function()
-                                return LazyVim.root() or vim.uv.cwd()
+                                return os.getenv("PWD")
                             end,
                             show_hidden_files_by_default = true,
                         },
@@ -74,10 +64,8 @@ return {
                     lsp = {
                         name = "LSP",
                         module = "blink.cmp.sources.lsp",
-                        score_offset = 3,
                         fallbacks = { "buffer", "ripgrep" },
                         transform_items = function(_, items)
-                            local kinds = require("blink.cmp.types").CompletionItemKind
                             for _, item in ipairs(items) do
                                 if item.kind == kinds.Snippet then
                                     item.score_offset = item.score_offset - 3
@@ -91,7 +79,6 @@ return {
                     snippets = {
                         name = "Snippets",
                         module = "blink.cmp.sources.snippets",
-                        score_offset = -2,
                         opts = {
                             friendly_snippets = true,
                             search_paths = { vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" },
@@ -100,7 +87,6 @@ return {
                     },
                     buffer = {
                         name = "Buffer",
-                        score_offset = 1,
                         module = "blink.cmp.sources.buffer",
                         opts = {
                             prefix_min_len = 4,
@@ -118,7 +104,6 @@ return {
                     },
                     ripgrep = {
                         module = "blink-cmp-rg",
-                        score_offset = 2,
                         name = "Ripgrep",
                         opts = {
                             prefix_min_len = 4,
@@ -134,26 +119,31 @@ return {
                                     "--ignore-case",
                                     "--",
                                     prefix .. "[\\w_-]+",
-                                    LazyVim.root() or vim.uv.cwd(),
+                                    vim.uv.cwd() or os.getenv("PWD"),
                                 }
                             end,
                         },
                     },
                 },
-            },
-            completion = {
+            }
+            opts.completion = {
                 list = {
                     max_items = 20,
-                    selection = function(ctx)
-                        return ctx.mode == "cmdline" and "auto_insert" or "preselect"
-                    end,
+                    selection = {
+                        preselect = function(ctx)
+                            return ctx.mode ~= "cmdline"
+                        end,
+                        auto_insert = function(ctx)
+                            return ctx.mode == "cmdline"
+                        end,
+                    },
                     cycle = { from_bottom = true, from_top = true },
                 },
                 menu = {
                     enabled = true,
                     border = vim.g.border,
                     winblend = 0,
-                    winhighlight = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None",
+                    winhighlight = blink_winhl,
                     direction_priority = { "s", "n" },
                     draw = {
                         align_to = "label",
@@ -208,22 +198,10 @@ return {
                         },
                     },
                 },
-                documentation = {
-                    auto_show = true,
-                    window = {
-                        border = vim.g.border,
-                        winhighlight = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None",
-                    },
-                },
+                documentation = { auto_show = true, window = { border = vim.g.border, winhighlight = blink_winhl } },
                 ghost_text = { enabled = true },
-            },
-            signature = {
-                enabled = true,
-                window = {
-                    border = vim.g.border,
-                    winhighlight = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None",
-                },
-            },
-        },
+            }
+            opts.signature = { enabled = true, window = { border = vim.g.border, winhighlight = blink_winhl } }
+        end,
     },
 }

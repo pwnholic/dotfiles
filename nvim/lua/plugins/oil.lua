@@ -350,6 +350,7 @@ return {
             watch_for_changes = true,
             view_options = {
                 show_hidden = false,
+                ---@diagnostic disable-next-line: unused-local
                 is_hidden_file = function(name, bufnr)
                     local m = name:match("^%.")
                     return m ~= nil
@@ -457,6 +458,7 @@ return {
             callback = function(info)
                 if vim.bo[info.buf].filetype == "oil" then
                     local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
+                    ---@diagnostic disable-next-line: param-type-mismatch
                     local oildir = vim.fs.normalize(oil.get_current_dir())
                     if cwd ~= oildir and vim.uv.fs_stat(oildir) then
                         lcd(oildir)

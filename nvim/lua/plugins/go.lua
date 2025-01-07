@@ -42,6 +42,7 @@ return {
                 prefix = "●",
             },
             severity_sort = true,
+            float = { border = vim.g.border },
             signs = {
                 text = {
                     [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,

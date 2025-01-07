@@ -44,7 +44,7 @@ vim.opt.backupdir:remove(".")
 
 vim.g.lazyvim_blink_main = true -- set to true
 vim.g.lazyvim_picker = "fzf"
-vim.g.border = "single"
+vim.g.border = "rounded"
 
 -- LSP Server to use for Python.
 -- Set to "basedpyright" to use basedpyright instead of pyright.

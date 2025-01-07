@@ -2,10 +2,7 @@ return {
     "mfussenegger/nvim-dap",
     opts = function()
         local dap = require("dap")
-        dap.defaults.fallback.external_terminal = {
-            command = "/usr/bin/kitty",
-            args = { "-e" },
-        }
+        dap.defaults.fallback.external_terminal = { command = "/usr/bin/kitty", args = { "-e" } }
     end,
     dependencies = {
         {
@@ -70,7 +67,9 @@ return {
     },
     keys = {
         { "<leader>dn", "<cmd>DapNew<cr>", desc = "Set Config" },
-        { "<leader>dx", "<cmd>DapClearBreakpoints<cr>", desc = "Clear all breakpoints" },
+        { "<leader>dy", "<cmd>FzfLua dap_breakpoints<cr>", desc = "Search breakpoints" },
+        { "<leader>dv", "<cmd>FzfLua dap_variables<cr>", desc = "Search Variable" },
+        { "<leader>df", "<cmd>FzfLua dap_variables<cr>", desc = "Search Frames" },
         {
             "<leader>dr",
             function()
@@ -142,13 +141,6 @@ return {
             "Step into",
         },
         {
-            "<F17>",
-            function()
-                require("dap").terminate()
-            end,
-            "Terminate debug session",
-        },
-        {
             "<F23>",
             function()
                 require("dap").step_out()
@@ -163,18 +155,51 @@ return {
             "Restart debug session",
         },
         {
-            "<F21>",
+            "<leader>dx",
             function()
-                require("dap").set_breakpoint(nil, vim.fn.input("Breakpoint condition: "))
+                require("dap-utils").clear_breakpoints()
+                require("dap-utils").remove_watches()
             end,
-            "Set conditional breakpoint",
+            desc = "Clear all breakpoints",
         },
         {
-            "<F45>",
+            "<F17>",
             function()
-                require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+                local choice = vim.fn.confirm("Terminate program?", "&Cancel\n&Yes\n&No", 1)
+                if choice == 2 then
+                    require("dap").terminate()
+                elseif choice == 3 then
+                    require("dap").disconnect()
+                    require("dap").close()
+                else
+                    return
+                end
+                require("dapui").close({})
+                require("dap.repl").close({})
+                require("nvim-dap-virtual-text/virtual_text").clear_virtual_text()
             end,
-            "Set logpoint",
+            "Terminate debug session",
+        },
+        {
+            "<F21>", -- SHIFT + F9
+            function()
+                local types = { "log point", "conditional breakpoint", "exception breakpoint" }
+                vim.ui.select(types, {
+                    prompt = "Select Breakpoint Types",
+                }, function(choice)
+                    if choice == types[1] then
+                        require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+                    elseif choice == types[2] then
+                        require("dap").set_breakpoint(
+                            vim.fn.input("Breakpoint condition: "),
+                            vim.fn.input("Hit times: ")
+                        )
+                    elseif choice == types[3] then
+                        require("dap").set_exception_breakpoints()
+                    end
+                end)
+            end,
+            "Set Breakpoint",
         },
     },
 }
