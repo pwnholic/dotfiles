@@ -13,8 +13,7 @@ return {
             function()
                 vim.ui.input({ prompt = "Enter {r *reciver} -> {interface} : " }, function(input)
                     if input ~= "" then
-                        local command = string.format("GoImpl %s", input)
-                        vim.cmd(command)
+                        vim.cmd(string.format("GoImpl %s", input))
                     end
                 end)
             end,
@@ -31,16 +30,13 @@ return {
         tag_transform = "snakecase",
         tag_options = "json=",
         dap_debug_keymap = false,
+        dap_debug = false,
         null_ls = false,
         lsp_inlay_hints = { enable = false },
         diagnostic = {
             underline = true,
             update_in_insert = false,
-            virtual_text = {
-                spacing = 4,
-                source = "if_many",
-                prefix = "●",
-            },
+            virtual_text = { spacing = 4, source = "if_many", prefix = "●" },
             severity_sort = true,
             float = { border = vim.g.border },
             signs = {

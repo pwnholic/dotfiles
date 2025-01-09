@@ -52,3 +52,14 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" 
         end
     end,
 })
+
+vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "FocusLost" }, {
+    nested = true,
+    desc = "Autosave on focus change.",
+    callback = function(info)
+        if (vim.uv.fs_stat(info.file) or {}).type ~= "file" then
+            return
+        end
+        vim.cmd.update({ mods = { emsg_silent = true } })
+    end,
+})

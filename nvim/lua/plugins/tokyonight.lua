@@ -64,6 +64,8 @@ return {
             hl.MiniHipatternsValidate = { fg = c.blue1, bg = c.none, bold = true }
             hl.MiniHipatternsBinding = { fg = c.teal, bg = c.none, bold = true }
 
+            hl.NvimDapVirtualText = { fg = c.comment, bg = c.none, italic = true, underline = true, sp = c.teal }
+
             hl["@variable.parameter"] = { fg = c.yellow, italic = true, bg = c.none }
             hl["@keyword.return"] = { fg = c.purple, bold = true, bg = c.none }
             hl["@type.builtin"] = { fg = c.blue1, bold = true, bg = c.none }

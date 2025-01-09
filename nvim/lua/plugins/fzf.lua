@@ -22,13 +22,14 @@ return {
         local path = require("fzf-lua.path")
         local core = require("fzf-lua.core")
         local config = require("fzf-lua.config")
+        local f = string.format
 
         local function action_git_commit(selected, def_opts)
             actions.git_stage(selected, def_opts)
             for _, e in ipairs(selected) do
                 local file = path.relative_to(path.entry_to_file(e, def_opts).path, def_opts.cwd)
-                vim.notify(string.format("Please write commit message on file %s", file), 2)
-                vim.cmd(string.format("Git commit %s", file))
+                vim.notify(f("Please write commit message on file %s", file), 2)
+                vim.cmd(f("Git commit %s", file))
             end
         end
 
@@ -50,14 +51,14 @@ return {
                     if new_name ~= "" then
                         -- stylua: ignore start
                         new_name = string.lower(string.gsub(new_name, "%s", "-"))
-                        vim.cmd(string.format("Git branch -m %s %s", del_branch, new_name))
-                        vim.notify( string.format("Local branch %s has been renamed to %s", del_branch, new_name), 2, { title = "FzfLua Git" })
+                        vim.cmd(f("Git branch -m %s %s", del_branch, new_name))
+                        vim.notify( f("Local branch %s has been renamed to %s", del_branch, new_name), 2, { title = "FzfLua Git" })
 
-                        vim.cmd(string.format("Git push origin --delete %s", del_branch))
-                        vim.notify(string.format("Delete the %s branch on remote", del_branch), 2, { title = "FzfLua Git" })
+                        vim.cmd(f("Git push origin --delete %s", del_branch))
+                        vim.notify(f("Delete the %s branch on remote", del_branch), 2, { title = "FzfLua Git" })
 
-                        vim.cmd(string.format("Git push origin %s", new_name ))
-                        vim.notify(string.format("Pust the new %s branch on remote", new_name), 2, { title = "FzfLua Git" })
+                        vim.cmd(f("Git push origin %s", new_name ))
+                        vim.notify(f("Pust the new %s branch on remote", new_name), 2, { title = "FzfLua Git" })
                         -- stylua: ignore end
                     end
                 end)
@@ -87,7 +88,10 @@ return {
 
         opts.file_icon_padding = " "
         opts.winopts = {
-            split = "botright 10new | setlocal bt=nofile bh=wipe nobl noswf wfh",
+            split = string.format(
+                "botright %dnew | setlocal bt=nofile bh=wipe nobl noswf wfh",
+                math.floor(vim.o.lines / 3)
+            ),
             preview = { hidden = "hidden" },
         }
         opts.fzf_opts = {

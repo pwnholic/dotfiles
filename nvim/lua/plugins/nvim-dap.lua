@@ -8,7 +8,6 @@ return {
         {
             "rcarriga/nvim-dap-ui",
             opts = {
-
                 controls = {
                     element = "repl",
                     enabled = true,
@@ -34,7 +33,7 @@ return {
                             { id = "watches", size = 0.25 },
                         },
                         position = "right",
-                        size = 58,
+                        size = math.floor(vim.o.columns / 3),
                     },
                     {
                         elements = {
@@ -42,7 +41,7 @@ return {
                             { id = "console", size = 0.5 },
                         },
                         position = "bottom",
-                        size = 7,
+                        size = math.floor(vim.o.lines / 4),
                     },
                 },
             },

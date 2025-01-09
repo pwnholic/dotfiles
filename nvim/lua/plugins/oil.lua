@@ -2,6 +2,38 @@ return {
     "stevearc/oil.nvim",
     cmd = "Oil",
     keys = { { "<leader>e", "<cmd>Oil<cr>", desc = "Open Oil Buffer" } },
+    opts = {
+        keymaps_help = { border = vim.g.border },
+        float = { border = vim.g.border, win_options = { winblend = 0 } },
+        preview = { border = vim.g.border, win_options = { winblend = 0 } },
+        progress = { border = vim.g.border, win_options = { winblend = 0 } },
+        buf_options = { buflisted = false, bufhidden = "hide" },
+        win_options = {
+            number = false,
+            relativenumber = false,
+            signcolumn = "no",
+            foldcolumn = "0",
+            statuscolumn = "",
+        },
+        cleanup_delay_ms = false,
+        lsp_file_methods = { enabled = true, timeout_ms = 1000, autosave_changes = false },
+        delete_to_trash = true,
+        skip_confirm_for_simple_edits = true,
+        prompt_save_on_select_new_entry = true,
+        use_default_keymaps = false,
+        watch_for_changes = true,
+        view_options = {
+            show_hidden = false,
+            ---@diagnostic disable-next-line: unused-local
+            is_hidden_file = function(name, bufnr)
+                local m = name:match("^%.")
+                return m ~= nil
+            end,
+            natural_order = "fast",
+            case_insensitive = false,
+            sort = { { "type", "asc" }, { "name", "asc" } },
+        },
+    },
     init = function()
         vim.api.nvim_create_autocmd("BufWinEnter", {
             nested = true,
@@ -36,7 +68,7 @@ return {
             end,
         })
     end,
-    config = function()
+    config = function(_, opts)
         local oil = require("oil")
         local icons = LazyVim.config.icons.kinds
         local preview_wins = {} ---@type table<integer, integer>
@@ -331,115 +363,85 @@ return {
             },
         }
 
-        oil.setup({
-            columns = { { "icon", default_file = icons.File, directory = icons.Folder, add_padding = true } },
-            buf_options = { buflisted = false, bufhidden = "hide" },
-            win_options = {
-                number = false,
-                relativenumber = false,
-                signcolumn = "no",
-                foldcolumn = "0",
-                statuscolumn = "",
-            },
-            cleanup_delay_ms = false,
-            lsp_file_methods = { enabled = true, timeout_ms = 1000, autosave_changes = false },
-            delete_to_trash = true,
-            skip_confirm_for_simple_edits = true,
-            prompt_save_on_select_new_entry = true,
-            use_default_keymaps = false,
-            watch_for_changes = true,
-            view_options = {
-                show_hidden = false,
-                ---@diagnostic disable-next-line: unused-local
-                is_hidden_file = function(name, bufnr)
-                    local m = name:match("^%.")
-                    return m ~= nil
+        opts.columns = { { "icon", default_file = icons.File, directory = icons.Folder, add_padding = true } }
+        opts.keymaps = {
+            ["g?"] = "actions.show_help",
+            ["-"] = "actions.parent",
+            ["<CR>"] = "actions.select",
+            ["gh"] = "actions.toggle_hidden",
+            ["gs"] = "actions.change_sort",
+            ["gx"] = "actions.open_external",
+            ["gY"] = "actions.copy_entry_filename",
+            ["g\\"] = "actions.toggle_trash",
+            ["gt"] = {
+                desc = "Toggle detail view",
+                callback = function()
+                    local config = require("oil.config")
+                    if #config.columns == 1 then
+                        oil.set_columns(columns)
+                    else
+                        oil.set_columns({ "icon" })
+                    end
                 end,
-                natural_order = "fast",
-                case_insensitive = false,
-                sort = { { "type", "asc" }, { "name", "asc" } },
             },
-            keymaps = {
-                ["g?"] = "actions.show_help",
-                ["-"] = "actions.parent",
-                ["<CR>"] = "actions.select",
-                ["gh"] = "actions.toggle_hidden",
-                ["gs"] = "actions.change_sort",
-                ["gx"] = "actions.open_external",
-                ["gY"] = "actions.copy_entry_filename",
-                ["g\\"] = "actions.toggle_trash",
-                ["gt"] = {
-                    desc = "Toggle detail view",
-                    callback = function()
-                        local config = require("oil.config")
-                        if #config.columns == 1 then
-                            oil.set_columns(columns)
-                        else
-                            oil.set_columns({ "icon" })
-                        end
-                    end,
-                },
-                ["K"] = {
-                    mode = { "n", "x" },
-                    desc = "Toggle preview",
-                    callback = function()
-                        local win = vim.api.nvim_get_current_win()
-                        local cursor = vim.api.nvim_win_get_cursor(win)
-                        local oil_win = vim.api.nvim_get_current_win()
-                        local preview_win = preview_wins[oil_win]
-                        if not preview_win or not vim.api.nvim_win_is_valid(preview_win) then
-                            preview()
-                        else
-                            end_preview()
-                        end
-                        pcall(vim.api.nvim_set_current_win, win)
-                        pcall(vim.api.nvim_win_set_cursor, win, cursor)
-                    end,
-                },
-                ["go"] = {
-                    mode = "n",
-                    buffer = true,
-                    desc = "Choose an external program to open the entry under the cursor",
-                    callback = function()
-                        local entry = oil.get_cursor_entry()
-                        local dir = oil.get_current_dir()
-                        if not entry or not dir then
-                            return
-                        end
-                        local entry_path = vim.fs.joinpath(dir, entry.name)
-                        local response
-                        vim.ui.input({ prompt = "Open with: ", completion = "shellcmd" }, function(r)
-                            response = r
-                        end)
-                        if not response then
-                            return
-                        end
-                        print("\n")
-                        vim.system({ response, entry_path })
-                    end,
-                },
-                ["gy"] = {
-                    mode = "n",
-                    buffer = true,
-                    desc = "Yank the filepath of the entry under the cursor to a register",
-                    callback = function()
-                        local entry = oil.get_cursor_entry()
-                        local dir = oil.get_current_dir()
-                        if not entry or not dir then
-                            return
-                        end
-                        local entry_path = vim.fs.joinpath(dir, entry.name)
-                        vim.fn.setreg('"', entry_path)
-                        vim.fn.setreg(vim.v.register, entry_path)
-                        vim.notify(string.format("[oil] yanked '%s' to register '%s'", entry_path, vim.v.register))
-                    end,
-                },
+            ["K"] = {
+                mode = { "n", "x" },
+                desc = "Toggle preview",
+                callback = function()
+                    local win = vim.api.nvim_get_current_win()
+                    local cursor = vim.api.nvim_win_get_cursor(win)
+                    local oil_win = vim.api.nvim_get_current_win()
+                    local preview_win = preview_wins[oil_win]
+                    if not preview_win or not vim.api.nvim_win_is_valid(preview_win) then
+                        preview()
+                    else
+                        end_preview()
+                    end
+                    pcall(vim.api.nvim_set_current_win, win)
+                    pcall(vim.api.nvim_win_set_cursor, win, cursor)
+                end,
             },
-            keymaps_help = { border = vim.g.border },
-            float = { border = vim.g.border, win_options = { winblend = 0 } },
-            preview = { border = vim.g.border, win_options = { winblend = 0 } },
-            progress = { border = vim.g.border, win_options = { winblend = 0 } },
-        })
+            ["go"] = {
+                mode = "n",
+                buffer = true,
+                desc = "Choose an external program to open the entry under the cursor",
+                callback = function()
+                    local entry = oil.get_cursor_entry()
+                    local dir = oil.get_current_dir()
+                    if not entry or not dir then
+                        return
+                    end
+                    local entry_path = vim.fs.joinpath(dir, entry.name)
+                    local response
+                    vim.ui.input({ prompt = "Open with: ", completion = "shellcmd" }, function(r)
+                        response = r
+                    end)
+                    if not response then
+                        return
+                    end
+                    print("\n")
+                    vim.system({ response, entry_path })
+                end,
+            },
+            ["gy"] = {
+                mode = "n",
+                buffer = true,
+                desc = "Yank the filepath of the entry under the cursor to a register",
+                callback = function()
+                    local entry = oil.get_cursor_entry()
+                    local dir = oil.get_current_dir()
+                    if not entry or not dir then
+                        return
+                    end
+                    local entry_path = vim.fs.joinpath(dir, entry.name)
+                    vim.fn.setreg('"', entry_path)
+                    vim.fn.setreg(vim.v.register, entry_path)
+                    vim.notify(string.format("[oil] yanked '%s' to register '%s'", entry_path, vim.v.register))
+                end,
+            },
+        }
+
+        oil.setup(opts)
 
         local groupid = vim.api.nvim_create_augroup("OilSetup", {})
         vim.api.nvim_create_autocmd("BufEnter", {
