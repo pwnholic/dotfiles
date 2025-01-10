@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 local ok, note_path = pcall(os.getenv, "HOME")
 if not ok then
     return vim.notify("Could not find note path", 2, { title = "Obsidian" })
@@ -121,7 +122,7 @@ return {
             }):start()
         end
 
-        local function check_for_modifications_and_sync()
+        local function stage_and_pull()
             Job
                 :new({
                     command = "git",
@@ -133,8 +134,10 @@ return {
                             vim.notify("No changes to sync", vim.log.levels.INFO, { title = "Obsidian.nvim" })
                         else
                             vim.notify("Changes detected. Syncing...", vim.log.levels.INFO, { title = "Obsidian.nvim" })
-                            stage_changes()
-                            pull_changes()
+                            coroutine.wrap(function()
+                                stage_changes()
+                                pull_changes()
+                            end)()
                         end
                     end,
                 })
@@ -146,7 +149,7 @@ return {
             if not git_sync_enabled then
                 git_sync_enabled = true
                 vim.notify("Git sync enabled", 2, { title = "Obsidian.nvim" })
-                vim.cmd.wall({ mods = { emsg_silent = true } })
+                vim.cmd.update({ mods = { emsg_silent = true } })
                 local interval = update_interval_mins * 60000
                 local timer = vim.uv.new_timer()
                 assert(timer, "Must be able to create timer")
@@ -159,7 +162,7 @@ return {
                             return
                         else
                             if os.getenv("PWD") == note_path then
-                                return check_for_modifications_and_sync()
+                                return stage_and_pull()
                             end
                         end
                     end)
@@ -177,7 +180,7 @@ return {
                 return
             else
                 if os.getenv("PWD") == note_path then
-                    return check_for_modifications_and_sync()
+                    return stage_and_pull()
                 end
             end
         end, {})
