@@ -52,8 +52,11 @@ require("lazy").setup({
         { import = "plugins" },
     },
     defaults = { lazy = false, version = false },
+    browser = os.getenv("BROWSER"),
+    concurrency = 5,
     install = { colorscheme = { "tokyonight", "habamax" } },
     checker = { enabled = true, notify = false },
+    headless = { process = true, log = true, task = true, colors = true },
     rocks = {
         enabled = true,
         root = vim.fn.stdpath("data") .. "/lazy-rocks",

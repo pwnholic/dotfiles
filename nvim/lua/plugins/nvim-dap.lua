@@ -47,7 +47,7 @@ return {
             },
         },
         {
-            "nvim-dap-virtual-text",
+            "theHamsta/nvim-dap-virtual-text",
             opts = {
                 virt_text_pos = "inline",
                 all_frames = true,
