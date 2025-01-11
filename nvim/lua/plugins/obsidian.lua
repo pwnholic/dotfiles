@@ -54,21 +54,18 @@ return {
                 if not on_exit then
                     return job:sync() -- Sinkron jika on_exit tidak diberikan
                 else
-                    job:start() -- Asinkron jika on_exit diberikan
+                    return job:start() -- Asinkron jika on_exit diberikan
                 end
             end)()
         end
 
         local function git_sync(path)
-            coroutine.wrap(function()
-                -- 1. Cek apakah direktori saat ini benar
-                if os.getenv("PWD") ~= path then
-                    vim.notify("Should be on note directory", vim.log.levels.ERROR)
-                    return
-                end
-                vim.notify("Note directory was right", vim.log.levels.INFO)
+            if os.getenv("PWD") ~= path then
+                vim.notify("Should be on note directory", vim.log.levels.ERROR)
+                return
+            end
 
-                -- 2. Cek username Git
+            return coroutine.wrap(function()
                 local git_user = run_job("git", { "config", "user.name" })
                 if not git_user or git_user[1] ~= "pwnholic" then
                     vim.notify(
@@ -77,9 +74,13 @@ return {
                     )
                     return
                 end
-                vim.notify("Git user verified: " .. git_user[1], vim.log.levels.INFO)
 
-                -- 3. Pull changes
+                local porcelain = run_job("git", { "status", "--porcelain" })
+                if #porcelain == 0 then
+                    vim.notify("No changes to sync", vim.log.levels.INFO, { title = "Obsidian.nvim" })
+                    return
+                end
+
                 local pull_result = run_job("git", { "pull", "--all" })
                 if #pull_result == 0 then
                     vim.notify("Git pull failed", vim.log.levels.ERROR)
@@ -87,7 +88,6 @@ return {
                 end
                 vim.notify("Git pull succeeded", vim.log.levels.INFO)
 
-                -- 4. Stage change
                 run_job("git", { "add", "." }, function(j, return_val)
                     if return_val ~= 0 then
                         vim.notify("Git stage failed: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
@@ -96,7 +96,6 @@ return {
                     end
                 end)
 
-                -- 5. Commit changes
                 local timestamp = os.date("%Y-%m-%d %H:%M:%S")
                 local commit_result = run_job("git", { "commit", "-m", "vault backup: " .. timestamp })
                 if #commit_result == 0 then
@@ -105,7 +104,6 @@ return {
                 end
                 vim.notify("Changes committed successfully", vim.log.levels.INFO)
 
-                -- 6. Push changes
                 run_job("git", { "push" }, function(j, return_val)
                     if return_val ~= 0 then
                         vim.notify("Git push failed: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
