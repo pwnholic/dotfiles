@@ -31,7 +31,7 @@ return {
             },
         }
         opts.fuzzy = {
-            sorts = { "kind", "score", "label" },
+            sorts = { "score", "kind", "label", "sort_text" },
         }
         opts.sources = {
             default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
@@ -50,7 +50,7 @@ return {
                     name = "Path",
                     module = "blink.cmp.sources.path",
                     fallbacks = { "buffer", "ripgrep" },
-                    score_offset = 3,
+                    score_offset = 100,
                     opts = {
                         trailing_slash = true,
                         label_trailing_slash = true,
@@ -63,6 +63,8 @@ return {
                 lsp = {
                     name = "LSP",
                     module = "blink.cmp.sources.lsp",
+                    score_offset = 80,
+                    max_items = 15,
                     fallbacks = { "buffer", "ripgrep" },
                     transform_items = function(_, items)
                         for _, item in ipairs(items) do
@@ -77,7 +79,9 @@ return {
                 },
                 snippets = {
                     name = "Snippets",
+                    max_items = 4,
                     module = "blink.cmp.sources.snippets",
+                    score_offset = 60,
                     opts = {
                         friendly_snippets = true,
                         search_paths = { vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" },
@@ -87,6 +91,7 @@ return {
                 buffer = {
                     name = "Buffer",
                     module = "blink.cmp.sources.buffer",
+                    score_offset = 20,
                     opts = {
                         prefix_min_len = 4,
                         get_bufnrs = function()
@@ -104,6 +109,7 @@ return {
                 ripgrep = {
                     module = "blink-cmp-rg",
                     name = "Ripgrep",
+                    score_offset = 40,
                     opts = {
                         prefix_min_len = 4,
                         get_prefix = function(context)
@@ -116,9 +122,15 @@ return {
                                 "--json",
                                 "--word-regexp",
                                 "--ignore-case",
+                                "--max-depth",
+                                "4", -- Maksimal 4 subdirektori
+                                "--hidden", -- Cari file tersembunyi
+                                "--follow", -- Ikuti symbolic links
+                                "--max-columns",
+                                "300", -- Hindari skip baris panjang
                                 "--",
                                 prefix .. "[\\w_-]+",
-                                vim.uv.cwd() or os.getenv("PWD"),
+                                vim.fs.root(0, ".git") or vim.uv.cwd() or os.getenv("PWD"),
                             }
                         end,
                     },

@@ -41,133 +41,94 @@ return {
         require("obsidian").setup(opts)
 
         local Job = require("plenary.job")
-        local update_interval_mins = 1 -- in minutes
 
-        local function get_git_user()
-            local result = nil
-            Job:new({
-                command = "git",
-                args = { "config", "user.name" },
-                on_exit = function(j, return_val)
-                    if return_val == 0 then
-                        result = j:result()[1]
-                    end
-                end,
-            }):sync() -- Use sync to ensure the result is available
-            return result
-        end
-
-        local function pull_changes()
-            Job:new({
-                command = "git",
-                args = { "pull" },
-                cwd = note_path,
-                on_exit = function(j, return_val)
-                    if return_val ~= 0 then
-                        vim.notify("git pull failed: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
-                    else
-                        vim.notify("git pull succeeded", vim.log.levels.INFO)
-                    end
-                end,
-            }):start()
-        end
-
-        local function push_changes()
-            vim.notify("Pushing updates...", vim.log.levels.INFO)
-            Job:new({
-                command = "git",
-                args = { "push" },
-                cwd = note_path,
-                on_exit = function(j, return_val)
-                    if return_val ~= 0 then
-                        vim.notify("git push failed: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
-                    else
-                        vim.notify("git push succeeded", vim.log.levels.INFO)
-                    end
-                end,
-            }):start()
-        end
-
-        local function commit_changes()
-            local timestamp = os.date("%Y-%m-%d %H:%M:%S")
-            Job:new({
-                command = "git",
-                args = { "commit", "-m", "vault backup: " .. timestamp },
-                cwd = note_path,
-                on_exit = function(j, return_val)
-                    if return_val == 0 then
-                        push_changes()
-                    else
-                        local msg = f("Error committing changes: %s", table.concat(j:stderr_result(), "\n"))
-                        vim.notify(msg, vim.log.levels.ERROR)
-                    end
-                end,
-            }):start()
-        end
-
-        local function stage_changes()
-            vim.notify("Performing git sync...", vim.log.levels.INFO)
-            Job:new({
-                command = "git",
-                args = { "add", "." },
-                cwd = note_path,
-                on_exit = function(j, return_val)
-                    if return_val == 0 then
-                        commit_changes()
-                    else
-                        local msg = f("Error staging changes: %s", table.concat(j:stderr_result(), "\n"))
-                        vim.notify(msg, vim.log.levels.ERROR)
-                    end
-                end,
-            }):start()
-        end
-
-        local function stage_and_pull()
-            Job
-                :new({
-                    command = "git",
-                    args = { "status", "--porcelain" },
+        local function run_job(cmd, args, on_exit)
+            return coroutine.wrap(function()
+                local job = Job:new({
+                    command = cmd,
+                    args = args,
                     cwd = note_path,
-                    on_exit = function(j, _)
-                        local result = j:result()
-                        if #result == 0 then
-                            vim.notify("No changes to sync", vim.log.levels.INFO, { title = "Obsidian.nvim" })
-                        else
-                            vim.notify("Changes detected. Syncing...", vim.log.levels.INFO, { title = "Obsidian.nvim" })
-                            coroutine.wrap(function()
-                                stage_changes()
-                                pull_changes()
-                            end)()
-                        end
-                    end,
+                    on_exit = on_exit or function() end,
                 })
-                :start()
+
+                if not on_exit then
+                    return job:sync() -- Sinkron jika on_exit tidak diberikan
+                else
+                    job:start() -- Asinkron jika on_exit diberikan
+                end
+            end)()
+        end
+
+        local function git_sync(path)
+            coroutine.wrap(function()
+                -- 1. Cek apakah direktori saat ini benar
+                if os.getenv("PWD") ~= path then
+                    vim.notify("Should be on note directory", vim.log.levels.ERROR)
+                    return
+                end
+                vim.notify("Note directory was right", vim.log.levels.INFO)
+
+                -- 2. Cek username Git
+                local git_user = run_job("git", { "config", "user.name" })
+                if not git_user or git_user[1] ~= "pwnholic" then
+                    vim.notify(
+                        "Git user mismatch: expected 'pwnholic', found '" .. (git_user[1] or "unknown") .. "'",
+                        vim.log.levels.ERROR
+                    )
+                    return
+                end
+                vim.notify("Git user verified: " .. git_user[1], vim.log.levels.INFO)
+
+                -- 3. Pull changes
+                local pull_result = run_job("git", { "pull", "--all" })
+                if #pull_result == 0 then
+                    vim.notify("Git pull failed", vim.log.levels.ERROR)
+                    return
+                end
+                vim.notify("Git pull succeeded", vim.log.levels.INFO)
+
+                -- 4. Stage change
+                run_job("git", { "add", "." }, function(j, return_val)
+                    if return_val ~= 0 then
+                        vim.notify("Git stage failed: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
+                    else
+                        vim.notify("Changes staged successfully", vim.log.levels.INFO)
+                    end
+                end)
+
+                -- 5. Commit changes
+                local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+                local commit_result = run_job("git", { "commit", "-m", "vault backup: " .. timestamp })
+                if #commit_result == 0 then
+                    vim.notify("Git commit failed", vim.log.levels.ERROR)
+                    return
+                end
+                vim.notify("Changes committed successfully", vim.log.levels.INFO)
+
+                -- 6. Push changes
+                run_job("git", { "push" }, function(j, return_val)
+                    if return_val ~= 0 then
+                        vim.notify("Git push failed: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
+                    else
+                        vim.notify("Git push succeeded", vim.log.levels.INFO)
+                    end
+                end)
+            end)()
         end
 
         local git_sync_enabled = false
         vim.keymap.set("n", "<leader>ou", function()
             if not git_sync_enabled then
+                -- stylua: ignore start
                 git_sync_enabled = true
                 vim.notify("Git sync enabled", 2, { title = "Obsidian.nvim" })
                 vim.cmd.update({ mods = { emsg_silent = true } })
-                local interval = update_interval_mins * 60000
+                local interval = 1 * 60000 -- 1 minutes
                 local timer = vim.uv.new_timer()
                 assert(timer, "Must be able to create timer")
-                timer:start(
-                    interval,
-                    interval,
-                    vim.schedule_wrap(function()
-                        if get_git_user() ~= "pwnholic" then
-                            vim.notify("Unauthorized user. Git operations are disabled.", vim.log.levels.ERROR)
-                            return
-                        else
-                            if os.getenv("PWD") == note_path then
-                                return stage_and_pull()
-                            end
-                        end
-                    end)
-                )
+                timer:start( interval, interval, vim.schedule_wrap(function() git_sync(note_path) end))
                 return timer
+                -- stylua: ignore end
             else
                 git_sync_enabled = false
                 return vim.notify("Git sync disabled", 2, { title = "Obsidian.nvim" })
@@ -175,14 +136,7 @@ return {
         end, { desc = "Toggle Git Sync" })
 
         vim.api.nvim_create_user_command("ObsidianGitSync", function()
-            if get_git_user() ~= "pwnholic" then
-                vim.notify("Unauthorized user. Git operations are disabled.", vim.log.levels.ERROR)
-                return
-            else
-                if os.getenv("PWD") == note_path then
-                    return stage_and_pull()
-                end
-            end
+            git_sync(note_path)
         end, {})
     end,
 }
