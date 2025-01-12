@@ -1,6 +1,6 @@
 return {
     "3rd/image.nvim",
-    ft = { "markdown", "neorg" },
+    ft = { "markdown" },
     opts = {
         backend = "kitty",
         processor = "magick_rock",

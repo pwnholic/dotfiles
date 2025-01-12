@@ -114,21 +114,20 @@ return {
             end)()
         end
 
-        local git_sync_enabled = false
+        local enabled = false
+        local interval = 1 * 60000 -- 1 minutes
         vim.keymap.set("n", "<leader>ou", function()
-            if not git_sync_enabled then
-                -- stylua: ignore start
-                git_sync_enabled = true
+            if not enabled then
+                enabled = true
                 vim.notify("Git sync enabled", 2, { title = "Obsidian.nvim" })
                 vim.cmd.update({ mods = { emsg_silent = true } })
-                local interval = 1 * 60000 -- 1 minutes
                 local timer = vim.uv.new_timer()
                 assert(timer, "Must be able to create timer")
-                timer:start( interval, interval, vim.schedule_wrap(function() git_sync(note_path) end))
+                -- stylua: ignore start
+                timer:start(interval, interval, vim.schedule_wrap(function() git_sync(note_path) end))
                 return timer
-                -- stylua: ignore end
             else
-                git_sync_enabled = false
+                enabled = false
                 return vim.notify("Git sync disabled", 2, { title = "Obsidian.nvim" })
             end
         end, { desc = "Toggle Git Sync" })

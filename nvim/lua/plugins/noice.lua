@@ -1,7 +1,7 @@
 return {
     "folke/noice.nvim",
     opts = {
-        cmdline = { enabled = true, view = "cmdline", format = { input = { view = "cmdline" } } },
+        cmdline = { enabled = true, view = "cmdline" },
         notify = { enabled = true, view = "notify" },
         popupmenu = { enabled = false },
         presets = {
