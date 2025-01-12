@@ -88,10 +88,7 @@ return {
 
         opts.file_icon_padding = " "
         opts.winopts = {
-            split = string.format(
-                "botright %dnew | setlocal bt=nofile bh=wipe nobl noswf wfh",
-                math.floor(vim.o.lines / 3)
-            ),
+            split = string.format("belowright %dnew", math.floor(vim.o.lines / 3)),
             preview = { hidden = "hidden" },
         }
         opts.fzf_opts = {

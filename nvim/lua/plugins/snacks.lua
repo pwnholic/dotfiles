@@ -42,5 +42,18 @@ return {
                     }, vim.bo[buf].filetype)
             end,
         },
+        dashboard = {
+            width = math.floor(vim.o.columns / 3),
+            formats = {
+                key = function(item)
+                    return { { "[", hl = "special" }, { item.key, hl = "key" }, { "]", hl = "special" } }
+                end,
+            },
+            sections = {
+                { section = "terminal", cmd = "colorscript -e square", height = 6, padding = 1, indent = 2 },
+                { section = "keys", gap = 1, padding = 1 },
+                { section = "startup", gap = 1, padding = 1 },
+            },
+        },
     },
 }
