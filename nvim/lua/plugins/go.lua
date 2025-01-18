@@ -11,7 +11,7 @@ return {
         {
             "<leader>ji",
             function()
-                vim.ui.input({ prompt = "Enter {r *reciver} -> {interface} : " }, function(input)
+                vim.ui.input({ prompt = "Enter {r *receiver} -> {interface} : " }, function(input)
                     if input ~= "" then
                         vim.cmd(string.format("GoImpl %s", input))
                     end
