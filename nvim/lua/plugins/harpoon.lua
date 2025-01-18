@@ -2,7 +2,12 @@ return {
     "ThePrimeagen/harpoon",
     config = function()
         local harpoon = require("harpoon")
-        harpoon:setup()
+        harpoon:setup({
+            settings = {
+                save_on_toggle = true,
+                sync_on_ui_close = false,
+            },
+        })
         harpoon:extend({
             UI_CREATE = function(cx)
                 vim.keymap.set("n", "<C-v>", function()
