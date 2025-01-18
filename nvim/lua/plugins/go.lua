@@ -3,13 +3,13 @@ return {
     branch = "master",
     ft = { "go", "gomod" },
     keys = {
-        { "<A-g>s", "<cmd>GoFillStruct<cr>", desc = "Fill Struct", ft = "go" },
-        { "<A-g>p", "<cmd>GoFixPlurals<cr>", desc = "Fix Plurals", ft = "go" },
-        { "<A-g>S", "<cmd>GoFillSwitch<cr>", desc = "Fill Switch", ft = "go" },
-        { "<A-g>t", "<cmd>GoModTidy<cr>", desc = "go mod tidy", ft = "go" },
-        { "<A-g>I", "<cmd>GoModVendor<cr>", desc = "go mod vendor", ft = "go" },
+        { "<leader>js", "<cmd>GoFillStruct<cr>", desc = "Fill Struct", ft = "go" },
+        { "<leader>jp", "<cmd>GoFixPlurals<cr>", desc = "Fix Plurals", ft = "go" },
+        { "<leader>jS", "<cmd>GoFillSwitch<cr>", desc = "Fill Switch", ft = "go" },
+        { "<leader>jd", "<cmd>GoModTidy<cr>", desc = "`go mod tidy`", ft = "go" },
+        { "<leader>jI", "<cmd>GoModVendor<cr>", desc = "`go mod vendor`", ft = "go" },
         {
-            "<A-g>i",
+            "<leader>ji",
             function()
                 vim.ui.input({ prompt = "Enter {r *reciver} -> {interface} : " }, function(input)
                     if input ~= "" then
@@ -17,7 +17,37 @@ return {
                     end
                 end)
             end,
-            desc = "Go Implement",
+            desc = "Implement Method",
+            ft = "go",
+        },
+        {
+            "<leader>jt",
+            function()
+                vim.ui.select({ "Add", "Clear", "Remove" }, {
+                    prompt = "Modify Tags Option:",
+                }, function(choice)
+                    if choice == "Add" then
+                        vim.ui.input({ prompt = "Input Tags to Add: " }, function(input)
+                            if input ~= nil then
+                                vim.cmd(string.format("GoModifyTag -add-tags %s", input))
+                            end
+                        end)
+                    elseif choice == "Remove" then
+                        vim.ui.input({ prompt = "Input Tags to Remove : " }, function(input)
+                            if input ~= nil then
+                                vim.cmd(string.format("GoModifyTag -remove-tags %s", input))
+                            end
+                        end)
+                    elseif choice == "Clear" then
+                        vim.ui.input({ prompt = "Input Tags to Clear : " }, function(input)
+                            if input ~= nil then
+                                vim.cmd(string.format("GoModifyTag -clear-tags %s", input))
+                            end
+                        end)
+                    end
+                end)
+            end,
+            desc = "Modify Tag",
             ft = "go",
         },
     },
@@ -36,7 +66,7 @@ return {
         diagnostic = {
             underline = true,
             update_in_insert = false,
-            virtual_text = { spacing = 4, source = "if_many", prefix = "●" },
+            virtual_text = { spacing = 4, source = "if_many", prefix = " " },
             severity_sort = true,
             float = { border = vim.g.border },
             signs = {

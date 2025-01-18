@@ -1,7 +1,7 @@
 return {
     "stevearc/oil.nvim",
     cmd = "Oil",
-    keys = { { "<leader>e", "<cmd>Oil<cr>", desc = "Open Oil Buffer" } },
+    keys = { { "<space>e", "<cmd>Oil<cr>", desc = "Open Oil Buffer" } },
     opts = {
         keymaps_help = { border = vim.g.border },
         float = { border = vim.g.border, win_options = { winblend = 0 } },

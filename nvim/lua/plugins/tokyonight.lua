@@ -52,12 +52,10 @@ return {
             hl.RenderMarkdownBullet = { fg = c.red, bg = c.none }
             hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
 
-            hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.teal }
+            hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.orange }
             hl.Pmenu = { link = "FzfLuaFilePart" }
-            hl.CmpItemKindText = { fg = "#82bab5", bg = c.none }
             hl.FloatBorder = { fg = c.comment, bg = c.none }
             hl.WinSeparator = { bg = c.none, fg = c.comment }
-            hl.PmenuDark = { bg = c.bg_dark }
 
             hl.MiniHipatternsJson = { fg = c.purple, bg = c.none, bold = true }
             hl.MiniHipatternsGorm = { fg = c.yellow, bg = c.none, bold = true }

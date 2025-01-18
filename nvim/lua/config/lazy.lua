@@ -21,7 +21,7 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
+pcall(require("lazy").setup, {
     spec = {
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
         { "akinsho/bufferline.nvim", enabled = false },
@@ -53,7 +53,7 @@ require("lazy").setup({
     },
     defaults = { lazy = false, version = false },
     browser = os.getenv("BROWSER"),
-    concurrency = 5,
+    concurrency = nil,
     install = { colorscheme = { "tokyonight", "habamax" } },
     checker = { enabled = true, notify = false },
     headless = { process = true, log = true, task = true, colors = true },

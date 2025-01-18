@@ -3,8 +3,8 @@ return {
     opts = {
         ensure_installed = "all",
         sync_install = false,
-        ignore_install = { },
-    additional_vim_regex_highlighting = true,
+        ignore_install = {},
+        additional_vim_regex_highlighting = true,
         highlight = {
             disable = function(_, buf)
                 if vim.bo[buf].filetype == "bigfile" then

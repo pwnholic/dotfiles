@@ -27,7 +27,6 @@ return {
                 return vim.g.snacks_indent ~= false
                     and vim.b[buf].snacks_indent ~= false
                     and vim.bo[buf].buftype == ""
-                    -- and vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative ~= ""
                     and not vim.tbl_contains({
                         "lazy",
                         "noice",
@@ -46,11 +45,11 @@ return {
             width = math.floor(vim.o.columns / 3),
             formats = {
                 key = function(item)
-                    return { { "[", hl = "special" }, { item.key, hl = "key" }, { "]", hl = "special" } }
+                    return { { "[ ", hl = "special" }, { item.key, hl = "key" }, { " ]", hl = "special" } }
                 end,
             },
             sections = {
-                { section = "terminal", cmd = "colorscript -e square", height = 6, padding = 1, indent = 2 },
+                { section = "terminal", cmd = "colorscript -e square", height = 6, padding = 1, align = "center" },
                 { section = "keys", gap = 1, padding = 1 },
                 { section = "startup", gap = 1, padding = 1 },
             },

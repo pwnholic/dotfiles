@@ -5,7 +5,7 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
-                    fd_opts = [[--color=never --type d --hidden --follow --exclude .git]],
+                    fd_opts = "--color=never --type d --hidden --follow --exclude .git]]",
                     find_opts = [[-type d -not -path '*/\.git/*' -printf '%P\n']],
                 })
             end,
@@ -52,7 +52,7 @@ return {
                         -- stylua: ignore start
                         new_name = string.lower(string.gsub(new_name, "%s", "-"))
                         vim.cmd(f("Git branch -m %s %s", del_branch, new_name))
-                        vim.notify( f("Local branch %s has been renamed to %s", del_branch, new_name), 2, { title = "FzfLua Git" })
+                        vim.notify(f("Local branch %s has been renamed to %s", del_branch, new_name), 2, { title = "FzfLua Git" })
 
                         vim.cmd(f("Git push origin --delete %s", del_branch))
                         vim.notify(f("Delete the %s branch on remote", del_branch), 2, { title = "FzfLua Git" })
@@ -135,7 +135,7 @@ return {
             grep_opts = [[--binary-files=without-match --line-number --recursive --color=auto --perl-regexp -e]],
             rg_opts = [[--column --hidden --follow --line-number --no-heading --color=always --smart-case --max-columns=4096 -g=!git/ -e]],
             rg_glob = true,
-            RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH,
+            -- RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH,
             glob_flag = "--iglob",
             glob_separator = "%s%-%-",
             no_header = false,
