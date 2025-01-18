@@ -4,7 +4,11 @@ return {
         main = "mini.git",
         cmd = "Git",
         config = function()
-            require("mini.git").setup()
+            require("mini.git").setup({
+                job = { git_executable = "/usr/bin/git", timeout = 40000 },
+                command = { split = "auto" },
+            })
+
             vim.api.nvim_create_autocmd("BufEnter", {
                 pattern = "minigit://*",
                 callback = function()
