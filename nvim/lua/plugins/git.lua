@@ -1,13 +1,22 @@
 return {
     {
         "echasnovski/mini-git",
-        version = false,
         main = "mini.git",
         cmd = "Git",
-        opts = {
-            job = { git_executable = "git", timeout = 30000 },
-            command = { split = "auto" },
-        },
+        config = function()
+            require("mini.git").setup()
+            vim.api.nvim_create_autocmd("BufEnter", {
+                pattern = "minigit://*",
+                callback = function()
+                    vim.opt_local.spell = false
+                    vim.opt_local.number = false
+                    vim.opt_local.relativenumber = false
+                    vim.opt_local.signcolumn = "no"
+                    vim.opt_local.foldcolumn = "0"
+                    vim.opt_local.winbar = ""
+                end,
+            })
+        end,
     },
     {
         "lewis6991/gitsigns.nvim",
