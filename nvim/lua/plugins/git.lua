@@ -8,7 +8,6 @@ return {
                 job = { git_executable = "/usr/bin/git", timeout = 40000 },
                 command = { split = "auto" },
             })
-
             vim.api.nvim_create_autocmd("BufEnter", {
                 pattern = "minigit://*",
                 callback = function()
