@@ -7,15 +7,13 @@ local severities = {
 
 return {
     "mfussenegger/nvim-lint",
-    event = "LazyFile",
     opts = {
         events = { "BufWritePost" },
         linters_by_ft = {
-            go = { "golangci" },
-            ["*"] = { "typos" },
+            go = { "golangci_lint" },
         },
         linters = {
-            golangci = {
+            golangci_lint = {
                 cmd = "golangci-lint",
                 append_fname = false,
                 args = {
@@ -39,13 +37,11 @@ return {
                     if decoded["Issues"] == nil or type(decoded["Issues"]) == "userdata" then
                         return {}
                     end
-
                     local diagnostics = {}
                     for _, item in ipairs(decoded["Issues"]) do
                         local curfile = vim.api.nvim_buf_get_name(bufnr)
                         local lintedfile = cwd .. "/" .. item.Pos.Filename
                         if curfile == lintedfile then
-                            -- only publish if those are the current file diagnostics
                             local sv = severities[item.Severity] or severities.WARN
                             table.insert(diagnostics, {
                                 lnum = item.Pos.Line > 0 and item.Pos.Line - 1 or 0,
