@@ -72,6 +72,7 @@ return {
                     ["right"] = { fn = actions.git_unstage, reload = true },
                     ["left"] = { fn = actions.git_stage, reload = true },
                     ["ctrl-x"] = { fn = actions.git_reset, reload = true },
+                    ["default"] = actions.file_edit,
                     ["ctrl-m"] = action_git_commit,
                 },
             })
