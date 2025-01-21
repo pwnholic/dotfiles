@@ -1,6 +1,5 @@
 return {
     "ray-x/go.nvim",
-    branch = "master",
     ft = { "go", "gomod" },
     keys = {
         { "<leader>js", "<cmd>GoFillStruct<cr>", desc = "Fill Struct", ft = "go" },

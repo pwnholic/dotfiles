@@ -39,7 +39,6 @@ return {
     },
     config = function(_, opts)
         require("obsidian").setup(opts)
-
         local Job = require("plenary.job")
 
         local function run_job(cmd, args, on_exit)

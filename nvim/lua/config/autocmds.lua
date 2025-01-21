@@ -31,28 +31,6 @@ vim.api.nvim_create_autocmd("ModeChanged", {
     end,
 })
 
-vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" }, {
-    desc = "Automatically change local current directory.",
-    callback = function(info)
-        if info.file == "" or vim.bo[info.buf].buftype ~= "" then
-            return
-        end
-
-        if not LazyVim.root() or LazyVim.root() == vim.uv.cwd() then
-            return
-        end
-
-        for _, win in ipairs(vim.fn.win_findbuf(info.buf)) do
-            vim.api.nvim_win_call(win, function()
-                pcall(vim.cmd.lcd, {
-                    LazyVim.root() or vim.uv.cwd(),
-                    mods = { silent = true, emsg_silent = true },
-                })
-            end)
-        end
-    end,
-})
-
 ---Set abbreviation that only expand when the trigger is at the position of
 ---a command
 ---@param trig string|{ [1]: string, [2]: string }

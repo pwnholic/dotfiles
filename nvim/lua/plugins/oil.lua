@@ -157,7 +157,4 @@ return {
             },
         }
     end,
-    config = function(_, opts)
-        return pcall(require("oil").setup, opts)
-    end,
 }
