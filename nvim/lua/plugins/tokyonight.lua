@@ -2,7 +2,7 @@ return {
     "folke/tokyonight.nvim",
     opts = {
         style = "night",
-        dim_inactive = true,
+        dim_inactive = false,
         transparent = false,
         lualine_bold = true,
         cache = true,
@@ -14,6 +14,9 @@ return {
             variables = {},
         },
         on_highlights = function(hl, c)
+            hl.TreesitterContextLineNumber = { fg = c.comment, bg = c.none }
+            hl.CursorLineNr = { fg = c.orange, bg = c.none, bold = true }
+            hl.LineNr = { fg = c.orange, bg = c.none, bold = true }
             hl.LineNrAbove = { fg = c.red, bg = c.none }
             hl.LineNrBelow = { fg = c.blue1, bg = c.none }
             hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
@@ -21,9 +24,9 @@ return {
             hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
             hl.LspCodeLensSeparator = { link = "Boolean", default = true }
             hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
+
             hl.LspSignatureActiveParameter =
                 { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
-
             hl.GitSignsCurrentLineBlame = { fg = c.dark5, bg = c.none }
 
             hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
