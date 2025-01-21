@@ -14,6 +14,8 @@ return {
             variables = {},
         },
         on_highlights = function(hl, c)
+            hl.LineNrAbove = { fg = c.red, bg = c.none }
+            hl.LineNrBelow = { fg = c.blue1, bg = c.none }
             hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
             hl.LspCodeLensText = { link = "DiagnosticVirtualTextHint", default = true }
             hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }

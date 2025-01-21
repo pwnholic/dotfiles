@@ -16,6 +16,7 @@ return {
             "oil_preview",
             "dapui_*",
         },
+        disable_mouse = false,
         max_count = 3,
     },
 }
