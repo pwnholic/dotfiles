@@ -3,6 +3,7 @@ vim.g.deprecation_warnings = true
 vim.opt.cmdheight = 0
 vim.opt.colorcolumn = "90,120"
 vim.opt.showtabline = 0
+vim.opt.scrolloff = 21
 vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.tabstop = 4

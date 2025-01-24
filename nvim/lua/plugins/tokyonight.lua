@@ -10,7 +10,7 @@ return {
             sidebars = "normal",
             floats = "normal",
             keywords = { italic = true },
-            functions = { bold = true },
+            functions = { bold = true, italic = true },
             variables = {},
         },
         on_highlights = function(hl, c)
@@ -24,9 +24,9 @@ return {
             hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
             hl.LspCodeLensSeparator = { link = "Boolean", default = true }
             hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
-
             hl.LspSignatureActiveParameter =
                 { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
+
             hl.GitSignsCurrentLineBlame = { fg = c.dark5, bg = c.none }
 
             hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
@@ -54,6 +54,7 @@ return {
             hl.FzfLuaBorder = { fg = c.bg_dark, bg = c.bg_dark }
             hl.FzfLuaFilePart = { fg = "#ffffff" }
             hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
+
             hl.RenderMarkdownBullet = { fg = c.red, bg = c.none }
             hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
 

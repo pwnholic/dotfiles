@@ -113,8 +113,8 @@ return {
                     score_offset = 40,
                     opts = {
                         prefix_min_len = 4,
-                        get_prefix = function(context)
-                            return context.line:sub(1, context.cursor[2]):match("[%w_-]+$") or ""
+                        get_prefix = function(ctx)
+                            return ctx.line:sub(1, ctx.cursor[2]):match("[%w_-]+$") or ""
                         end,
                         get_command = function(_, prefix)
                             return {
@@ -124,14 +124,14 @@ return {
                                 "--word-regexp",
                                 "--ignore-case",
                                 "--max-depth",
-                                "4", -- Maksimal 4 subdirektori
-                                "--hidden", -- Cari file tersembunyi
-                                "--follow", -- Ikuti symbolic links
+                                "4",
+                                "--hidden",
+                                "--follow",
                                 "--max-columns",
-                                "300", -- Hindari skip baris panjang
+                                "300",
                                 "--",
                                 prefix .. "[\\w_-]+",
-                                vim.fs.root(0, ".git") or vim.uv.cwd() or os.getenv("PWD"),
+                                vim.fs.root(0, ".git"),
                             }
                         end,
                     },

@@ -112,7 +112,7 @@ return {
             formatter = "path.dirname_first",
         }
         opts.files = {
-            prompt = "Files❯ ",
+            prompt = "Files ❯ ",
             multiprocess = true,
             git_icons = false,
             color_icons = true,
@@ -128,8 +128,8 @@ return {
             toggle_hidden_flag = "--hidden",
         }
         opts.grep = {
-            prompt = "Rg❯ ",
-            input_prompt = "Grep For❯ ",
+            prompt = "Rg ❯ ",
+            input_prompt = "Grep For ❯ ",
             multiprocess = true,
             git_icons = false,
             color_icons = true,
