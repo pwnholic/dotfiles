@@ -55,7 +55,6 @@ vim.opt.diffopt:append({ "algorithm:histogram", "indent-heuristic" })
 vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 
-vim.g.lazyvim_blink_main = true -- set to true
 vim.g.lazyvim_picker = "fzf"
 vim.g.border = "rounded"
 

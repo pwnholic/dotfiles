@@ -5,7 +5,7 @@ return {
         inlay_hints = { enabled = false, exclude = {} },
         diagnostics = {
             float = { border = vim.g.border },
-            virtual_text = { spacing = 4, source = "if_many", prefix = "icons" },
+            virtual_text = { spacing = 2, source = "if_many", prefix = "" },
         },
         servers = {},
         setup = {},

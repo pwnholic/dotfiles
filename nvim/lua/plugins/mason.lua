@@ -6,8 +6,6 @@ return {
             "jq",
             "rust-analyzer",
             "prettier",
-            "markdownlint-cli2",
-            "markdown-toc",
             "bacon-ls",
         },
         PATH = "prepend",

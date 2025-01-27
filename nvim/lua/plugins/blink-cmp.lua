@@ -1,10 +1,9 @@
 return {
     "saghen/blink.cmp",
-    dependencies = { "stevearc/vim-vscode-snippets", "niuiic/blink-cmp-rg.nvim" },
+    dependencies = { "stevearc/vim-vscode-snippets", "mikavilpas/blink-ripgrep.nvim" },
     opts = function(_, opts)
         local kinds = require("blink.cmp.types").CompletionItemKind
         local blink_winhl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
-
         opts.enabled = function()
             return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype)
                 and vim.bo.buftype ~= "prompt"
@@ -108,32 +107,20 @@ return {
                     },
                 },
                 ripgrep = {
-                    module = "blink-cmp-rg",
+                    module = "blink-ripgrep",
                     name = "Ripgrep",
                     score_offset = 40,
                     opts = {
                         prefix_min_len = 4,
-                        get_prefix = function(ctx)
-                            return ctx.line:sub(1, ctx.cursor[2]):match("[%w_-]+$") or ""
-                        end,
-                        get_command = function(_, prefix)
-                            return {
-                                "rg",
-                                "--no-config",
-                                "--json",
-                                "--word-regexp",
-                                "--ignore-case",
-                                "--max-depth",
-                                "4",
-                                "--hidden",
-                                "--follow",
-                                "--max-columns",
-                                "300",
-                                "--",
-                                prefix .. "[\\w_-]+",
-                                vim.fs.root(0, ".git"),
-                            }
-                        end,
+                        context_size = 5,
+                        max_filesize = "1M",
+                        project_root_marker = { ".git" },
+                        project_root_fallback = true,
+                        search_casing = "--ignore-case",
+                        additional_rg_options = {},
+                        fallback_to_regex_highlighting = true,
+                        ignore_paths = {},
+                        debug = false,
                     },
                 },
             },
@@ -167,9 +154,9 @@ return {
                             ellipsis = false,
                             text = function(ctx)
                                 if ctx.item.source_name == "Ripgrep" then
-                                    ctx.kind_icon = " "
+                                    ctx.kind_icon = ""
                                 elseif ctx.item.source_name == "Buffer" then
-                                    ctx.kind_icon = "󰯁 "
+                                    ctx.kind_icon = "󰯁"
                                 end
                                 return ctx.kind_icon .. ctx.icon_gap
                             end,
@@ -214,5 +201,9 @@ return {
             ghost_text = { enabled = true },
         }
         opts.signature = { enabled = true, window = { border = vim.g.border, winhighlight = blink_winhl } }
+        opts.appearance = {
+            use_nvim_cmp_as_default = true,
+            nerd_font_variant = "normal",
+        }
     end,
 }
