@@ -53,7 +53,8 @@ return {
             hl.OilMtime = { fg = c.purple, bg = c.none }
 
             hl.FzfLuaDirPart = { fg = c.magenta }
-            hl.FzfLuaBorder = { fg = c.bg_dark, bg = c.bg_dark }
+            hl.FzfLuaBorder = { fg = c.green, bg = c.none }
+            hl.FzfLuaPreviewBorder = { fg = c.purple, bg = c.none }
             hl.FzfLuaFilePart = { fg = "#ffffff" }
             hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
 
