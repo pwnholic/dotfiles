@@ -59,6 +59,8 @@ return {
     },
     opts = function(_, opts)
         local actions = require("fzf-lua.actions")
+        local path = require("fzf-lua.path")
+        local config = require("fzf-lua.config")
 
         vim.keymap.set("n", "<leader>gx", function()
             require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
@@ -180,6 +182,49 @@ return {
             actions = {
                 ["alt-i"] = { actions.toggle_ignore },
                 ["alt-h"] = { actions.toggle_hidden },
+            },
+        }
+
+        opts.git = {
+            status = {
+                prompt = "GitStatus❯ ",
+                cmd = "git -c color.status=false --no-optional-locks status --porcelain=v1 -u",
+                multiprocess = true,
+                file_icons = true,
+                color_icons = true,
+                previewer = "git_diff",
+                preview_pager = false,
+                winopts = {
+                    preview = {
+                        border = "none",
+                        horizontal = "right:55%",
+                        layout = "flex",
+                    },
+                },
+                actions = {
+                    ["right"] = { fn = actions.git_unstage, reload = true },
+                    ["left"] = { fn = actions.git_stage, reload = true },
+                    ["ctrl-x"] = { fn = actions.git_reset, reload = true },
+                    ["ctrl-l"] = function(selected, o)
+                        ---@type string
+                        local filepath
+                        for _, sel in ipairs(selected) do
+                            local entry = path.entry_to_file(sel, o, o._uri)
+                            if entry.path == "<none>" then
+                                return
+                            end
+                            local fullpath = entry.bufname or entry.uri and entry.uri:match("^%a+://(.*)") or entry.path
+                            if not fullpath then
+                                return
+                            end
+                            if not path.is_absolute(fullpath) then
+                                fullpath = path.join({ o.cwd or o._cwd or vim.uv.cwd(), fullpath })
+                            end
+                            filepath = vim.fn.fnamemodify(fullpath, ":p:.")
+                        end
+                        return vim.cmd("Git add " .. filepath) and vim.cmd("Git commit " .. filepath)
+                    end,
+                },
             },
         }
     end,

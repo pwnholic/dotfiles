@@ -23,7 +23,7 @@ vim.api.nvim_create_autocmd("ModeChanged", {
                 vim.wo.cursorcolumn = true
                 vim.w._cursorcolumn = nil
             end
-            local hl = { italic = true, bold = true, reverse = true }
+            local hl = { italic = true, bold = true, underline = true }
             vim.api.nvim_set_hl(0, "LspReferenceText", hl)
             vim.api.nvim_set_hl(0, "LspReferenceRead", hl)
             vim.api.nvim_set_hl(0, "LspReferenceWrite", hl)
@@ -55,6 +55,7 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
     once = true,
     callback = function()
         command_abbrev("git", "Git")
+        command_abbrev("gcm", "GitCommitMsg")
         return true
     end,
 })
