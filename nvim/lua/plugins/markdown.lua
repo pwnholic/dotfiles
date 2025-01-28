@@ -50,7 +50,7 @@ return {
                     render_modes = false,
                     sign = true,
                     position = "overlay",
-                    signs = { "󰫎  " },
+                    signs = { "󰫎" },
                     width = "full",
                     left_margin = 0,
                     left_pad = 0,

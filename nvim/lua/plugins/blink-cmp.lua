@@ -27,6 +27,8 @@ return {
                 ["<S-Tab>"] = { "select_prev", "fallback" },
                 ["<Tab>"] = { "select_next", "fallback" },
                 ["<CR>"] = { "accept", "fallback" },
+                ["<Up>"] = { "select_prev", "fallback" },
+                ["<Down>"] = { "select_next", "fallback" },
                 ["<C-space>"] = { "show" },
             },
         }
@@ -114,17 +116,18 @@ return {
                         prefix_min_len = 4,
                         context_size = 5,
                         max_filesize = "1M",
-                        project_root_marker = { ".git" },
+                        project_root_marker = { ".git", "go.mod", ".env", ".venv" },
                         project_root_fallback = true,
                         search_casing = "--ignore-case",
                         additional_rg_options = {},
                         fallback_to_regex_highlighting = true,
-                        ignore_paths = {},
+                        ignore_paths = { "client", "node_modules", ".git" },
                         debug = false,
                     },
                 },
             },
         }
+
         opts.completion = {
             list = {
                 max_items = 20,
