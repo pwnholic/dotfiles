@@ -127,7 +127,6 @@ return {
                 },
             },
         }
-
         opts.completion = {
             list = {
                 max_items = 20,
