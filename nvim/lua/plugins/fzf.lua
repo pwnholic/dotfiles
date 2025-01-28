@@ -1,3 +1,29 @@
+local fzf_opts = {
+    no_preview = {
+        ["--info"] = "inline-right",
+        ["--layout"] = "reverse",
+        ["--ansi"] = true,
+        ["--marker"] = "█",
+        ["--pointer"] = "█",
+        ["--padding"] = "0,1",
+        ["--margin"] = "0",
+        ["--highlight-line"] = true,
+        ["--preview-window"] = "hidden",
+        ["--no-preview"] = true,
+        ["--border"] = "none",
+    },
+    preview = {
+        ["--info"] = "inline-right",
+        ["--ansi"] = true,
+        ["--marker"] = "█",
+        ["--pointer"] = "█",
+        ["--padding"] = "0,1",
+        ["--margin"] = "0",
+        ["--highlight-line"] = true,
+        ["--no-scrollbar"] = true,
+    },
+}
+
 return {
     "ibhagwan/fzf-lua",
     keys = {
@@ -5,26 +31,22 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
+                    cwd = os.getenv("PWD"),
                     fd_opts = "--color=never --type d --hidden --follow --exclude .git]]",
                     find_opts = [[-type d -not -path '*/\.git/*' -printf '%P\n']],
+                    actions = {
+                        ["default"] = function(selected, opts)
+                            for i = 1, #selected do
+                                local path = require("fzf-lua.path").entry_to_file(selected[i], opts).path
+                                vim.cmd(string.format("Oil %s", path))
+                            end
+                        end,
+                    },
                     winopts = {
                         split = string.format("belowright %dnew", math.floor(vim.o.lines / 3)),
                         preview = { hidden = "hidden" },
                     },
-                    -- NOTE: OPTION FOR NO PREVIEW
-                    fzf_opts = {
-                        ["--info"] = "inline-right",
-                        ["--layout"] = "reverse",
-                        ["--ansi"] = true,
-                        ["--marker"] = "█",
-                        ["--pointer"] = "█",
-                        ["--padding"] = "0,1",
-                        ["--margin"] = "0",
-                        ["--highlight-line"] = true,
-                        ["--preview-window"] = "hidden",
-                        ["--no-preview"] = true,
-                        ["--border"] = "none",
-                    },
+                    fzf_opts = fzf_opts.no_preview,
                 })
             end,
             desc = "Find Folder (root)",
@@ -56,7 +78,7 @@ return {
             width = 0.90,
             row = 0.50,
             col = 0.50,
-            backdrop = 90, -- opcity
+            backdrop = 80, -- opcity
             title_flags = false,
             border = vim.g.border,
             preview = {
@@ -77,16 +99,7 @@ return {
                 },
             },
         }
-        opts.fzf_opts = {
-            ["--info"] = "inline-right",
-            ["--ansi"] = true,
-            ["--marker"] = "█",
-            ["--pointer"] = "█",
-            ["--padding"] = "0,1",
-            ["--margin"] = "0",
-            ["--highlight-line"] = true,
-            ["--no-scrollbar"] = true,
-        }
+        opts.fzf_opts = fzf_opts.preview
         opts.defaults = {
             file_icons = "mini",
             headers = { "actions", "cwd" },
