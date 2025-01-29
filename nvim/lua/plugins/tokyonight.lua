@@ -82,6 +82,8 @@ return {
             hl.DiagnosticVirtualTextError = { bg = util.blend_bg(c.error, 0.1), fg = c.error, bold = true }
             hl.DiagnosticVirtualTextWarn = { bg = util.blend_bg(c.warning, 0.1), fg = c.warning, italic = true }
 
+            hl.TreesitterContext = { underline = true, sp = c.purple, bold = true }
+
             -- hl.FzfLuaTitle = { fg = c.bg_dark, bg = c.yellow, bold = true }
             -- hl.FzfLuaPreviewTitle = { fg = c.bg_dark, bg = c.cyan, bold = true }
         end,

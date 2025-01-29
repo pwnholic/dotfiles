@@ -5,18 +5,23 @@ return {
     opts = function()
         local oil = require("oil")
         local icons = LazyVim.config.icons.kinds
-        local groupid = vim.api.nvim_create_augroup("OilSyncCwd", { clear = true })
+        local group_id = vim.api.nvim_create_augroup("OilSyncCwd", { clear = true })
 
         vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
             desc = "Set cwd to follow directory shown in oil buffers.",
-            group = groupid,
+            group = group_id,
             pattern = "oil://*",
             callback = function(info)
                 if vim.bo[info.buf].filetype == "oil" then
                     local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
-                    local oildir = vim.fs.normalize(oil.get_current_dir())
-                    if cwd ~= oildir and vim.uv.fs_stat(oildir) then
-                        pcall(vim.cmd.lcd, oildir)
+                    local oildir = vim.fs.normalize(oil.get_current_dir() or "")
+                    if oildir ~= "" then
+                        if cwd ~= oildir and vim.uv.fs_stat(oildir) then
+                            return pcall(vim.cmd.lcd, oildir)
+                        end
+                    else
+                        vim.notify("could not set oil buffer to follow cwd", 3, { title = "Oil" })
+                        return
                     end
                 end
             end,
@@ -24,21 +29,26 @@ return {
 
         vim.api.nvim_create_autocmd("DirChanged", {
             desc = "Let oil buffers follow cwd.",
-            group = groupid,
+            group = group_id,
             callback = function(info)
                 if vim.bo[info.buf].filetype == "oil" then
                     vim.defer_fn(function()
                         local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
                         local oildir = vim.fs.normalize(oil.get_current_dir() or "")
-                        if cwd ~= oildir and vim.bo.ft == "oil" then
-                            oil.open(cwd)
+                        if oildir ~= "" then
+                            if cwd ~= oildir and vim.bo.ft == "oil" then
+                                return oil.open(cwd)
+                            end
+                        else
+                            vim.notify("could not change directory to follow cwd", 3, { title = "Oil" })
+                            return
                         end
                     end, 100)
                 end
             end,
         })
 
-        local columns = {
+        local oil_columns = {
             {
                 "type",
                 icons = { directory = "d", fifo = "p", file = "-", link = "l", socket = "s" },
@@ -142,7 +152,7 @@ return {
                     callback = function()
                         local config = require("oil.config")
                         if #config.columns == 1 then
-                            oil.set_columns(columns)
+                            oil.set_columns(oil_columns)
                         else
                             oil.set_columns({ "icon" })
                         end
