@@ -78,3 +78,29 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
         vim.keymap.set({ "n", "i" }, "<S-CR>", "<cr>q:", { buffer = args.buf })
     end,
 })
+
+-- vim.api.nvim_create_autocmd("ModeChanged", {
+--     pattern = "*:*",
+--     callback = vim.schedule_wrap(function()
+--         local color = require("tokyonight.colors").setup()
+--         local util = require("tokyonight.util")
+--         local mode_colors = {
+--             n = color.hint,
+--             i = color.cyan,
+--             v = color.green,
+--             V = color.green,
+--             ["\22"] = color.yellow,
+--             c = color.orange,
+--             s = color.purple,
+--             S = color.purple,
+--             ["\19"] = color.purple,
+--             R = color.orange,
+--             r = color.orange,
+--             ["!"] = color.red,
+--             t = color.red,
+--         }
+--         local fg = mode_colors[vim.fn.mode(1):sub(1, 1)]
+--         vim.api.nvim_set_hl(0, "TreesitterContext", { underline = true, sp = fg })
+--         vim.api.nvim_set_hl(0, "Visual", { bg = util.blend_bg(fg, 0.1), italic = true, bold = true })
+--     end),
+-- })
