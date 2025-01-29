@@ -5,23 +5,7 @@ return {
     opts = function()
         local oil = require("oil")
         local icons = LazyVim.config.icons.kinds
-
-        local function lcd(dir)
-            local ok = pcall(vim.cmd.lcd, dir)
-            if not ok then
-                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.WARN)
-            end
-        end
-
-        local groupid = vim.api.nvim_create_augroup("OilSyncCwd", {})
-        vim.api.nvim_create_autocmd("BufEnter", {
-            desc = "Ensure that oil buffers are not listed.",
-            group = groupid,
-            pattern = "oil://*",
-            callback = function(info)
-                vim.bo[info.buf].buflisted = false
-            end,
-        })
+        local groupid = vim.api.nvim_create_augroup("OilSyncCwd", { clear = true })
 
         vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
             desc = "Set cwd to follow directory shown in oil buffers.",
@@ -32,7 +16,7 @@ return {
                     local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
                     local oildir = vim.fs.normalize(oil.get_current_dir())
                     if cwd ~= oildir and vim.uv.fs_stat(oildir) then
-                        lcd(oildir)
+                        pcall(vim.cmd.lcd, oildir)
                     end
                 end
             end,
