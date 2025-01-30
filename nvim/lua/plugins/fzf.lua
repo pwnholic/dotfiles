@@ -22,6 +22,10 @@ local fzf_opts = {
         ["--highlight-line"] = true,
         ["--no-scrollbar"] = true,
     },
+    winopts_no_preview = {
+        split = string.format("botright %dnew", math.floor(vim.o.lines / 2)),
+        preview = { hidden = true },
+    },
 }
 
 return {
@@ -71,6 +75,7 @@ return {
         { "<leader>gS", "<cmd>FzfLua git_stash<CR>", desc = "Git stash" },
         { "<leader>gl", "<cmd>FzfLua git_branches<CR>", desc = "Git branches" },
         { "<leader>gj", "<cmd>FzfLua git_bcommits<CR>", desc = "Git commit (buffer)" },
+        { "<leader>cb", "<cmd>FzfLua lsp_finder<CR>", desc = "Lsp Find" },
         { "<leader>gx", desc = "Git conflict list" },
     },
     opts = function(_, opts)
@@ -160,6 +165,30 @@ return {
             actions = {
                 ["alt-i"] = { actions.toggle_ignore },
                 ["alt-h"] = { actions.toggle_hidden },
+            },
+        }
+        opts.tabs = {
+            fzf_opts = fzf_opts.no_preview,
+            winopts = fzf_opts.winopts_no_preview,
+        }
+        opts.diagnostics = {
+            prompt = "Diagnostics❯ ",
+            cwd_only = false,
+            file_icons = true,
+            git_icons = false,
+            diag_icons = true,
+            diag_source = true,
+            icon_padding = " ",
+            multiline = true,
+        }
+        opts.lsp = {
+            finder = {
+                prompt = "LSP Finder> ",
+                file_icons = true,
+                color_icons = true,
+                async = true,
+                silent = true,
+                separator = "│ ",
             },
         }
         opts.grep = {
