@@ -1,5 +1,5 @@
-local fzf_opts = {
-    no_preview = {
+local preview = {
+    fzf_opts_no_preview = {
         ["--info"] = "inline-right",
         ["--layout"] = "reverse",
         ["--ansi"] = true,
@@ -12,7 +12,7 @@ local fzf_opts = {
         ["--no-preview"] = true,
         ["--border"] = "none",
     },
-    preview = {
+    fzf_opts_with_preview = {
         ["--info"] = "inline-right",
         ["--ansi"] = true,
         ["--marker"] = "█",
@@ -25,6 +25,27 @@ local fzf_opts = {
     winopts_no_preview = {
         split = string.format("botright %dnew", math.floor(vim.o.lines / 2)),
         preview = { hidden = true },
+    },
+    vertical_preview = {
+        fzf_opts = {
+            ["--layout"] = "reverse",
+            ["--ansi"] = true,
+            ["--marker"] = "█",
+            ["--pointer"] = "█",
+            ["--padding"] = "0,1",
+            ["--margin"] = "0",
+            ["--highlight-line"] = true,
+        },
+        winopts = {
+            height = 0.75,
+            width = 0.90,
+            row = 0.50,
+            col = 0.50,
+            preview = {
+                layout = "vertical",
+                vertical = "down:50%",
+            },
+        },
     },
 }
 
@@ -66,7 +87,7 @@ return {
                         split = string.format("belowright %dnew", math.floor(vim.o.lines / 3)),
                         preview = { hidden = "hidden" },
                     },
-                    fzf_opts = fzf_opts.no_preview,
+                    fzf_opts = preview.fzf_opts_no_preview,
                 })
             end,
             desc = "Find Folder (root)",
@@ -75,12 +96,25 @@ return {
         { "<leader>gS", "<cmd>FzfLua git_stash<CR>", desc = "Git stash" },
         { "<leader>gl", "<cmd>FzfLua git_branches<CR>", desc = "Git branches" },
         { "<leader>gj", "<cmd>FzfLua git_bcommits<CR>", desc = "Git commit (buffer)" },
-        { "<leader>cb", "<cmd>FzfLua lsp_finder<CR>", desc = "Lsp Find" },
+        {
+            "<leader>cb",
+            function()
+                require("fzf-lua").lsp_finder({
+                    fzf_opts = preview.vertical_preview.fzf_opts,
+                    winopts = preview.vertical_preview.winopts,
+                })
+            end,
+            desc = "Lsp Find",
+        },
         { "<leader>gx", desc = "Git conflict list" },
     },
     opts = function(_, opts)
         local actions = require("fzf-lua.actions")
         local path = require("fzf-lua.path")
+        local no_preview = {
+            fzf_opts = preview.fzf_opts_no_preview,
+            winopts = preview.winopts_no_preview,
+        }
 
         vim.keymap.set("n", "<leader>gx", function()
             require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
@@ -121,7 +155,7 @@ return {
                 },
             },
         }
-        opts.fzf_opts = fzf_opts.preview
+        opts.fzf_opts = preview.fzf_opts_with_preview
         opts.defaults = {
             file_icons = "mini",
             headers = { "actions", "cwd" },
@@ -167,10 +201,9 @@ return {
                 ["alt-h"] = { actions.toggle_hidden },
             },
         }
-        opts.tabs = {
-            fzf_opts = fzf_opts.no_preview,
-            winopts = fzf_opts.winopts_no_preview,
-        }
+
+        opts.tabs = no_preview
+        opts.commands = no_preview
         opts.diagnostics = {
             prompt = "Diagnostics❯ ",
             cwd_only = false,
