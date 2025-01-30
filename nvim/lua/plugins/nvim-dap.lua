@@ -66,9 +66,6 @@ return {
     },
     keys = {
         { "<leader>dn", "<cmd>DapNew<cr>", desc = "Set Config" },
-        { "<leader>dy", "<cmd>FzfLua dap_breakpoints<cr>", desc = "Search breakpoints" },
-        { "<leader>dv", "<cmd>FzfLua dap_variables<cr>", desc = "Search Variable" },
-        { "<leader>df", "<cmd>FzfLua dap_frames<cr>", desc = "Search Frames" },
         {
             "<leader>dr",
             function()

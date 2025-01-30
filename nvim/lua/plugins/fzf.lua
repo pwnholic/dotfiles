@@ -52,6 +52,9 @@ local preview = {
 return {
     "ibhagwan/fzf-lua",
     keys = {
+        { "<leader>dy", "<cmd>FzfLua dap_breakpoints<cr>", desc = "Search breakpoints" },
+        { "<leader>dv", "<cmd>FzfLua dap_variables<cr>", desc = "Search Variable" },
+        { "<leader>df", "<cmd>FzfLua dap_frames<cr>", desc = "Search Frames" },
         {
             "<leader>fd",
             function()
