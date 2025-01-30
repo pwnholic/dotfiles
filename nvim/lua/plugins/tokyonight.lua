@@ -84,8 +84,8 @@ return {
 
             hl.TreesitterContext = { underline = true, sp = c.purple, bold = true }
 
-            -- hl.FzfLuaTitle = { fg = c.bg_dark, bg = c.yellow, bold = true }
-            -- hl.FzfLuaPreviewTitle = { fg = c.bg_dark, bg = c.cyan, bold = true }
+            hl.FzfLuaTitle = { fg = c.bg_dark, bg = c.yellow, bold = true }
+            hl.FzfLuaPreviewTitle = { fg = c.bg_dark, bg = c.cyan, bold = true }
         end,
     },
 }

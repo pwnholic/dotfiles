@@ -74,7 +74,7 @@ return {
                     sign = true,
                     style = "full",
                     position = "left",
-                    language_pad = 0,
+                    language_pad = 1,
                     language_name = true,
                     disable_background = { "diff" },
                     width = "full",

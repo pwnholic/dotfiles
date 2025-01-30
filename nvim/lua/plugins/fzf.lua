@@ -32,8 +32,24 @@ return {
             function()
                 require("fzf-lua").files({
                     cwd = os.getenv("PWD"),
-                    fd_opts = "--color=never --type d --hidden --follow --exclude .git]]",
-                    find_opts = [[-type d -not -path '*/\.git/*' -printf '%P\n']],
+                    fd_opts = table.concat({
+                        "--color=never",
+                        "--type",
+                        "d",
+                        "--hidden",
+                        "--follow",
+                        "--exclude",
+                        ".git",
+                    }, " "),
+                    find_opts = table.concat({
+                        "-type",
+                        "d",
+                        "-not",
+                        "-path",
+                        [['*/\.git/*']],
+                        "-printf",
+                        "'%P\n'",
+                    }, " "),
                     actions = {
                         ["default"] = function(selected, opts)
                             for i = 1, #selected do
@@ -60,7 +76,6 @@ return {
     opts = function(_, opts)
         local actions = require("fzf-lua.actions")
         local path = require("fzf-lua.path")
-        local config = require("fzf-lua.config")
 
         vim.keymap.set("n", "<leader>gx", function()
             require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
