@@ -1,0 +1,34 @@
+[core]
+	editor = nvim
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[filter "git-ignore"]
+	clean = sed '/#\s*git-ignore$/d'
+	smudge = cat
+
+[init]
+	defaultBranch = main
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = diff3
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[credential]
+	helper = store --file ~/.config/git/credentials
+
+[user]
+	email = wigtono41@gmail.com
+	name = pwnholic

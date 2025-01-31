@@ -1,9 +1,29 @@
-theme = "onedark"
+theme = "tokyonight"
 
 [editor]
+end-of-line-diagnostics = "hint"
 line-number = "relative"
 mouse = true
-auto-save  = true
+auto-format = true
+
+[editor.statusline]
+left = [
+    "mode",
+    "file-name",
+    "read-only-indicator",
+    "file-modification-indicator",
+]
+right = [
+    "primary-selection-length",
+    "register",
+    "position",
+    "total-line-numbers",
+    "file-encoding",
+]
+center = ["diagnostics"]
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "VISUAL"
 
 [editor.cursor-shape]
 insert = "bar"
@@ -15,16 +35,14 @@ hidden = false
 
 [editor.lsp]
 display-messages = true
+display-inlay-hints = true
 
-[keys.normal]
-C-s = ":w"   
+[editor.auto-save]
+focus-lost = true
 
-[editor.statusline]
-left = ["mode", "spinner", "version-control","register",]
-center = ["file-name"]
-right = ["diagnostics", "selections", "position","total-line-numbers", "file-encoding", "file-line-ending", "file-type"]
-separator = "│"
-mode.normal = "N"
-mode.insert = "I"
-mode.select = "V"
+[editor.indent-guides]
+render = true
+character = "▏"
 
+[editor.whitespace]
+render = "all"

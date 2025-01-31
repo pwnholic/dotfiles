@@ -49,7 +49,11 @@ cyan = "0x8FBCBB"
 white = "0xECEFF4"
 
 [font]
-size = 12
+size = 11
+offset = { x = 0, y = 3 }
+glyph_offset = { x = 0, y = 1 }
+builtin_box_drawing = true
+
 
 [font.normal]
 family = "Iosevka Nerd Font"

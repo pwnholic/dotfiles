@@ -1,11 +1,48 @@
 [[language]]
-name = "lua"
-injection-regex = "lua"
-scope = "source.lua"
-auto-format = true
-file-types = ["lua"]
-shebangs = ["lua"]
-roots = [".luarc.json", ".luacheckrc", ".stylua.toml", "selene.toml", ".git"]
-comment-token = "--"
+name = "go"
+scope = "source.go"
 indent = { tab-width = 4, unit = "  " }
-language-servers = [ "lua-language-server" ]
+file-types = ["go"]
+language-servers = ["gopls"]
+
+[language-server.gopls]
+command = "gopls"
+
+[language-server.gopls.config]
+usePlaceholders = true
+local = "goimports"
+completeUnimported = true
+staticcheck = true
+deepCompletion = true
+directoryFilters = [
+    "-.git",
+    "-.vscode",
+    "-.idea",
+    "-.vscode-test",
+    "-node_modules",
+]
+semanticTokens = true
+
+[language-server.gopls.config.hints]
+assignVariableTypes = true
+compositeLiteralFields = true
+constantValues = true
+functionTypeParameters = true
+parameterNames = true
+rangeVariableTypes = true
+
+[language-server.gopls.config.codelenses]
+gc_details = false
+generate = true
+regenerate_cgo = true
+run_govulncheck = true
+test = true
+tidy = true
+upgrade_dependency = true
+vendor = true
+
+[language-server.gopls.config.analyses]
+nilness = true
+unusedparams = true
+unusedwrite = true
+useany = true

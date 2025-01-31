@@ -1,9 +1,5 @@
-# Nothing to do if not inside an interactive shell.
-if not status is-interactive
-    return 0
-end
+# source /usr/share/cachyos-fish-config/cachyos-config.fish
 
-# Neovim.
 abbr -a nv nvim
 abbr -a nvo --set-cursor "cd % && nvim"
 abbr -a nvp nvim +Man!
@@ -21,7 +17,6 @@ abbr -a gp git push
 abbr -a gst git status
 
 # Linux maintenance.
-abbr -a --position anywhere d dnf
 abbr -a --position anywhere s sudo
 abbr -a j journalctl
 
@@ -34,5 +29,10 @@ set fish_vi_force_cursor 1
 set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
+
+
+alias gitcred="sh ~/.config/fish/scripts/gitcred"
+alias mpvyt='mpv --input-ipc-server=~/.socket_yt --vo=null --ytdl-raw-options="yes-playlist=,format=best*[vcodec=none]"'
+alias aria2cflag='aria2c --file-allocation=none -c -j 10 -x 16 -s 16 -k 1M'
 
 starship init fish | source
