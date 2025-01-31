@@ -59,7 +59,7 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
-                    cwd = os.getenv("PWD"),
+                    cwd = vim.fn.fnameescape(os.getenv("PWD") or ""),
                     fd_opts = table.concat({
                         "--color=never",
                         "--type",
@@ -82,7 +82,7 @@ return {
                         ["default"] = function(selected, opts)
                             for i = 1, #selected do
                                 local path = require("fzf-lua.path").entry_to_file(selected[i], opts).path
-                                vim.cmd(string.format("Oil %s", path))
+                                vim.cmd(string.format("Oil %s", vim.fn.fnameescape(path)))
                             end
                         end,
                     },
@@ -254,7 +254,7 @@ return {
                 "-e",
             }, " "),
             rg_glob = true,
-            -- RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH,
+            RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH,
             glob_flag = "--iglob",
             glob_separator = "%s%-%-",
             no_header = false,

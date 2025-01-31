@@ -115,9 +115,7 @@ vim.api.nvim_create_user_command("MarkGitSync", function()
 end, {})
 
 vim.keymap.set("n", "<leader>op", function()
-    if vim.uv.cwd() ~= note_path then
-        return vim.notify(string.format("Path should be on %s", note_path), 2, { title = "Markdown" })
-    else
+    if vim.uv.cwd() == note_path then
         return run_job("xdg-open", {
             string.format(
                 "obsidian://%s&path=%s",
@@ -133,5 +131,7 @@ vim.keymap.set("n", "<leader>op", function()
                 vim.notify("Filed to open obsidian: " .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
             end
         end)
+    else
+        return vim.notify(string.format("Path should be on %s", note_path), 2, { title = "Markdown" })
     end
 end, { desc = "Open in Obsidian Vault" })
