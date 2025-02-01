@@ -4,7 +4,7 @@ return {
         ft = { "markdown" },
         opts = {
             backend = "kitty",
-            processor = "magick_rock", -- or "magick_cli"
+            processor = "magick_rock",
             integrations = {
                 markdown = {
                     enabled = true,
