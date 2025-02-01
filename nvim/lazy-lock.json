@@ -1,6 +1,6 @@
 {
   "LazyVim": { "branch": "main", "commit": "eb8ddea8c9438c34e71db097eb77a44185dd1093" },
-  "SchemaStore.nvim": { "branch": "main", "commit": "085d1a9c4f30de56e312931582e80805f0ed3621" },
+  "SchemaStore.nvim": { "branch": "main", "commit": "4244700eff0a9258b88f48b2b0d0339dea3338af" },
   "blink-ripgrep.nvim": { "branch": "main", "commit": "519ac7894113f6a7b517b157c26e31fbd58a0de5" },
   "blink.cmp": { "branch": "main", "commit": "b6f11a0aa33e601c469a126e3ed6e35208fe3ea3" },
   "catppuccin": { "branch": "main", "commit": "4965db2d6155c25db4e8417465fc2703fdf4c2b7" },
@@ -51,7 +51,7 @@
   "plenary.nvim": { "branch": "master", "commit": "3707cdb1e43f5cea73afb6037e6494e7ce847a66" },
   "render-markdown.nvim": { "branch": "main", "commit": "b9c98ff7d47dfe2a972f1b08340850c92e6ca9bc" },
   "rustaceanvim": { "branch": "master", "commit": "66d688fc6934dde2f1c4b0139682fe7b3935f154" },
-  "snacks.nvim": { "branch": "main", "commit": "4da7bdb82ea929d682c8e4cc83fa5add66a03bc4" },
+  "snacks.nvim": { "branch": "main", "commit": "de16b44f9737287ea5993e8f45f244dce29bc954" },
   "todo-comments.nvim": { "branch": "main", "commit": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5" },
   "tokyonight.nvim": { "branch": "main", "commit": "dca4adba7dc5f09302a00b0e76078d54d82d2658" },
   "trouble.nvim": { "branch": "main", "commit": "6f380b8826fb819c752c8fd7daaee9ef96d4c689" },

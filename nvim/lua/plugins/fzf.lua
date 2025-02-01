@@ -50,15 +50,11 @@ local preview = {
                 width = 0.90,
                 row = 0.50,
                 col = 0.50,
-                preview = {
-                    layout = "vertical",
-                    vertical = "down:50%",
-                },
+                preview = { layout = "vertical", vertical = "down:50%" },
             },
         },
     },
 }
-
 return {
     "ibhagwan/fzf-lua",
     keys = {
@@ -199,6 +195,7 @@ return {
                 "--exclude",
                 ".git",
             }, " "),
+            cmd = "rg --files",
             rg_opts = table.concat({ "--color=never", "--files", "--follow", "-g=!git/" }, " "),
             cwd_prompt = false,
             cwd_prompt_shorten_len = 32,
@@ -237,14 +234,7 @@ return {
             multiprocess = true,
             git_icons = false,
             color_icons = true,
-            grep_opts = table.concat({
-                "--binary-files=without-match",
-                "--line-number",
-                "--recursive",
-                "--color=auto",
-                "--perl-regexp",
-                "-e",
-            }, " "),
+            cmd = "rg --vimgrep",
             rg_opts = table.concat({
                 "--column",
                 "--hidden",

@@ -28,8 +28,6 @@ pcall(require("lazy").setup, {
         { "nvim-neo-tree/neo-tree.nvim", enabled = false },
 
         { import = "lazyvim.plugins.extras.util.rest" },
-        { import = "lazyvim.plugins.extras.coding.blink" },
-        { import = "lazyvim.plugins.extras.editor.fzf" },
         { import = "lazyvim.plugins.extras.dap.core" },
         { import = "lazyvim.plugins.extras.test.core" },
         { import = "lazyvim.plugins.extras.util.rest" },

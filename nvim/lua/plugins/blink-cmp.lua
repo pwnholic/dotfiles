@@ -163,7 +163,7 @@ return {
                 border = vim.g.border,
                 winblend = 0,
                 min_width = 15,
-                max_height = math.floor(vim.o.lines / 2),
+                max_height = math.floor(vim.o.lines / 2) - 3,
                 winhighlight = blink_winhl,
                 direction_priority = { "s", "n" },
                 draw = {
