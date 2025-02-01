@@ -7,7 +7,11 @@ return {
             float = { border = vim.g.border },
             virtual_text = { spacing = 2, source = "if_many", prefix = "" },
         },
-        servers = {},
+        servers = {
+            solidity_ls = {
+                single_file_support = true,
+            },
+        },
         setup = {},
     },
 }

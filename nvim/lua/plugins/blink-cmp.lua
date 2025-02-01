@@ -128,6 +128,24 @@ return {
             },
         }
         opts.completion = {
+            accept = {
+                create_undo_point = true,
+                resolve_timeout_ms = 100,
+                auto_brackets = {
+                    enabled = true,
+                    default_brackets = { "(", ")" },
+                    override_brackets_for_filetypes = {},
+                    kind_resolution = {
+                        enabled = true,
+                        blocked_filetypes = { "typescriptreact", "javascriptreact", "vue" },
+                    },
+                    semantic_token_resolution = {
+                        enabled = true,
+                        blocked_filetypes = { "java" },
+                        timeout_ms = 400,
+                    },
+                },
+            },
             list = {
                 max_items = 20,
                 selection = {
@@ -144,12 +162,15 @@ return {
                 enabled = true,
                 border = vim.g.border,
                 winblend = 0,
+                min_width = 15,
+                max_height = math.floor(vim.o.lines / 2),
                 winhighlight = blink_winhl,
                 direction_priority = { "s", "n" },
                 draw = {
                     align_to = "label",
                     padding = 1,
                     gap = 1,
+                    treesitter = { "lsp" },
                     columns = { { "kind_icon", gap = 1 }, { "label", "label_description", gap = 1 } },
                     components = {
                         kind_icon = {
@@ -166,21 +187,25 @@ return {
                         label = {
                             width = { fill = true, max = 50 },
                             text = function(ctx)
-                                return ctx.label .. ctx.label_detail
+                                if ctx.label_detail ~= "" and ctx.mode ~= "cmdline" then
+                                    return string.format("%s [%s]", ctx.label, ctx.label_detail)
+                                else
+                                    return string.format("%s", ctx.label)
+                                end
                             end,
                             highlight = function(ctx)
                                 local highlights = {
                                     {
                                         0,
                                         #ctx.label,
-                                        group = ctx.deprecated and "BlinkCmpLabelDeprecated" or "BlinkCmpLabel",
+                                        group = "BlinkCmpLabel",
                                     },
                                 }
                                 if ctx.label_detail then
                                     table.insert(highlights, {
                                         #ctx.label,
                                         #ctx.label + #ctx.label_detail,
-                                        group = "BlinkCmpLabelDetail",
+                                        group = "BlinkCmpKindKeyword",
                                     })
                                 end
                                 for _, idx in ipairs(ctx.label_matched_indices) do
@@ -194,7 +219,7 @@ return {
                             text = function(ctx)
                                 return ctx.label_description
                             end,
-                            highlight = "BlinkCmpLabelDescription",
+                            highlight = "FzfLuaPath",
                         },
                     },
                 },
