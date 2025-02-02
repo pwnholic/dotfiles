@@ -27,6 +27,25 @@ return {
             end,
         })
 
+        vim.api.nvim_create_autocmd("RecordingEnter", {
+            desc = "Notify when record a macro",
+            group = group_id,
+            callback = function(opts)
+                if vim.fn.reg_recording() ~= "" and vim.bo[opts.buf].filetype == "oil" then
+                    local msg = string.format("Recording on [%s]", vim.fn.reg_recording())
+                    vim.notify(msg, 2, { title = "Oil" })
+                end
+            end,
+        })
+
+        vim.api.nvim_create_autocmd("RecordingLeave", {
+            desc = "Notify when leave a macro",
+            group = group_id,
+            callback = function()
+                vim.notify("Removing Macro Key", 2, { title = "Oil" })
+            end,
+        })
+
         vim.api.nvim_create_autocmd("DirChanged", {
             desc = "Let oil buffers follow cwd.",
             group = group_id,

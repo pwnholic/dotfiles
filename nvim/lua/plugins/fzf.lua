@@ -37,6 +37,7 @@ local preview = {
             preview = {
                 ["--layout"] = "reverse",
                 ["--ansi"] = true,
+                ["--no-separator"] = false,
                 ["--marker"] = "█",
                 ["--pointer"] = "█",
                 ["--padding"] = "0,1",
@@ -234,17 +235,16 @@ return {
             multiprocess = true,
             git_icons = false,
             color_icons = true,
-            cmd = "rg --vimgrep",
             rg_opts = table.concat({
-                "--column",
+                "--no-messages",
                 "--hidden",
                 "--follow",
+                "--smart-case",
+                "--column",
                 "--line-number",
                 "--no-heading",
                 "--color=always",
-                "--smart-case",
-                "--max-columns=4096",
-                "-g=!git/",
+                "-g=!.git/",
                 "-e",
             }, " "),
             rg_glob = true,
@@ -294,7 +294,7 @@ return {
                             if not path.is_absolute(fullpath) then
                                 fullpath = path.join({ o.cwd or o._cwd or vim.uv.cwd(), fullpath })
                             end
-                            filepath = vim.fn.fnamemodify(fullpath, ":p:.")
+                            filepath = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
                         end
                         return vim.cmd("Git add " .. filepath) and vim.cmd("Git commit " .. filepath)
                     end,

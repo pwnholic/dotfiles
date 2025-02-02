@@ -30,9 +30,4 @@ set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 
-
-alias gitcred="sh ~/.config/fish/scripts/gitcred"
-alias mpvyt='mpv --input-ipc-server=~/.socket_yt --vo=null --ytdl-raw-options="yes-playlist=,format=best*[vcodec=none]"'
-alias aria2cflag='aria2c --file-allocation=none -c -j 10 -x 16 -s 16 -k 1M'
-
 starship init fish | source
