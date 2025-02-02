@@ -115,7 +115,7 @@ vim.api.nvim_create_user_command("MarkGitSync", function()
 end, {})
 
 vim.keymap.set("n", "<leader>op", function()
-    if vim.uv.cwd() == note_path then
+    if os.getenv("PWD") == note_path then
         return run_job("xdg-open", {
             string.format(
                 "obsidian://%s&path=%s",

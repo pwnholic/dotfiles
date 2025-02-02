@@ -196,7 +196,6 @@ return {
                 "--exclude",
                 ".git",
             }, " "),
-            cmd = "rg --files",
             rg_opts = table.concat({ "--color=never", "--files", "--follow", "-g=!git/" }, " "),
             cwd_prompt = false,
             cwd_prompt_shorten_len = 32,
