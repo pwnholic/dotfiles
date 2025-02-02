@@ -19,15 +19,6 @@ vim.opt.spelloptions = "camel"
 vim.opt.spellsuggest = "best,9"
 
 vim.opt.shell = "/usr/bin/fish"
-if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-    vim.opt.shell = "pwsh -NoLogo"
-    vim.opt.shellcmdflag =
-        "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
-    vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
-    vim.opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
-    vim.opt.shellquote = ""
-    vim.opt.shellxquote = ""
-end
 
 vim.opt.guicursor = {
     "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50",
