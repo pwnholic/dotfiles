@@ -112,6 +112,8 @@ return {
                     module = "blink-ripgrep",
                     name = "Ripgrep",
                     score_offset = 40,
+                    ---@module "blink-ripgrep"
+                    ---@type blink-ripgrep.Options
                     opts = {
                         prefix_min_len = 4,
                         context_size = 5,
@@ -119,7 +121,7 @@ return {
                         project_root_marker = { ".git", "go.mod", ".env", ".venv", "README.md", "Cargo.toml" },
                         project_root_fallback = true,
                         search_casing = "--ignore-case",
-                        additional_rg_options = {},
+                        additional_rg_options = { "--max-depth", "4" },
                         fallback_to_regex_highlighting = true,
                         ignore_paths = { "client", "node_modules", ".git", "tmp", "temp", ".venv", ".vscode" },
                         debug = false,

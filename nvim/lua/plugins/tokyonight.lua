@@ -54,6 +54,7 @@ return {
             hl.FzfLuaPreviewBorder = { fg = c.purple, bg = c.none }
             hl.FzfLuaFilePart = { fg = "#ffffff" }
             hl.FzfLuaFzfCursorLine = { bg = c.fg_gutter }
+            hl.FzfLuaFzfInfo = { fg = c.info, bg = c.none }
             hl.RenderMarkdownBullet = { fg = c.red, bg = c.none }
             hl.GoJsonTags = { fg = c.red, bg = c.bg_dark }
             hl.PmenuSel = { bg = c.fg_gutter, bold = true, underline = true, sp = c.orange }
