@@ -20,7 +20,12 @@ set -gx FZF_DEFAULT_OPTS "
     --bind=shift-up:preview-up,shift-down:preview-down \
     --bind=alt-v:preview-half-page-up,ctrl-v:preview-half-page-down \
     --bind 'ctrl-d:preview-page-down,ctrl-u:preview-page-up' \
-    --color='bg+:#1F2335,bg:#1A1B26,spinner:#7AA2F7,hl:#7AA2F7,fg:#C0CAF5,header:#7AA2F7,info:#7AA2F7,pointer:#7AA2F7,marker:#7AA2F7,fg+:#C0CAF5,prompt:#7AA2F7,hl+:#7AA2F7'
+    --color='bg+:#1F2335,bg:#1A1B26' \
+    --color='spinner:#7AA2F7,hl:#7AA2F7' \
+    --color='fg:#C0CAF5,header:#7AA2F7' \
+    --color='info:#7AA2F7,pointer:#7AA2F7' \
+    --color='marker:#7AA2F7,fg+:#C0CAF5' \
+    --color='prompt:#7AA2F7,hl+:#7AA2F7'
 "
 
 if test (tput colors 2>/dev/null) -lt 256
