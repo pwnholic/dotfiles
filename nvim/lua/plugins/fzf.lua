@@ -267,13 +267,7 @@ return {
                 color_icons = true,
                 previewer = "git_diff",
                 preview_pager = false,
-                winopts = {
-                    preview = {
-                        border = "none",
-                        horizontal = "right:55%",
-                        layout = "flex",
-                    },
-                },
+                winopts = { preview = { border = "none", horizontal = "right:55%", layout = "flex" } },
                 actions = {
                     ["right"] = { fn = actions.git_unstage, reload = true },
                     ["left"] = { fn = actions.git_stage, reload = true },

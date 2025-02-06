@@ -47,7 +47,18 @@ vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 
 vim.g.lazyvim_picker = "fzf"
-vim.g.border = "rounded"
+vim.g.border = "single"
+
+local borderchars = {
+    single = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+    rounded = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+}
+
+if vim.g.border == "single" then
+    vim.g.borderchars = borderchars.single
+elseif vim.g.border == "rounded" then
+    vim.g.borderchars = borderchars.rounded
+end
 
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"

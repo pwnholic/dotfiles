@@ -10,9 +10,9 @@ return {
         {
             "<leader>ji",
             function()
-                vim.ui.input({ prompt = "Enter {r *receiver} -> {interface} : " }, function(input)
+                vim.ui.input({ prompt = "Impl {r *receiver} -> {interface} : " }, function(input)
                     if input ~= "" then
-                        vim.cmd(string.format("GoImpl %s", input))
+                        return vim.cmd(string.format("GoImpl %s", input))
                     end
                 end)
             end,
@@ -28,19 +28,19 @@ return {
                     if choice == "Add" then
                         vim.ui.input({ prompt = "Input Tags to Add: " }, function(input)
                             if input ~= nil then
-                                vim.cmd(string.format("GoModifyTag -add-tags %s", input))
+                                return vim.cmd(string.format("GoModifyTag -add-tags %s", input))
                             end
                         end)
                     elseif choice == "Remove" then
                         vim.ui.input({ prompt = "Input Tags to Remove : " }, function(input)
                             if input ~= nil then
-                                vim.cmd(string.format("GoModifyTag -remove-tags %s", input))
+                                return vim.cmd(string.format("GoModifyTag -remove-tags %s", input))
                             end
                         end)
                     elseif choice == "Clear" then
                         vim.ui.input({ prompt = "Input Tags to Clear : " }, function(input)
                             if input ~= nil then
-                                vim.cmd(string.format("GoModifyTag -clear-tags %s", input))
+                                return vim.cmd(string.format("GoModifyTag -clear-tags %s", input))
                             end
                         end)
                     end

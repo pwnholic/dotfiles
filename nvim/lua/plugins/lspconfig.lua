@@ -7,6 +7,7 @@ return {
             diagnostics = {
                 float = { border = vim.g.border },
                 virtual_text = { spacing = 2, source = "if_many", prefix = "" },
+                virtual_lines = true,
             },
             servers = {},
             setup = {},
@@ -31,9 +32,9 @@ return {
             --- @param type string
             --- @param opts table?
             local fzf_lsp = function(type, opts)
+                opts = opts or {}
                 return function()
-                    opts = opts or {}
-                    local args = {
+                    return require("fzf-lua")[string.format("lsp_%s", type)](vim.tbl_extend("force", {
                         jump_to_single_result = true,
                         ignore_current_line = true,
                         fzf_opts = {
@@ -52,21 +53,23 @@ return {
                             col = 0.50,
                             preview = { layout = "vertical", vertical = "down:50%" },
                         },
-                    }
-                    return require("fzf-lua")[type](vim.tbl_extend("force", args, opts))
+                    }, opts))
                 end
             end
-            --stylua: ignore start
-            keys[#keys + 1] = { "gd", fzf_lsp("lsp_definitions"), desc = "Goto Definition" }
-            keys[#keys + 1] = { "gr", fzf_lsp("lsp_references"), desc = "References" }
-            keys[#keys + 1] = { "gI", fzf_lsp("lsp_implementations"), desc = "Goto Implementation" }
-            keys[#keys + 1] = { "gy", fzf_lsp("lsp_typedefs"), desc = "Goto T[y]pe Definition" }
-            keys[#keys + 1] = { "gD", fzf_lsp("lsp_declarations"), desc = "Goto Declaration" }
-            keys[#keys + 1] = { "<leader>ci", fzf_lsp("lsp_incoming_calls"), desc = "Incoming Call" }
-            keys[#keys + 1] = { "<leader>co", fzf_lsp("lsp_outgoing_calls"), desc = "Outgoing Call" }
-            keys[#keys + 1] = { "<leader>ss", fzf_lsp("lsp_document_symbols", { regex_filter = symbols_filter }), desc = "Goto Symbols",}
-            keys[#keys + 1] = { "<leader>sS", fzf_lsp("lsp_live_workspace_symbols", { regex_filter = symbols_filter }), desc = "Workspace Symbols" }
-            --stylua: ignore end
+            local regex_filter = { regex_filter = symbols_filter }
+            keys[#keys + 1] = { "gd", fzf_lsp("definitions"), desc = "Goto Definition" }
+            keys[#keys + 1] = { "gr", fzf_lsp("references"), desc = "References" }
+            keys[#keys + 1] = { "gI", fzf_lsp("implementations"), desc = "Goto Implementation" }
+            keys[#keys + 1] = { "gy", fzf_lsp("typedefs"), desc = "Goto T[y]pe Definition" }
+            keys[#keys + 1] = { "gD", fzf_lsp("declarations"), desc = "Goto Declaration" }
+            keys[#keys + 1] = { "<leader>ci", fzf_lsp("incoming_calls"), desc = "Incoming Call" }
+            keys[#keys + 1] = { "<leader>co", fzf_lsp("outgoing_calls"), desc = "Outgoing Call" }
+            keys[#keys + 1] = { "<leader>ss", fzf_lsp("document_symbols", regex_filter), desc = "Goto Symbols" }
+            keys[#keys + 1] = {
+                "<leader>sS",
+                fzf_lsp("live_workspace_symbols", regex_filter),
+                desc = "Workspace Symbols",
+            }
         end,
     },
     -- TROUBLE

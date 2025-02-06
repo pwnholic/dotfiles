@@ -21,6 +21,8 @@ return {
                 },
                 opts = { border = vim.g.border },
             },
+            hover = { opts = { border = vim.g.border } },
+            documentation = { opts = { border = vim.g.border } },
         },
     },
 }
