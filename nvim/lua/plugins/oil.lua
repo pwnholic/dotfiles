@@ -7,29 +7,17 @@ return {
         local icons = LazyVim.config.icons.kinds
         local group_id = vim.api.nvim_create_augroup("OilSyncCwd", { clear = true })
 
-        vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
-            desc = "Set cwd to follow directory shown in oil buffers.",
-            group = group_id,
-            pattern = "oil://*",
-            callback = function(info)
-                if vim.bo[info.buf].filetype == "oil" then
-                    local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
-                    local oildir = vim.fs.normalize(oil.get_current_dir() or "")
-                    if oildir ~= "" then
-                        if cwd ~= oildir and vim.uv.fs_stat(oildir) then
-                            return pcall(vim.cmd.lcd, oildir)
-                        end
-                    else
-                        vim.notify("could not set oil buffer to follow cwd", 3, { title = "Oil" })
-                        return
-                    end
-                end
-            end,
-        })
+        local function lcd(dir)
+            local ok = pcall(vim.cmd.lcd, { dir, mods = { silent = true, emsg_silent = true } })
+            if not ok then
+                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.WARN)
+            end
+        end
 
         vim.api.nvim_create_autocmd("RecordingEnter", {
             desc = "Notify when record a macro",
             group = group_id,
+            pattern = "oil://*",
             callback = function(opts)
                 if vim.fn.reg_recording() ~= "" and vim.bo[opts.buf].filetype == "oil" then
                     local msg = string.format("Recording on [%s]", vim.fn.reg_recording())
@@ -40,29 +28,110 @@ return {
 
         vim.api.nvim_create_autocmd("RecordingLeave", {
             desc = "Notify when leave a macro",
+            pattern = "oil://*",
             group = group_id,
             callback = function()
                 vim.notify("Removing Macro Key", 2, { title = "Oil" })
             end,
         })
 
-        vim.api.nvim_create_autocmd("DirChanged", {
-            desc = "Let oil buffers follow cwd.",
-            group = group_id,
+        local groupid = vim.api.nvim_create_augroup("OilSetup", {})
+        vim.api.nvim_create_autocmd("BufEnter", {
+            desc = "Ensure that oil buffers are not listed.",
+            group = groupid,
+            pattern = "oil://*",
             callback = function(info)
-                if vim.bo[info.buf].filetype == "oil" then
-                    vim.defer_fn(function()
-                        local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
-                        local oildir = vim.fs.normalize(oil.get_current_dir() or "")
-                        if oildir ~= "" then
-                            if cwd ~= oildir and vim.bo.ft == "oil" then
-                                return oil.open(cwd)
-                            end
-                        else
-                            vim.notify("could not change directory to follow cwd", 3, { title = "Oil" })
-                            return
-                        end
-                    end, 100)
+                vim.bo[info.buf].buflisted = false
+            end,
+        })
+
+        ---Change cwd in oil buffer to follow the directory shown in the buffer
+        ---@param buf integer? default to current buffer
+        local function oil_cd(buf)
+            buf = buf or vim.api.nvim_get_current_buf()
+            if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].ft ~= "oil" then
+                return
+            end
+
+            vim.api.nvim_buf_call(buf, function()
+                local oildir = vim.fs.normalize(oil.get_current_dir())
+                if vim.fn.isdirectory(oildir) == 0 then
+                    return
+                end
+
+                for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+                    vim.api.nvim_win_call(win, function()
+                        lcd(oildir)
+                    end)
+                end
+            end)
+        end
+
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            oil_cd(buf)
+        end
+
+        vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
+            desc = "Set cwd to follow directory shown in oil buffers.",
+            group = groupid,
+            pattern = "oil://*",
+            callback = function(info)
+                oil_cd(info.buf)
+            end,
+        })
+
+        vim.api.nvim_create_autocmd("BufEnter", {
+            desc = "Record alternate file in dir buffers.",
+            group = groupid,
+            callback = function(info)
+                local buf = info.buf
+                local bufname = vim.api.nvim_buf_get_name(buf)
+                if vim.fn.isdirectory(bufname) == 1 then
+                    vim.b[buf]._alt_file = vim.fn.bufnr("#")
+                end
+            end,
+        })
+
+        vim.api.nvim_create_autocmd("BufEnter", {
+            desc = "Set last cursor position in oil buffers when editing parent dir.",
+            group = groupid,
+            pattern = "oil://*",
+            callback = function(info)
+                local win = vim.api.nvim_get_current_win()
+                if vim.b[info.buf]._oil_entered == win then
+                    return
+                end
+                vim.b[info.buf]._oil_entered = win
+                local alt_file = vim.fn.bufnr("#")
+                if not vim.api.nvim_buf_is_valid(alt_file) then
+                    return
+                end
+                local _alt_file = vim.b[alt_file]._alt_file
+                if _alt_file and vim.api.nvim_buf_is_valid(_alt_file) then
+                    alt_file = _alt_file
+                end
+                local bufname_alt = vim.api.nvim_buf_get_name(alt_file)
+                local parent_url, basename = oil.get_buffer_parent_url(bufname_alt, true)
+                if basename then
+                    local config = require("oil.config")
+                    local view = require("oil.view")
+                    if
+                        not config.view_options.show_hidden
+                        and config.view_options.is_hidden_file(
+                            basename,
+                            (function()
+                                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                                    if vim.api.nvim_buf_get_name(buf) == basename then
+                                        return buf
+                                    end
+                                end
+                            end)()
+                        )
+                    then
+                        view.toggle_hidden()
+                    end
+                    view.set_last_cursor(parent_url, basename)
+                    view.maybe_set_cursor()
                 end
             end,
         })

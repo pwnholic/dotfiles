@@ -26,8 +26,7 @@ return {
             hl.LspCodeLensSign = { link = "DiagnosticVirtualTextHint", default = true }
             hl.LspCodeLensSeparator = { link = "Boolean", default = true }
             hl.LspInlayHint = { fg = c.dark5, bg = c.none, underline = true, italic = true }
-            hl.LspSignatureActiveParameter =
-                { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
+            hl.LspSignatureActiveParameter = { fg = c.magenta2, italic = true, bold = true, sp = c.yellow1, underline = true }
             hl.GitSignsCurrentLineBlame = { fg = c.dark5, bg = c.none }
             hl.OilDir = { fg = c.orange, bg = c.none, bold = true }
             hl.OilDirIcon = { fg = c.orange, bg = c.none }
@@ -74,8 +73,8 @@ return {
             hl.DiagnosticVirtualTextError = { bg = util.blend_bg(c.error, 0.1), fg = c.error, bold = true }
             hl.DiagnosticVirtualTextWarn = { bg = util.blend_bg(c.warning, 0.1), fg = c.warning, italic = true }
             hl.TreesitterContext = { underline = true, sp = c.purple, bold = true }
-            hl.FzfLuaTitle = { fg = c.bg_dark, bg = c.yellow, bold = true }
-            hl.FzfLuaPreviewTitle = { fg = c.bg_dark, bg = c.cyan, bold = true }
+            -- hl.FzfLuaTitle = { fg = c.bg_dark, bg = c.yellow, bold = true }
+            -- hl.FzfLuaPreviewTitle = { fg = c.bg_dark, bg = c.cyan, bold = true }
             hl.LualineLspClient = { fg = c.blue1, bg = c.bg_dark }
         end,
     },

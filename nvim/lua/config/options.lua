@@ -65,3 +65,62 @@ vim.g.lazyvim_python_ruff = "ruff"
 vim.g.lazyvim_rust_diagnostics = "bacon-ls"
 
 vim.g.lazyvim_prettier_needs_config = false
+
+vim.g.fzf_layout = {
+    horizontal = {
+        fzf_options = {
+            no_preview = {
+                ["--info"] = "inline-right",
+                ["--layout"] = "reverse",
+                ["--ansi"] = true,
+                ["--preview-window"] = "hidden",
+                ["--no-preview"] = true,
+                ["--border"] = "none",
+                ["--marker"] = "█",
+                ["--pointer"] = "█",
+                ["--padding"] = "0,1",
+                ["--margin"] = "0",
+                ["--highlight-line"] = true,
+            },
+            with_preview = {
+                ["--info"] = "inline-right",
+                ["--ansi"] = true,
+                ["--no-scrollbar"] = true,
+                ["--marker"] = "█",
+                ["--pointer"] = "█",
+                ["--padding"] = "0,1",
+                ["--margin"] = "0",
+                ["--highlight-line"] = true,
+            },
+        },
+        window_options = {
+            no_preview = {
+                split = string.format("botright %dnew", math.floor(vim.o.lines / 2)),
+                preview = { hidden = true },
+            },
+        },
+    },
+    vertical = {
+        fzf_options = {
+            with_preview = {
+                ["--layout"] = "reverse",
+                ["--ansi"] = true,
+                ["--no-separator"] = false,
+                ["--marker"] = "█",
+                ["--pointer"] = "█",
+                ["--padding"] = "0,1",
+                ["--margin"] = "0",
+                ["--highlight-line"] = true,
+            },
+        },
+        window_options = {
+            with_preview = {
+                height = 0.75,
+                width = 0.90,
+                row = 0.50,
+                col = 0.50,
+                preview = { layout = "vertical", vertical = "down:50%" },
+            },
+        },
+    },
+}

@@ -1,61 +1,3 @@
-local preview = {
-    horizontal_layout = {
-        fzf_opts = {
-            no_preview = {
-                ["--info"] = "inline-right",
-                ["--layout"] = "reverse",
-                ["--ansi"] = true,
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-                ["--preview-window"] = "hidden",
-                ["--no-preview"] = true,
-                ["--border"] = "none",
-            },
-            preview = {
-                ["--info"] = "inline-right",
-                ["--ansi"] = true,
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-                ["--no-scrollbar"] = true,
-            },
-        },
-        winopts = {
-            no_preview = {
-                split = string.format("botright %dnew", math.floor(vim.o.lines / 2)),
-                preview = { hidden = true },
-            },
-        },
-    },
-    vertical_layout = {
-        fzf_opts = {
-            preview = {
-                ["--layout"] = "reverse",
-                ["--ansi"] = true,
-                ["--no-separator"] = false,
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-            },
-        },
-        winopts = {
-            preview = {
-                height = 0.75,
-                width = 0.90,
-                row = 0.50,
-                col = 0.50,
-                preview = { layout = "vertical", vertical = "down:50%" },
-            },
-        },
-    },
-}
 return {
     "ibhagwan/fzf-lua",
     keys = {
@@ -96,8 +38,8 @@ return {
                             end
                         end,
                     },
-                    winopts = preview.horizontal_layout.winopts.no_preview,
-                    fzf_opts = preview.horizontal_layout.fzf_opts.no_preview,
+                    winopts = vim.g.fzf_layout.horizontal.window_options.no_preview,
+                    fzf_opts = vim.g.fzf_layout.horizontal.fzf_options.no_preview,
                 })
             end,
             desc = "Find Folder (root)",
@@ -110,8 +52,8 @@ return {
             "<leader>cb",
             function()
                 require("fzf-lua").lsp_finder({
-                    fzf_opts = preview.vertical_layout.fzf_opts.preview,
-                    winopts = preview.vertical_layout.winopts.preview,
+                    fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
+                    winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
                 })
             end,
             desc = "Lsp Find",
@@ -121,6 +63,8 @@ return {
     opts = function(_, opts)
         local actions = require("fzf-lua.actions")
         local path = require("fzf-lua.path")
+        local core = require("fzf-lua.core")
+        local config = require("fzf-lua.config")
 
         vim.keymap.set("n", "<leader>gx", function()
             require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
@@ -161,7 +105,9 @@ return {
                 },
             },
         }
-        opts.fzf_opts = preview.horizontal_layout.fzf_opts.preview
+
+        opts.fzf_opts = vim.g.fzf_layout.horizontal.fzf_options.with_preview
+
         opts.defaults = {
             file_icons = "mini",
             headers = { "actions", "cwd" },
@@ -258,8 +204,29 @@ return {
             },
         }
 
+        local function git_commit_action(selected, o)
+            local filepath
+            for _, sel in ipairs(selected) do
+                local entry = path.entry_to_file(sel, o, o._uri)
+                if entry.path == "<none>" then
+                    return
+                end
+                local fullpath = entry.bufname or entry.uri and entry.uri:match("^%a+://(.*)") or entry.path
+                if not fullpath then
+                    return
+                end
+                if not path.is_absolute(fullpath) then
+                    fullpath = path.join({ o.cwd or o._cwd or vim.uv.cwd(), fullpath })
+                end
+                filepath = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
+            end
+            return vim.cmd("Git add " .. filepath) and vim.cmd("Git commit " .. filepath)
+        end
+
         opts.git = {
             status = {
+                winopts = vim.g.fzf_layout.horizontal.window_options.no_preview,
+                fzf_opts = vim.g.fzf_layout.horizontal.fzf_options.no_preview,
                 prompt = "GitStatus❯ ",
                 cmd = "git -c color.status=false --no-optional-locks status --porcelain=v1 -u",
                 multiprocess = true,
@@ -267,32 +234,19 @@ return {
                 color_icons = true,
                 previewer = "git_diff",
                 preview_pager = false,
-                winopts = { preview = { border = "none", horizontal = "right:55%", layout = "flex" } },
                 actions = {
                     ["right"] = { fn = actions.git_unstage, reload = true },
                     ["left"] = { fn = actions.git_stage, reload = true },
                     ["ctrl-x"] = { fn = actions.git_reset, reload = true },
-                    ["ctrl-l"] = function(selected, o)
-                        ---@type string
-                        local filepath
-                        for _, sel in ipairs(selected) do
-                            local entry = path.entry_to_file(sel, o, o._uri)
-                            if entry.path == "<none>" then
-                                return
-                            end
-                            local fullpath = entry.bufname or entry.uri and entry.uri:match("^%a+://(.*)") or entry.path
-                            if not fullpath then
-                                return
-                            end
-                            if not path.is_absolute(fullpath) then
-                                fullpath = path.join({ o.cwd or o._cwd or vim.uv.cwd(), fullpath })
-                            end
-                            filepath = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
-                        end
-                        return vim.cmd("Git add " .. filepath) and vim.cmd("Git commit " .. filepath)
-                    end,
+                    ["ctrl-l"] = {
+                        git_commit_action,
+                        -- actions.resume,
+                    },
                 },
             },
         }
+
+        core.ACTION_DEFINITIONS[git_commit_action] = { "commit with message" }
+        config._action_to_helpstr[git_commit_action] = "git_commit"
     end,
 }

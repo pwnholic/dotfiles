@@ -37,25 +37,12 @@ return {
                     return require("fzf-lua")[string.format("lsp_%s", type)](vim.tbl_extend("force", {
                         jump_to_single_result = true,
                         ignore_current_line = true,
-                        fzf_opts = {
-                            ["--layout"] = "reverse",
-                            ["--ansi"] = true,
-                            ["--marker"] = "█",
-                            ["--pointer"] = "█",
-                            ["--padding"] = "0,1",
-                            ["--margin"] = "0",
-                            ["--highlight-line"] = true,
-                        },
-                        winopts = {
-                            height = 0.75,
-                            width = 0.90,
-                            row = 0.50,
-                            col = 0.50,
-                            preview = { layout = "vertical", vertical = "down:50%" },
-                        },
+                        fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
+                        winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
                     }, opts))
                 end
             end
+
             local regex_filter = { regex_filter = symbols_filter }
             keys[#keys + 1] = { "gd", fzf_lsp("definitions"), desc = "Goto Definition" }
             keys[#keys + 1] = { "gr", fzf_lsp("references"), desc = "References" }
@@ -65,11 +52,7 @@ return {
             keys[#keys + 1] = { "<leader>ci", fzf_lsp("incoming_calls"), desc = "Incoming Call" }
             keys[#keys + 1] = { "<leader>co", fzf_lsp("outgoing_calls"), desc = "Outgoing Call" }
             keys[#keys + 1] = { "<leader>ss", fzf_lsp("document_symbols", regex_filter), desc = "Goto Symbols" }
-            keys[#keys + 1] = {
-                "<leader>sS",
-                fzf_lsp("live_workspace_symbols", regex_filter),
-                desc = "Workspace Symbols",
-            }
+            keys[#keys + 1] = { "<leader>sS", fzf_lsp("live_workspace_symbols", regex_filter), desc = "Workspace Symbols" }
         end,
     },
     -- TROUBLE
