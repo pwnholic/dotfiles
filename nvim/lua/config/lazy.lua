@@ -21,7 +21,7 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-pcall(require("lazy").setup, {
+require("lazy").setup({
     spec = {
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
         { "akinsho/bufferline.nvim", enabled = false },

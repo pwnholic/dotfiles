@@ -114,6 +114,28 @@ return {
             cwd_header = false,
             formatter = "path.dirname_first",
         }
+
+        local function add_to_harpoon(selected, opt)
+            for i = 1, #selected do
+                local entry = path.entry_to_file(selected[i], opt)
+                if entry.path == "<none>" then
+                    return
+                end
+                local fullpath = entry.bufname or entry.uri and entry.uri:match("^%a+://(.*)") or entry.path
+                if not fullpath then
+                    return
+                end
+                if not path.is_absolute(fullpath) then
+                    fullpath = path.join({ opt.cwd or opt._cwd or vim.uv.cwd(), fullpath })
+                end
+                local fp = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
+                vim.notify(string.format("Add %s to harpoon list", fp), 2, { title = "FzF" })
+
+                require("harpoon"):list():add({ value = fp, context = { row = entry.line > 0 and entry.line or 1, col = entry.col or 1 } })
+                return
+            end
+        end
+
         opts.files = {
             prompt = "Files ❯ ",
             multiprocess = true,
@@ -151,6 +173,7 @@ return {
             actions = {
                 ["alt-i"] = { actions.toggle_ignore },
                 ["alt-h"] = { actions.toggle_hidden },
+                ["ctrl-a"] = add_to_harpoon,
             },
         }
 
@@ -247,6 +270,8 @@ return {
         }
 
         core.ACTION_DEFINITIONS[git_commit_action] = { "commit with message" }
+        core.ACTION_DEFINITIONS[add_to_harpoon] = { "add to harponn" }
         config._action_to_helpstr[git_commit_action] = "git_commit"
+        config._action_to_helpstr[add_to_harpoon] = "add_to_harpoon"
     end,
 }
