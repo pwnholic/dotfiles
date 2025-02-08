@@ -130,9 +130,7 @@ return {
                 end
                 local fp = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
                 vim.notify(string.format("Add %s to harpoon list", fp), 2, { title = "FzF" })
-
                 require("harpoon"):list():add({ value = fp, context = { row = entry.line > 0 and entry.line or 1, col = entry.col or 1 } })
-                return
             end
         end
 
