@@ -136,6 +136,8 @@ return {
 
         opts.files = {
             prompt = "Files ❯ ",
+            fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
+            winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
             multiprocess = true,
             git_icons = false,
             color_icons = true,
@@ -176,6 +178,8 @@ return {
         }
 
         opts.diagnostics = {
+            fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
+            winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
             prompt = "Diagnostics❯ ",
             cwd_only = false,
             file_icons = true,
@@ -198,6 +202,8 @@ return {
         opts.grep = {
             prompt = "Rg ❯ ",
             input_prompt = "Grep For ❯ ",
+            fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
+            winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
             multiprocess = true,
             git_icons = false,
             color_icons = true,

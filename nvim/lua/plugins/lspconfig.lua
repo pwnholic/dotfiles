@@ -34,11 +34,20 @@ return {
             local fzf_lsp = function(type, opts)
                 opts = opts or {}
                 return function()
-                    return require("fzf-lua")[string.format("lsp_%s", type)](vim.tbl_extend("force", {
+                    local lsp_provider = string.format("lsp_%s", type)
+                    return require("fzf-lua")[lsp_provider](vim.tbl_extend("force", {
                         jump_to_single_result = true,
                         ignore_current_line = true,
                         fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
                         winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
+                        actions = {
+                            ["ctrl-t"] = function()
+                                if lsp_provider == "live_workspace_symbols" then
+                                    lsp_provider = "lsp_document_symbols"
+                                end
+                                vim.cmd(string.format("Trouble %s", lsp_provider))
+                            end,
+                        },
                     }, opts))
                 end
             end
