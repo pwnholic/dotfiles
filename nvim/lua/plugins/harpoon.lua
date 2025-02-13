@@ -1,3 +1,5 @@
+local harpoon_window = { ui_width_ratio = 0.45, border = vim.g.border, title = "", height_in_lines = 9 }
+
 return {
     "ThePrimeagen/harpoon",
     config = function()
@@ -50,43 +52,55 @@ return {
         })
         harpoon:extend({
             UI_CREATE = function(cx)
-                vim.keymap.set("n", "<C-v>", function()
-                    harpoon.ui:select_menu_item({ vsplit = true })
+                vim.keymap.set("n", "<A-v>", function()
+                    return harpoon.ui:select_menu_item({ vsplit = true })
                 end, { buffer = cx.bufnr })
 
-                vim.keymap.set("n", "<C-s>", function()
-                    harpoon.ui:select_menu_item({ split = true })
+                vim.keymap.set("n", "<A-s>", function()
+                    return harpoon.ui:select_menu_item({ split = true })
                 end, { buffer = cx.bufnr })
 
-                vim.keymap.set("n", "<C-t>", function()
-                    harpoon.ui:select_menu_item({ tabedit = true })
+                vim.keymap.set("n", "<A-t>", function()
+                    return harpoon.ui:select_menu_item({ tabedit = true })
                 end, { buffer = cx.bufnr })
             end,
         })
+        return harpoon
     end,
-    keys = {
-        {
-            "<leader>h",
-            function()
-                local harpoon = require("harpoon")
-                harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.45, border = vim.g.border, title = "" })
-            end,
-            desc = "Harpoon Quick Menu",
-        },
-        {
-            "<A-space>",
-            function()
-                local harpoon = require("harpoon")
-                harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.45, border = vim.g.border, title = "" })
-            end,
-            desc = "Harpoon Quick Menu",
-        },
-        {
-            "<A-a>",
-            function()
-                return require("harpoon"):list():add()
-            end,
-            desc = "Harpoon File",
-        },
-    },
+    keys = function()
+        local keys = {
+            {
+                "<leader>h",
+                function()
+                    local harpoon = require("harpoon")
+                    return harpoon.ui:toggle_quick_menu(harpoon:list(), harpoon_window)
+                end,
+                desc = "Harpoon Quick Menu",
+            },
+            {
+                "<A-space>",
+                function()
+                    local harpoon = require("harpoon")
+                    return harpoon.ui:toggle_quick_menu(harpoon:list(), harpoon_window)
+                end,
+                desc = "Harpoon Quick Menu",
+            },
+            {
+                "<A-a>",
+                function()
+                    return require("harpoon"):list():add()
+                end,
+                desc = "Harpoon File",
+            },
+        }
+        for i = 1, 9 do
+            table.insert(keys, {
+                "<leader>" .. i,
+                function()
+                    require("harpoon"):list():select(i)
+                end,
+            })
+        end
+        return keys
+    end,
 }
