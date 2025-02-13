@@ -136,8 +136,6 @@ return {
 
         opts.files = {
             prompt = "Files ❯ ",
-            fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
-            winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
             multiprocess = true,
             git_icons = false,
             color_icons = true,
@@ -202,8 +200,6 @@ return {
         opts.grep = {
             prompt = "Rg ❯ ",
             input_prompt = "Grep For ❯ ",
-            fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
-            winopts = vim.g.fzf_layout.vertical.window_options.with_preview,
             multiprocess = true,
             git_icons = false,
             color_icons = true,
@@ -274,7 +270,7 @@ return {
         }
 
         core.ACTION_DEFINITIONS[git_commit_action] = { "commit with message" }
-        core.ACTION_DEFINITIONS[add_to_harpoon] = { "add to harponn" }
+        core.ACTION_DEFINITIONS[add_to_harpoon] = { "Add to harponn" }
         config._action_to_helpstr[git_commit_action] = "git_commit"
         config._action_to_helpstr[add_to_harpoon] = "add_to_harpoon"
     end,

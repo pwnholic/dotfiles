@@ -1,3 +1,25 @@
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" }, {
+    desc = "Automatically change local current directory.",
+    callback = function(info)
+        if info.file == "" or vim.bo[info.buf].buftype ~= "" then
+            return
+        end
+
+        if vim.api.nvim_buf_is_valid(info.buf) then
+            for _, win in ipairs(vim.fn.win_findbuf(info.buf)) do
+                if vim.api.nvim_win_is_valid(win) then
+                    vim.api.nvim_win_call(win, function()
+                        pcall(vim.cmd.lcd, {
+                            os.getenv("PWD") or LazyVim.root() or vim.uv.cwd(),
+                            mods = { silent = true, emsg_silent = true },
+                        })
+                    end)
+                end
+            end
+        end
+    end,
+})
+
 vim.api.nvim_create_autocmd("ModeChanged", {
     pattern = { "[itRss\x13]*:*", "*:[itRss\x13]*" },
     callback = function()

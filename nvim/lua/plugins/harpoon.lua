@@ -6,6 +6,46 @@ return {
             settings = {
                 save_on_toggle = true,
                 sync_on_ui_close = false,
+                key = function()
+                    return os.getenv("PWD") or vim.uv.cwd() or ""
+                end,
+            },
+            default = {
+                get_root_dir = function()
+                    return os.getenv("PWD") or vim.uv.cwd() or ""
+                end,
+                create_list_item = function(config, path)
+                    local Path = require("plenary.path")
+
+                    if vim.tbl_contains({ "oil", "trouble" }, vim.o.filetype) then
+                        vim.notify(string.format("could not add this %s buffer to harpoon", vim.o.filetype), 3, { title = "harpoon" })
+                        return {}
+                    end
+
+                    local current_buffer = vim.api.nvim_get_current_buf()
+                    local current_window = vim.api.nvim_get_current_win()
+                    local cursor_position = { 1, 0 }
+
+                    if vim.api.nvim_buf_is_valid(current_buffer) then
+                        path = Path:new(vim.api.nvim_buf_get_name(current_buffer)):make_relative(config.get_root_dir())
+                    else
+                        vim.notify("this buffer could not append to harpoon list", 2, { title = "harpoon" })
+                        return {}
+                    end
+
+                    if vim.api.nvim_win_is_valid(current_window) then
+                        cursor_position = vim.api.nvim_win_get_cursor(current_window)
+                    else
+                        vim.notify("this window could not append to harpoon list", 2, { title = "harpoon" })
+                        return {}
+                    end
+
+                    vim.notify("Add this file to harpoon list", 2, { title = "Harpoon" })
+                    return {
+                        value = path or vim.fn.fnamemodify(":p:.", vim.fs.normalize(vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)))),
+                        context = { row = cursor_position[1] or 0, col = cursor_position[2] or 0 },
+                    }
+                end,
             },
         })
         harpoon:extend({
@@ -29,10 +69,7 @@ return {
             "<leader>h",
             function()
                 local harpoon = require("harpoon")
-                harpoon.ui:toggle_quick_menu(
-                    harpoon:list(),
-                    { ui_width_ratio = 0.45, border = vim.g.border, title = "" }
-                )
+                harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.45, border = vim.g.border, title = "" })
             end,
             desc = "Harpoon Quick Menu",
         },
@@ -40,19 +77,14 @@ return {
             "<A-space>",
             function()
                 local harpoon = require("harpoon")
-                harpoon.ui:toggle_quick_menu(
-                    harpoon:list(),
-                    { ui_width_ratio = 0.45, border = vim.g.border, title = "" }
-                )
+                harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.45, border = vim.g.border, title = "" })
             end,
             desc = "Harpoon Quick Menu",
         },
         {
             "<A-a>",
             function()
-                require("harpoon"):list():add()
-                local msg = "Add this file to harpoon list"
-                vim.notify(msg, 2, { title = "Harpoon" })
+                return require("harpoon"):list():add()
             end,
             desc = "Harpoon File",
         },

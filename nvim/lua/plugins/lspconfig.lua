@@ -36,7 +36,7 @@ return {
                 return function()
                     local lsp_provider = string.format("lsp_%s", type)
                     return require("fzf-lua")[lsp_provider](vim.tbl_extend("force", {
-                        jump_to_single_result = true,
+                        jump1 = true,
                         ignore_current_line = true,
                         fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
                         winopts = vim.g.fzf_layout.vertical.window_options.with_preview,

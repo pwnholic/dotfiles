@@ -4,6 +4,22 @@ return {
         opts = function()
             local dap = require("dap")
             dap.defaults.fallback.external_terminal = { command = "/usr/bin/kitty", args = { "-e" } }
+
+            local repl = require("dap.repl")
+            repl.commands = vim.tbl_extend("force", repl.commands, {
+                locals = { ".scopes" },
+                custom_commands = {
+                    [".echo"] = function(text)
+                        return dap.repl.append(text)
+                    end,
+                    [".terminate"] = function()
+                        return dap.terminate({
+                            terminate_args = { restart = true },
+                            disconnect_args = { restart = true },
+                        })
+                    end,
+                },
+            })
         end,
         dependencies = {
             {
@@ -187,10 +203,7 @@ return {
                         if choice == types[1] then
                             require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
                         elseif choice == types[2] then
-                            require("dap").set_breakpoint(
-                                vim.fn.input("Breakpoint condition: "),
-                                vim.fn.input("Hit times: ")
-                            )
+                            require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "), vim.fn.input("Hit times: "))
                         elseif choice == types[3] then
                             require("dap").set_exception_breakpoints()
                         end
