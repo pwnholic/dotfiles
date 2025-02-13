@@ -68,11 +68,11 @@ return {
         return harpoon
     end,
     keys = function()
+        local harpoon = require("harpoon")
         local keys = {
             {
                 "<leader>h",
                 function()
-                    local harpoon = require("harpoon")
                     return harpoon.ui:toggle_quick_menu(harpoon:list(), harpoon_window)
                 end,
                 desc = "Harpoon Quick Menu",
@@ -80,7 +80,6 @@ return {
             {
                 "<A-space>",
                 function()
-                    local harpoon = require("harpoon")
                     return harpoon.ui:toggle_quick_menu(harpoon:list(), harpoon_window)
                 end,
                 desc = "Harpoon Quick Menu",
@@ -88,7 +87,7 @@ return {
             {
                 "<A-a>",
                 function()
-                    return require("harpoon"):list():add()
+                    return harpoon:list():add()
                 end,
                 desc = "Harpoon File",
             },
@@ -97,7 +96,8 @@ return {
             table.insert(keys, {
                 "<leader>" .. i,
                 function()
-                    require("harpoon"):list():select(i)
+                    vim.notify(string.format("Jump to file %d", i), 2, { title = "Harpoon" })
+                    return harpoon:list():select(i)
                 end,
             })
         end

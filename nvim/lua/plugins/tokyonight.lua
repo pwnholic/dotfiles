@@ -2,12 +2,12 @@ return {
     "folke/tokyonight.nvim",
     opts = {
         style = "night",
-        dim_inactive = false,
+        dim_inactive = true,
         transparent = false,
         lualine_bold = true,
         cache = true,
         styles = {
-            sidebars = "normal",
+            sidebars = "dark",
             floats = "normal",
             keywords = { italic = true },
             functions = { bold = true, italic = true },
