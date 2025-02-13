@@ -11,7 +11,6 @@ return {
             group = "",
             ellipsis = "...",
             mappings = true,
-            rules = false,
             colors = true,
         },
     },
