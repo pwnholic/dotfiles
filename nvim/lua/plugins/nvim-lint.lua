@@ -1,0 +1,130 @@
+return {
+    "mfussenegger/nvim-lint",
+    event = "LazyFile",
+    keys = { { "<leader>cx" } },
+    opts = function()
+        local severities = {
+            ERROR = vim.diagnostic.severity.ERROR,
+            WARN = vim.diagnostic.severity.WARN,
+            INFO = vim.diagnostic.severity.INFO,
+            HINT = vim.diagnostic.severity.HINT,
+        }
+        return {
+            linters_by_ft = {
+                fish = { "fish" },
+                go = { "golangcilint" },
+            },
+            linters = {
+                golangcilint = {
+                    cmd = "golangci-lint",
+                    append_fname = false,
+                    args = {
+                        "run",
+                        "--out-format",
+                        "json",
+                        "--issues-exit-code=0",
+                        "--show-stats=false",
+                        "--print-issued-lines=false",
+                        "--print-linter-name=false",
+                        function()
+                            return vim.fn.fnameescape(vim.fs.normalize(vim.api.nvim_buf_get_name(0)))
+                        end,
+                    },
+                    stream = "stdout",
+                    parser = function(output, bufnr, cwd)
+                        bufnr = bufnr or 0
+                        cwd = cwd or os.getenv("PWD") or vim.uv.cwd()
+                        if output == "" then
+                            return {}
+                        end
+                        local decoded = vim.json.decode(output)
+                        if decoded["Issues"] == nil or type(decoded["Issues"]) == "userdata" then
+                            return {}
+                        end
+
+                        local diagnostics = {}
+                        for _, item in ipairs(decoded["Issues"]) do
+                            local current_file = vim.api.nvim_buf_get_name(bufnr)
+                            local linted_file = cwd .. "/" .. item.Pos.Filename
+                            if current_file == linted_file then
+                                local severity = severities[item.Severity] or severities.WARN
+                                table.insert(diagnostics, {
+                                    lnum = item.Pos.Line > 0 and item.Pos.Line - 1 or 0,
+                                    col = item.Pos.Column > 0 and item.Pos.Column - 1 or 0,
+                                    end_lnum = item.Pos.Line > 0 and item.Pos.Line - 1 or 0,
+                                    end_col = item.Pos.Column > 0 and item.Pos.Column - 1 or 0,
+                                    severity = severity,
+                                    source = item.FromLinter,
+                                    message = item.Text,
+                                })
+                            end
+                        end
+                        return diagnostics
+                    end,
+                    -- condition = function(ctx)
+                    --     return vim.fs.find({ ".golangcilint.yaml" }, { path = ctx.filename, upward = true })[1]
+                    -- end,
+                },
+            },
+        }
+    end,
+    config = function(_, opts)
+        local M = {}
+        local lint = require("lint")
+        for name, linter in pairs(opts.linters) do
+            if type(linter) == "table" and type(lint.linters[name]) == "table" then
+                lint.linters[name] = vim.tbl_deep_extend("force", lint.linters[name], linter)
+                if type(linter.prepend_args) == "table" then
+                    lint.linters[name].args = lint.linters[name].args or {}
+                    return vim.list_extend(lint.linters[name].args, linter.prepend_args)
+                end
+            else
+                lint.linters[name] = linter
+                return
+            end
+        end
+
+        lint.linters_by_ft = opts.linters_by_ft
+
+        function M.debounce(ms, fn)
+            local timer = vim.uv.new_timer()
+            return function(...)
+                local argv = { ... }
+                timer:start(ms, 0, function()
+                    timer:stop()
+                    vim.schedule_wrap(fn)(unpack(argv))
+                end)
+            end
+        end
+
+        function M.lint()
+            local names = lint._resolve_linter_by_ft(vim.bo.filetype)
+
+            names = vim.list_extend({}, names)
+            if #names == 0 then
+                vim.list_extend(names, lint.linters_by_ft["_"] or {})
+            end
+
+            vim.list_extend(names, lint.linters_by_ft["*"] or {})
+
+            local ctx = { filename = vim.api.nvim_buf_get_name(0) }
+            ctx.dirname = vim.fn.fnamemodify(ctx.filename, ":h")
+            names = vim.tbl_filter(function(name)
+                local linter = lint.linters[name]
+                if not linter then
+                    vim.notify("Linter not found: " .. name, 3, { title = "nvim-lint" })
+                end
+                return linter and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
+            end, names)
+
+            if #names > 0 then
+                vim.notify("Linter found! Running...", 2, { title = "nvim-lint" })
+                return lint.try_lint(names)
+            else
+                return vim.notify("Linter not found for this file", 2, { title = "nvim-lint" })
+            end
+        end
+
+        vim.keymap.set("n", "<leader>cx", M.debounce(100, M.lint), { desc = "Run Linter" })
+    end,
+}

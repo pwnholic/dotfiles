@@ -5,9 +5,7 @@ return {
         local kinds = require("blink.cmp.types").CompletionItemKind
         local blink_winhl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
         opts.enabled = function()
-            return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype)
-                and vim.bo.buftype ~= "prompt"
-                and vim.b.completion ~= false
+            return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype) and vim.bo.buftype ~= "prompt" and vim.b.completion ~= false
         end
         opts.keymap = {
             ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -123,7 +121,7 @@ return {
                         search_casing = "--ignore-case",
                         additional_rg_options = { "--max-depth", "4" },
                         fallback_to_regex_highlighting = true,
-                        ignore_paths = { "client", "node_modules", ".git", "tmp", "temp", ".venv", ".vscode" },
+                        ignore_paths = { "node_modules", ".git", "tmp", "temp", ".venv", ".vscode" },
                         debug = false,
                     },
                 },
@@ -196,13 +194,7 @@ return {
                                 end
                             end,
                             highlight = function(ctx)
-                                local highlights = {
-                                    {
-                                        0,
-                                        #ctx.label,
-                                        group = "BlinkCmpLabel",
-                                    },
-                                }
+                                local highlights = { { 0, #ctx.label, group = "BlinkCmpLabel" } }
                                 if ctx.label_detail then
                                     table.insert(highlights, {
                                         #ctx.label,

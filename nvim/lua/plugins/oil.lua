@@ -207,6 +207,16 @@ return {
                 cursorcolumn = false,
                 wrap = false,
             },
+            preview_win = {
+                update_on_cursor_moved = true,
+                preview_method = "fast_scratch",
+                -- disable_preview = function(filename)
+                --     return false
+                -- end,
+                win_options = {
+                    wrap = false,
+                },
+            },
             cleanup_delay_ms = false,
             lsp_file_methods = { enabled = true, timeout_ms = 1000, autosave_changes = false },
             delete_to_trash = true,
