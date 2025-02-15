@@ -7,7 +7,7 @@ return {
             check_syntax_error = true,
             max_join_length = 1024,
             cursor_behavior = "hold",
-            notify = true,
+            notify = false,
             dot_repeat = true,
             on_error = function(err_msg, level)
                 return vim.notify(err_msg, level, { title = "treej" })

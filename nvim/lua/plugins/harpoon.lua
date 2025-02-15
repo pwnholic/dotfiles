@@ -1,5 +1,3 @@
-local harpoon_window = { ui_width_ratio = 0.45, border = vim.g.border, title = "", height_in_lines = 9 }
-
 return {
     "ThePrimeagen/harpoon",
     config = function()
@@ -13,10 +11,7 @@ return {
                 end,
             },
             default = {
-                get_root_dir = function()
-                    return os.getenv("PWD") or vim.uv.cwd() or ""
-                end,
-                create_list_item = function(config, path)
+                create_list_item = function(_, path)
                     local Path = require("plenary.path")
 
                     if vim.tbl_contains({ "oil", "trouble" }, vim.o.filetype) then
@@ -29,7 +24,7 @@ return {
                     local cursor_position = { 1, 0 }
 
                     if vim.api.nvim_buf_is_valid(current_buffer) then
-                        path = Path:new(vim.api.nvim_buf_get_name(current_buffer)):make_relative(config.get_root_dir())
+                        path = Path:new(vim.api.nvim_buf_get_name(current_buffer)):make_relative(os.getenv("PWD") or vim.uv.cwd() or "")
                     else
                         vim.notify("this buffer could not append to harpoon list", 2, { title = "harpoon" })
                         return {}
@@ -68,6 +63,7 @@ return {
         return harpoon
     end,
     keys = function()
+        local harpoon_window = { ui_width_ratio = 0.45, border = vim.g.border, title = "", height_in_lines = 9 }
         local keys = {
             {
                 "<leader>h",
@@ -95,7 +91,6 @@ return {
             table.insert(keys, {
                 "<leader>" .. i,
                 function()
-                    vim.notify(string.format("Jump to file %d", i), 2, { title = "Harpoon" })
                     return require("harpoon"):list():select(i)
                 end,
             })
