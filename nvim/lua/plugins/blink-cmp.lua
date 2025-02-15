@@ -84,7 +84,10 @@ return {
                     score_offset = 60,
                     opts = {
                         friendly_snippets = true,
-                        search_paths = { vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets" },
+                        search_paths = {
+                            vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets",
+                            vim.fn.stdpath("config") .. "/snippets",
+                        },
                         global_snippets = { "all" },
                     },
                 },
