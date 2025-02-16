@@ -13,14 +13,13 @@ return {
                         flags = {
                             debounce_text_changes = 500,
                         },
-                        single_file_support = false,
+                        single_file_support = true,
                         root_dir = function(fname)
                             return lspconfig.util.root_pattern(".iwe", ".git")(fname)
                         end,
                     },
                 }
             end
-            lspconfig.iwes.setup({})
         end,
     },
     {
