@@ -19,7 +19,10 @@ return {
             ["<C-n>"] = { "select_next", "fallback" },
             ["<C-b>"] = { "scroll_documentation_up", "fallback" },
             ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-            cmdline = {
+        }
+
+        opts.cmdline = {
+            keymap = {
                 ["<C-p>"] = { "select_prev", "fallback" },
                 ["<C-n>"] = { "select_next", "fallback" },
                 ["<S-Tab>"] = { "select_prev", "fallback" },
@@ -29,13 +32,7 @@ return {
                 ["<Down>"] = { "select_next", "fallback" },
                 ["<C-space>"] = { "show" },
             },
-        }
-        opts.fuzzy = {
-            sorts = { "score", "kind", "label", "sort_text" },
-        }
-        opts.sources = {
-            default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
-            cmdline = function()
+            sources = function()
                 local type = vim.fn.getcmdtype()
                 if type == "/" or type == "?" then
                     return { "buffer", "ripgrep" }
@@ -45,6 +42,13 @@ return {
                     return {}
                 end
             end,
+        }
+        opts.fuzzy = {
+            sorts = { "score", "kind", "label", "sort_text" },
+        }
+        opts.sources = {
+            default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
+
             providers = {
                 path = {
                     name = "Path",
