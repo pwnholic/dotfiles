@@ -77,3 +77,4 @@ vim.opt_local.number = false
 vim.opt_local.relativenumber = false
 
 require("lspconfig").iwes.setup()
+require("which-key").add({ { "<leader>o", group = "Obsidian", icon = "󰎚 " } })
