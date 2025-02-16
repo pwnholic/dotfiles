@@ -1,6 +1,30 @@
 return {
     {
         "neovim/nvim-lspconfig",
+        opts = function()
+            local lspconfig = require("lspconfig")
+            local lsp_setup = require("lspconfig.configs")
+            if not lsp_setup.iwes then
+                lsp_setup.iwes = {
+                    default_config = {
+                        name = "iwes",
+                        cmd = { "iwes" },
+                        filetype = { "markdown" },
+                        flags = {
+                            debounce_text_changes = 500,
+                        },
+                        single_file_support = false,
+                        root_dir = function(fname)
+                            return lspconfig.util.root_pattern(".iwe", ".git")(fname)
+                        end,
+                    },
+                }
+            end
+            lspconfig.iwes.setup({})
+        end,
+    },
+    {
+        "neovim/nvim-lspconfig",
         opts = {
             codelens = { enabled = false },
             inlay_hints = { enabled = false, exclude = {} },
