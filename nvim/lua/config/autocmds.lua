@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" 
                 if vim.api.nvim_win_is_valid(win) then
                     vim.api.nvim_win_call(win, function()
                         pcall(vim.cmd.lcd, {
-                            os.getenv("PWD") or LazyVim.root() or vim.uv.cwd(),
+                            os.getenv("PWD") or vim.uv.cwd() or LazyVim.root(),
                             mods = { silent = true, emsg_silent = true },
                         })
                     end)
@@ -126,12 +126,3 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 --         vim.api.nvim_set_hl(0, "Visual", { bg = util.blend_bg(fg, 0.1), italic = true, bold = true })
 --     end),
 -- })
---
---
-vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("FzfLuaEsc", { clear = true }),
-    pattern = "fzf",
-    callback = function(e)
-        vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = e.buf, silent = true, nowait = true })
-    end,
-})

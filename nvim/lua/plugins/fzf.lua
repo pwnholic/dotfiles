@@ -67,7 +67,7 @@ return {
         local config = require("fzf-lua.config")
 
         vim.keymap.set("n", "<leader>gx", function()
-            require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
+            return require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
                 prompt = "Git Conflict>",
                 actions = {
                     ["right"] = { fn = actions.git_unstage, reload = true },
@@ -105,9 +105,7 @@ return {
                 },
             },
         }
-
         opts.fzf_opts = vim.g.fzf_layout.horizontal.fzf_options.with_preview
-
         opts.defaults = {
             file_icons = "mini",
             headers = { "actions", "cwd" },
@@ -128,9 +126,9 @@ return {
                 if not path.is_absolute(fullpath) then
                     fullpath = path.join({ opt.cwd or opt._cwd or vim.uv.cwd(), fullpath })
                 end
-                local fp = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
-                vim.notify(string.format("Add %s to harpoon list", fp), 2, { title = "FzF" })
-                require("harpoon"):list():add({ value = fp, context = { row = entry.line > 0 and entry.line or 1, col = entry.col or 1 } })
+                local new_path = vim.fn.fnamemodify(vim.fs.normalize(vim.fn.fnameescape(fullpath)), ":p:.")
+                vim.notify(string.format("Add %s to harpoon list", new_path), 2, { title = "FzF" })
+                require("harpoon"):list():add({ value = new_path, context = { row = entry.line > 0 and entry.line or 1, col = entry.col or 1 } })
             end
         end
 
@@ -174,7 +172,6 @@ return {
                 ["ctrl-a"] = add_to_harpoon,
             },
         }
-
         opts.diagnostics = {
             fzf_opts = vim.g.fzf_layout.vertical.fzf_options.with_preview,
             winopts = vim.g.fzf_layout.vertical.window_options.with_preview,

@@ -285,14 +285,15 @@ return {
                     desc = "Yank the filepath of the entry under the cursor to a register",
                     callback = function()
                         local entry = oil.get_cursor_entry()
+                        local Path = require("plenary.path")
                         local dir = oil.get_current_dir()
                         if not entry or not dir then
                             return
                         end
-                        local entry_path = vim.fs.joinpath(dir, entry.name)
-                        vim.fn.setreg('"', entry_path)
-                        vim.fn.setreg(vim.v.register, entry_path)
-                        vim.notify(string.format("[oil] yanked '%s' to register '%s'", entry_path, vim.v.register))
+                        local rel_path = Path:new(vim.fs.joinpath(dir, entry.name)):make_relative(os.getenv("PWD") or vim.uv.cwd() or "")
+                        vim.fn.setreg('"', rel_path)
+                        vim.fn.setreg(vim.v.register, rel_path)
+                        vim.notify(string.format("[oil] yanked '%s' to register '%s'", rel_path, vim.v.register))
                     end,
                 },
             },

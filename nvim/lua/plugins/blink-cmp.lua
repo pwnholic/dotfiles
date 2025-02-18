@@ -1,13 +1,13 @@
+local blink_winhl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
+
 return {
     "saghen/blink.cmp",
     dependencies = { "stevearc/vim-vscode-snippets", "mikavilpas/blink-ripgrep.nvim" },
-    opts = function(_, opts)
-        local kinds = require("blink.cmp.types").CompletionItemKind
-        local blink_winhl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
-        opts.enabled = function()
+    opts = {
+        enabled = function()
             return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype) and vim.bo.buftype ~= "prompt" and vim.b.completion ~= false
-        end
-        opts.keymap = {
+        end,
+        keymap = {
             ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
             ["<C-e>"] = { "hide", "fallback" },
             ["<CR>"] = { "select_and_accept", "fallback" },
@@ -19,9 +19,8 @@ return {
             ["<C-n>"] = { "select_next", "fallback" },
             ["<C-b>"] = { "scroll_documentation_up", "fallback" },
             ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-        }
-
-        opts.cmdline = {
+        },
+        cmdline = {
             keymap = {
                 ["<C-p>"] = { "select_prev", "fallback" },
                 ["<C-n>"] = { "select_next", "fallback" },
@@ -42,11 +41,11 @@ return {
                     return {}
                 end
             end,
-        }
-        opts.fuzzy = {
+        },
+        fuzzy = {
             sorts = { "score", "kind", "label", "sort_text" },
-        }
-        opts.sources = {
+        },
+        sources = {
             default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
 
             providers = {
@@ -71,13 +70,14 @@ return {
                     max_items = 50,
                     fallbacks = { "buffer", "ripgrep" },
                     transform_items = function(_, items)
+                        local blink_kinds = require("blink.cmp.types").CompletionItemKind
                         for _, item in ipairs(items) do
-                            if item.kind == kinds.Snippet then
+                            if item.kind == blink_kinds.Snippet then
                                 item.score_offset = item.score_offset - 3
                             end
                         end
                         return vim.tbl_filter(function(item)
-                            return item.kind ~= kinds.Text
+                            return item.kind ~= blink_kinds.Text
                         end, items)
                     end,
                 },
@@ -133,8 +133,8 @@ return {
                     },
                 },
             },
-        }
-        opts.completion = {
+        },
+        completion = {
             accept = {
                 create_undo_point = true,
                 resolve_timeout_ms = 100,
@@ -227,7 +227,7 @@ return {
             },
             documentation = { auto_show = true, window = { border = vim.g.border, winhighlight = blink_winhl } },
             ghost_text = { enabled = true },
-        }
-        opts.signature = { enabled = true, window = { border = vim.g.border, winhighlight = blink_winhl } }
-    end,
+        },
+        signature = { enabled = true, window = { border = vim.g.border, winhighlight = blink_winhl } },
+    },
 }
