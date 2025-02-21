@@ -1,5 +1,14 @@
 return {
     {
+        "williamboman/mason.nvim",
+        opts = {
+            ensure_installed = {
+                "rust-analyzer",
+                "bacon-ls",
+            },
+        },
+    },
+    {
         "neovim/nvim-lspconfig",
         opts = function()
             local lspconfig = require("lspconfig")

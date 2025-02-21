@@ -14,7 +14,7 @@ return {
             scope = {
                 enabled = true,
                 char = "▏",
-                underline = false,
+                underline = true,
                 hl = {
                     "@markup.heading.1.markdown",
                     "@markup.heading.2.markdown",

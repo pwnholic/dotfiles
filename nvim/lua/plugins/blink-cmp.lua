@@ -184,7 +184,7 @@ return {
                     padding = 1,
                     gap = 1,
                     treesitter = { "lsp" },
-                    columns = { { "kind_icon", gap = 1 }, { "label", "label_description", gap = 1 } },
+                    columns = { { "kind_icon" }, { "label" } },
                     components = {
                         kind_icon = {
                             ellipsis = false,
@@ -200,11 +200,7 @@ return {
                         label = {
                             width = { fill = true, max = 50 },
                             text = function(ctx)
-                                if ctx.label_detail ~= "" and ctx.mode ~= "cmdline" then
-                                    return string.format("%s [%s]", ctx.label, ctx.label_detail)
-                                else
-                                    return string.format("%s", ctx.label)
-                                end
+                                return ctx.label
                             end,
                             highlight = function(ctx)
                                 local highlights = { { 0, #ctx.label, group = "BlinkCmpLabel" } }
@@ -220,13 +216,6 @@ return {
                                 end
                                 return highlights
                             end,
-                        },
-                        label_description = {
-                            width = { max = 30 },
-                            text = function(ctx)
-                                return ctx.label_description
-                            end,
-                            highlight = "FzfLuaPath",
                         },
                     },
                 },

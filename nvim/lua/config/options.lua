@@ -1,5 +1,3 @@
-vim.g.deprecation_warnings = true
-
 vim.opt.cmdheight = 0
 vim.opt.colorcolumn = "90,120"
 vim.opt.showtabline = 0
@@ -47,6 +45,8 @@ vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 
 vim.g.lazyvim_picker = "fzf"
+vim.g.deprecation_warnings = true
+
 vim.g.border = "single"
 
 local borderchars = {
