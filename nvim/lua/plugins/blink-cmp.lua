@@ -21,6 +21,7 @@ return {
             ["<C-f>"] = { "scroll_documentation_down", "fallback" },
         },
         cmdline = {
+            enabled = true,
             keymap = {
                 ["<C-p>"] = { "select_prev", "fallback" },
                 ["<C-n>"] = { "select_next", "fallback" },
@@ -41,13 +42,18 @@ return {
                     return {}
                 end
             end,
+            completion = {
+                menu = {
+                    auto_show = true,
+                    draw = { columns = { { "kind_icon" }, { "label" } } },
+                },
+            },
         },
         fuzzy = {
             sorts = { "score", "kind", "label", "sort_text" },
         },
         sources = {
             default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
-
             providers = {
                 path = {
                     name = "Path",
