@@ -9,11 +9,11 @@ return {
                     default_config = {
                         name = "iwes",
                         cmd = { "iwes" },
-                        filetype = { "markdown" },
                         flags = {
                             debounce_text_changes = 500,
                         },
                         single_file_support = true,
+                        filetypes = { "markdown" },
                         root_dir = function(fname)
                             return lspconfig.util.root_pattern(".iwe", ".git")(fname)
                         end,
@@ -32,7 +32,7 @@ return {
                 virtual_text = { spacing = 2, source = "if_many", prefix = "" },
                 virtual_lines = true,
             },
-            servers = {},
+            servers = { iwes = {} },
             setup = {},
         },
     },
@@ -41,7 +41,6 @@ return {
         "neovim/nvim-lspconfig",
         opts = function()
             local keys = require("lazyvim.plugins.lsp.keymaps").get()
-
             local function symbols_filter(entry, ctx)
                 if ctx.symbols_filter == nil then
                     ctx.symbols_filter = LazyVim.config.get_kind_filter(ctx.bufnr) or false
