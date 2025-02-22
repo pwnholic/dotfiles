@@ -1,6 +1,7 @@
+vim.opt.showtabline = 0
 vim.opt.cmdheight = 0
 vim.opt.colorcolumn = "90,120"
-vim.opt.showtabline = 0
+vim.opt.cursorcolumn = true
 vim.opt.scrolloff = 21
 vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
@@ -16,7 +17,7 @@ vim.opt.spelllang = "en"
 vim.opt.spelloptions = "camel"
 vim.opt.spellsuggest = "best,9"
 
-vim.opt.shell = "/usr/bin/fish"
+vim.opt.shell = os.getenv("SHELL")
 
 vim.opt.guicursor = {
     "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50",

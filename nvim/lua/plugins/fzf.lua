@@ -126,9 +126,9 @@ return {
                 if not path.is_absolute(fullpath) then
                     fullpath = path.join({ opt.cwd or opt._cwd or vim.uv.cwd(), fullpath })
                 end
-                local new_path = vim.fn.fnamemodify(vim.fs.normalize(vim.fn.fnameescape(fullpath)), ":p:.")
-                vim.notify(string.format("Add %s to harpoon list", new_path), 2, { title = "FzF" })
-                require("harpoon"):list():add({ value = new_path, context = { row = entry.line > 0 and entry.line or 1, col = entry.col or 1 } })
+                local trunc_path = vim.fn.fnamemodify(vim.fs.normalize(vim.fn.fnameescape(fullpath)), ":p:.")
+                vim.notify(string.format("Add %s to harpoon list", trunc_path), 2, { title = "FzF" })
+                require("harpoon"):list():add({ value = trunc_path, context = { row = entry.line > 0 and entry.line or 1, col = entry.col or 1 } })
             end
         end
 
