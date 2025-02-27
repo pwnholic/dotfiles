@@ -14,7 +14,7 @@ return {
                     local fzf = require("fzf-lua")
                     return fzf.fzf_exec("go list std; go list all", {
                         prompt = "Go Packages> ",
-                        fzf_opts = { ["--preview"] = "go doc -all {}" },
+                        fzf_opts = { ["--preview"] = "go doc -all -c {}" },
                         winopts = { preview = { default = "bat", border = "none" } },
                         actions = {
                             ["default"] = function(pkg_selected, _)
@@ -45,7 +45,7 @@ return {
 
                                     vim.cmd(split)
 
-                                    return vim.system({ "go", "doc", "-all", "-c", "-u", package_name }, { text = true }, function(result)
+                                    return vim.system({ "go", "doc", "-all", "-c", package_name }, { text = true }, function(result)
                                         vim.schedule(function()
                                             if result.code ~= 0 then
                                                 return vim.notify("Error: " .. result.stderr, 4)

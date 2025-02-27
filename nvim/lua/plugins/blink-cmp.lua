@@ -22,16 +22,7 @@ return {
         },
         cmdline = {
             enabled = true,
-            keymap = {
-                ["<C-p>"] = { "select_prev", "fallback" },
-                ["<C-n>"] = { "select_next", "fallback" },
-                ["<S-Tab>"] = { "select_prev", "fallback" },
-                ["<Tab>"] = { "select_next", "fallback" },
-                ["<CR>"] = { "accept", "fallback" },
-                ["<Up>"] = { "select_prev", "fallback" },
-                ["<Down>"] = { "select_next", "fallback" },
-                ["<C-space>"] = { "show" },
-            },
+            keymap = { preset = "cmdline" },
             sources = function()
                 local type = vim.fn.getcmdtype()
                 if type == "/" or type == "?" then

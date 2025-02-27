@@ -27,7 +27,7 @@ return {
             dir = os.getenv("HOME") .. "/Notes",
             notes_subdir = false,
             daily_notes = {
-                folder = "00 Inbox",
+                folder = [[00 Inbox]],
                 date_format = "%Y-%m-%d",
                 alias_format = "%B %-d, %Y",
                 default_tags = { "daily-notes" },
@@ -46,7 +46,6 @@ return {
                 end
                 return tostring(os.time()) .. "-" .. suffix
             end,
-
             note_path_func = function(spec)
                 local path = spec.dir / tostring(spec.id)
                 return path:with_suffix(".md")
@@ -58,7 +57,7 @@ return {
             preferred_link_style = "wiki",
             disable_frontmatter = true,
             templates = {
-                folder = "40 Templates",
+                folder = [[40 Templates]],
                 date_format = "%Y-%m-%d",
                 time_format = "%H:%M",
                 substitutions = {},
@@ -66,9 +65,8 @@ return {
             follow_url_func = function(url)
                 vim.ui.open(url)
             end,
-            use_advanced_uri = true,
+            use_advanced_uri = false,
             open_app_foreground = false,
-
             picker = {
                 name = "fzf-lua",
                 note_mappings = {
@@ -82,7 +80,7 @@ return {
             },
             ui = { enable = false },
             attachments = {
-                img_folder = "Assets/Images",
+                img_folder = [[Assets/Images]],
                 img_name_func = function()
                     return string.format("%s-", os.time())
                 end,

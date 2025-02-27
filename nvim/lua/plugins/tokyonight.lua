@@ -15,7 +15,6 @@ return {
         },
         on_highlights = function(hl, c)
             local util = require("tokyonight.util")
-
             hl.TreesitterContextLineNumber = { fg = c.comment, bg = c.none }
             hl.CursorLineNr = { fg = c.orange, bg = c.none, bold = true }
             hl.LineNr = { fg = c.orange, bg = c.none, bold = true }
