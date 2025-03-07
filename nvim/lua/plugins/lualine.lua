@@ -31,7 +31,7 @@ return {
                     for _, server in pairs(vim.lsp.get_clients({ bufnr = current_buf })) do
                         table.insert(client_names, server.name)
                     end
-                    return table.concat(client_names, " ")
+                    return string.format("  %s", table.concat(client_names, " "))
                 end
             end,
             cond = function()
