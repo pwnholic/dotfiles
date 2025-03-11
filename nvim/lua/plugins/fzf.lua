@@ -265,7 +265,6 @@ return {
                 },
             },
         }
-
         core.ACTION_DEFINITIONS[git_commit_action] = { "commit with message" }
         core.ACTION_DEFINITIONS[add_to_harpoon] = { "Add to harponn" }
         config._action_to_helpstr[git_commit_action] = "git_commit"

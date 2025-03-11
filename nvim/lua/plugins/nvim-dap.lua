@@ -4,7 +4,6 @@ return {
         opts = function()
             local dap = require("dap")
             dap.defaults.fallback.external_terminal = { command = "/usr/bin/kitty", args = { "-e" } }
-
             local repl = require("dap.repl")
             repl.commands = vim.tbl_extend("force", repl.commands, {
                 locals = { ".scopes" },
@@ -44,18 +43,18 @@ return {
                     layouts = {
                         {
                             elements = {
-                                { id = "scopes", size = 0.25 },
-                                { id = "breakpoints", size = 0.25 },
-                                { id = "stacks", size = 0.25 },
-                                { id = "watches", size = 0.25 },
+                                { id = "scopes", size = 1 / 3 },
+                                { id = "breakpoints", size = 1 / 3 },
+                                { id = "stacks", size = 1 / 3 },
+                                -- { id = "watches", size = 0.25 },
                             },
                             position = "right",
                             size = math.floor(vim.o.columns / 3),
                         },
                         {
                             elements = {
-                                { id = "repl", size = 0.5 },
-                                { id = "console", size = 0.5 },
+                                { id = "repl", size = 1 },
+                                -- { id = "console", size = 1 / 2 },
                             },
                             position = "bottom",
                             size = math.floor(vim.o.lines / 4),
@@ -83,6 +82,14 @@ return {
         },
         keys = {
             { "<leader>dn", "<cmd>DapNew<cr>", desc = "Set Config" },
+            {
+                "K",
+                function()
+                    local widgets = require("dap.ui.widgets")
+                    widgets.centered_float(widgets.frames, { width = vim.o.columns, height = vim.o.lines })
+                end,
+                ft = "dapui_scopes",
+            },
             {
                 "<leader>dr",
                 function()
