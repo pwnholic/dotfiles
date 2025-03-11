@@ -61,22 +61,10 @@ return {
         { "<leader>gx", desc = "Git conflict list" },
     },
     opts = function(_, opts)
-        local actions = require("fzf-lua.actions")
-        local path = require("fzf-lua.path")
-        local core = require("fzf-lua.core")
-        local config = require("fzf-lua.config")
-
-        vim.keymap.set("n", "<leader>gx", function()
-            return require("fzf-lua").fzf_exec("git diff --name-only --diff-filter=U", {
-                prompt = "Git Conflict>",
-                actions = {
-                    ["right"] = { fn = actions.git_unstage, reload = true },
-                    ["left"] = { fn = actions.git_stage, reload = true },
-                    ["ctrl-x"] = { fn = actions.git_reset, reload = true },
-                    ["default"] = actions.file_edit,
-                },
-            })
-        end, { desc = "Git conflict list" })
+        local fzf_action = require("fzf-lua.actions")
+        local fzf_path = require("fzf-lua.path")
+        local fzf_core = require("fzf-lua.core")
+        local fzf_config = require("fzf-lua.config")
 
         opts.file_icon_padding = " "
         opts.winopts = {
@@ -115,7 +103,7 @@ return {
 
         local function add_to_harpoon(selected, opt)
             for i = 1, #selected do
-                local entry = path.entry_to_file(selected[i], opt)
+                local entry = fzf_path.entry_to_file(selected[i], opt)
                 if entry.path == "<none>" then
                     return
                 end
@@ -123,8 +111,8 @@ return {
                 if not fullpath then
                     return
                 end
-                if not path.is_absolute(fullpath) then
-                    fullpath = path.join({ opt.cwd or opt._cwd or vim.uv.cwd(), fullpath })
+                if not fzf_path.is_absolute(fullpath) then
+                    fullpath = fzf_path.join({ opt.cwd or opt._cwd or vim.uv.cwd(), fullpath })
                 end
                 local trunc_path = vim.fn.fnamemodify(vim.fs.normalize(vim.fn.fnameescape(fullpath)), ":p:.")
                 vim.notify(string.format("Add %s to harpoon list", trunc_path), 2, { title = "FzF" })
@@ -167,8 +155,8 @@ return {
             toggle_ignore_flag = "--no-ignore",
             toggle_hidden_flag = "--hidden",
             actions = {
-                ["alt-i"] = { actions.toggle_ignore },
-                ["alt-h"] = { actions.toggle_hidden },
+                ["alt-i"] = { fzf_action.toggle_ignore },
+                ["alt-h"] = { fzf_action.toggle_hidden },
                 ["ctrl-a"] = add_to_harpoon,
             },
         }
@@ -219,15 +207,15 @@ return {
             no_header = false,
             no_header_i = false,
             actions = {
-                ["alt-i"] = { actions.toggle_ignore },
-                ["alt-h"] = { actions.toggle_hidden },
+                ["alt-i"] = { fzf_action.toggle_ignore },
+                ["alt-h"] = { fzf_action.toggle_hidden },
             },
         }
 
         local function git_commit_action(selected, o)
             local filepath
             for _, sel in ipairs(selected) do
-                local entry = path.entry_to_file(sel, o, o._uri)
+                local entry = fzf_path.entry_to_file(sel, o, o._uri)
                 if entry.path == "<none>" then
                     return
                 end
@@ -235,8 +223,8 @@ return {
                 if not fullpath then
                     return
                 end
-                if not path.is_absolute(fullpath) then
-                    fullpath = path.join({ o.cwd or o._cwd or vim.uv.cwd(), fullpath })
+                if not fzf_path.is_absolute(fullpath) then
+                    fullpath = fzf_path.join({ o.cwd or o._cwd or vim.uv.cwd(), fullpath })
                 end
                 filepath = vim.fn.fnameescape(vim.fn.fnamemodify(fullpath, ":p:."))
             end
@@ -255,9 +243,9 @@ return {
                 previewer = "git_diff",
                 preview_pager = false,
                 actions = {
-                    ["right"] = { fn = actions.git_unstage, reload = true },
-                    ["left"] = { fn = actions.git_stage, reload = true },
-                    ["ctrl-x"] = { fn = actions.git_reset, reload = true },
+                    ["right"] = { fn = fzf_action.git_unstage, reload = true },
+                    ["left"] = { fn = fzf_action.git_stage, reload = true },
+                    ["ctrl-x"] = { fn = fzf_action.git_reset, reload = true },
                     ["ctrl-l"] = {
                         git_commit_action,
                         -- actions.resume,
@@ -265,9 +253,9 @@ return {
                 },
             },
         }
-        core.ACTION_DEFINITIONS[git_commit_action] = { "commit with message" }
-        core.ACTION_DEFINITIONS[add_to_harpoon] = { "Add to harponn" }
-        config._action_to_helpstr[git_commit_action] = "git_commit"
-        config._action_to_helpstr[add_to_harpoon] = "add_to_harpoon"
+        fzf_core.ACTION_DEFINITIONS[git_commit_action] = { "commit with message" }
+        fzf_core.ACTION_DEFINITIONS[add_to_harpoon] = { "Add to harponn" }
+        fzf_config._action_to_helpstr[git_commit_action] = "git_commit"
+        fzf_config._action_to_helpstr[add_to_harpoon] = "add_to_harpoon"
     end,
 }
