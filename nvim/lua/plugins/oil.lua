@@ -2,6 +2,43 @@ return {
     "stevearc/oil.nvim",
     cmd = "Oil",
     keys = { { "<space>e", "<cmd>Oil<cr>", desc = "Open Oil Buffer" } },
+    init = function()
+        vim.api.nvim_create_autocmd("BufEnter", {
+            nested = true,
+            callback = vim.schedule_wrap(function(info)
+                local buf = info.buf
+                local id = info.id
+
+                if not vim.api.nvim_buf_is_valid(buf) or vim.fn.bufwinid(buf) == -1 or vim.bo[buf].bt ~= "" then
+                    return
+                end
+
+                local bufname = vim.api.nvim_buf_get_name(buf)
+                if bufname == "" then
+                    return
+                end
+
+                local stat = vim.uv.fs_stat(bufname)
+                if stat and stat.type ~= "directory" then
+                    return
+                end
+
+                pcall(require, "oil")
+                pcall(vim.api.nvim_del_autocmd, id)
+
+                if not vim.api.nvim_buf_is_valid(buf) then
+                    return
+                end
+
+                vim.api.nvim_buf_call(
+                    buf,
+                    vim.schedule_wrap(function()
+                        pcall(vim.cmd.edit, { bang = true, mods = { keepjumps = true } })
+                    end)
+                )
+            end),
+        })
+    end,
     opts = function()
         local oil = require("oil")
         local icons = LazyVim.config.icons.kinds
