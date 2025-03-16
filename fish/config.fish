@@ -10,4 +10,9 @@ set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 
+set -g direnv_fish_mode eval_on_arrow    
+
 starship init fish | source
+direnv hook fish | source
+
+

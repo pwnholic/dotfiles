@@ -1,0 +1,275 @@
+{
+    "assistant": {
+        "default_model": {
+            "provider": "zed.dev",
+            "model": "claude-3-7-sonnet-latest"
+        },
+        "version": "2"
+    },
+    "auto_install_extension": {},
+    "load_direnv": "shell_hook", // cause i use fish shell
+    "current_line_highlight": "line",
+    "vim_mode": true,
+    "vim": {
+        "use_multiline_find": true,
+        "use_smartcase_find": true,
+        "toggle_relative_line_numbers": true,
+        "highlight_on_yank_duration": 200
+    },
+    "scrollbar": { "show": "never" },
+    "scroll_beyond_last_line": "off",
+    "buffer_font_features": { "calt": true },
+    "vertical_scroll_margin": 0,
+    "ui_font_size": 15,
+    "restore_on_startup": "last_session",
+    "buffer_line_height": { "custom": 1.6 },
+    "auto_signature_help": true,
+    "format_on_save": "on",
+    "tab_size": 4,
+    "indent_guides": {
+        "enabled": true,
+        "line_width": 1,
+        "active_line_width": 1,
+        "coloring": "indent_aware",
+        "background_coloring": "disabled"
+    },
+    "tabs": {
+        "close_position": "right",
+        "file_icons": true,
+        "git_status": false,
+        "activate_on_close": "history",
+        "show_close_button": "hover"
+    },
+    "buffer_font_size": 14.0,
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false
+    },
+    "autosave": {
+        "after_delay": {
+            "milliseconds": 15000
+        }
+    },
+    "diagnostics": {
+        "include_warnings": true,
+        "inline": {
+            "enabled": true,
+            "padding": 4,
+            "min_column": 0,
+            "max_severity": "hint"
+        },
+        "update_with_cursor": false,
+        "primary_only": false,
+        "use_rendered": false
+    },
+    "preview_tabs": {
+        "enabled": true,
+        "enable_preview_from_file_finder": true,
+        "enable_preview_from_code_navigation": true
+    },
+    "hour_format": "hour24",
+    "buffer_font_family": "Iosevka Nerd Font",
+    "buffer_font_weight": 400,
+    "icon_theme": "Catppuccin Latte",
+    "theme": {
+        "mode": "system",
+        "light": "Catppuccin Macchiato",
+        "dark": "One Dark"
+    },
+    "edit_predictions": {
+        "disabled_globs": [
+            "**/.env*",
+            "**/*.pem",
+            "**/*.key",
+            "**/*.cert",
+            "**/*.crt",
+            "**/secrets.yml"
+        ]
+    },
+    "lsp": {
+        "rust-analyzer": {
+            "initialization_options": {
+                "inlayHints": {
+                    "maxLength": null,
+                    "lifetimeElisionHints": {
+                        "enable": "skip_trivial",
+                        "useParameterNames": true
+                    },
+                    "closureReturnTypeHints": {
+                        "enable": "always"
+                    }
+                },
+                "imports": {
+                    "granularity": { "group": "module" },
+                    "prefix": "self"
+                },
+                "cargo": { "features": "all" },
+                "procMacro": { "enable": true }
+            }
+        },
+        "vtsls": {
+            "settings": {
+                "complete_function_calls": true,
+                "vtsls": {
+                    "enableMoveToFileCodeAction": true,
+                    "autoUseWorkspaceTsdk": true,
+                    "experimental": {
+                        "maxInlayHintLength": 30,
+                        "completion": {
+                            "enableServerSideFuzzyMatch": true
+                        }
+                    }
+                },
+                "javascript": {
+                    "inlayHints": {
+                        "parameterNames": {
+                            "enabled": "all",
+                            "suppressWhenArgumentMatchesName": false
+                        },
+                        "parameterTypes": { "enabled": true },
+                        "variableTypes": {
+                            "enabled": true,
+                            "suppressWhenTypeMatchesName": true
+                        },
+                        "propertyDeclarationTypes": {
+                            "enabled": true
+                        },
+                        "functionLikeReturnTypes": {
+                            "enabled": true
+                        },
+                        "enumMemberValues": { "enabled": true }
+                    }
+                },
+                "typescript": {
+                    "updateImportsOnFileMove": {
+                        "enabled": "always"
+                    },
+                    "suggest": {
+                        "completeFunctionCalls": true
+                    },
+                    "inlayHints": {
+                        "parameterNames": {
+                            "enabled": "all",
+                            "suppressWhenArgumentMatchesName": false
+                        },
+                        "parameterTypes": { "enabled": true },
+                        "variableTypes": {
+                            "enabled": true,
+                            "suppressWhenTypeMatchesName": true
+                        },
+                        "propertyDeclarationTypes": {
+                            "enabled": true
+                        },
+                        "functionLikeReturnTypes": {
+                            "enabled": true
+                        },
+                        "enumMemberValues": { "enabled": true }
+                    }
+                }
+            }
+        },
+        "gopls": {
+            "initialization_options": {
+                "usePlaceholders": true,
+                "completeUnimported": true,
+                "staticcheck": true,
+                "directoryFilters": [
+                    "-.git",
+                    "-.vscode",
+                    "-.idea",
+                    "-.vscode-test",
+                    "-node_modules"
+                ],
+                "semanticTokens": true,
+                "codelenses": {
+                    "gc_details": false,
+                    "generate": true,
+                    "regenerate_cgo": true,
+                    "run_govulncheck": true,
+                    "test": true,
+                    "tidy": true,
+                    "upgrade_dependency": true,
+                    "vendor": true
+                },
+                "hints": {
+                    "assignVariableTypes": true,
+                    "compositeLiteralFields": true,
+                    "compositeLiteralTypes": true,
+                    "constantValues": true,
+                    "functionTypeParameters": true,
+                    "parameterNames": true,
+                    "rangeVariableTypes": true
+                }
+            }
+        },
+        "clangd": {
+            "binary": {
+                "ignore_system_version": true,
+                "arguments": [
+                    "--background-index",
+                    "--clang-tidy",
+                    "--header-insertion=iwyu",
+                    "--completion-style=detailed",
+                    "--function-arg-placeholders",
+                    "--fallback-style=llvm"
+                ]
+            }
+        }
+    },
+    "languages": {
+        "Go": {
+            "tab_size": 4,
+            // "preferred_line_length": 120,
+            // "soft_wrap": "preferred_line_length",
+            "edit_predictions_disabled_in": ["comment", "string"],
+            "language_servers": ["gopls"],
+            "formatter": [{ "language_server": { "name": "gopls" } }]
+        },
+        "Rust": {
+            "tab_size": 4,
+            "edit_predictions_disabled_in": ["comment", "string"],
+            "language_servers": ["rust-analyzer"],
+            "formatter": [
+                {
+                    "language_server": {
+                        "name": "rust-analyzer"
+                    }
+                }
+            ]
+        },
+        "TypeScript": {
+            "tab_size": 4,
+            "edit_predictions_disabled_in": ["comment", "string"],
+            "language_servers": ["vtsls"],
+            "formatter": {
+                "external": {
+                    "command": "prettier",
+                    "arguments": ["--stdin-filepath", "{buffer_path}"]
+                }
+            }
+        },
+        "JavaScript": {
+            "tab_size": 4,
+            "edit_predictions_disabled_in": ["comment", "string"],
+            "language_servers": ["vtsls"],
+            "formatter": {
+                "external": {
+                    "command": "prettier",
+                    "arguments": ["--stdin-filepath", "{buffer_path}"]
+                }
+            }
+        },
+        "C++": {
+            "tab_size": 4,
+            "edit_predictions_disabled_in": ["comment", "string"],
+            "language_servers": ["clangd"],
+            "formatter": [{ "language_server": { "name": "clangd" } }]
+        },
+        "C": {
+            "tab_size": 4,
+            "edit_predictions_disabled_in": ["comment", "string"],
+            "language_servers": ["clangd"],
+            "formatter": [{ "language_server": { "name": "clangd" } }]
+        }
+    }
+}

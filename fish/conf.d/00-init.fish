@@ -4,6 +4,7 @@ fish_add_path -p \
     $HOME/.cargo/bin \
     $HOME/Dev/go/bin \
     $HOME/.foundry/bin \
+    $HOME/.node/bin \
     $HOME/.local/share/nvim/mason/bin
 
 if test -f $HOME/.envvars
@@ -31,6 +32,7 @@ set -gx RIPGREP_CONFIG_PATH $HOME/.config/rg/ripgreprc
 set -gx GOPATH "$HOME/Dev/go"
 set -gx GOBIN "$GOPATH/bin"
 set -gx NPM "$HOME/.npm/bin"
+set -gx NODE_PATH "$HOME/.node/lib/node_modules"
 set -gx ELECTRON_OZONE_PLATFORM_HINT auto
 set -gx RIPGREP_CONFIG_PATH ""
 set -gx STARSHIP_CONFIG "$HOME/.config/starship/starship.toml"

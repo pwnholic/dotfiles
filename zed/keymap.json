@@ -1,0 +1,37 @@
+[
+    {
+        "context": "vim_mode == normal && !menu",
+        "bindings": {
+            "space space": "file_finder::Toggle",
+            "space f": "file_finder::Toggle"
+        }
+    },
+    {
+        "context": "vim_mode == normal && !menu",
+        "bindings": {
+            "space |": "pane::SplitVertical",
+            "space -": "pane::SplitHorizontal"
+        }
+    },
+    {
+        "context": "vim_mode == normal && !menu",
+        "bindings": {
+            "space c r": "editor::Rename"
+        }
+    },
+    {
+        "context": "Dock",
+        "bindings": {
+            "ctrl-w h": "workspace::ActivatePaneLeft",
+            "ctrl-w l": "workspace::ActivatePaneRight",
+            "ctrl-w k": "workspace::ActivatePaneUp",
+            "ctrl-w j": "workspace::ActivatePaneDown"
+        }
+    },
+    {
+        "context": "Workspace",
+        "bindings": {
+            "ctrl-`": "workspace::ToggleBottomDock"
+        }
+    }
+]
