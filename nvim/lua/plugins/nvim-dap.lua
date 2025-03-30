@@ -194,25 +194,29 @@ return {
                     else
                         return
                     end
-                    require("dapui").close({})
-                    require("dap.repl").close({})
-                    require("nvim-dap-virtual-text/virtual_text").clear_virtual_text()
+                    for _, mod in ipairs({ "dapui", "dap.repl", "nvim-dap-virtual-text/virtual_text" }) do
+                        pcall(require(mod).close, {})
+                    end
                 end,
                 "Terminate debug session",
             },
             {
                 "<F21>", -- SHIFT + F9
                 function()
-                    local types = { "log point", "conditional breakpoint", "exception breakpoint" }
-                    vim.ui.select(types, {
-                        prompt = "Select Breakpoint Types",
-                    }, function(choice)
-                        if choice == types[1] then
+                    local actions = {
+                        ["log point"] = function()
                             require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-                        elseif choice == types[2] then
+                        end,
+                        ["conditional breakpoint"] = function()
                             require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "), vim.fn.input("Hit times: "))
-                        elseif choice == types[3] then
+                        end,
+                        ["exception breakpoint"] = function()
                             require("dap").set_exception_breakpoints()
+                        end,
+                    }
+                    vim.ui.select(vim.tbl_keys(actions), { prompt = "Select Breakpoint Type" }, function(choice)
+                        if choice then
+                            actions[choice]()
                         end
                     end)
                 end,

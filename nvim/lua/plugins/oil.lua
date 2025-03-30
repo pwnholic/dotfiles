@@ -76,7 +76,7 @@ return {
         vim.api.nvim_create_autocmd("BufEnter", {
             desc = "Ensure that oil buffers are not listed.",
             group = groupid,
-            pattern = "oil://*",
+            pattern = { "oil" },
             callback = function(info)
                 vim.bo[info.buf].buflisted = false
             end,
@@ -111,7 +111,7 @@ return {
         vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
             desc = "Set cwd to follow directory shown in oil buffers.",
             group = groupid,
-            pattern = "oil://*",
+            pattern = { "oil" },
             callback = function(info)
                 oil_cd(info.buf)
             end,
@@ -132,7 +132,7 @@ return {
         vim.api.nvim_create_autocmd("BufEnter", {
             desc = "Set last cursor position in oil buffers when editing parent dir.",
             group = groupid,
-            pattern = "oil://*",
+            pattern = { "oil" },
             callback = function(info)
                 local win = vim.api.nvim_get_current_win()
                 if vim.b[info.buf]._oil_entered == win then

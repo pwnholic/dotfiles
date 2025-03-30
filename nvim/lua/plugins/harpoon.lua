@@ -48,6 +48,7 @@ return {
             {
                 "<A-a>",
                 function()
+                    vim.notify("Add file to Harpoon list", 2, { title = "Harpoon" })
                     return require("harpoon"):list():add()
                 end,
                 desc = "Harpoon File",

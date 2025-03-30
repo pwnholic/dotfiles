@@ -19,33 +19,13 @@ require("lazy").setup({
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
         { "akinsho/bufferline.nvim", enabled = false },
         { "nvim-neo-tree/neo-tree.nvim", enabled = false },
-
-        { import = "lazyvim.plugins.extras.dap.core" },
-        { import = "lazyvim.plugins.extras.test.core" },
-        { import = "lazyvim.plugins.extras.util.rest" },
-        { import = "lazyvim.plugins.extras.editor.harpoon2" },
-        { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
-        { import = "lazyvim.plugins.extras.ui.treesitter-context" },
-        { import = "lazyvim.plugins.extras.coding.yanky" },
-        { import = "lazyvim.plugins.extras.formatting.prettier" },
-
-        { import = "lazyvim.plugins.extras.lang.go" },
-        { import = "lazyvim.plugins.extras.lang.sql" },
-
         { import = "plugins" },
     },
     defaults = { lazy = false, version = false },
-    browser = os.getenv("BROWSER"),
+    browser = os.getenv("BROWSER") or "chromium",
     concurrency = nil,
     install = { colorscheme = { "tokyonight", "habamax" } },
     checker = { enabled = true, notify = false },
-    headless = { process = true, log = true, task = true, colors = true },
-    rocks = {
-        enabled = true,
-        root = vim.fn.stdpath("data") .. "/lazy-rocks",
-        server = "https://nvim-neorocks.github.io/rocks-binaries/",
-        hererocks = true,
-    },
     performance = {
         rtp = {
             disabled_plugins = {

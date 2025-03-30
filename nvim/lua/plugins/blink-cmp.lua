@@ -41,6 +41,7 @@ return {
             },
         },
         fuzzy = {
+            implementation = "prefer_rust_with_warning",
             sorts = { "score", "kind", "label", "sort_text" },
         },
         sources = {
@@ -101,10 +102,10 @@ return {
                         get_bufnrs = function()
                             return vim.iter(vim.api.nvim_list_wins())
                                 :map(function(win)
-                                    return vim.api.nvim_win_get_buf(win) and vim.api.nvim_win_is_valid(win)
+                                    return vim.api.nvim_win_get_buf(win)
                                 end)
                                 :filter(function(buf)
-                                    return not vim.tbl_contains({ "nofile", "bigfile" }, vim.bo[buf].buftype) and vim.api.nvim_buf_is_valid(buf)
+                                    return vim.bo[buf].buftype ~= "nofile"
                                 end)
                                 :totable()
                         end,
