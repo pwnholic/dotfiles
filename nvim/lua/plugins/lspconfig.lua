@@ -3,8 +3,8 @@ return {
         "williamboman/mason.nvim",
         opts = {
             ensure_installed = {
-                "rust-analyzer",
-                "bacon-ls",
+                -- "rust-analyzer",
+                -- "bacon-ls",
             },
         },
     },
@@ -38,11 +38,21 @@ return {
             inlay_hints = { enabled = false, exclude = {} },
             diagnostics = {
                 float = { border = vim.g.border },
-                virtual_text = { spacing = 2, source = "if_many", prefix = "" },
+                -- virtual_text = { spacing = 2, source = "if_many", prefix = "" },
+                virtual_text = false,
                 virtual_lines = true,
             },
-            servers = { iwes = {} },
-            setup = {},
+            servers = {
+                iwes = {},
+                -- golangci_lint_ls = {
+                --     name = "golangci_lint",
+                -- },
+            },
+            setup = {
+                golps = function()
+                    return true
+                end,
+            },
         },
     },
     -- FZF

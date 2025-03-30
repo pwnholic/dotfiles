@@ -144,7 +144,7 @@ return {
         },
         opts = {
             lsp_keymaps = false,
-            lsp_cfg = false,
+            lsp_cfg = true,
             icons = false,
             trouble = false,
             tag_transform = "snakecase",
