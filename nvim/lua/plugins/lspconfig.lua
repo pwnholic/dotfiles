@@ -39,7 +39,6 @@ return {
             diagnostics = {
                 float = { border = vim.g.border },
                 virtual_text = { spacing = 2, source = "if_many", prefix = "" },
-                -- virtual_text = false,
                 virtual_lines = false,
             },
             servers = {
