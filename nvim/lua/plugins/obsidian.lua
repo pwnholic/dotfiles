@@ -78,7 +78,7 @@ return {
                     insert_tag = "<C-l>",
                 },
             },
-            ui = { enable = false },
+            ui = { enable = true },
             attachments = {
                 img_folder = [[Assets/Images]],
                 img_name_func = function()

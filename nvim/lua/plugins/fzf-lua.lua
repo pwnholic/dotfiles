@@ -201,7 +201,7 @@ return {
                 "-e",
             }, " "),
             rg_glob = true,
-            RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH,
+            RIPGREP_CONFIG_PATH = vim.env.RIPGREP_CONFIG_PATH or nil,
             glob_flag = "--iglob",
             glob_separator = "%s%-%-",
             no_header = false,

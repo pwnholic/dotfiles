@@ -71,14 +71,6 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
 --     end,
 -- })
 
-vim.api.nvim_create_autocmd("CmdwinEnter", {
-    group = vim.api.nvim_create_augroup("execute_cmd_and_stay", { clear = true }),
-    desc = "Execute command and stay in the command-line window",
-    callback = function(args)
-        vim.keymap.set({ "n", "i" }, "<S-CR>", "<cr>q:", { buffer = args.buf })
-    end,
-})
-
 -- vim.api.nvim_create_autocmd("ModeChanged", {
 --     pattern = "*:*",
 --     callback = vim.schedule_wrap(function()

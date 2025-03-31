@@ -8,15 +8,12 @@ return {
                 job = { git_executable = "/usr/bin/git", timeout = 40000 },
                 command = { split = "auto" },
             })
+
             vim.api.nvim_create_autocmd("BufEnter", {
-                pattern = "minigit://*",
-                callback = function()
-                    vim.opt_local.spell = false
-                    vim.opt_local.number = false
-                    vim.opt_local.relativenumber = false
-                    vim.opt_local.signcolumn = "no"
-                    vim.opt_local.foldcolumn = "0"
-                    vim.opt_local.winbar = ""
+                pattern = { "minigit://*", "git" },
+                callback = function(args)
+                    vim.bo[args.buf].filetype = "minigit"
+                    vim.bo[args.buf].buftype = "nofile"
                 end,
             })
         end,
