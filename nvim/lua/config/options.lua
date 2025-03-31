@@ -45,9 +45,9 @@ vim.opt.diffopt:append({ "algorithm:histogram", "indent-heuristic" })
 vim.opt.backup = true
 vim.opt.backupdir:remove(".")
 
+vim.g.snacks_animate = false
 vim.g.lazyvim_picker = "fzf"
 vim.g.deprecation_warnings = true
-vim.g.snacks_animate = false
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff"
 vim.g.lazyvim_rust_diagnostics = "bacon-ls"

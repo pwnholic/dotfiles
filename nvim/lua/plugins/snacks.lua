@@ -1,9 +1,9 @@
 return {
     "folke/snacks.nvim",
     opts = {
-        image = {
-            enabled = true,
-        },
+        scroll = { enabled = false },
+        animate = { enabled = false },
+        image = { enabled = true },
         indent = {
             indent = {
                 enabled = true,
