@@ -47,6 +47,11 @@ vim.opt.backupdir:remove(".")
 
 vim.g.lazyvim_picker = "fzf"
 vim.g.deprecation_warnings = true
+vim.g.snacks_animate = false
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff"
+vim.g.lazyvim_rust_diagnostics = "bacon-ls"
+vim.g.lazyvim_prettier_needs_config = false
 
 vim.g.border = "single"
 
@@ -60,12 +65,6 @@ if vim.g.border == "single" then
 elseif vim.g.border == "rounded" then
     vim.g.borderchars = borderchars.rounded
 end
-
-vim.g.lazyvim_python_lsp = "basedpyright"
-vim.g.lazyvim_python_ruff = "ruff"
-vim.g.lazyvim_rust_diagnostics = "bacon-ls"
-
-vim.g.lazyvim_prettier_needs_config = false
 
 vim.g.fzf_layout = {
     horizontal = {
