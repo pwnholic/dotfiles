@@ -188,7 +188,7 @@ return {
                         if not entry or not dir then
                             return
                         end
-                        local rel_path = Path:new(vim.fs.joinpath(dir, entry.name)):make_relative(os.getenv("PWD") or vim.uv.cwd() or "")
+                        local rel_path = Path:new(vim.fs.joinpath(dir, entry.name)):make_relative(vim.uv.cwd() or os.getenv("PWD") or "")
                         vim.fn.setreg('"', rel_path)
                         vim.fn.setreg(vim.v.register, rel_path)
                         vim.notify(string.format("[oil] yanked '%s' to register '%s'", rel_path, vim.v.register))
@@ -212,7 +212,7 @@ return {
         vim.api.nvim_create_autocmd("RecordingEnter", {
             desc = "Notify when record a macro",
             group = group_id,
-            pattern = { "oil", "oil://*" },
+            pattern = { "oil://*" },
             callback = function(info)
                 if vim.fn.reg_recording() ~= "" and vim.bo[info.buf].filetype == "oil" then
                     local msg = string.format("Recording on [%s]", vim.fn.reg_recording())
@@ -223,7 +223,7 @@ return {
 
         vim.api.nvim_create_autocmd("RecordingLeave", {
             desc = "Notify when leave a macro",
-            pattern = { "oil", "oil://*" },
+            pattern = { "oil://*" },
             group = group_id,
             callback = function()
                 vim.notify("Removing Macro Key", 2, { title = "Oil" })
@@ -234,7 +234,7 @@ return {
         vim.api.nvim_create_autocmd("BufEnter", {
             desc = "Ensure that oil buffers are not listed.",
             group = groupid,
-            pattern = { "oil", "oil://*" },
+            pattern = { "oil://*" },
             callback = function(info)
                 vim.bo[info.buf].buflisted = false
             end,
@@ -269,7 +269,7 @@ return {
         vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
             desc = "Set cwd to follow directory shown in oil buffers.",
             group = groupid,
-            pattern = { "oil", "oil://*" },
+            pattern = { "oil://*" },
             callback = function(info)
                 oil_cd(info.buf)
             end,
@@ -290,7 +290,7 @@ return {
         vim.api.nvim_create_autocmd("BufEnter", {
             desc = "Set last cursor position in oil buffers when editing parent dir.",
             group = groupid,
-            pattern = { "oil", "oil://*" },
+            pattern = { "oil://*" },
             callback = function(info)
                 local win = vim.api.nvim_get_current_win()
                 if vim.b[info.buf]._oil_entered == win then

@@ -8,7 +8,7 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
-                    cwd = vim.fn.fnameescape(os.getenv("PWD") or ""),
+                    cwd = vim.fn.fnameescape(vim.uv.cwd() or os.getenv("PWD") or ""),
                     fd_opts = table.concat({
                         "--color=never",
                         "--type",

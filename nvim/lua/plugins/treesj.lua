@@ -1,6 +1,8 @@
 return {
     "Wansmer/treesj",
-    keys = { { "<leader>cj", "<cmd>TSJToggle<cr>", desc = "Split or Join Block of Code" } },
+    keys = {
+        { "<leader>cj", "<cmd>TSJToggle<cr>", desc = "Split or Join Block of Code" },
+    },
     opts = function()
         return {
             use_default_keymaps = false,

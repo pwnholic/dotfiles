@@ -23,7 +23,7 @@ return {
         }
     end,
     opts = {
-        dir = os.getenv("HOME") .. "/Notes",
+        dir = (os.getenv("HOME") or "~") .. "/Notes",
         notes_subdir = false,
         daily_notes = {
             folder = "00 Inbox",

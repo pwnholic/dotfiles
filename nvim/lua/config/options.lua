@@ -17,7 +17,7 @@ vim.opt.spelllang = "en"
 vim.opt.spelloptions = "camel"
 vim.opt.spellsuggest = "best,9"
 
-vim.opt.shell = os.getenv("SHELL")
+vim.opt.shell = os.getenv("SHELL") or "/usr/bin/fish"
 
 vim.opt.guicursor = {
     "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50",
