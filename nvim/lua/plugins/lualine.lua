@@ -4,23 +4,12 @@ return {
     opts = function(_, opts)
         opts.extensions = {
             "quickfix",
-            "aerial",
-            "chadtree",
-            "ctrlspace",
-            "fern",
             "fzf",
             "lazy",
             "man",
             "mason",
-            "mundo",
-            "neo-tree",
-            "nerdtree",
             "nvim-dap-ui",
-            "nvim-tree",
             "oil",
-            "overseer",
-            "symbols-outline",
-            "toggleterm",
             "trouble",
         }
         table.insert(opts.sections.lualine_x, {

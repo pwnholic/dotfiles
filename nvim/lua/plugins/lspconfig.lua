@@ -18,9 +18,7 @@ return {
                     default_config = {
                         name = "iwes",
                         cmd = { "iwes" },
-                        flags = {
-                            debounce_text_changes = 500,
-                        },
+                        flags = { debounce_text_changes = 500, },
                         single_file_support = true,
                         filetypes = { "markdown" },
                         root_dir = function(fname)
@@ -44,11 +42,7 @@ return {
             servers = {
                 iwes = {},
             },
-            setup = {
-                -- golps = function()
-                --     return true
-                -- end,
-            },
+            setup = { },
         },
     },
     -- FZF

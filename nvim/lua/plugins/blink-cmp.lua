@@ -4,9 +4,6 @@ return {
     "saghen/blink.cmp",
     dependencies = { "stevearc/vim-vscode-snippets", "mikavilpas/blink-ripgrep.nvim" },
     opts = {
-        enabled = function()
-            return not vim.tbl_contains({ "bigfile" }, vim.bo.filetype) and vim.bo.buftype ~= "prompt" and vim.b.completion ~= false
-        end,
         keymap = {
             ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
             ["<C-e>"] = { "hide", "fallback" },

@@ -1,9 +1,8 @@
 return {
     "stevearc/oil.nvim",
     cmd = "Oil",
-    keys = {
-        { "<space>e", "<cmd>Oil<cr>", desc = "Open Oil Buffer" },
-    },
+    lazy = false,
+    keys = { { "<space>e", "<cmd>Oil<cr>", desc = "Open Oil Buffer" } },
     init = function()
         vim.api.nvim_create_autocmd("BufEnter", {
             nested = true,
@@ -40,7 +39,7 @@ return {
             end),
         })
     end,
-    opts = function()
+    config = function()
         local oil = require("oil")
         local icons = LazyVim.config.icons.kinds
 
@@ -49,17 +48,14 @@ return {
                 "type",
                 icons = { directory = "d", fifo = "p", file = "-", link = "l", socket = "s" },
                 highlight = function(type_str)
-                    return setmetatable({
-                        ["-"] = "OilTypeFile",
-                        ["d"] = "OilTypeDir",
-                        ["p"] = "OilTypeFifo",
-                        ["l"] = "OilTypeLink",
-                        ["s"] = "OilTypeSocket",
-                    }, {
-                        __index = function()
-                            return "OilTypeFile"
-                        end,
-                    })[type_str]
+                    return setmetatable(
+                        { ["-"] = "OilTypeFile", ["d"] = "OilTypeDir", ["p"] = "OilTypeFifo", ["l"] = "OilTypeLink", ["s"] = "OilTypeSocket" },
+                        {
+                            __index = function()
+                                return "OilTypeFile"
+                            end,
+                        }
+                    )[type_str]
                 end,
             },
             {
@@ -88,15 +84,10 @@ return {
             },
             { "size", highlight = "Special" },
             { "mtime", highlight = "Number" },
-            {
-                "icon",
-                default_file = icons.File,
-                directory = icons.Folder,
-                add_padding = false,
-            },
+            { "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
         }
 
-        return {
+        oil.setup({
             keymaps_help = { border = vim.g.border },
             float = { border = vim.g.border, win_options = { winblend = 0 } },
             preview = { border = vim.g.border, win_options = { winblend = 0 } },
@@ -195,140 +186,6 @@ return {
                     end,
                 },
             },
-        }
-    end,
-    config = function(_, opts)
-        local oil = require("oil")
-        pcall(oil.setup, opts)
-
-        local group_id = vim.api.nvim_create_augroup("OilSyncCwd", { clear = true })
-        local function lcd(dir)
-            local ok = pcall(vim.cmd.lcd, { dir, mods = { silent = true, emsg_silent = true } })
-            if not ok then
-                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.WARN)
-            end
-        end
-
-        vim.api.nvim_create_autocmd("RecordingEnter", {
-            desc = "Notify when record a macro",
-            group = group_id,
-            pattern = { "oil://*" },
-            callback = function(info)
-                if vim.fn.reg_recording() ~= "" and vim.bo[info.buf].filetype == "oil" then
-                    local msg = string.format("Recording on [%s]", vim.fn.reg_recording())
-                    vim.notify(msg, 2, { title = "Oil" })
-                end
-            end,
-        })
-
-        vim.api.nvim_create_autocmd("RecordingLeave", {
-            desc = "Notify when leave a macro",
-            pattern = { "oil://*" },
-            group = group_id,
-            callback = function()
-                vim.notify("Removing Macro Key", 2, { title = "Oil" })
-            end,
-        })
-
-        local groupid = vim.api.nvim_create_augroup("OilSetup", {})
-        vim.api.nvim_create_autocmd("BufEnter", {
-            desc = "Ensure that oil buffers are not listed.",
-            group = groupid,
-            pattern = { "oil://*" },
-            callback = function(info)
-                vim.bo[info.buf].buflisted = false
-            end,
-        })
-
-        ---Change cwd in oil buffer to follow the directory shown in the buffer
-        ---@param buf integer? default to current buffer
-        local function oil_cd(buf)
-            buf = buf or vim.api.nvim_get_current_buf()
-            if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].ft ~= "oil" then
-                return
-            end
-
-            vim.api.nvim_buf_call(buf, function()
-                local oildir = vim.fs.normalize(oil.get_current_dir())
-                if vim.fn.isdirectory(oildir) == 0 then
-                    return
-                end
-
-                for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-                    vim.api.nvim_win_call(win, function()
-                        lcd(oildir)
-                    end)
-                end
-            end)
-        end
-
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-            oil_cd(buf)
-        end
-
-        vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
-            desc = "Set cwd to follow directory shown in oil buffers.",
-            group = groupid,
-            pattern = { "oil://*" },
-            callback = function(info)
-                oil_cd(info.buf)
-            end,
-        })
-
-        vim.api.nvim_create_autocmd("BufEnter", {
-            desc = "Record alternate file in dir buffers.",
-            group = groupid,
-            callback = function(info)
-                local buf = info.buf
-                local bufname = vim.api.nvim_buf_get_name(buf)
-                if vim.fn.isdirectory(bufname) == 1 then
-                    vim.b[buf]._alt_file = vim.fn.bufnr("#")
-                end
-            end,
-        })
-
-        vim.api.nvim_create_autocmd("BufEnter", {
-            desc = "Set last cursor position in oil buffers when editing parent dir.",
-            group = groupid,
-            pattern = { "oil://*" },
-            callback = function(info)
-                local win = vim.api.nvim_get_current_win()
-                if vim.b[info.buf]._oil_entered == win then
-                    return
-                end
-                vim.b[info.buf]._oil_entered = win
-                local alt_file = vim.fn.bufnr("#")
-                if not vim.api.nvim_buf_is_valid(alt_file) then
-                    return
-                end
-                local _alt_file = vim.b[alt_file]._alt_file
-                if _alt_file and vim.api.nvim_buf_is_valid(_alt_file) then
-                    alt_file = _alt_file
-                end
-                local bufname_alt = vim.api.nvim_buf_get_name(alt_file)
-                local parent_url, basename = oil.get_buffer_parent_url(bufname_alt, true)
-                if basename then
-                    local config = require("oil.config")
-                    local view = require("oil.view")
-                    if
-                        not config.view_options.show_hidden
-                        and config.view_options.is_hidden_file(
-                            basename,
-                            (function()
-                                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                                    if vim.api.nvim_buf_get_name(buf) == basename then
-                                        return buf
-                                    end
-                                end
-                            end)()
-                        )
-                    then
-                        view.toggle_hidden()
-                    end
-                    view.set_last_cursor(parent_url, basename)
-                    view.maybe_set_cursor()
-                end
-            end,
         })
     end,
 }
