@@ -1,3 +1,3 @@
-vim.loader.enable()
+vim.loader.enable(true)
 
 return require("config.lazy")

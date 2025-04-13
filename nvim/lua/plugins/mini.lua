@@ -1,5 +1,16 @@
 return {
     {
+        "echasnovski/mini.hipatterns",
+        opts = {
+            highlighters = {
+                json = { pattern = [[json%s*:%s*]], group = "MiniHipatternsJson" },
+                gorm = { pattern = [[gorm%s*:%s*]], group = "MiniHipatternsGorm" },
+                validate = { pattern = [[validate%s*:%s*]], group = "MiniHipatternsValidate" },
+                binding = { pattern = [[binding%s*:%s*]], group = "MiniHipatternsBinding" },
+            },
+        },
+    },
+    {
         "echasnovski/mini-git",
         main = "mini.git",
         cmd = "Git",
@@ -8,7 +19,6 @@ return {
                 job = { git_executable = "/usr/bin/git", timeout = 40000 },
                 command = { split = "auto" },
             })
-
             vim.api.nvim_create_autocmd("BufEnter", {
                 pattern = { "minigit://*", "git" },
                 callback = function(args)
@@ -17,19 +27,5 @@ return {
                 end,
             })
         end,
-    },
-    {
-        "lewis6991/gitsigns.nvim",
-        opts = {
-            current_line_blame = true,
-            current_line_blame_opts = {
-                virt_text = true,
-                virt_text_pos = "eol",
-                delay = 1000,
-                ignore_whitespace = false,
-                virt_text_priority = 100,
-                use_focus = true,
-            },
-        },
     },
 }

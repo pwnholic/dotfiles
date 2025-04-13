@@ -2,7 +2,6 @@ return {
     "folke/noice.nvim",
     opts = {
         cmdline = { enabled = true, view = "cmdline" },
-        notify = { enabled = true, view = "notify" },
         popupmenu = { enabled = false },
         presets = {
             bottom_search = true,
@@ -10,18 +9,9 @@ return {
             lsp_doc_border = true,
         },
         lsp = {
-            signature = {
-                enabled = true,
-                view = "hover",
-                auto_open = {
-                    enabled = false,
-                    trigger = false,
-                    luasnip = false,
-                    throttle = 50,
-                },
-                opts = { border = vim.g.border },
-            },
+            enabled = true,
             hover = { opts = { border = vim.g.border } },
+            signature = { opts = { border = vim.g.border } },
             documentation = { opts = { border = vim.g.border } },
         },
     },

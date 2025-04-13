@@ -11,13 +11,21 @@ vim.opt.pumblend = 0
 vim.opt.spell = true
 vim.opt.smoothscroll = true
 vim.opt.pumheight = 15
+vim.opt.helpheight = 10
+vim.opt.timeout = false
+vim.opt.mousemoveevent = true
+vim.opt.ruler = true
+vim.opt.selection = "old"
+vim.opt.tabclose = "uselast"
+vim.opt.wrap = false
 
 vim.opt.spellcapcheck = ""
 vim.opt.spelllang = "en"
 vim.opt.spelloptions = "camel"
 vim.opt.spellsuggest = "best,9"
 
-vim.opt.shell = os.getenv("SHELL") or "/usr/bin/fish"
+---@diagnostic disable-next-line: undefined-field
+vim.opt.shell = vim.uv.os_uname().sysname == "Linux" and os.getenv("SHELL") or "/usr/bin/fish"
 
 vim.opt.guicursor = {
     "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50",
@@ -40,86 +48,15 @@ vim.opt.fillchars = {
     diff = "╱",
 }
 
-vim.opt.diffopt:append({ "algorithm:histogram", "indent-heuristic" })
-
-vim.opt.backup = true
-vim.opt.backupdir:remove(".")
-
-vim.g.lazyvim_picker = "fzf"
-vim.g.deprecation_warnings = true
-vim.g.lazyvim_python_lsp = "basedpyright"
-vim.g.lazyvim_python_ruff = "ruff"
-vim.g.lazyvim_rust_diagnostics = "bacon-ls"
-vim.g.lazyvim_prettier_needs_config = false
-
-vim.g.border = "single"
-
-local borderchars = {
-    single = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-    rounded = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-}
-
-if vim.g.border == "single" then
-    vim.g.borderchars = borderchars.single
-elseif vim.g.border == "rounded" then
-    vim.g.borderchars = borderchars.rounded
+local shada_augroup = vim.api.nvim_create_augroup("OptShada", {})
+local function rshada()
+    pcall(vim.api.nvim_del_augroup_by_id, shada_augroup)
+    vim.opt.shada = vim.api.nvim_get_option_info2("shada", {}).default
+    pcall(vim.cmd.rshada)
 end
 
-vim.g.fzf_layout = {
-    horizontal = {
-        fzf_options = {
-            no_preview = {
-                ["--info"] = "inline-right",
-                ["--layout"] = "reverse",
-                ["--ansi"] = true,
-                ["--preview-window"] = "hidden",
-                ["--no-preview"] = true,
-                ["--border"] = "none",
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-            },
-            with_preview = {
-                ["--info"] = "inline-right",
-                ["--ansi"] = true,
-                ["--no-scrollbar"] = true,
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-            },
-        },
-        window_options = {
-            no_preview = {
-                split = string.format("botright %dnew", math.floor(vim.o.lines / 2)),
-                preview = { hidden = true },
-            },
-        },
-    },
-    vertical = {
-        fzf_options = {
-            with_preview = {
-                ["--layout"] = "reverse",
-                ["--ansi"] = true,
-                ["--no-separator"] = false,
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-            },
-        },
-        window_options = {
-            with_preview = {
-                height = 0.75,
-                width = 0.90,
-                row = 0.50,
-                col = 0.50,
-                preview = { layout = "vertical", vertical = "down:50%" },
-            },
-        },
-    },
-}
+vim.opt.shada = ""
+vim.api.nvim_create_autocmd("UIEnter", { group = shada_augroup, once = true, callback = vim.schedule_wrap(rshada) })
+vim.api.nvim_create_autocmd("BufReadPre", { group = shada_augroup, once = true, callback = rshada })
+
+vim.g.border = "single"

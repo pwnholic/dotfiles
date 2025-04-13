@@ -1,6 +1,9 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+---@diagnostic disable: undefined-field
+local lazypath = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "lazy.nvim")
+
 if not vim.uv.fs_stat(lazypath) then
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", "https://github.com/folke/lazy.nvim.git", lazypath })
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
@@ -15,17 +18,31 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+    root = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy"),
     spec = {
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-        { "akinsho/bufferline.nvim", enabled = false },
-        { "nvim-neo-tree/neo-tree.nvim", enabled = false },
         { import = "plugins" },
     },
     defaults = { lazy = false, version = false },
-    browser = os.getenv("BROWSER") or "chromium",
-    concurrency = nil,
     install = { colorscheme = { "tokyonight", "habamax" } },
-    checker = { enabled = true, notify = false },
+    checker = { enabled = false, notify = false },
+    lockfile = vim.fs.joinpath(vim.fn.stdpath("config"), "lazy-lock.json"),
+    concurrency = nil,
+    pkg = {
+        enabled = true,
+        cache = vim.fs.joinpath(vim.fn.stdpath("state"), "lazy", "pkg-cache.lua"),
+        sources = {
+            "lazy",
+            "rockspec", -- will only be used when rocks.enabled is true
+            "packspec",
+        },
+    },
+    rocks = {
+        enabled = true,
+        root = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy-rocks"),
+        server = "https://nvim-neorocks.github.io/rocks-binaries/",
+        hererocks = nil,
+    },
     performance = {
         rtp = {
             disabled_plugins = {

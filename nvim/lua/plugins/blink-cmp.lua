@@ -1,22 +1,11 @@
-local blink_winhl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
-
+local win_hl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelection,Search:None"
 return {
     "saghen/blink.cmp",
-    dependencies = { "stevearc/vim-vscode-snippets", "mikavilpas/blink-ripgrep.nvim" },
+    dependencies = {
+        { "mikavilpas/blink-ripgrep.nvim" },
+        { "stevearc/vim-vscode-snippets" },
+    },
     opts = {
-        keymap = {
-            ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-            ["<C-e>"] = { "hide", "fallback" },
-            ["<CR>"] = { "select_and_accept", "fallback" },
-            ["<Tab>"] = { "snippet_forward", "fallback" },
-            ["<S-Tab>"] = { "snippet_backward", "fallback" },
-            ["<Up>"] = { "select_prev", "fallback" },
-            ["<Down>"] = { "select_next", "fallback" },
-            ["<C-p>"] = { "select_prev", "fallback" },
-            ["<C-n>"] = { "select_next", "fallback" },
-            ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-            ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-        },
         cmdline = {
             enabled = true,
             keymap = { preset = "cmdline" },
@@ -39,7 +28,7 @@ return {
         },
         fuzzy = {
             implementation = "prefer_rust_with_warning",
-            sorts = { "score", "kind", "label", "sort_text" },
+            sorts = { "exact", "score", "sort_text" },
         },
         sources = {
             default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
@@ -84,8 +73,8 @@ return {
                     opts = {
                         friendly_snippets = true,
                         search_paths = {
-                            vim.fn.stdpath("data") .. "/lazy/vim-vscode-snippets",
-                            vim.fn.stdpath("config") .. "/snippets",
+                            vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "vim-vscode-snippets"),
+                            vim.fs.joinpath(vim.fn.stdpath("config"), "snippets"),
                         },
                         global_snippets = { "all" },
                     },
@@ -98,11 +87,11 @@ return {
                         prefix_min_len = 4,
                         get_bufnrs = function()
                             return vim.iter(vim.api.nvim_list_wins())
-                                :map(function(win)
-                                    return vim.api.nvim_win_get_buf(win)
+                                :map(function(winnr)
+                                    return vim.api.nvim_win_get_buf(winnr)
                                 end)
-                                :filter(function(buf)
-                                    return vim.bo[buf].buftype ~= "nofile"
+                                :filter(function(bufnr)
+                                    return vim.bo[bufnr].buftype ~= "nofile"
                                 end)
                                 :totable()
                         end,
@@ -112,41 +101,51 @@ return {
                     module = "blink-ripgrep",
                     name = "Ripgrep",
                     score_offset = 40,
-                    ---@module "blink-ripgrep"
-                    ---@type blink-ripgrep.Options
                     opts = {
                         prefix_min_len = 4,
                         context_size = 5,
                         max_filesize = "1M",
-                        project_root_marker = { ".git", "go.mod", ".env", ".venv", "README.md", "Cargo.toml" },
+                        project_root_marker = { ".git", "go.mod", ".env", "Cargo.toml" },
                         project_root_fallback = true,
-                        search_casing = "--ignore-case",
-                        additional_rg_options = { "--max-depth", "4" },
+                        -- search_casing = "--ignore-case", -- kerana saya pake golang
+                        search_casing = "--smart-case",
+                        additional_rg_options = {
+                            "--max-depth",
+                            "4",
+                            "--hidden",
+                            "--trim",
+                            "--color=always",
+                            "--engine=auto",
+                            "--type-add=go:*.go",
+                            "--type-add=proto:*.proto",
+                            "--glob=!vendor/**",
+                            "--glob=!**/*_test.go",
+                            "--glob=!*.pb.go",
+                            "--glob=!*.gen.go",
+                            "--glob=!bin/**",
+                            "--glob=!**/testdata/**",
+                            "--glob=!*.wire.go",
+                        },
                         fallback_to_regex_highlighting = true,
-                        ignore_paths = { "node_modules", ".git", "tmp", "temp", ".venv", ".vscode" },
+                        ignore_paths = {
+                            "**/vendor/**",
+                            "**/bin/**",
+                            "**/.cache/**",
+                            "**/testdata/**",
+                            "**/coverage/**",
+                            "**/docs/**",
+                            "**/api/**/mock_*",
+                        },
                         debug = false,
                     },
                 },
             },
         },
+        signature = { window = { winhighlight = win_hl } },
         completion = {
-            accept = {
-                create_undo_point = true,
-                resolve_timeout_ms = 100,
-                auto_brackets = {
-                    enabled = true,
-                    default_brackets = { "(", ")" },
-                    override_brackets_for_filetypes = {},
-                    kind_resolution = {
-                        enabled = true,
-                        blocked_filetypes = { "typescriptreact", "javascriptreact", "vue" },
-                    },
-                    semantic_token_resolution = {
-                        enabled = true,
-                        blocked_filetypes = { "java" },
-                        timeout_ms = 400,
-                    },
-                },
+            documentation = {
+                auto_show = true,
+                window = { winhighlight = win_hl, border = vim.g.border },
             },
             list = {
                 max_items = 20,
@@ -164,54 +163,69 @@ return {
                 enabled = true,
                 border = vim.g.border,
                 winblend = 0,
+                scrollbar = false,
                 min_width = 15,
                 max_height = math.floor(vim.o.lines / 2) - 3,
-                winhighlight = blink_winhl,
+                winhighlight = win_hl,
                 direction_priority = { "s", "n" },
                 draw = {
                     align_to = "label",
                     padding = 1,
                     gap = 1,
-                    treesitter = { "lsp" },
-                    columns = { { "kind_icon" }, { "label" } },
+                    columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
                     components = {
                         kind_icon = {
                             ellipsis = false,
                             text = function(ctx)
                                 if ctx.item.source_name == "Ripgrep" then
-                                    ctx.kind_icon = ""
+                                    ctx.kind_icon = " "
                                 elseif ctx.item.source_name == "Buffer" then
-                                    ctx.kind_icon = "󰯁"
+                                    ctx.kind_icon = "󰯁 "
                                 end
                                 return ctx.kind_icon .. ctx.icon_gap
                             end,
+                            highlight = function(ctx)
+                                return { { group = ctx.kind_hl, priority = 20000 } }
+                            end,
                         },
                         label = {
-                            width = { fill = true, max = 50 },
+                            width = { fill = true, max = 60 },
                             text = function(ctx)
-                                return ctx.label
+                                return ctx.label .. ctx.label_detail
                             end,
                             highlight = function(ctx)
-                                local highlights = { { 0, #ctx.label, group = "BlinkCmpLabel" } }
+                                local highlights = {
+                                    {
+                                        0,
+                                        #ctx.label,
+                                        group = ctx.deprecated and "BlinkCmpLabelDeprecated" or "BlinkCmpLabel",
+                                    },
+                                }
                                 if ctx.label_detail then
                                     table.insert(highlights, {
                                         #ctx.label,
                                         #ctx.label + #ctx.label_detail,
-                                        group = "BlinkCmpKindKeyword",
+                                        group = "BlinkCmpLabelDetail",
                                     })
                                 end
+                                -- characters matched on the label by the fuzzy matcher
                                 for _, idx in ipairs(ctx.label_matched_indices) do
                                     table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
                                 end
+
                                 return highlights
                             end,
+                        },
+                        label_description = {
+                            width = { max = 30 },
+                            text = function(ctx)
+                                return ctx.label_description
+                            end,
+                            highlight = "BlinkCmpLabelDescription",
                         },
                     },
                 },
             },
-            documentation = { auto_show = true, window = { border = vim.g.border, winhighlight = blink_winhl } },
-            ghost_text = { enabled = true },
         },
-        signature = { enabled = true, window = { border = vim.g.border, winhighlight = blink_winhl } },
     },
 }
