@@ -207,4 +207,55 @@ return {
         keymaps_help = { border = vim.g.border },
         float = { border = vim.g.border, win_options = { winblend = 0 } },
     },
+    config = function(_, opts)
+        local oil = require("oil")
+        oil.setup(opts)
+
+        ---Change window-local directory to `dir`
+        ---@param dir string
+        ---@return nil
+        local function lcd(dir)
+            local ok = pcall(vim.cmd.lcd, { dir, mods = { silent = true, emsg_silent = true } })
+            if not ok then
+                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.WARN)
+            end
+        end
+
+        ---Change cwd in oil buffer to follow the directory shown in the buffer
+        ---@param buf integer? default to current buffer
+        local function oil_cd(buf)
+            buf = buf or vim.api.nvim_get_current_buf()
+            if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].ft ~= "oil" then
+                return
+            end
+
+            vim.api.nvim_buf_call(buf, function()
+                ---@diagnostic disable-next-line: param-type-mismatch
+                local oildir = vim.fs.normalize(oil.get_current_dir())
+                if vim.fn.isdirectory(oildir) == 0 then
+                    return
+                end
+                for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+                    vim.api.nvim_win_call(win, function()
+                        lcd(oildir)
+                    end)
+                end
+            end)
+        end
+
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            oil_cd(buf)
+        end
+
+        local groupid = vim.api.nvim_create_augroup("OilSetup", {})
+        vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
+            desc = "Set cwd to follow directory shown in oil buffers.",
+            group = groupid,
+            pattern = "oil://*",
+            nested = true, -- fire `DirChanged` event
+            callback = function(info)
+                oil_cd(info.buf)
+            end,
+        })
+    end,
 }
