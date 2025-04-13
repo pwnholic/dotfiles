@@ -1,0 +1,281 @@
+{
+  "gin-app": {
+    "prefix": "gin-app",
+    "body": [
+      "package main",
+      "",
+      "import (",
+      "  \"net/http\"",
+      "  \"github.com/gin-gonic/gin\"",
+      ")",
+      "",
+      "func hello(ctx *gin.Context) {",
+      "   ctx.JSON(http.StatusOK, gin.H{\"message\": \"world\"})",
+      "}",
+      "",
+      "func main() {",
+      "    router := gin.New()",
+      "    router.GET(\"/hello\", hello)",
+      "    router.Run(\":9090\")",
+      "}",
+      ""
+    ],
+    "description": "Simple api in Gin"
+  },
+  "gin-router": {
+    "prefix": "gin-router",
+    "body": ["router := gin.New()"],
+    "description": "New Gin router snippet"
+  },
+  "gin-handle-method-not-allowed-snippet": {
+    "prefix": "gin-handle-method-not-allowed-snippet",
+    "body": [
+      "// Prevent from calling methods not implemented.",
+      "router.NoMethod(func(ctx *gin.Context) {",
+      "    ctx.JSON(http.StatusMethodNotAllowed, gin.H{",
+      "                                             \"status_code\": \"http.StatusMethodNotAllowed\",",
+      "                                             \"is_success\": \"false\",",
+      "                                             \"data\": \"nil\",",
+      "                                             \"message\": \"Method Not Allowed\",",
+      "                                              })",
+      "}",
+      ""
+    ],
+    "description": "Check methods not allowed snippet"
+  },
+  "gin-handle-route-not-implemented-snippet": {
+    "prefix": "gin-handle-route-not-implemented-snippet",
+    "body": [
+      "// Prevent from calling routes which are not implemented.",
+      "router.NoRoute(func(ctx *gin.Context) {",
+      "    ctx.JSON(http.StatusNotFound, gin.H{",
+      "                                          \"status_code\": \"http.StatusNotFound\",",
+      "                                           \"is_success\": \"false\",",
+      "                                           \"data\": \"nil\",",
+      "                                           \"message\": \"Method Not Allowed\",",
+      "                                       })",
+      "}",
+      ""
+    ],
+    "description": "Check routes not implemented snippet"
+  },
+  "gin-routes-snippet": {
+    "prefix": "gin-routes-snippet",
+    "body": [
+      "// register routes",
+      "router.GET(\"/ping\", healthcheck)",
+      "router.GET(\"/${1:$TM_FILENAME_BASE}\", get${1:$TM_FILENAME_BASE}Handler)",
+      "router.POST(\"/${1:$TM_FILENAME_BASE}\", create${1:$TM_FILENAME_BASE}Handler)",
+      "router.PUT(\"/${1:$TM_FILENAME_BASE}/:${1:$TM_FILENAME_BASE}-id\", update${1:$TM_FILENAME_BASE}ByIDHandler)",
+      "router.DELETE(\"/${1:$TM_FILENAME_BASE}/:${1:$TM_FILENAME_BASE}-id\", delete${1:$TM_FILENAME_BASE}ByIDHandler)",
+      ""
+    ],
+    "description": "Register new routes snippet"
+  },
+  "gin-router-group-snippet": {
+    "prefix": "gin-router-group-snippet",
+    "body": [
+      "// Router group",
+      "router.Group(\"/${1:$TM_FILENAME_BASE}\")",
+      ""
+    ],
+    "description": "New routes group in gin"
+  },
+  "gin-run": {
+    "prefix": "gin-run",
+    "body": [
+      "// Starting to listen on port ${1:$TM_FILENAME_BASE}",
+      "router.Run(\":${1:$TM_FILENAME_BASE}\")",
+      ""
+    ],
+    "description": "Run server"
+  },
+  "gin-middleware-generic": {
+    "prefix": "gin-middleware-generic",
+    "body": [
+      "func ${1:$TM_FILENAME_BASE}() gin.HandlerFunc {",
+      "    return func(c *gin.Context) {",
+      "    }",
+      "}",
+      ""
+    ],
+    "description": "Generic Middleware function for Gin"
+  },
+  "gin-middleware-use": {
+    "prefix": "gin-middleware-use",
+    "body": [
+      "router.Use(",
+      "        // OWASP: Sensitive Data Exposure: Attaching recovery middleware to automatically log and recover from panics",
+      "        gin.Recovery(),",
+      "        // Attach RequestID middleware is used to identify each request using unique identifier for logging and correlation",
+      "        requestid.New(),",
+      "        // OWASP: Sensitive Data Exposure: Attaching recovery middleware to automatically log and recover from panics",
+      "        secure.New(secure.Config{",
+      "            AllowedHosts:          [\"localhost:9090\"],",
+      "            SSLRedirect:           true,",
+      "            SSLHost:               localhost:9090,",
+      "            STSSeconds:            315360000,",
+      "            STSIncludeSubdomains:  true,",
+      "            FrameDeny:             true,",
+      "            ContentTypeNosniff:    true,",
+      "            BrowserXssFilter:      true,",
+      "            ContentSecurityPolicy: default-src 'none',",
+      "            IENoOpen:              true,",
+      "            ReferrerPolicy:        strict-origin-when-cross-origin,",
+      "            SSLProxyHeaders:       {\"X-Forwarded-Proto\": \"https\"},",
+      "                 }),",
+      "        // JSON Logging",
+      "",
+      "        // Prometheus instrumentation",
+      "",
+      "        // CORS",
+      "",
+      "         )",
+      ""
+    ],
+    "description": "Generic Middleware function for Gin"
+  },
+  "gin-middleware-basic-auth": {
+    "prefix": "gin-middleware-basic-auth",
+    "body": [
+      "func ${1:$TM_FILENAME_BASE}(username, password string) gin.HandlerFunc {",
+      "    return gin.BasicAuth(gin.Accounts{",
+      "        username: password",
+      "})",
+      "}",
+      ""
+    ],
+    "description": "Basic Auth Middleware function for Gin"
+  },
+  "gin-middleware-cors": {
+    "prefix": "gin-middleware-cors",
+    "body": [
+      "func ${1:$TM_FILENAME_BASE}() gin.HandlerFunc {",
+      "    return func(ctx *gin.Context) {",
+      "        ctx.Writer.Header().Set(\"Access-Control-Allow-Origin\", \"*\")",
+      "        ctx.Writer.Header().Set(\"Access-Control-Allow-Credentials\", \"true\")",
+      "        ctx.Writer.Header().Set(\"Access-Control-Allow-Headers\", \"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With\")",
+      "        ctx.Writer.Header().Set(\"Access-Control-Allow-Methods\", \"POST, OPTIONS, GET, PUT\")",
+      "        if ctx.Request.Method == \"OPTIONS\" {",
+      "            ctx.AbortWithStatus(204)",
+      "            return",
+      "        }",
+      "        ctx.Next()",
+      "        }",
+      "}",
+      ""
+    ],
+    "description": "CORS Middleware function for Gin"
+  },
+  "gin-middleware-logger-json": {
+    "prefix": "gin-middleware-logger-json",
+    "body": [
+      "func ${1:$TM_FILENAME_BASE}() gin.HandlerFunc",
+      "    return gin.LoggerWithFormatter(",
+      "        func(params gin.LogFormatterParams) string {",
+      "            log := make(map[string]interface{})",
+      "            log[\"status_code\"] = params.StatusCode",
+      "            log[\"path\"] = params.Path",
+      "            log[\"method\"] = params.Method",
+      "            log[\"start_time\"] = params.TimeStamp.Unix()",
+      "            log[\"remote_addr\"] = params.ClientIP",
+      "            log[\"response_time\"] = params.Latency.String()",
+      "            log[\"request_id\"] = params.Request.Header.Get(\"X-Request-Id\")",
+      "            s, _ := json.Marshal(log)",
+      "            return string(s) + \"\n\"",
+      "        },",
+      "    )",
+      "}",
+      ""
+    ],
+    "description": "JSON Logger Middleware function for Gin"
+  },
+  "gin-handler": {
+    "prefix": "gin-handler",
+    "body": [
+      "func ${1:$TM_FILENAME_BASE}(ctx *gin.Context) {",
+      "    return",
+      "}",
+      ""
+    ],
+    "description": "Generic API handler for Gin"
+  },
+  "gin-handler-post": {
+    "prefix": "gin-handler-post",
+    "body": [
+      "func ${1:$TM_FILENAME_BASE}(ctx *gin.Context) {",
+      "    request := &model.CreateUserRequest{}",
+      "    if err := c.BindJSON(request); err != nil {",
+      "        log.Info(\"could not bind request body\")",
+      "        ctx.JSON(http.StatusBadRequest, gin.H{\"message\":\"Bad Request\"})",
+      "        return",
+      "    }",
+      "    ctx.JSON(http.StatusOK, gin.H{\"message\":\"Do something\"})",
+      "    return",
+      "}",
+      ""
+    ],
+    "description": "POST request handler for Gin"
+  },
+  "gin-query-params-snippet": {
+    "prefix": "gin-query-params-snippet",
+    "body": [
+      "${1:$TM_FILENAME_BASE}, ok := ctx.GetQuery(\"${1:$TM_FILENAME_BASE}\")",
+      "if !ok {",
+      "    log.Fatalf(\"No query param provided\")",
+      "}",
+      ""
+    ],
+    "description": "Gin query params snippet"
+  },
+  "gin-header-set": {
+    "prefix": "gin-query-params-snippet",
+    "body": ["ctx.Request.Header.Add(\"${1:$TM_FILENAME_BASE}\", \"\")", ""],
+    "description": "Set header"
+  },
+  "gin-response": {
+    "prefix": "gin-response",
+    "body": [
+      "ctx.JSON(http.StatusOK, gin.H{",
+      "                          \"status_code\": \"http.StatusOK\"",
+      "                          \"is_success\": \"true\"",
+      "                          \"data\": \"nil\"",
+      "                          \"message\": \"Success\"",
+      "                })",
+      ""
+    ],
+    "description": "Generic HTTP response"
+  },
+  "gin-load-config-snippet": {
+    "prefix": "gin-load-config-snippet",
+    "body": [
+      "// loading configuration from config.yaml",
+      "/*",
+      "app:",
+      "  name: \"My app\"",
+      "*/",
+      "type (",
+      "    Config struct {",
+      "        App    `yaml:\"app\"`",
+      "    }",
+      "    App struct {",
+      "       Name string `yaml:\"name\"`",
+      "    }",
+      ")",
+      "func NewConfig() (*Config, error) {",
+      "           cfg := &Config{}",
+      "           err := cleanenv.ReadConfig(\"config.yaml\", cfg)",
+      "           if err != nil {",
+      "               return nil, fmt.Errorf(\"could not read config file: %v\", err)",
+      "           }",
+      "           err := cleanenv.ReadEnv(cfg)",
+      "           if err != nil {",
+      "               return nil, fmt.Errorf(\"could not read env vars: %v\", err)",
+      "           }",
+      "           return cfg, nil",
+      "}",
+      ""
+    ],
+    "description": "Load config from config file"
+  }
+}
