@@ -7,7 +7,7 @@ return {
                 save_on_toggle = true,
                 sync_on_ui_close = false,
                 key = function()
-                    return vim.uv.cwd() or os.getenv("PWD") or ""
+                    return vim.uv.cwd() or (os.getenv("PWD") or os.getenv("USERPROFILE")) or ""
                 end,
             },
         })

@@ -13,7 +13,7 @@ return {
             },
         },
         opts = {
-            dir = vim.fs.joinpath(os.getenv("HOME"), "Notes2"),
+            dir = vim.fs.joinpath((os.getenv("HOME") or os.getenv("USERPROFILE")), "Notes2"),
             daily_notes = { folder = "Inbox" },
             new_notes_location = "current_dir",
             disable_frontmatter = true,

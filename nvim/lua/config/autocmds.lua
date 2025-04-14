@@ -1,5 +1,4 @@
 ---@diagnostic disable: undefined-field
-
 vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "FocusLost" }, {
     nested = true,
     desc = "Autosave on focus change.",
@@ -62,7 +61,6 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
     once = true,
     callback = function()
         command_abbrev("git", "Git")
-        command_abbrev("gcm", "GitCommitMsg")
         return true
     end,
 })

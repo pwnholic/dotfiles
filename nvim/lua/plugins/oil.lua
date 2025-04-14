@@ -38,13 +38,12 @@ return {
                 pcall(require, "oil")
                 pcall(vim.api.nvim_del_autocmd, autocmd_id)
 
+                local edit = vim.schedule_wrap(function()
+                    pcall(vim.cmd.edit, { bang = true, mods = { keepjumps = true } })
+                end)
+
                 if vim.api.nvim_buf_is_valid(bufnr) then
-                    vim.api.nvim_buf_call(
-                        bufnr,
-                        vim.schedule_wrap(function()
-                            pcall(vim.cmd.edit, { bang = true, mods = { keepjumps = true } })
-                        end)
-                    )
+                    vim.api.nvim_buf_call(bufnr, edit)
                 end
             end),
         })
@@ -82,7 +81,7 @@ return {
             ["<A-s>"] = { "actions.select", opts = { vertical = true } },
             ["<A-h>"] = { "actions.select", opts = { horizontal = true } },
             ["<A-t>"] = { "actions.select", opts = { tab = true } },
-            ["<C-p>"] = "actions.preview",
+            ["K"] = "actions.preview",
             ["<C-c>"] = { "actions.close", mode = "n" },
             ["<F5>"] = "actions.refresh",
             ["-"] = { "actions.parent", mode = "n" },
@@ -166,8 +165,29 @@ return {
                 if not vim.api.nvim_buf_is_loaded(bufnr) then
                     return
                 end
+
                 local is_dot = name:match("^%.") ~= nil
-                local is_hidden = {}
+                local is_hidden = {
+                    "bin",
+                    "pkg",
+                    "*.test",
+                    "vendor",
+                    "cover.out",
+                    "target",
+                    "node_modules",
+                    "dist",
+                    "build",
+                    "out",
+                    "coverage",
+                    "vendor",
+                    "storage",
+                    "bootstrap",
+                    "env",
+                    "venv",
+                    "build",
+                    "dist",
+                    "*.egg-info",
+                }
                 return vim.tbl_contains(is_hidden, name) or is_dot
             end,
             ---@diagnostic disable-next-line: unused-local
@@ -214,7 +234,7 @@ return {
         local function lcd(dir)
             local ok = pcall(vim.api.nvim_cmd, { cmd = "lcd", args = { dir } }, { output = false })
             if not ok then
-                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.WARN)
+                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.warn)
             end
         end
 

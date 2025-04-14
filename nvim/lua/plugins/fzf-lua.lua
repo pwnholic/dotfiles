@@ -5,17 +5,18 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
-                    cwd = vim.fn.fnameescape(vim.uv.cwd() or os.getenv("PWD") or ""),
+                    cwd = vim.fn.fnameescape(vim.uv.cwd() or (os.getenv("PWD") or os.getenv("USERPROFILE")) or ""),
                     fd_opts = [[--color=never --type d --hidden --follow --exclude .git]],
                     find_opts = [[-type d -not -path '*/.git/*' -printf '%P\n']],
                     actions = {
                         ["default"] = function(selected, opts)
                             for i = 1, #selected do
-                                local ok, path = pcall(require("fzf-lua.path").entry_to_file, selected[i], opts)
+                                local path =
+                                    vim.fn.fnameescape(require("fzf-lua.path").entry_to_file(selected[i], opts).path)
+                                local ok = pcall(vim.api.nvim_cmd, { cmd = "Oil", args = { path } }, { output = false })
                                 if not ok then
-                                    return vim.notify("could not get path for given buffer", 3, { title = "Path" })
+                                    vim.notify("[fzf-lua] failed to cd to " .. path, vim.log.levels.WARN)
                                 end
-                                return vim.cmd(string.format("Oil %s", vim.fn.fnameescape(path.path)))
                             end
                         end,
                     },
@@ -129,7 +130,7 @@ return {
         opts.files = {
             prompt = "Files ❯ ",
             winopts = {
-                split = string.format("botright %dnew", math.floor(vim.o.lines / 2)),
+                split = string.format("botright %dnew", math.floor(vim.o.lines / 2) - 4),
                 preview = { hidden = true },
             },
             fzf_opts = {

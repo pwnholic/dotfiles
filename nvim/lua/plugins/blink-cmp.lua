@@ -42,7 +42,7 @@ return {
                         trailing_slash = true,
                         label_trailing_slash = true,
                         get_cwd = function()
-                            return vim.uv.cwd() or os.getenv("PWD") or ""
+                            return vim.uv.cwd() or (os.getenv("PWD") or os.getenv("USERPROFILE")) or ""
                         end,
                         show_hidden_files_by_default = true,
                     },
