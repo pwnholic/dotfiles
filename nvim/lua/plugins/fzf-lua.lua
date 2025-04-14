@@ -38,6 +38,7 @@ return {
             ["--padding"] = "0,1",
             ["--margin"] = "0",
             ["--highlight-line"] = true,
+            ["--border"] = "none",
         }
 
         opts.winopts = {
@@ -119,6 +120,9 @@ return {
         opts.hls = {
             border = "Comment",
             preview_border = "Comment",
+            title = "MiniHipatternsHack",
+            preview_title = "MiniHipatternsTodo",
+            header_bind = "FzfLuaFzfPointer",
         }
 
         opts.defaults = {
