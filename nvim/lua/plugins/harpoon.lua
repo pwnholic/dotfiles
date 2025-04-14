@@ -12,7 +12,7 @@ return {
             },
             default = {
                 display = function(list_item)
-                    return vim.uv.fs_stat(list_item.value) and list_item.value
+                    return vim.uv.fs_stat(list_item.value).type == "file" and list_item.value
                 end,
             },
         })
