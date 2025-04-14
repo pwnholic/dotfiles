@@ -39,6 +39,7 @@ return {
             ["--margin"] = "0",
             ["--highlight-line"] = true,
         }
+
         opts.winopts = {
             height = 0.75,
             width = 0.90,
@@ -148,18 +149,14 @@ return {
             },
             actions = {
                 ["ctrl-a"] = function(selected, opt)
+                    local cwd = opt.cwd or opt._cwd or vim.uv.cwd()
                     for i = 1, #selected do
                         local entry = path.entry_to_file(selected[i], opt)
                         if entry.path == "<none>" then
                             return
                         end
-                        local fullpath = entry.bufname or entry.uri and entry.uri:match("^%a+://(.*)") or entry.path
-                        if not fullpath then
-                            return
-                        end
-                        if not path.is_absolute(fullpath) then
-                            fullpath = path.join({ opt.cwd or opt._cwd or vim.uv.cwd(), fullpath })
-                        end
+
+                        local fullpath = path.is_absolute(entry.path) and entry.path or path.join({ cwd, entry.path })
                         local trunc_path = vim.fn.fnamemodify(vim.fs.normalize(vim.fn.fnameescape(fullpath)), ":p:.")
                         vim.notify(string.format("Add %s to harpoon list", trunc_path), 2, { title = "FzF" })
                         require("harpoon"):list():add({
