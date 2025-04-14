@@ -5,7 +5,7 @@ return {
             "<leader>fd",
             function()
                 require("fzf-lua").files({
-                    cwd = vim.fn.fnameescape(vim.uv.cwd() or (os.getenv("PWD") or os.getenv("USERPROFILE")) or ""),
+                    cwd = vim.fn.fnameescape(LazyVim.root({ normalize = true })),
                     fd_opts = [[--color=never --type d --hidden --follow --exclude .git]],
                     find_opts = [[-type d -not -path '*/.git/*' -printf '%P\n']],
                     actions = {
@@ -153,7 +153,7 @@ return {
             },
             actions = {
                 ["ctrl-a"] = function(selected, opt)
-                    local cwd = opt.cwd or opt._cwd or vim.uv.cwd()
+                    local cwd = opt.cwd or opt._cwd or LazyVim.root({ normalize = true })
                     for i = 1, #selected do
                         local entry = path.entry_to_file(selected[i], opt)
                         if entry.path == "<none>" then

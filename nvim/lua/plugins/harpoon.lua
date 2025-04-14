@@ -2,12 +2,18 @@ return {
     "ThePrimeagen/harpoon",
     config = function()
         local harpoon = require("harpoon")
+
         harpoon:setup({
             settings = {
                 save_on_toggle = true,
                 sync_on_ui_close = false,
                 key = function()
-                    return vim.uv.cwd() or (os.getenv("PWD") or os.getenv("USERPROFILE")) or ""
+                    return LazyVim.root({ normalize = true })
+                end,
+            },
+            default = {
+                get_root_dir = function()
+                    return LazyVim.root({ normalize = true })
                 end,
             },
         })
