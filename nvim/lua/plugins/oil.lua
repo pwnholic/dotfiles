@@ -232,70 +232,81 @@ return {
         local oil = require("oil")
 
         local function lcd(dir)
+            if not dir or dir == "" then
+                return
+            end
             local ok = pcall(vim.api.nvim_cmd, { cmd = "lcd", args = { dir } }, { output = false })
             if not ok then
-                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.warn)
+                vim.notify("[oil.nvim] failed to cd to " .. dir, vim.log.levels.WARN)
             end
         end
 
-        local groupid = vim.api.nvim_create_augroup("OilSetup", {})
+        local groupid = vim.api.nvim_create_augroup("OilSetup", { clear = true })
         vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
             group = groupid,
             pattern = "oil://*",
-            callback = function(info)
-                local buf = info.buf
-                if not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].ft ~= "oil" then
+            callback = function(ev)
+                if vim.bo[ev.buf].filetype ~= "oil" then
                     return
                 end
-
-                vim.api.nvim_buf_call(buf, function()
-                    ---@diagnostic disable-next-line: param-type-mismatch
-                    local oildir = vim.fs.normalize(oil.get_current_dir())
-                    if vim.fn.isdirectory(oildir) == 0 then
-                        return
-                    end
-
-                    for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-                        vim.api.nvim_win_call(win, function()
-                            lcd(oildir)
+                vim.schedule(function()
+                    vim.api.nvim_buf_call(ev.buf, function()
+                        local ok, oildir = pcall(function()
+                            return vim.fs.normalize(oil.get_current_dir())
                         end)
-                    end
+
+                        if not ok or not oildir or vim.fn.isdirectory(oildir) ~= 1 then
+                            return
+                        end
+
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == ev.buf then
+                                vim.api.nvim_win_call(win, function()
+                                    lcd(oildir)
+                                end)
+                            end
+                        end
+                    end)
                 end)
             end,
         })
 
-        -- Directory change handler for non-oil buffers
+        -- Handler untuk non-oil buffers
         vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FileChangedShellPost" }, {
             group = groupid,
             callback = function(info)
                 if info.file == "" or vim.bo[info.buf].buftype ~= "" then
                     return
                 end
-                if vim.api.nvim_buf_is_valid(info.buf) then
-                    for _, win in ipairs(vim.fn.win_findbuf(info.buf)) do
-                        if vim.api.nvim_win_is_valid(win) then
+                vim.schedule(function()
+                    for _, win in ipairs(vim.api.nvim_list_wins()) do
+                        if vim.api.nvim_win_get_buf(win) == info.buf then
                             vim.api.nvim_win_call(win, function()
-                                lcd(vim.uv.cwd() or LazyVim.root())
+                                lcd(vim.uv.cwd() or LazyVim.root() or vim.fn.getcwd())
                             end)
-                            break -- Only need to do this once per buffer
+                            break
                         end
                     end
-                end
+                end)
             end,
         })
 
-        -- Initialize existing oil buffers
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-            if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].ft == "oil" then
-                vim.api.nvim_buf_call(buf, function()
-                    local oildir = vim.fs.normalize(oil.get_current_dir())
-                    if vim.fn.isdirectory(oildir) == 1 then
-                        lcd(oildir)
-                    end
-                end)
+        -- Inisialisasi buffer oil yang sudah ada
+        vim.schedule(function()
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.bo[buf].filetype == "oil" then
+                    vim.api.nvim_buf_call(buf, function()
+                        local ok, oildir = pcall(function()
+                            return vim.fs.normalize(oil.get_current_dir())
+                        end)
+                        if ok and oildir and vim.fn.isdirectory(oildir) == 1 then
+                            lcd(oildir)
+                        end
+                    end)
+                end
             end
-        end
+        end)
 
-        oil.setup(opts)
+        return oil.setup(opts)
     end,
 }
