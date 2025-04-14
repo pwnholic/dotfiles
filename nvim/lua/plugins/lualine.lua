@@ -26,6 +26,15 @@ return {
             table.insert(opts.sections.lualine_z, { "progress", separator = " ", padding = { left = 1, right = 0 } })
             table.insert(opts.sections.lualine_z, { "location", padding = { left = 0, right = 1 } })
 
+            table.insert(opts.sections.lualine_x, {
+                "tabs",
+                show_modified_status = false,
+                tabs_color = {
+                    active = "LualineTabActive",
+                    inactive = "LualineTabInActive",
+                },
+            })
+
             table.insert(opts.sections.lualine_y, {
                 function()
                     local client_names = {}

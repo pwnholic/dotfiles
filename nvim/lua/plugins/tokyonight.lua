@@ -17,6 +17,8 @@ return {
             hl.WinSeparator = { bg = c.none, fg = c.comment }
             hl.FloatBorder = { link = "Comment" }
             hl.LualineLspClient = { fg = c.cyan, bg = c.none }
+            hl.LualineTabActive = { fg = c.blue1, bg = c.none, bold = true }
+            hl.LualineTabInActive = { fg = c.fg_dark, bg = c.none }
 
             hl.TreesitterContext = { bg = c.none, underline = true, sp = c.purple, bold = true }
 
