@@ -39,9 +39,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 
 ---Set abbreviation that only expand when the trigger is at the position of
 ---a command
----@param trig string|{ [1]: string, [2]: string }
----@param command string
----@param opts table?
 local function command_abbrev(trig, command, opts)
     if type(trig) == "table" then
         local trig_short = trig[1]

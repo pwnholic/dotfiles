@@ -1,7 +1,7 @@
 return {
+    { "ray-x/go.nvim", ft = { "go", "gomod" } },
     {
         "neovim/nvim-lspconfig",
-        dependencies = { { "ray-x/go.nvim", ft = { "go", "gomod" } } },
         opts = {
             setup = {
                 gopls = function(_, opts)

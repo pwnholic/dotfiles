@@ -59,4 +59,4 @@ vim.opt.shada = ""
 vim.api.nvim_create_autocmd("UIEnter", { group = shada_augroup, once = true, callback = vim.schedule_wrap(rshada) })
 vim.api.nvim_create_autocmd("BufReadPre", { group = shada_augroup, once = true, callback = rshada })
 
-vim.g.border = "single"
+vim.g.border = "rounded"

@@ -41,21 +41,6 @@ return {
                 symbols = { separator = " ", done = "" },
                 ignore_lsp = { "null-ls" },
             })
-
-            table.insert(opts.sections.lualine_x, {
-                function()
-                    local ok, pomo = pcall(require, "pomo")
-                    if not ok then
-                        return ""
-                    end
-                    local timer = pomo.get_first_to_finish()
-                    if timer == nil then
-                        return ""
-                    end
-                    return string.format("󰣠  %s", tostring(timer))
-                end,
-                color = "PomoTimer",
-            })
         end,
     },
 }
