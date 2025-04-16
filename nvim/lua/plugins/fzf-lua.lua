@@ -172,12 +172,7 @@ return {
             },
         }
 
-        opts.lsp = {
-            async_or_timeout = 5000,
-            file_icons = true,
-            jump1_action = actions.file_edit,
-            git_icons = false,
-            jump1 = true,
+        local layout_preview_vertical = {
             winopts = {
                 height = 0.80,
                 width = 0.80,
@@ -198,6 +193,31 @@ return {
                 ["--margin"] = "0",
                 ["--highlight-line"] = true,
             },
+        }
+
+        opts.lsp = {
+            async_or_timeout = 5000,
+            file_icons = true,
+            jump1_action = actions.file_edit,
+            git_icons = false,
+            jump1 = true,
+            winopts = layout_preview_vertical.winopts,
+            fzf_opts = layout_preview_vertical.fzf_opts,
+            symbols = {
+                winopts = layout_preview_vertical.winopts,
+                fzf_opts = layout_preview_vertical.fzf_opts,
+            },
+            finder = {
+                winopts = layout_preview_vertical.winopts,
+                fzf_opts = layout_preview_vertical.fzf_opts,
+            },
+        }
+
+        opts.diagnostics = {
+            winopts = layout_preview_vertical.winopts,
+            fzf_opts = layout_preview_vertical.fzf_opts,
+            severity_limit = vim.diagnostic.severity.HINT,
+            severity_bound = vim.diagnostic.severity.ERROR,
         }
     end,
 }

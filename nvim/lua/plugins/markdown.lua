@@ -1,8 +1,8 @@
 return {
     {
         "epwalsh/obsidian.nvim",
-        ft = "markdown",
         dependencies = { "nvim-lua/plenary.nvim" },
+        cmd = { "ObsidianOpen", "ObsidianNew", "ObsidianRename" },
         keys = {
             {
                 "gf",
@@ -10,6 +10,7 @@ return {
                     return require("obsidian").util.gf_passthrough()
                 end,
                 desc = "Go File",
+                ft = "markdown",
             },
         },
         opts = {

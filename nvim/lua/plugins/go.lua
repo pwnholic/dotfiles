@@ -16,6 +16,8 @@ return {
                         lsp_document_formatting = false,
                         lsp_keymaps = false,
                         icons = false,
+                        go_input = vim.ui.input,
+                        go_select = vim.ui.select,
                         diagnostic = {
                             underline = true,
                             update_in_insert = false,

@@ -28,7 +28,12 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         if not vim.b[args.buf].view_activated then
             local filetype = vim.bo[args.buf].filetype
             local buftype = vim.bo[args.buf].buftype
-            local ignore_filetypes = { "gitcommit", "gitrebase", "svg", "hgcommit" }
+            local ignore_filetypes = {
+                "gitcommit",
+                "gitrebase",
+                "svg",
+                "hgcommit",
+            }
             if buftype == "" and filetype and filetype ~= "" and not vim.tbl_contains(ignore_filetypes, filetype) then
                 vim.b[args.buf].view_activated = true
                 vim.cmd.loadview({ mods = { emsg_silent = true } })
