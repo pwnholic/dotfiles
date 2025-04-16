@@ -5,6 +5,14 @@
       {
         "language": "go",
         "path": "./gin_framework.json"
+      },
+      {
+        "language": "go",
+        "path": "./gorm_orm.json"
+      },
+      {
+        "language": "go",
+        "path": "./golang.json"
       }
     ]
   }
