@@ -2,6 +2,7 @@
 return {
     "stevearc/oil.nvim",
     cmd = "Oil",
+    version = false,
     keys = {
         { "<leader>e", vim.cmd.Oil, desc = "Open File Explorer" },
         {

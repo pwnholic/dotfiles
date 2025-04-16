@@ -16,9 +16,28 @@ return {
                         lsp_document_formatting = false,
                         lsp_keymaps = false,
                         icons = false,
+                        tag_options = "json=omitempty",
+                        tag_transform = "snakecase",
+                        lsp_semantic_highlights = true,
                         go_input = vim.ui.input,
                         go_select = vim.ui.select,
+                        lsp_on_attach = function(client, bufnr)
+                            if vim.api.nvim_buf_is_valid(bufnr) then
+                                if not client.server_capabilities.semanticTokensProvider then
+                                    local semantic = client.config.capabilities.textDocument.semanticTokens
+                                    client.server_capabilities.semanticTokensProvider = {
+                                        full = true,
+                                        legend = {
+                                            tokenTypes = semantic.tokenTypes,
+                                            tokenModifiers = semantic.tokenModifiers,
+                                        },
+                                        range = true,
+                                    }
+                                end
+                            end
+                        end,
                         diagnostic = {
+                            hdlr = true,
                             underline = true,
                             update_in_insert = false,
                             virtual_text = {
@@ -27,6 +46,9 @@ return {
                                 prefix = "●",
                             },
                             severity_sort = true,
+                            float = {
+                                border = vim.g.border,
+                            },
                             signs = {
                                 text = {
                                     [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,

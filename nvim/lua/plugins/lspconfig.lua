@@ -9,6 +9,11 @@ return {
             codelens = {
                 enabled = false,
             },
+            diagnostics = {
+                float = {
+                    border = vim.g.border,
+                },
+            },
             format = {
                 formatting_options = {
                     tabsize = 4,

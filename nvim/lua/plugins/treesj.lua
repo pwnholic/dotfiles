@@ -1,6 +1,7 @@
 return {
     "Wansmer/treesj",
     keys = { { "gS", "<cmd>TSJToggle<cr>", desc = "Split/Join Block Code" } },
+    version = false,
     opts = {
         use_default_keymaps = false,
         max_join_length = 1024,

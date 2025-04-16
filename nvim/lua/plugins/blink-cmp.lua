@@ -2,8 +2,8 @@ local win_hl = "Normal:Normal,FloatBorder:Comment,CursorLine:BlinkCmpMenuSelecti
 return {
     "saghen/blink.cmp",
     dependencies = {
-        { "mikavilpas/blink-ripgrep.nvim" },
-        { "stevearc/vim-vscode-snippets" },
+        { "mikavilpas/blink-ripgrep.nvim", version = false },
+        { "stevearc/vim-vscode-snippets", version = false },
     },
     opts = {
         cmdline = {

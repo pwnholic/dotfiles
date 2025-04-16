@@ -3,6 +3,7 @@ return {
         "epwalsh/obsidian.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
         cmd = { "ObsidianOpen", "ObsidianNew", "ObsidianRename" },
+        version = false,
         keys = {
             {
                 "gf",
@@ -48,6 +49,7 @@ return {
     {
         "OXY2DEV/markview.nvim",
         ft = "markdown",
+        version = false,
         opts = {
             yaml = {
                 enable = true,

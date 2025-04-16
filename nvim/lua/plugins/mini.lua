@@ -14,6 +14,7 @@ return {
         "echasnovski/mini-git",
         main = "mini.git",
         cmd = "Git",
+        version = false,
         config = function()
             require("mini.git").setup({
                 job = { git_executable = "/usr/bin/git", timeout = 40000 },
