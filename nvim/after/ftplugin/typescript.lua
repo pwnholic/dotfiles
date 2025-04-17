@@ -27,7 +27,7 @@ local config = [[
 ]]
 
 local filename = ".prettierrc"
-local filepath = vim.fs.joinpath(vim.uv.cwd(), filename)
+local filepath = vim.fs.joinpath(LazyVim.root(), filename)
 
 if not vim.uv.fs_stat(filepath) then
     local fd = assert(vim.uv.fs_open(filepath, "w", 438)) -- 'w' = write mode, 438 = permission 0666

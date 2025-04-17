@@ -24,6 +24,31 @@ return {
             },
             servers = {
                 iwes = {},
+                golangci_lint_ls = {
+                    name = "golangci",
+                    cmd = { "golangci-lint-langserver" },
+                    root_dir = function(fname)
+                        return require("lspconfig.util").root_pattern(
+                            ".golangci.yml",
+                            ".golangci.yaml",
+                            ".golangci.toml",
+                            ".golangci.json"
+                        )(fname)
+                    end,
+                    init_options = {
+                        command = {
+                            "golangci-lint",
+                            "run",
+                            "-c",
+                            vim.fs.joinpath(LazyVim.root(), ".golangci.yml"),
+                            "--output.text.print-issued-lines=false",
+                            "--output.json.path=stdout",
+                            "--output.text.colors=true",
+                            "--show-stats=false",
+                            "--issues-exit-code=0",
+                        },
+                    },
+                },
             },
             setup = {
                 marksman = function()
