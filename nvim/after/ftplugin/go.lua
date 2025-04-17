@@ -179,14 +179,16 @@ linters:
 local filename = ".golangci.yml"
 local filepath = vim.fs.joinpath(LazyVim.root(), filename)
 if vim.fs.root(LazyVim.root(), { "go.mod", "main.go", ".git" }) ~= nil then
-    if not vim.uv.fs_stat(filepath) then
-        local fd = assert(vim.uv.fs_open(filepath, "w", 438)) -- 'w' = write mode, 438 = permission 0666
-        assert(vim.uv.fs_write(fd, config))
-        vim.notify(
-            string.format("Missing file [%s] and the new one has been generated", filename),
-            2,
-            { title = "New File" }
-        )
-        vim.uv.fs_close(fd)
-    end
+    vim.api.nvim_create_user_command("GolintCiGenerate", function()
+        if not vim.uv.fs_stat(filepath) then
+            local fd = assert(vim.uv.fs_open(filepath, "w", 438)) -- 'w' = write mode, 438 = permission 0666
+            assert(vim.uv.fs_write(fd, config))
+            vim.notify(
+                string.format("Missing file [%s] and the new one has been generated", filename),
+                2,
+                { title = "New File" }
+            )
+            vim.uv.fs_close(fd)
+        end
+    end, {})
 end
