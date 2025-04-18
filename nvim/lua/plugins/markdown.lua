@@ -1,6 +1,6 @@
 return {
     {
-        "epwalsh/obsidian.nvim",
+        "obsidian-nvim/obsidian.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
         cmd = { "ObsidianOpen", "ObsidianNew", "ObsidianRename" },
         version = false,
@@ -8,9 +8,14 @@ return {
             {
                 "gf",
                 function()
-                    return require("obsidian").util.gf_passthrough()
+                    if require("obsidian").util.cursor_on_markdown_link() then
+                        return "<cmd>ObsidianFollowLink<CR>"
+                    else
+                        return "gf"
+                    end
                 end,
                 desc = "Go File",
+                expr = true,
                 ft = "markdown",
             },
         },
