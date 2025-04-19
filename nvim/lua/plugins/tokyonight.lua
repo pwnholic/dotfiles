@@ -22,10 +22,10 @@ return {
 
             hl.TreesitterContext = { bg = c.none, underline = true, sp = c.purple, bold = true }
 
-            hl.CursorLineNr = { fg = c.orange, bg = c.none, bold = true }
-            hl.LineNr = { fg = c.orange, bg = c.none, bold = true }
-            hl.LineNrAbove = { fg = c.red, bg = c.none }
-            hl.LineNrBelow = { fg = c.blue1, bg = c.none }
+            hl.CursorLineNr = { fg = c.magenta2, bg = c.none, bold = true }
+            hl.LineNr = { fg = c.magenta2, bg = c.none, bold = true }
+            hl.LineNrAbove = { fg = c.magenta, bg = c.none }
+            hl.LineNrBelow = { fg = c.blue2, bg = c.none }
             hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
 
             hl.PomoTimer = { fg = c.orange, bg = c.none, bold = true }
