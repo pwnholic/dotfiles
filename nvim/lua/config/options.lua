@@ -25,7 +25,7 @@ vim.opt.spelloptions = "camel"
 vim.opt.spellsuggest = "best,9"
 
 ---@diagnostic disable-next-line: undefined-field
-vim.opt.shell = vim.uv.os_uname().sysname == "Linux" and os.getenv("SHELL") or "/usr/bin/fish"
+vim.opt.shell = (vim.uv.os_uname().sysname == "Linux" and os.getenv("SHELL")) or "/usr/bin/fish"
 
 vim.opt.guicursor = {
     "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50",

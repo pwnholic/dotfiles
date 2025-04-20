@@ -36,10 +36,25 @@ return {
             })
 
             table.insert(opts.sections.lualine_y, {
-                "lsp_status",
-                icon = false,
-                symbols = { separator = " ", done = "" },
-                ignore_lsp = { "null-ls" },
+                function()
+                    local lsp_name = {}
+                    local bufnr = vim.api.nvim_get_current_buf() or 0
+                    if not vim.api.nvim_buf_is_valid(bufnr) then
+                        return
+                    else
+                        for _, server in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+                            table.insert(lsp_name, server.name)
+                        end
+                        return table.concat(lsp_name, " ")
+                    end
+                end,
+                cond = function()
+                    local bufnr = vim.api.nvim_get_current_buf() or 0
+                    if not vim.api.nvim_buf_is_valid(bufnr) then
+                        return false
+                    end
+                    return #vim.lsp.get_clients({ bufnr = bufnr }) > 0 and true
+                end,
             })
         end,
     },

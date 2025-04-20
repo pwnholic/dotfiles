@@ -33,14 +33,12 @@ return {
                             ".golangci.yaml",
                             ".golangci.toml",
                             ".golangci.json"
-                        )(fname)
+                        )(fname) and vim.fs.root(0, ".git")
                     end,
                     init_options = {
                         command = {
                             "golangci-lint",
                             "run",
-                            "-c",
-                            vim.fs.joinpath(LazyVim.root(), ".golangci.yml"),
                             "--output.text.print-issued-lines=false",
                             "--output.json.path=stdout",
                             "--output.text.colors=true",
