@@ -27,6 +27,7 @@ return {
             hl.LineNrAbove = { fg = c.magenta, bg = c.none }
             hl.LineNrBelow = { fg = c.blue2, bg = c.none }
             hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
+            hl.LspInlayHint = { fg = c.comment, bg = c.none, underline = true, sp = c.purple }
 
             hl.PomoTimer = { fg = c.orange, bg = c.none, bold = true }
 
