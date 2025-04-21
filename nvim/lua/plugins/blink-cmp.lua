@@ -6,6 +6,9 @@ return {
         { "stevearc/vim-vscode-snippets", version = false },
     },
     opts = {
+        enabled = function()
+            return not vim.tbl_contains({ "dap-repl", "bigfile" }, vim.bo.filetype)
+        end,
         cmdline = {
             enabled = true,
             keymap = { preset = "cmdline" },
