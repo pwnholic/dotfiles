@@ -1,3 +1,26 @@
+local vertical_preview_layout = {
+    winopts = {
+        height = 0.80,
+        width = 0.80,
+        row = 0.50,
+        col = 0.50,
+        preview = {
+            layout = "vertical",
+            vertical = "down:65%",
+        },
+    },
+    fzf_opts = {
+        ["--layout"] = "reverse",
+        ["--ansi"] = true,
+        ["--no-separator"] = false,
+        ["--marker"] = "█",
+        ["--pointer"] = "█",
+        ["--padding"] = "0,1",
+        ["--margin"] = "0",
+        ["--highlight-line"] = true,
+    },
+}
+
 return {
     "ibhagwan/fzf-lua",
     keys = {
@@ -23,6 +46,41 @@ return {
                 })
             end,
             desc = "Find Directory (root)",
+        },
+        {
+            "<leader>dx",
+            function()
+                return require("fzf-lua").dap_commands()
+            end,
+            desc = "Command",
+        },
+        {
+            "<leader>dL",
+            function()
+                return require("fzf-lua").dap_configurations()
+            end,
+            desc = "Configuration",
+        },
+        {
+            "<leader>dX",
+            function()
+                return require("fzf-lua").dap_list_breakpoints(vertical_preview_layout)
+            end,
+            desc = "List BreakPoint",
+        },
+        {
+            "<leader>dv",
+            function()
+                return require("fzf-lua").dap_variables()
+            end,
+            desc = "Variables",
+        },
+        {
+            "<leader>df",
+            function()
+                return require("fzf-lua").dap_frames()
+            end,
+            desc = "Frames",
         },
     },
     opts = function(_, opts)
@@ -172,50 +230,27 @@ return {
             },
         }
 
-        local layout_preview_vertical = {
-            winopts = {
-                height = 0.80,
-                width = 0.80,
-                row = 0.50,
-                col = 0.50,
-                preview = {
-                    layout = "vertical",
-                    vertical = "down:65%",
-                },
-            },
-            fzf_opts = {
-                ["--layout"] = "reverse",
-                ["--ansi"] = true,
-                ["--no-separator"] = false,
-                ["--marker"] = "█",
-                ["--pointer"] = "█",
-                ["--padding"] = "0,1",
-                ["--margin"] = "0",
-                ["--highlight-line"] = true,
-            },
-        }
-
         opts.lsp = {
             async_or_timeout = 5000,
             file_icons = true,
             jump1_action = actions.file_edit,
             git_icons = false,
             jump1 = true,
-            winopts = layout_preview_vertical.winopts,
-            fzf_opts = layout_preview_vertical.fzf_opts,
+            winopts = vertical_preview_layout.winopts,
+            fzf_opts = vertical_preview_layout.fzf_opts,
             symbols = {
-                winopts = layout_preview_vertical.winopts,
-                fzf_opts = layout_preview_vertical.fzf_opts,
+                winopts = vertical_preview_layout.winopts,
+                fzf_opts = vertical_preview_layout.fzf_opts,
             },
             finder = {
-                winopts = layout_preview_vertical.winopts,
-                fzf_opts = layout_preview_vertical.fzf_opts,
+                winopts = vertical_preview_layout.winopts,
+                fzf_opts = vertical_preview_layout.fzf_opts,
             },
         }
 
         opts.diagnostics = {
-            winopts = layout_preview_vertical.winopts,
-            fzf_opts = layout_preview_vertical.fzf_opts,
+            winopts = vertical_preview_layout.winopts,
+            fzf_opts = vertical_preview_layout.fzf_opts,
             severity_limit = vim.diagnostic.severity.HINT,
             severity_bound = vim.diagnostic.severity.ERROR,
         }

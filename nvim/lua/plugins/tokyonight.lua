@@ -29,6 +29,8 @@ return {
             hl.LspCodeLens = { link = "DiagnosticVirtualTextHint", default = true }
             hl.LspInlayHint = { fg = c.comment, bg = c.none, underline = true, sp = c.purple }
 
+            hl.SnacksInputTitle = { fg = c.black, bg = c.orange, bold = true }
+
             hl.PomoTimer = { fg = c.orange, bg = c.none, bold = true }
 
             hl.OilTypeDir = { link = "Directory" }
