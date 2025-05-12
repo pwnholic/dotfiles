@@ -2,6 +2,7 @@ return {
     {
         "neovim/nvim-lspconfig",
         opts = {
+
             inlay_hints = {
                 enabled = false,
                 exclude = {}, -- filetypes
@@ -10,6 +11,10 @@ return {
                 enabled = false,
             },
             diagnostics = {
+                signs = {
+                    linehl = { [vim.diagnostic.severity.ERROR] = "ErrorMsg" },
+                    numhl = { [vim.diagnostic.severity.WARN] = "WarningMsg" },
+                },
                 float = {
                     border = vim.g.border,
                 },

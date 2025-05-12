@@ -24,7 +24,8 @@ return {
                                     "validate=required",
                                     "binding=required",
                                 }, ","),
-                                tag_transform = "snakecase",
+                                tag_transform = "camelcase",
+                                -- tag_transform = "snakecase",
                                 lsp_semantic_highlights = true,
                                 go_input = vim.ui.input,
                                 go_select = vim.ui.select,
@@ -57,6 +58,12 @@ return {
                                         border = vim.g.border,
                                     },
                                     signs = {
+                                        linehl = {
+                                            [vim.diagnostic.severity.ERROR] = "ErrorMsg",
+                                        },
+                                        numhl = {
+                                            [vim.diagnostic.severity.WARN] = "WarningMsg",
+                                        },
                                         text = {
                                             [vim.diagnostic.severity.ERROR] = LazyVim.config.icons.diagnostics.Error,
                                             [vim.diagnostic.severity.WARN] = LazyVim.config.icons.diagnostics.Warn,

@@ -22,6 +22,13 @@ require("lazy").setup({
     spec = {
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
         { import = "plugins" },
+        { "mason-org/mason.nvim", version = "^1.0.0" },
+        {
+            "neovim/nvim-lspconfig",
+            dependencies = {
+                { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
+            },
+        },
     },
     defaults = { lazy = false, version = false },
     install = { colorscheme = { "tokyonight", "habamax" } },

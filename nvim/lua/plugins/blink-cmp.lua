@@ -34,7 +34,16 @@ return {
             sorts = { "exact", "score", "sort_text" },
         },
         sources = {
-            default = { "lsp", "path", "snippets", "ripgrep", "buffer" },
+            default = function()
+                local success, node = pcall(vim.treesitter.get_node)
+                local node_type = { "comment", "line_comment", "block_comment", "string", "multiline_string" }
+                if success and node and vim.tbl_contains(node_type, node:type()) then
+                    return {}
+                else
+                    return { "lsp", "path", "snippets", "ripgrep", "buffer" }
+                end
+            end,
+
             providers = {
                 path = {
                     name = "Path",
@@ -150,6 +159,7 @@ return {
                 auto_show = true,
                 window = { winhighlight = win_hl, border = vim.g.border },
             },
+            ghost_text = { enabled = false },
             list = {
                 max_items = 20,
                 selection = {

@@ -47,41 +47,6 @@ return {
             end,
             desc = "Find Directory (root)",
         },
-        {
-            "<leader>dx",
-            function()
-                return require("fzf-lua").dap_commands()
-            end,
-            desc = "Command",
-        },
-        {
-            "<leader>dL",
-            function()
-                return require("fzf-lua").dap_configurations()
-            end,
-            desc = "Configuration",
-        },
-        {
-            "<leader>dX",
-            function()
-                return require("fzf-lua").dap_list_breakpoints(vertical_preview_layout)
-            end,
-            desc = "List BreakPoint",
-        },
-        {
-            "<leader>dv",
-            function()
-                return require("fzf-lua").dap_variables()
-            end,
-            desc = "Variables",
-        },
-        {
-            "<leader>df",
-            function()
-                return require("fzf-lua").dap_frames()
-            end,
-            desc = "Frames",
-        },
     },
     opts = function(_, opts)
         local path = require("fzf-lua.path")
