@@ -18,7 +18,7 @@ return {
                         if input == "" then
                             return vim.notify("Empty input tags", "info", { title = "Go tags" })
                         end
-                        return vim.cmd.GoAddTag({ arg = { input:gsub("^%s+", ""):gsub("%s+$", "") } })
+                        return vim.cmd.GoAddTag({ args = { input:gsub("^%s+", ""):gsub("%s+$", "") } })
                     end)
                 end,
                 desc = "Add struct tags",
@@ -31,7 +31,7 @@ return {
                         if input == "" then
                             return vim.notify("Empty input tags", "info", { title = "Go tags" })
                         end
-                        return vim.cmd.GoRmTag({ arg = { input:gsub("^%s+", ""):gsub("%s+$", "") } })
+                        return vim.cmd.GoRmTag({ args = { input:gsub("^%s+", ""):gsub("%s+$", "") } })
                     end)
                 end,
                 desc = "Remove struct tags",
@@ -44,7 +44,7 @@ return {
                         if input == "" then
                             return vim.notify("Empty input tags", "info", { title = "Go tags" })
                         end
-                        return vim.cmd.GoImpl({ arg = { input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ") } })
+                        return vim.cmd.GoImpl({ args = { input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ") } })
                     end)
                 end,
                 desc = "Implement interface methods for receiver",

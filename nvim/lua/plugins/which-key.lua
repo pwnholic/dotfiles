@@ -1,6 +1,10 @@
 return {
     "folke/which-key.nvim",
     opts = {
+        spec = {
+            { "<leader>o", group = "obsidian" },
+            { "<leader>p", group = "pomodoro" },
+        },
         preset = "classic",
         filter = function(mapping)
             return mapping.desc and mapping.desc ~= ""

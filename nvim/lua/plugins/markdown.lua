@@ -30,7 +30,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianOpen() -- Default: current buffer if input is empty
                         else
-                            vim.cmd.ObsidianOpen({ arg = cleaned_input })
+                            vim.cmd.ObsidianOpen({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -47,7 +47,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianNew() -- Default: plugin's default naming if input is empty
                         else
-                            vim.cmd.ObsidianNew({ arg = cleaned_input })
+                            vim.cmd.ObsidianNew({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -65,7 +65,7 @@ return {
                             return
                         end -- User canceled
                         local cleaned_input = input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
-                        vim.cmd.ObsidianTags({ arg = cleaned_input })
+                        vim.cmd.ObsidianTags({ args = cleaned_input })
                     end)
                 end,
                 desc = "Show occurrences of specific tag(s) / all if empty",
@@ -78,7 +78,7 @@ return {
                             return
                         end -- User canceled
                         local cleaned_input = input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
-                        vim.cmd.ObsidianSearch({ arg = cleaned_input })
+                        vim.cmd.ObsidianSearch({ args = cleaned_input })
                     end)
                 end,
                 desc = "Search for notes with query",
@@ -95,7 +95,7 @@ return {
                             return
                         end -- User canceled
                         local cleaned_input = input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
-                        vim.cmd.ObsidianDailies({ arg = cleaned_input })
+                        vim.cmd.ObsidianDailies({ args = cleaned_input })
                     end)
                 end,
                 desc = "Open picker list of daily notes with offset",
@@ -112,7 +112,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianTemplate()
                         else
-                            vim.cmd.ObsidianTemplate({ arg = cleaned_input })
+                            vim.cmd.ObsidianTemplate({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -131,7 +131,7 @@ return {
                             if cleaned_input == "" then
                                 vim.cmd.ObsidianNewFromTemplate()
                             else
-                                vim.cmd.ObsidianNewFromTemplate({ arg = cleaned_input })
+                                vim.cmd.ObsidianNewFromTemplate({ args = cleaned_input })
                             end
                         end
                     )
@@ -150,7 +150,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianLink()
                         else
-                            vim.cmd.ObsidianLink({ arg = cleaned_input })
+                            vim.cmd.ObsidianLink({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -168,7 +168,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianLinkNew()
                         else
-                            vim.cmd.ObsidianLinkNew({ arg = cleaned_input })
+                            vim.cmd.ObsidianLinkNew({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -188,7 +188,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianExtractNote()
                         else
-                            vim.cmd.ObsidianExtractNote({ arg = cleaned_input })
+                            vim.cmd.ObsidianExtractNote({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -203,7 +203,7 @@ return {
                             return
                         end -- User canceled
                         local cleaned_input = input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
-                        vim.cmd.ObsidianWorkspace({ arg = cleaned_input })
+                        vim.cmd.ObsidianWorkspace({ args = cleaned_input })
                     end)
                 end,
                 desc = "Switch to specific workspace",
@@ -219,7 +219,7 @@ return {
                         if cleaned_input == "" then
                             vim.cmd.ObsidianPasteImg()
                         else
-                            vim.cmd.ObsidianPasteImg({ arg = cleaned_input })
+                            vim.cmd.ObsidianPasteImg({ args = cleaned_input })
                         end
                     end)
                 end,
@@ -233,7 +233,7 @@ return {
                             return
                         end -- User canceled
                         local cleaned_input = input:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
-                        vim.cmd.ObsidianRename({ arg = cleaned_input })
+                        vim.cmd.ObsidianRename({ args = cleaned_input })
                     end)
                 end,
                 desc = "Rename current note",
