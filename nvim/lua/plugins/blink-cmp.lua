@@ -96,7 +96,6 @@ return {
                     module = "blink.cmp.sources.buffer",
                     score_offset = 20,
                     opts = {
-                        prefix_min_len = 4,
                         get_bufnrs = function()
                             return vim.iter(vim.api.nvim_list_wins())
                                 :map(function(winnr)
@@ -158,6 +157,9 @@ return {
             documentation = {
                 auto_show = true,
                 window = { winhighlight = win_hl, border = vim.g.border },
+            },
+            trigger = {
+                show_on_insert_on_trigger_character = false,
             },
             ghost_text = { enabled = false },
             list = {
