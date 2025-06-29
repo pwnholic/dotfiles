@@ -1,6 +1,5 @@
 return {
-    "epwalsh/pomo.nvim",
-    version = false,
+    "pwnholic/pomo.nvim",
     cmd = { "TimerStart", "TimerRepeat", "TimerSession" },
     dependencies = {
         {
@@ -24,27 +23,39 @@ return {
         },
     },
     keys = {
-
         {
             "<leader>ps",
             function()
-                vim.ui.select(
-                    { "New Timer", "25m Learn", "45m Work" },
-                    { prompt = "Chouse yout timer" },
-                    function(item, idx)
-                        if idx == 1 then
-                            vim.ui.input({ prompt = "Input your custom timer {timer} {name}" }, function(input)
-                                if input and input ~= "" then
-                                    local newArgs = vim.split(input, " ")
-                                    vim.cmd.TimerStart({ args = { newArgs[1], newArgs[2] } })
-                                end
-                            end)
-                        elseif idx > 1 then
-                            local args = vim.split(item, " ")
-                            vim.cmd.TimerStart({ args = { args[1], args[2] } })
+                vim.ui.select({
+                    "New Custom Timer",
+                    "Focus Coding (50/10)",
+                    "Deep Work (90/15)",
+                    "Learning Session (40/10)",
+                }, { prompt = "Pilih Jenis Timer:" }, function(item, idx)
+                    if idx == 1 then
+                        vim.ui.input({ prompt = "Masukkan timer kustom (contoh: 30m Project X):" }, function(input)
+                            if input and input ~= "" then
+                                local newArgs = vim.split(input, " ")
+                                vim.cmd.TimerStart({ args = { newArgs[1], table.concat(newArgs, " ", 2) } })
+                            end
+                        end)
+                    else
+                        local session_map = {
+                            ["Focus Coding (50/10)"] = "focus_coding",
+                            ["Deep Work (90/15)"] = "deep_work",
+                            ["Learning Session (40/10)"] = "learning_session",
+                        }
+                        local session_key = session_map[item]
+                        if session_key then
+                            if string.find(session_key, "m ") then
+                                local args = vim.split(item, " ")
+                                vim.cmd.TimerStart({ args = { args[1], table.concat(args, " ", 2) } })
+                            else
+                                vim.cmd.TimerSession({ args = { session_key } })
+                            end
                         end
                     end
-                )
+                end)
             end,
             desc = "Start a new timer",
         },
@@ -52,15 +63,35 @@ return {
     opts = {
         notifiers = {
             { name = "Default", opts = { sticky = false } },
+            { name = "System" },
+        },
+        timers = {
+            Break = {
+                { name = "System" },
+            },
         },
         sessions = {
-            work = {
-                { name = "Work", duration = "30m" },
-                { name = "Microbreak", duration = "5m" },
-                { name = "Work", duration = "30m" },
-                { name = "Microbreak", duration = "5m" },
-                { name = "Work", duration = "30m" },
-                { name = "Long Break", duration = "10m" },
+            focus_coding = {
+                { name = "Coding Focus", duration = "50m" },
+                { name = "Break", duration = "10m" },
+                { name = "Coding Focus", duration = "50m" },
+                { name = "Break", duration = "10m" },
+                { name = "Coding Focus", duration = "50m" },
+                { name = "Long Break", duration = "20m" },
+            },
+            deep_work = {
+                { name = "Deep Work", duration = "90m" },
+                { name = "Long Break", duration = "15m" },
+                { name = "Deep Work", duration = "90m" },
+                { name = "Long Break", duration = "30m" },
+            },
+            learning_session = {
+                { name = "Learning/Research", duration = "40m" },
+                { name = "Short Break", duration = "10m" },
+                { name = "Learning/Research", duration = "40m" },
+                { name = "Short Break", duration = "10m" },
+                { name = "Learning/Research", duration = "40m" },
+                { name = "Long Break", duration = "15m" },
             },
         },
     },

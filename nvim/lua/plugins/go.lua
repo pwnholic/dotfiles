@@ -54,7 +54,9 @@ return {
         opts = {
             gopls_cmd = { vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "bin", "gopls") },
             gopls_remote_auto = false,
-            lsp_cfg = true,
+            lsp_cfg = {
+                capabilities = require("blink.cmp").get_lsp_capabilities(),
+            },
             dap_debug = false,
             dap_debug_keymap = false,
             textobjects = false,
@@ -69,7 +71,24 @@ return {
             }, ","),
             --                               tag_transform = "camelcase",
             tag_transform = "snakecase",
-            lsp_semantic_highlights = true,
+            lsp_semantic_highlights = false,
+            lsp_on_attach = function(client, bufnr)
+                if vim.api.nvim_buf_is_valid(bufnr) then
+                    return
+                end
+
+                if not client.server_capabilities.semanticTokensProvider then
+                    local semantic = client.config.capabilities.textDocument.semanticTokens
+                    client.server_capabilities.semanticTokensProvider = {
+                        full = true,
+                        legend = {
+                            tokenTypes = semantic.tokenTypes,
+                            tokenModifiers = semantic.tokenModifiers,
+                        },
+                        range = true,
+                    }
+                end
+            end,
             go_input = vim.ui.input,
             go_select = vim.ui.select,
             lsp_inlay_hints = { enable = false },

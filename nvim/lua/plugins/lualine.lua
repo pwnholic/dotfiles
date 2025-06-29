@@ -3,6 +3,18 @@ return {
         "nvim-lualine/lualine.nvim",
         opts = {
             sections = {
+                lualine_b = {
+                    {
+                        "branch",
+                        fmt = function(branch_name)
+                            local max_display_length = 20
+                            if branch_name:len() <= max_display_length then
+                                return branch_name
+                            end
+                            return string.format("%s...", branch_name:sub(1, max_display_length))
+                        end,
+                    },
+                },
                 lualine_y = {},
                 lualine_z = {},
             },
