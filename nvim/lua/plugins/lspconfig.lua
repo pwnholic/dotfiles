@@ -27,33 +27,8 @@ return {
                 timeout_ms = 4 * 1000, -- 4 sec
             },
             servers = {
-                solidity_ls = {
-                        cmd = {"wake","lsp"}
-                    },
+                solidity_ls = {},
                 iwes = {},
-                -- golangci_lint_ls = {
-                --     name = "golangci",
-                --     cmd = { "golangci-lint-langserver" },
-                --     root_dir = function(fname)
-                --         return require("lspconfig.util").root_pattern(
-                --             ".golangci.yml",
-                --             ".golangci.yaml",
-                --             ".golangci.toml",
-                --             ".golangci.json"
-                --         )(fname) and vim.fs.root(0, ".git")
-                --     end,
-                --     init_options = {
-                --         command = {
-                --             "golangci-lint",
-                --             "run",
-                --             "--output.text.print-issued-lines=false",
-                --             "--output.json.path=stdout",
-                --             "--output.text.colors=true",
-                --             "--show-stats=false",
-                --             "--issues-exit-code=0",
-                --         },
-                --     },
-                -- },
             },
             setup = {
                 marksman = function()
@@ -61,5 +36,26 @@ return {
                 end,
             },
         },
+    },
+    {
+        "neovim/nvim-lspconfig",
+        opts = function()
+            local lspconfig = require("lspconfig")
+            local lsp_setup = require("lspconfig.configs")
+            if not lsp_setup.iwes then
+                lsp_setup.iwes = {
+                    default_config = {
+                        name = "iwes",
+                        cmd = { "iwes" },
+                        flags = { debounce_text_changes = 500 },
+                        single_file_support = true,
+                        filetypes = { "markdown" },
+                        root_dir = function(fname)
+                            return lspconfig.util.root_pattern(".iwe", ".git")(fname)
+                        end,
+                    },
+                }
+            end
+        end,
     },
 }

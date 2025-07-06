@@ -71,8 +71,8 @@ vim.api.nvim_create_autocmd("BufRead", {
     callback = function(ev)
         if vim.bo[ev.buf].buftype == "quickfix" then
             vim.schedule(function()
-                vim.cmd([[cclose]])
-                vim.cmd([[Trouble qflist open]])
+                vim.cmd.cclose()
+                vim.cmd.Trouble({ args = { "qflist", "open" } })
             end)
         end
     end,

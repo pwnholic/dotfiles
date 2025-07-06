@@ -46,6 +46,18 @@ return {
                     inactive = "LualineTabInActive",
                 },
             })
+            table.insert(opts.sections.lualine_x, {
+                function()
+                    local linters = require("lint").get_running()
+                    if #linters > 0 then
+                        return string.format("  %s", table.concat(linters, ", "))
+                    end
+                end,
+                cond = function()
+                    return #require("lint").get_running() > 0
+                end,
+                color = "NvimLintRun",
+            })
 
             table.insert(opts.sections.lualine_y, {
                 function()

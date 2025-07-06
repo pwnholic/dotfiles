@@ -47,6 +47,8 @@ return {
             hl.MiniHipatternsGorm = { fg = c.yellow, bg = c.none, bold = true }
             hl.MiniHipatternsValidate = { fg = c.blue1, bg = c.none, bold = true }
             hl.MiniHipatternsBinding = { fg = c.teal, bg = c.none, bold = true }
+
+            hl.NvimLintRun = { link = "Constant" }
         end,
     },
 }

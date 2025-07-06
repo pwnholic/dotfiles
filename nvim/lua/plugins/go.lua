@@ -69,8 +69,8 @@ return {
                 "validate=required",
                 "binding=required",
             }, ","),
-            --                               tag_transform = "camelcase",
-            tag_transform = "snakecase",
+            tag_transform = "camelcase",
+            -- tag_transform = "snakecase",
             lsp_semantic_highlights = false,
             lsp_on_attach = function(client, bufnr)
                 if vim.api.nvim_buf_is_valid(bufnr) then
@@ -92,6 +92,10 @@ return {
             go_input = vim.ui.input,
             go_select = vim.ui.select,
             lsp_inlay_hints = { enable = false },
+            golangci_lint = {
+                config = string.format("%s/.golangci.yaml", vim.fs.root(0, ".golangci.yaml")),
+                severity = vim.diagnostic.severity.INFO,
+            },
             diagnostic = {
                 hdlr = true,
                 underline = true,
