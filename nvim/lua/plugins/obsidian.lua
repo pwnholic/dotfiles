@@ -1,8 +1,31 @@
 return {
     "obsidian-nvim/obsidian.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
-    cmd = { "ObsidianOpen", "ObsidianNew", "ObsidianRename" },
     version = false,
+    cmd = {
+        "ObsidianOpen",
+        "ObsidianNew",
+        "ObsidianQuickSwitch",
+        "ObsidianFollowLink",
+        "ObsidianBacklinks",
+        "ObsidianTags",
+        "ObsidianToday",
+        "ObsidianYesterday",
+        "ObsidianTomorrow",
+        "ObsidianDailies",
+        "ObsidianTemplate",
+        "ObsidianSearch",
+        "ObsidianLink",
+        "ObsidianLinkNew",
+        "ObsidianLinks",
+        "ObsidianExtractNote",
+        "ObsidianWorkspace",
+        "ObsidianPasteImg",
+        "ObsidianRename",
+        "ObsidianToggleCheckbox",
+        "ObsidianNewFromTemplate",
+        "ObsidianTOC",
+    },
     keys = {
         {
             "gf",
@@ -249,6 +272,11 @@ return {
         },
     },
     opts = {
+        workspaces = {
+            {
+                path = vim.fs.joinpath((os.getenv("HOME") or os.getenv("USERPROFILE")), "Notes2"),
+            },
+        },
         dir = vim.fs.joinpath((os.getenv("HOME") or os.getenv("USERPROFILE")), "Notes2"),
         daily_notes = { folder = "Inbox" },
         new_notes_location = "current_dir",
