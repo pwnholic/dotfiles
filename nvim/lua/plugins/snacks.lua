@@ -79,22 +79,6 @@ return {
                             { win = "preview", title = "{preview}", height = 0.4, border = "top" },
                         },
                     },
-                    vertical = {
-                        layout = {
-                            backdrop = false,
-                            width = 0.5,
-                            min_width = 80,
-                            height = 0.8,
-                            min_height = 30,
-                            box = "vertical",
-                            border = vim.o.winborder,
-                            title = "{title} {live} {flags}",
-                            title_pos = "center",
-                            { win = "input", height = 1, border = "bottom" },
-                            { win = "list", border = "none" },
-                            { win = "preview", title = "{preview}", height = 0.4, border = vim.o.winborder },
-                        },
-                    },
                     sidebar = {
                         preview = "main",
                         layout = {
@@ -119,6 +103,7 @@ return {
                 },
                 sources = {
                     files = { layout = ivy_split },
+                    grep = { layout = ivy_split },
                     lsp_declarations = { layout = ivy_split },
                     lsp_definitions = { layout = ivy_split },
                     lsp_implementations = { layout = ivy_split },
