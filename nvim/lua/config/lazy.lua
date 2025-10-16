@@ -1,7 +1,5 @@
----@diagnostic disable: undefined-field
-local lazypath = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "lazy.nvim")
-
-if not vim.uv.fs_stat(lazypath) then
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
     local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
     if vim.v.shell_error ~= 0 then
@@ -14,61 +12,40 @@ if not vim.uv.fs_stat(lazypath) then
         os.exit(1)
     end
 end
-
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    root = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy"),
     spec = {
+        -- add LazyVim and import its plugins
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+        -- import/override with your plugins
         { import = "plugins" },
-        { "mason-org/mason.nvim", version = "^1.0.0" },
-        {
-            "neovim/nvim-lspconfig",
-            dependencies = {
-                { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
-            },
-        },
     },
-    defaults = { lazy = false, version = false },
+    defaults = {
+        -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
+        -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
+        lazy = false,
+        -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
+        -- have outdated releases, which may break your Neovim install.
+        version = false, -- always use the latest git commit
+        -- version = "*", -- try installing the latest stable version for plugins that support semver
+    },
     install = { colorscheme = { "tokyonight", "habamax" } },
-    checker = { enabled = false, notify = false },
-    lockfile = vim.fs.joinpath(vim.fn.stdpath("config"), "lazy-lock.json"),
-    concurrency = nil,
-    pkg = {
-        enabled = true,
-        cache = vim.fs.joinpath(vim.fn.stdpath("state"), "lazy", "pkg-cache.lua"),
-        sources = {
-            "lazy",
-            "rockspec", -- will only be used when rocks.enabled is true
-            "packspec",
-        },
-    },
-    rocks = {
-        enabled = true,
-        root = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy-rocks"),
-        server = "https://nvim-neorocks.github.io/rocks-binaries/",
-        hererocks = nil,
-    },
+    checker = {
+        enabled = true, -- check for plugin updates periodically
+        notify = false, -- notify on update
+    }, -- automatically check for plugin updates
     performance = {
         rtp = {
+            -- disable some rtp plugins
             disabled_plugins = {
-                "2html_plugin",
-                "compiler",
-                "ftplugin",
                 "gzip",
                 "matchit",
                 "matchparen",
                 "netrwPlugin",
-                "rplugin",
-                "spellfile_plugin",
-                "synmenu",
-                "syntax",
-                "tar",
                 "tarPlugin",
                 "tohtml",
                 "tutor",
-                "zip",
                 "zipPlugin",
             },
         },

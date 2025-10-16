@@ -1,79 +1,33 @@
----@diagnostic disable: undefined-field
-vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "FocusLost" }, {
-    nested = true,
-    desc = "Autosave on focus change.",
-    callback = function(ev)
-        if (vim.uv.fs_stat(ev.file) or {}).type ~= "file" then
-            return
-        end
-        vim.cmd.update({ mods = { emsg_silent = true } })
-    end,
-})
+-- Autocmds are automatically loaded on the VeryLazy event
+-- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
+--
+-- Add any additional autocmds here
+-- with `vim.api.nvim_create_autocmd`
+--
+-- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
+-- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
-local view_group = vim.api.nvim_create_augroup("auto_view", { clear = true })
-vim.api.nvim_create_autocmd({ "BufWinLeave", "BufWritePost", "WinLeave" }, {
-    desc = "Save view with mkview for real files",
-    group = view_group,
-    callback = function(args)
-        if vim.b[args.buf].view_activated then
-            vim.cmd.mkview({ mods = { emsg_silent = true } })
-        end
-    end,
-})
-
-vim.api.nvim_create_autocmd("BufWinEnter", {
-    desc = "Try to load file view if available and enable view saving for real files",
-    group = view_group,
-    callback = function(args)
-        if not vim.b[args.buf].view_activated then
-            local filetype = vim.bo[args.buf].filetype
-            local buftype = vim.bo[args.buf].buftype
-            local ignore_filetypes = {
-                "gitcommit",
-                "gitrebase",
-                "svg",
-                "hgcommit",
-            }
-            if buftype == "" and filetype and filetype ~= "" and not vim.tbl_contains(ignore_filetypes, filetype) then
-                vim.b[args.buf].view_activated = true
-                vim.cmd.loadview({ mods = { emsg_silent = true } })
-            end
-        end
-    end,
-})
-
----Set abbreviation that only expand when the trigger is at the position of
----a command
-local function command_abbrev(trig, command, opts)
-    if type(trig) == "table" then
-        local trig_short = trig[1]
-        local trig_full = trig[2]
-        for i = #trig_short, #trig_full do
-            local cmd_part = trig_full:sub(1, i)
-            command_abbrev(cmd_part, command)
-        end
-        return
-    end
-    vim.keymap.set("ca", trig, function()
-        return vim.fn.getcmdcompltype() == "command" and command or trig
-    end, vim.tbl_deep_extend("keep", { expr = true }, opts or {}))
-end
-
-vim.api.nvim_create_autocmd("CmdlineEnter", {
-    once = true,
+local session_group = vim.api.nvim_create_augroup("SessionManagement", { clear = true })
+vim.api.nvim_create_autocmd("VimEnter", {
+    group = session_group,
     callback = function()
-        command_abbrev("git", "Git")
-        return true
+        if vim.fn.argc() == 0 then
+            require("persistence").load()
+        end
+    end,
+    nested = true,
+})
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = session_group,
+    callback = function()
+        require("persistence").save()
     end,
 })
 
-vim.api.nvim_create_autocmd("BufRead", {
-    callback = function(ev)
-        if vim.bo[ev.buf].buftype == "quickfix" then
-            vim.schedule(function()
-                vim.cmd.cclose()
-                vim.cmd.Trouble({ args = { "qflist", "open" } })
-            end)
-        end
+vim.api.nvim_create_autocmd("DirChanged", {
+    group = session_group,
+    callback = function()
+        require("persistence").save()
     end,
 })
