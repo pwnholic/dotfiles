@@ -36,7 +36,7 @@ return {
 
             hl.TreesitterContext = { bg = c.bg_dark, bold = true, underline = true, sp = c.blue }
 
-            hl.CursorLineNr = { fg = c.bg_dark, bg = c.green, bold = true }
+            hl.CursorLineNr = { fg = c.bg_dark, bg = c.blue6, bold = true }
             hl.LineNrAbove = { fg = c.magenta, bg = c.none }
             hl.LineNrBelow = { fg = c.blue2, bg = c.none }
             hl.LspCodeLens = { link = "DiagnosticVirtualTextHint" }
