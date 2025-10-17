@@ -6,6 +6,10 @@ vim.api.nvim_create_autocmd("ModeChanged", {
     desc = "Enable inlay hints only in normal mode",
     callback = function(args)
         local bufnr = args.buf
+        if not vim.api.nvim_buf_is_valid(bufnr) then
+            return
+        end
+
         local to_mode = args.match:sub(3, 3)
         local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/inlayHint" })
 
