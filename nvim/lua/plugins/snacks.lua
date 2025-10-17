@@ -23,6 +23,13 @@ local ivy_split = {
 return {
     "folke/snacks.nvim",
     opts = {
+        styles = {
+            input = { border = vim.o.winborder },
+            notification = { border = vim.o.winborder },
+            notification_history = { border = vim.o.winborder },
+            scratch = { border = vim.o.winborder },
+            blame_line = { border = vim.o.winborder },
+        },
         dashboard = {
             enabled = true,
             preset = {
@@ -39,9 +46,6 @@ return {
         indent = {
             indent = { char = indent_char },
             scope = { char = indent_char },
-        },
-        input = {
-            win = { style = { border = vim.o.winborder } },
         },
         picker = {
             layouts = {
