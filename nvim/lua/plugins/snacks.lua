@@ -23,13 +23,6 @@ local ivy_split = {
 return {
     "folke/snacks.nvim",
     opts = {
-        styles = {
-            input = { border = vim.o.winborder },
-            notification = { border = vim.o.winborder },
-            notification_history = { border = vim.o.winborder },
-            scratch = { border = vim.o.winborder },
-            blame_line = { border = vim.o.winborder },
-        },
         dashboard = {
             enabled = true,
             preset = {
@@ -49,39 +42,6 @@ return {
         },
         picker = {
             layouts = {
-                default = {
-                    layout = {
-                        box = "horizontal",
-                        width = 0.9,
-                        min_width = math.floor(vim.o.columns * 0.9), -- di kurangi 10 persen
-                        height = 0.9,
-                        {
-                            box = "vertical",
-                            border = vim.o.winborder,
-                            title = "{title} {live} {flags}",
-                            { win = "input", height = 1, border = "bottom" },
-                            { win = "list", border = "none" },
-                        },
-                        { win = "preview", title = "{preview}", border = vim.o.winborder, width = 0.5 },
-                    },
-                },
-                select = {
-                    hidden = { "preview" },
-                    layout = {
-                        backdrop = false,
-                        width = 0.5,
-                        min_width = 80,
-                        height = 0.4,
-                        min_height = 3,
-                        box = "vertical",
-                        border = vim.o.winborder,
-                        title = "{title}",
-                        title_pos = "center",
-                        { win = "input", height = 1, border = "bottom" },
-                        { win = "list", border = "none" },
-                        { win = "preview", title = "{preview}", height = 0.4, border = "top" },
-                    },
-                },
                 sidebar = {
                     preview = "main",
                     layout = {

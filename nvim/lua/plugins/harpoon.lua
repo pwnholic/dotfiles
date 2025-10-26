@@ -47,7 +47,7 @@ return {
                 desc = "Harpoon Quick Menu",
             },
             {
-                "<A-a>",
+                "<A-m>",
                 function()
                     vim.notify("Add file to Harpoon list", 2, { title = "Harpoon" })
                     return require("harpoon"):list():add()

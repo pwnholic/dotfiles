@@ -39,7 +39,6 @@ local function get_args()
     if not version:find("version v?2%.0%.") then
         table.insert(args, "--path-mode=abs")
     end
-
     return vim.list_extend(args, base)
 end
 

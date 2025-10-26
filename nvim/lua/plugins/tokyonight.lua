@@ -16,6 +16,8 @@ return {
 
             hl.WinSeparator = border_dark
             hl.FloatBorder = border_dark
+            hl.AvanteSidebarWinSeparator = border_dark
+            hl.AvanteSidebarNormal = { bg = c.bg_dark }
 
             hl.BlinkCmpLabelDescription = comment
             hl.BlinkCmpLabelDetail = { fg = c.blue, bg = c.none, italic = true }
