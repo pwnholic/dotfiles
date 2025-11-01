@@ -11,18 +11,22 @@ return {
         end,
     },
     {
-        "lewis6991/gitsigns.nvim",
-        cmd = "Gitsigns",
-        opts = {
-            current_line_blame = true,
-            current_line_blame_opts = {
-                virt_text = true,
-                virt_text_pos = "eol",
-                delay = 500,
-                ignore_whitespace = false,
-                virt_text_priority = 100,
-                use_focus = true,
-            },
-        },
+        "nvim-mini/mini.files",
+        version = false,
+        config = function()
+            require("mini.files").setup({
+                options = {
+                    permanent_delete = false,
+                    use_as_default_explorer = false,
+                },
+                windows = {
+                    max_number = math.huge,
+                    preview = false,
+                    width_focus = 45,
+                    width_nofocus = 20,
+                    width_preview = 0,
+                },
+            })
+        end,
     },
 }
