@@ -11,22 +11,15 @@ return {
         end,
     },
     {
-        "nvim-mini/mini.files",
-        version = false,
-        config = function()
-            require("mini.files").setup({
-                options = {
-                    permanent_delete = false,
-                    use_as_default_explorer = false,
-                },
-                windows = {
-                    max_number = math.huge,
-                    preview = false,
-                    width_focus = 45,
-                    width_nofocus = 20,
-                    width_preview = 0,
-                },
-            })
+        "nvim-mini/mini.icons",
+        config = function(_, opts)
+            local icons = require("mini.icons")
+            icons.setup(opts)
+
+            local get = icons.get
+            icons.get = function(cat, name)
+                return get(cat == "socket" and "file" or cat, name)
+            end
         end,
     },
 }
