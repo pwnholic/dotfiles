@@ -48,9 +48,9 @@ return {
             mappings = {
                 ["<C-q>"] = "CloseView",
                 ["<CR>"] = "Select",
-                ["t"] = "SelectTab",
-                ["v"] = "SelectVSplit",
-                ["o"] = "SelectSplit",
+                ["<A-t>"] = "SelectTab",
+                ["<A-v>"] = "SelectVSplit",
+                ["<A-s>"] = "SelectSplit",
                 ["c"] = "GotoParent",
                 ["-"] = "GotoCwd",
                 ["za"] = "CollapseAll",
