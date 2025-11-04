@@ -36,19 +36,18 @@ vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "FocusLost" }, {
 })
 
 local function command_abbrev(trig, command, opts)
+    opts = opts or {}
+    local keymap_opts = vim.tbl_extend("keep", opts, { expr = true })
     if type(trig) == "table" then
-        local trig_short = trig[1]
-        local trig_full = trig[2]
-        for i = #trig_short, #trig_full do
-            local cmd_part = trig_full:sub(1, i)
-            command_abbrev(cmd_part, command, opts)
+        local short, full = trig[1], trig[2]
+        for i = #short, #full do
+            command_abbrev(full:sub(1, i), command, opts)
         end
         return
     end
-
     vim.keymap.set("ca", trig, function()
         return vim.fn.getcmdcompltype() == "command" and command or trig
-    end, vim.tbl_deep_extend("keep", { expr = true }, opts or {}))
+    end, keymap_opts)
 end
 
 vim.api.nvim_create_autocmd("CmdlineEnter", {

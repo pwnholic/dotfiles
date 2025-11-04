@@ -15,8 +15,9 @@ return {
         config = function(_, opts)
             local icons = require("mini.icons")
             icons.setup(opts)
-
             local get = icons.get
+
+            ---@diagnostic disable-next-line: duplicate-set-field
             icons.get = function(cat, name)
                 return get(cat == "socket" and "file" or cat, name)
             end
