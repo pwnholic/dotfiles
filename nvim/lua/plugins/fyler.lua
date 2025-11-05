@@ -5,7 +5,9 @@ return {
         {
             "<leader>e",
             function()
-                return require("fyler").toggle({ dir = LazyVim.root() })
+                return require("fyler").toggle({
+                    dir = LazyVim.root() or vim.uv.cwd(),
+                })
             end,
             desc = "Open Fyler",
         },
@@ -72,10 +74,15 @@ return {
             track_current_buffer = true,
             win = {
                 border = vim.o.winborder,
-                kind = "replace",
                 buf_opts = {
                     buflisted = false,
                     bufhidden = "hide",
+                },
+                kind = "split_left_most",
+                kind_presets = {
+                    split_left_most = {
+                        width = "0.2rel",
+                    },
                 },
                 win_opts = {
                     wrap = false,

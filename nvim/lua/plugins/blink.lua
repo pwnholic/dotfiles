@@ -21,7 +21,7 @@ return {
             },
         }
         opts.sources = {
-            default = { "snippets", "lsp", "path", "buffer" },
+            default = { "path", "lsp", "snippets", "buffer" },
             providers = {
                 lsp = { timeout_ms = 500 },
                 buffer = {
