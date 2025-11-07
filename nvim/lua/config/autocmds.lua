@@ -36,8 +36,7 @@ vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "FocusLost" }, {
 })
 
 local function command_abbrev(trig, command, opts)
-    opts = opts or {}
-    local keymap_opts = vim.tbl_extend("keep", opts, { expr = true })
+    local keymap_opts = vim.tbl_extend("keep", opts or {}, { expr = true })
     if type(trig) == "table" then
         local short, full = trig[1], trig[2]
         for i = #short, #full do
