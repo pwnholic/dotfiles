@@ -2,8 +2,10 @@ return {
     "mason-org/mason.nvim",
     opts = {
         ensure_installed = {
-            "rust-analyzer",
+            "stylua",
+            "shfmt",
             "prettier",
+            "jq",
         },
     },
 }
