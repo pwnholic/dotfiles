@@ -21,14 +21,15 @@ opt.nrformats:append("blank") -- Smarter number increment/decrement
 opt.cmdheight = 0 -- Hide command line when idle (Neovim 0.9+)
 opt.number = true -- Show line numbers
 opt.cursorline = true -- Highlight current line
-opt.cursorlineopt = "number" -- Highlight only line number
+opt.cursorlineopt = "both" -- Highlight only line number
 opt.colorcolumn = "80" -- Visual column guide
 opt.signcolumn = "yes:1" -- Always show sign column (fixed width)
 opt.showmode = false -- Hide -- INSERT -- (handled by statusline)
 opt.ruler = true -- Show cursor position
 opt.helpheight = 10 -- Fixed help window height
 opt.pumheight = 16 -- Limit popup menu height
-opt.winborder = "single" -- Global border
+opt.winborder = "rounded" -- Global border
+opt.cursorcolumn = true
 
 -- ============================================================================
 -- Window & Split Behavior

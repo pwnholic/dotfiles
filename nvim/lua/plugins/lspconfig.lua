@@ -1,11 +1,9 @@
 return {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-        -- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
         local vt = vim.diagnostic.handlers.virtual_text
         local show_handler = assert(vt.show)
         local hide_handler = vt.hide
-
         vim.diagnostic.handlers.virtual_text = {
             show = function(ns, bufnr, diagnostics, dopts)
                 table.sort(diagnostics, function(a, b)
@@ -44,7 +42,5 @@ return {
                 end,
             },
         }
-        opts.setup = {}
-        opts.servers = {}
     end,
 }

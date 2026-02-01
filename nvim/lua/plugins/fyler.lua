@@ -24,7 +24,7 @@ return {
             "<leader>e",
             function()
                 return require("fyler").toggle({
-                    dir = LazyVim.root() or vim.uv.cwd(),
+                    dir = vim.uv.cwd(),
                 })
             end,
             desc = "Open Fyler",
@@ -55,9 +55,9 @@ return {
                 default_explorer = true,
                 delete_to_trash = true,
                 icon = {
-                    directory_empty = " ",
-                    directory_expanded = " ",
-                    directory_collapsed = " ",
+                    directory_empty = "",
+                    directory_expanded = "",
+                    directory_collapsed = "",
                 },
                 columns_order = {
                     "diagnostic",
@@ -108,7 +108,7 @@ return {
                         buflisted = false,
                         buftype = "acwrite",
                         expandtab = true,
-                        shiftwidth = 2,
+                        shiftwidth = 4,
                     },
                     win_opts = {
                         concealcursor = "nvic",

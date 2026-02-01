@@ -1,0 +1,173 @@
+format = """
+[╭](fg:current_line)\
+$directory\
+$git_branch\
+$git_status\
+$git_commit\
+$git_state\
+$fill\
+$nodejs\
+$python\
+$lua\
+$golang\
+$c\
+$cmd_duration\
+$shell\
+$time\
+$sudo\
+$username\
+$line_break\
+$character\
+"""
+
+palette = 'tokyonight'
+add_newline = true
+
+# ────────────────────
+# TokyoNight (folke) Palette — Storm
+# ────────────────────
+[palettes.tokyonight]
+foreground   = '#c0caf5'
+background   = '#1a1b26'
+current_line = '#3b4261'
+primary      = '#1a1b26'
+box          = '#414868'
+
+blue   = '#7aa2f7'
+cyan   = '#7dcfff'
+green  = '#9ece6a'
+orange = '#ff9e64'
+pink   = '#bb9af7'
+purple = '#9d7cd8'
+red    = '#f7768e'
+yellow = '#e0af68'
+
+# ────────────────────
+# OS
+# ────────────────────
+[os]
+format = '(fg:current_line)[](fg:orange)[$symbol ](fg:primary bg:orange)[](fg:orange)'
+disabled = false
+
+[os.symbols]
+Arch = ''
+
+# ────────────────────
+# Directory
+# ────────────────────
+[directory]
+format = '[─](fg:current_line)[](fg:green)[ ](fg:primary bg:green)[](fg:green bg:box)[ $read_only$truncation_symbol$path](fg:foreground bg:box)[](fg:box)'
+home_symbol = '󰉌 '
+truncation_symbol = '.../'
+truncation_length = 2
+read_only = '󱧴 '
+read_only_style = ''
+
+[directory.substitutions]
+Documents = '󰈙 '
+Downloads = ' '
+Music = '󰝚 '
+Pictures = ' '
+Developer = '󰲋 '
+dev = '󰲋 '
+
+# ────────────────────
+# Git
+# ────────────────────
+[git_branch]
+format = '[─](fg:current_line)[](fg:cyan)[$symbol](fg:primary bg:cyan)[](fg:cyan bg:box)[ $branch](fg:foreground bg:box)[](fg:box bg:blue)'
+symbol = ' '
+
+[git_status]
+disabled = false
+format = '[($all_status $ahead_behind)](fg:primary bg:blue)[](fg:blue bg:yellow)'
+conflicted = ' $count:CF'
+stashed = ' $count:SS'
+deleted = ' $count:DL'
+renamed = ' RN:$count'
+modified = ' MD:$count'
+typechanged = ' TC:$count'
+staged = ' ST:$count'
+untracked = ' UT:$count'
+diverged = ' AH:$ahead_count BH:$behind_count'
+ahead = ' AH:$count'
+behind = ' BH:$count'
+up_to_date = 'UTD'
+
+[git_commit]
+commit_hash_length = 5
+tag_symbol = ' '
+format = '[  $hash $tag](fg:primary bg:yellow)[](fg:yellow bg:background)'
+disabled = false
+only_detached = false
+tag_disabled = false
+
+[git_state]
+disabled = false
+format = '[─](fg:current_line)[](fg:red)[$state ](fg:primary bg:red)[$progress_current/$progress_total](fg:primary bg:red)[](fg:red bg:background)'
+rebase = ''
+merge = ''
+revert = '󰕌'
+cherry_pick = ''
+bisect = ''
+am = ''
+am_or_rebase = ' or '
+
+# ────────────────────
+# Languages
+# ────────────────────
+[nodejs]
+format = '[─](fg:current_line)[](fg:green)[$symbol](fg:primary bg:green)[](fg:green bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
+symbol = '󰎙 Node'
+
+[python]
+format = '[─](fg:current_line)[](fg:cyan)[$symbol](fg:primary bg:cyan)[](fg:cyan bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
+symbol = ' Python'
+
+[lua]
+format = '[─](fg:current_line)[](fg:blue)[$symbol](fg:primary bg:blue)[](fg:blue bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
+symbol = ' Lua'
+
+[golang]
+format = '[─](fg:current_line)[](fg:cyan)[$symbol](fg:primary bg:cyan)[](fg:cyan bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
+symbol = ' Go'
+
+[c]
+format = '[─](fg:current_line)[](fg:blue)[$symbol](fg:primary bg:blue)[](fg:blue bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
+symbol = ' C'
+
+# ────────────────────
+# Fill & Utilities
+# ────────────────────
+[fill]
+symbol = '─'
+style = 'fg:current_line'
+
+[cmd_duration]
+min_time = 500
+format = '[─](fg:current_line)[](fg:orange)[ ](fg:primary bg:orange)[](fg:orange bg:box)[ $duration ](fg:foreground bg:box)[](fg:box)'
+
+[shell]
+format = '[─](fg:current_line)[](fg:purple)[ ](fg:primary bg:purple)[](fg:purple bg:box)[ $indicator](fg:foreground bg:box)[](fg:box)'
+unknown_indicator = 'shell'
+powershell_indicator = 'powershell'
+fish_indicator = 'fish'
+disabled = false
+
+[time]
+format = '[─](fg:current_line)[](fg:purple)[󰦖 ](fg:primary bg:purple)[](fg:purple bg:box)[ $time](fg:foreground bg:box)[](fg:box)'
+time_format = '%H:%M'
+disabled = true
+
+[username]
+format = '[─](fg:current_line)[](fg:yellow)[ ](fg:primary bg:yellow)[](fg:yellow bg:box)[ $user](fg:foreground bg:box)[](fg:box) '
+show_always = true
+
+# ────────────────────
+# Prompt Character
+# ────────────────────
+[character]
+format = """
+[╰─$symbol](fg:current_line) """
+success_symbol = '[❯](fg:bold green)'
+error_symbol = '[×](fg:bold red)'

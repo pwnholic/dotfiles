@@ -26,7 +26,7 @@ return {
                 },
                 stdin = false,
                 stream = "stdout",
-                parser = function(output, bufnr)
+                parser = function(output, _)
                     if not output or output == "" then
                         return {}
                     end
