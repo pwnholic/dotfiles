@@ -1,48 +1,103 @@
-theme = "tokyonight"
+theme = "t_night"
 
 [editor]
-end-of-line-diagnostics = "hint"
 line-number = "relative"
-mouse = true
-auto-format = true
-
-[editor.statusline]
-left = [
-    "mode",
-    "file-name",
-    "read-only-indicator",
-    "file-modification-indicator",
-]
-right = [
-    "primary-selection-length",
-    "register",
-    "position",
-    "total-line-numbers",
-    "file-encoding",
-]
-center = ["diagnostics"]
-mode.normal = "NORMAL"
-mode.insert = "INSERT"
-mode.select = "VISUAL"
-
-[editor.cursor-shape]
-insert = "bar"
-normal = "block"
-select = "underline"
+scrolloff = 10
+cursorline = true
+color-modes = true
+bufferline = "multiple"
+rulers = [90, 120]
+popup-border = "all"
+true-color = true
+undercurl = true
+end-of-line-diagnostics = "info"
+gutters = ["diagnostics", "spacer", "line-numbers", "spacer", "diff", "spacer"]
 
 [editor.file-picker]
 hidden = false
 
-[editor.lsp]
-display-messages = true
-display-inlay-hints = true
-
-[editor.auto-save]
-focus-lost = true
+[editor.soft-wrap]
+enable = false
+max-wrap = 25
+max-indent-retain = 40
+wrap-indicator = " ↪"
+wrap-at-text-width = true
 
 [editor.indent-guides]
 render = true
 character = "▏"
+skip-levels = 1
 
-[editor.whitespace]
-render = "all"
+[editor.statusline]
+left = ["mode", "spinner", "version-control"]
+center = [
+  "diagnostics",
+  "file-name",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
+right = [
+  "register",
+  "workspace-diagnostics",
+  "selections",
+  "primary-selection-length",
+  "position",
+  "position-percentage",
+  "file-encoding",
+]
+separator = "│"
+mode.normal = "N"
+mode.insert = "I"
+mode.select = "S"
+diagnostics = ["error", "warning", "hint", "info"]
+workspace-diagnostics = ["error", "warning", "hint", "info"]
+
+[editor.cursor-shape]
+normal = "block"
+insert = "bar"
+select = "underline"
+
+[editor.lsp]
+display-progress-messages = true
+display-inlay-hints = false
+
+# [editor.file-explorer]
+# follow-symlinks = true
+# ignore = true
+# git-ignore = true
+# git-global = true
+# git-exclude = true
+
+[editor.inline-diagnostics]
+cursor-line = "warning"
+other-lines = "disable"
+prefix-len = 2
+max-wrap = 20
+max-diagnostics = 5
+
+[editor.auto-save]
+focus-lost = true
+after-delay.enable = true
+after-delay.timeout = 10000 # 10s
+
+#### REMAPPING
+
+[keys.normal]
+C-s = ":wa!"
+C-y = [
+  ':sh rm -f /tmp/unique-file',
+  ':insert-output yazi %{buffer_name} --chooser-file=/tmp/unique-file',
+  ':sh printf "\x1b[?1049h\x1b[?2004h" > /dev/tty',
+  ':open %sh{cat /tmp/unique-file}',
+  ':redraw',
+]
+
+C-r = [
+  ":write-all",
+  ":insert-output scooter --no-stdin >/dev/tty",
+  ":redraw",
+  ":reload-all",
+]
+
+[keys.normal.space]
+C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw"]

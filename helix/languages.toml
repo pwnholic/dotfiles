@@ -1,27 +1,112 @@
-[[language]]
-name = "go"
-scope = "source.go"
-indent = { tab-width = 4, unit = "  " }
-file-types = ["go"]
-language-servers = ["gopls"]
+##  ██████╗  ██████╗ ██╗      █████╗ ███╗   ██╗ ██████╗
+## ██╔════╝ ██╔═══██╗██║     ██╔══██╗████╗  ██║██╔════╝
+## ██║  ███╗██║   ██║██║     ███████║██╔██╗ ██║██║  ███╗
+## ██║   ██║██║   ██║██║     ██╔══██║██║╚██╗██║██║   ██║
+## ╚██████╔╝╚██████╔╝███████╗██║  ██║██║ ╚████║╚██████╔╝
+##  ╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝
 
 [language-server.gopls]
 command = "gopls"
 
 [language-server.gopls.config]
-usePlaceholders = true
-local = "goimports"
-completeUnimported = true
-staticcheck = true
-deepCompletion = true
-directoryFilters = [
-    "-.git",
-    "-.vscode",
-    "-.idea",
-    "-.vscode-test",
-    "-node_modules",
-]
+directoryFilters = ["-**/node_modules", "-**/vendor"]
+gofumpt = true
+# local = "github.com/pwnholic/lucy"
 semanticTokens = true
+newGoFileHeader = true
+hoverKind = "FullDocumentation"
+linkTarget = "pkg.go.dev"
+linksInHover = true
+importShortcut = "Both"
+symbolMatcher = "Fuzzy"
+symbolScope = "all"
+staticcheck = true
+vulncheck = "Imports"
+diagnosticsDelay = "1s"
+diagnosticsTrigger = "Edit"
+analysisProgressReporting = true
+usePlaceholders = true
+matcher = "Fuzzy"
+experimentalPostfixCompletions = true
+completeFunctionCalls = true
+
+
+[language-server.gopls.config.analyses]
+# Staticcheck SA (default: off - bug detection)
+SA1029 = true # reflectvaluecompare - has effective key type
+SA4006 = true # value never read before overwrite
+SA4008 = true # loop variable never changes
+SA4009 = true # function argument overwritten before use
+SA4010 = true # append result never observed
+SA4012 = true # comparing with NaN
+SA4019 = true # duplicate build constraints
+SA4023 = true # impossible interface nil comparison
+SA5000 = true # assignment to nil map
+SA5002 = true # empty for loop spins
+SA5007 = true # infinite recursive call
+SA5011 = true # possible nil pointer dereference
+SA6000 = true # regexp in loop should use Compile
+SA6001 = true # map byte slice key optimization
+SA6002 = true # storing non-pointer in sync.Pool
+SA6003 = true # string to []byte before range
+
+# Staticcheck ST (default: off - style checks)
+ST1000 = true # missing package comment
+ST1003 = true # poorly chosen identifier
+ST1005 = true # incorrectly formatted error string
+ST1006 = true # poorly chosen receiver name
+ST1011 = true # poorly chosen time.Duration variable name
+ST1012 = true # poorly chosen error variable name
+ST1013 = true # use HTTP status code constants
+ST1015 = true # default case should be first or last
+ST1016 = true # consistent method receiver names
+ST1017 = true # no Yoda conditions
+ST1019 = true # duplicate imports
+ST1020 = true # exported function docs should start with name
+ST1021 = true # exported type docs should start with name
+ST1022 = true # exported var/const docs should start with name
+ST1023 = true # redundant type in variable declaration
+
+# Quickfix QF (default: off - code simplification)
+QF1001 = true # apply De Morgan's law
+QF1005 = true # expand math.Pow
+QF1006 = true # lift if+break to loop condition
+QF1007 = true # merge conditional assignment
+
+# Style S (default: off - simplifications)
+S1002 = true # omit bool constant comparison
+S1005 = true # drop blank identifier
+S1006 = true # use for {} for infinite loops
+S1008 = true # simplify returning bool expression
+S1011 = true # use single append for slice concatenation
+S1016 = true # use type conversion instead of copying
+S1021 = true # merge var decl and assignment
+S1025 = true # don't use fmt.Sprintf unnecessarily
+S1029 = true # range over string directly
+
+# Modern Go (Go 1.21+ features)
+any = true
+bloop = true
+forvar = true
+mapsloop = true
+minmax = true
+rangeint = true
+slicescontains = true
+slicessort = true
+stditerators = true
+waitgroup = true
+nilness = true
+unusedparams = true
+unusedwrite = true
+
+[language-server.gopls.config.codelenses]
+runtest = true
+gc_details = false
+generate = true
+regenerate_cgo = true
+tidy = true
+upgrade_dependency = true
+vendor = true
 
 [language-server.gopls.config.hints]
 assignVariableTypes = true
@@ -31,18 +116,62 @@ functionTypeParameters = true
 parameterNames = true
 rangeVariableTypes = true
 
-[language-server.gopls.config.codelenses]
-gc_details = false
-generate = true
-regenerate_cgo = true
-run_govulncheck = true
-test = true
-tidy = true
-upgrade_dependency = true
-vendor = true
+[[language]]
+name = "go"
+auto-format = true
+formatter = { command = "goimports" }
+language-servers = ["gopls"]
+indent = { tab-width = 4, unit = "\t" }
 
-[language-server.gopls.config.analyses]
-nilness = true
-unusedparams = true
-unusedwrite = true
-useany = true
+## ██████╗ ██╗   ██╗████████╗██╗  ██╗ ██████╗ ███╗   ██╗
+## ██╔══██╗╚██╗ ██╔╝╚══██╔══╝██║  ██║██╔═══██╗████╗  ██║
+## ██████╔╝ ╚████╔╝    ██║   ███████║██║   ██║██╔██╗ ██║
+## ██╔═══╝   ╚██╔╝     ██║   ██╔══██║██║   ██║██║╚██╗██║
+## ██║        ██║      ██║   ██║  ██║╚██████╔╝██║ ╚████║
+## ╚═╝        ╚═╝      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+
+[language-server.basedpyright]
+command = "basedpyright-langserver"
+args = ["--stdio"]
+
+[language-server.basedpyright.config]
+python.pythonPath = ".venv/bin/python"
+
+[language-server.ty]
+command = "ty"
+args = ["server"]
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+environment = { "RUFF_TRACE" = "messages" }
+
+[[language]]
+name = "python"
+auto-format = true
+formatter = { command = "sh", args = [
+  "-c",
+  "ruff check --fix --select=ALL --force-exclude --no-cache --stdin-filename %sh{realpath %{buffer_name}} -q - | ruff format --force-exclude --no-cache --stdin-filename %sh{realpath %{buffer_name}} -q -",
+] }
+language-servers = [
+  { name = "basedpyright", except-features = [
+    "format",
+  ] },
+  { name = "ruff", except-features = [
+    "format",
+    "hover",
+    "signature-help",
+  ], only-features = [
+    "diagnostics",
+    "code-action",
+  ] },
+  { name = "ty", except-features = [
+    "format",
+    "hover",
+    "signature-help",
+  ], only-features = [
+    "diagnostics",
+    "code-action",
+  ] },
+]
+indent = { tab-width = 4, unit = "\t" }

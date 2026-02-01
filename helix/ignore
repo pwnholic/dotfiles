@@ -1,14 +1,62 @@
-client/            
-file/              
-Docker-file.txt    
-Dockerfile         
-Makefile           
-README.md          
-docker-compose.yml 
-go.mod             
-go.sum             
-rest.http          
-yarn.lock          
+# Helix ignore file
+# File/directori yang akan di-ignore di file picker dan global search
 
+# Dependencies
+node_modules/
+vendor/
+.bundle/
+target/
+*.egg-info/
+__pycache__/
+.pip/
+venv/
+env/
+ENV/
+.venv/
 
+# Build artifacts
+dist/
+build/
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+*.bin
 
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.cache
+
+# OS
+Thumbs.db
+.DS_Store
+*.orig
+
+# Project specific
+*.min.js
+*.min.css
+coverage/
+.nyc_output/
+
+.claude/
