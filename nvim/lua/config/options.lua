@@ -19,6 +19,7 @@ opt.nrformats:append("blank") -- Smarter number increment/decrement
 -- ============================================================================
 
 opt.cmdheight = 0 -- Hide command line when idle (Neovim 0.9+)
+opt.showtabline = 0
 opt.number = true -- Show line numbers
 opt.cursorline = true -- Highlight current line
 opt.cursorlineopt = "both" -- Highlight only line number
