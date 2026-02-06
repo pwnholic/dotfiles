@@ -49,7 +49,6 @@ return {
             cursorline = false,
             number = false,
             relativenumber = false,
-            winhighlight = "Normal:FylerNormal,NormalNC:FylerNormalNC",
         },
         buf_options = {
             buflisted = false,
@@ -67,12 +66,12 @@ return {
         delete_to_trash = true,
         skip_confirm_for_simple_edits = true,
         progress = {
-            border = vim.opt.winborder,
-            minimized_border = vim.opt.winborder,
+            border = vim.o.winborder,
+            minimized_border = vim.o.winborder,
         },
-        confirmation = { border = vim.opt.winborder },
-        ssh = { border = vim.opt.winborder },
-        keymaps_help = { border = vim.opt.winborder },
+        confirmation = { border = vim.o.winborder },
+        ssh = { border = vim.o.winborder },
+        keymaps_help = { border = vim.o.winborder },
         use_default_keymaps = false,
         default_file_explorer = true,
         view_options = {
@@ -114,7 +113,7 @@ return {
         keymaps = {
             ["g?"] = { "actions.show_help", mode = "n" },
             ["<CR>"] = "actions.select",
-            ["<C-s>"] = { "actions.select", opts = { vertical = true } },
+            ["<A-s>"] = { "actions.select", opts = { vertical = true } },
             ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
             ["<C-t>"] = { "actions.select", opts = { tab = true } },
             ["<C-p>"] = "actions.preview",
