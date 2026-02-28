@@ -1,40 +1,67 @@
-local autocmd, augroup = vim.api.nvim_create_autocmd, vim.api.nvim_create_augroup
+---@diagnostic disable: undefined-field
+---@alias AugroupOpts { clear?: boolean }
+---@alias AutocmdOpts vim.api.keyset.create_autocmd
 
-autocmd({ "BufLeave", "WinLeave", "FocusLost" }, {
+---Create an augroup and return its id.
+---@param name string
+---@param opts? AugroupOpts
+---@return integer
+local function augroup(name, opts)
+    return vim.api.nvim_create_augroup(name, vim.tbl_extend("force", { clear = true }, opts or {}))
+end
+
+---Create an autocmd. Accepts an optional augroup name as the first argument.
+---@param group string|integer|nil Augroup name or i ed. If string, creates one automatically.
+---@param events string|string[]
+---@param opts AutocmdOpts
+---@return integer autocmd_id
+local function autocmd(group, events, opts)
+    if type(group) == "string" then
+        group = augroup(group)
+    end
+    return vim.api.nvim_create_autocmd(events, vim.tbl_extend("force", opts, { group = group or nil }))
+end
+
+---Run a callback only if the buffer is a real, writable file.
+---@param buf integer
+---@param file string
+---@param callback fun()
+local function if_real_file(buf, file, callback)
+    vim.uv.fs_stat(file, function(err, stat)
+        if err or not stat or stat.type ~= "file" then
+            return
+        end
+        vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(buf) then
+                callback()
+            end
+        end)
+    end)
+end
+
+---Save a buffer silently if it is a real file.
+---@param buf integer
+---@param file string
+local function buf_save(buf, file)
+    if_real_file(buf, file, function()
+        vim.api.nvim_buf_call(buf, function()
+            vim.cmd.update({ mods = { emsg_silent = true } })
+        end)
+    end)
+end
+
+autocmd("Autosave", { "BufLeave", "WinLeave", "FocusLost" }, {
     nested = true,
     desc = "Autosave on focus change.",
     callback = function(args)
-        vim.uv.fs_stat(args.file, function(err, stat)
-            if err or not stat or stat.type ~= "file" then
-                return
-            end
-            vim.schedule(function()
-                if not vim.api.nvim_buf_is_valid(args.buf) then
-                    return
-                end
-                vim.api.nvim_buf_call(args.buf, function()
-                    vim.cmd.update({
-                        mods = { emsg_silent = true },
-                    })
-                end)
-            end)
-        end)
+        buf_save(args.buf, args.file)
     end,
 })
 
-autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
-    group = augroup("ToggleRelativeLineNumbers", { clear = true }),
-    desc = "Toggle relative line numbers off",
+autocmd("FileTypeOpts", { "FileType" }, {
+    pattern = { "help", "qf", "man" },
+    desc = "Close certain filetypes with q.",
     callback = function(args)
-        if vim.wo.nu then
-            vim.wo.relativenumber = false
-        end
-
-        -- Redraw here to avoid having to first write something for the line numbers to update.
-        if args.event == "CmdlineEnter" then
-            if not vim.tbl_contains({ "@", "-" }, vim.v.event.cmdtype) then
-                vim.cmd.redraw()
-            end
-        end
+        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = args.buf, silent = true })
     end,
 })

@@ -3,9 +3,9 @@ return {
     opts = {
         ensure_installed = {
             "stylua",
+            "jq",
             "shfmt",
             "prettier",
-            "jq",
         },
     },
 }

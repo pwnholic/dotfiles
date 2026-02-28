@@ -27,6 +27,45 @@ return {
         { "<leader>E", false },
         { "<leader>fe", false },
         { "<leader>fE", false },
+        {
+            "<leader>fd",
+            function()
+                local exclude = { ".git", "node_modules", "__pycache__", ".venv", "venv", "target", "vendor" }
+                local args = vim.iter(exclude)
+                    :map(function(e)
+                        return { "--exclude", e }
+                    end)
+                    :flatten()
+                    :fold({ "--type", "d", "--hidden", "--color", "never" }, function(acc, v)
+                        acc[#acc + 1] = v
+                        return acc
+                    end)
+
+                Snacks.picker.pick({
+                    source = "directories",
+                    title = "",
+                    finder = function(_, ctx)
+                        return require("snacks.picker.source.proc").proc({
+                            cmd = "fd",
+                            args = args,
+                            transform = function(item)
+                                item.file = item.text
+                                item.dir = true
+                            end,
+                        }, ctx)
+                    end,
+                    format = "file",
+                    confirm = function(picker, item)
+                        picker:close()
+                        if item then
+                            require("oil").open(item.file)
+                        end
+                    end,
+                    layout = { preset = "ivy", preview = false },
+                })
+            end,
+            desc = "Find directory -> Oil",
+        },
     },
     opts = {
         explorer = { enabled = false },
