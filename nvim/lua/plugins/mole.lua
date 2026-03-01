@@ -17,7 +17,6 @@ return {
         auto_open_panel = true,
         notify = true,
         picker = "snacks",
-
         session_name = function()
             local ok, result = pcall(vim.fn.system, "git branch --show-current 2>/dev/null")
             local branch = "no-git"
@@ -28,7 +27,7 @@ return {
             if branch == "" then
                 branch = "no-git"
             end
-            return branch .. "_" .. os.date("%Y%m%d_%H%M%S")
+            return os.date("%Y%m%d%H%M%S") .. "_" .. branch
         end,
 
         keys = {
@@ -66,50 +65,11 @@ return {
                     branch = branch_raw:gsub("%s+", "")
                 end
 
-                -- detect active buffer (bukan session file mole)
-                local current_file = vim.fn.expand("%:p")
-                local mole_dir = vim.fn.stdpath("data") .. "/mole"
-                if current_file:find(mole_dir, 1, true) then
-                    current_file = vim.fn.expand("#:p")
-                end
-                if current_file ~= "" then
-                    local ok_rel, rel = pcall(vim.fn.fnamemodify, current_file, ":~:.")
-                    if ok_rel and rel and rel ~= "" then
-                        current_file = rel
-                    end
-                end
-
-                -- detect language dari extension
-                local ext = current_file:match("%.(%w+)$") or ""
-                local lang_map = {
-                    lua = "lua",
-                    py = "python",
-                    rs = "rust",
-                    go = "go",
-                    cpp = "cpp",
-                    c = "c",
-                    sh = "bash",
-                    zsh = "zsh",
-                    fish = "fish",
-                    yml = "yaml",
-                    yaml = "yaml",
-                    json = "json",
-                    toml = "toml",
-                    md = "markdown",
-                    html = "html",
-                    css = "css",
-                    scss = "scss",
-                    zig = "zig",
-                }
-                local lang = lang_map[ext] or ext
-
                 -- build frontmatter, skip field kosong via vim.iter
                 local fm_lines = vim.iter({
                     { "title", title },
                     { "project", project_name },
                     { "path", cwd },
-                    { "file", current_file },
-                    { "language", lang },
                     { "repo", repo },
                     { "branch", branch },
                     { "started", timestamp },
