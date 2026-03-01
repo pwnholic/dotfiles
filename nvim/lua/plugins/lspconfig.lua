@@ -99,7 +99,7 @@ return {
                             staticcheck = false,
                             directoryFilters = { "-.git", "-.vscode", "-.idea", "-node_modules", "-vendor" },
                             semanticTokens = false,
-                            hoverKind = "Structured",
+                            hoverKind = "FullDocumentation",
                             vulncheck = "Off",
                             diagnosticsDelay = "3s",
                             diagnosticsTrigger = "Save",
