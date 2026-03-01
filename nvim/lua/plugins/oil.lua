@@ -113,8 +113,46 @@ return {
         local prev_dir ---@type string?
 
         local augroup = vim.api.nvim_create_augroup("oil_custom", { clear = true })
+        vim.api.nvim_create_autocmd("User", {
+            group = augroup,
+            pattern = "OilActionsPost",
+            desc = "Notify LSP on file rename/move via Snacks",
+            callback = function(ev)
+                local actions = ev.data and ev.data.actions or {}
+                for _, action in ipairs(actions) do
+                    if action.type == "move" then
+                        Snacks.rename.on_rename_file(action.src_url, action.dest_url)
+                    end
+                end
+            end,
+        })
 
-        -- Sync oil buffer ke directory file aktif
+        vim.api.nvim_create_autocmd("User", {
+            group = augroup,
+            pattern = "OilActionsPost",
+            desc = "Notify on Oil actions",
+            callback = function(ev)
+                local actions = ev.data and ev.data.actions or {}
+                local msgs = {}
+                for _, action in ipairs(actions) do
+                    local src = vim.fn.fnamemodify(action.src_url or action.url or "", ":t")
+                    local dest = vim.fn.fnamemodify(action.dest_url or "", ":t")
+                    if action.type == "create" then
+                        table.insert(msgs, " Created: " .. src)
+                    elseif action.type == "delete" then
+                        table.insert(msgs, " Deleted: " .. src)
+                    elseif action.type == "move" then
+                        table.insert(msgs, " Moved: " .. src .. " → " .. dest)
+                    elseif action.type == "copy" then
+                        table.insert(msgs, " Copied: " .. src .. " → " .. dest)
+                    end
+                end
+                if #msgs > 0 then
+                    Snacks.notify(table.concat(msgs, "\n"), { title = "Oil", timeout = 3000 })
+                end
+            end,
+        })
+
         vim.api.nvim_create_autocmd("BufEnter", {
             group = augroup,
             desc = "Sync oil buffer to current file directory",
@@ -178,7 +216,6 @@ return {
             end,
         })
 
-        -- Set lcd di oil window supaya terminal mengikuti directory oil
         vim.api.nvim_create_autocmd({ "BufEnter", "DirChanged" }, {
             group = augroup,
             desc = "Set lcd to oil current directory",
@@ -198,7 +235,6 @@ return {
             end,
         })
 
-        -- Reset lcd saat masuk buffer biasa (non-oil)
         vim.api.nvim_create_autocmd("BufEnter", {
             group = augroup,
             desc = "Reset lcd when leaving oil buffer",
