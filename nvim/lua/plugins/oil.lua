@@ -113,6 +113,7 @@ return {
         local prev_dir ---@type string?
 
         local augroup = vim.api.nvim_create_augroup("oil_custom", { clear = true })
+
         -- Sync oil buffer ke directory file aktif
         vim.api.nvim_create_autocmd("BufEnter", {
             group = augroup,
@@ -194,6 +195,21 @@ return {
                     return
                 end
                 pcall(vim.cmd.lcd, dir)
+            end,
+        })
+
+        -- Reset lcd saat masuk buffer biasa (non-oil)
+        vim.api.nvim_create_autocmd("BufEnter", {
+            group = augroup,
+            desc = "Reset lcd when leaving oil buffer",
+            callback = function(ev)
+                if vim.bo[ev.buf].filetype == "oil" then
+                    return
+                end
+                if vim.bo[ev.buf].buftype ~= "" then
+                    return
+                end
+                pcall(vim.cmd, "lcd " .. vim.fn.fnameescape(vim.fn.getcwd(-1)))
             end,
         })
     end,

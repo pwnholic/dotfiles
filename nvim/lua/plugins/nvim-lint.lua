@@ -8,22 +8,36 @@ return {
         linters = {
             golangci_lint = {
                 condition = function(ctx)
-                    local rule_file = {
+                    return #vim.fs.find({
                         ".golangci.yml",
                         ".golangci.yaml",
                         ".golangci.toml",
                         ".golangci.json",
-                    }
-                    local found = vim.fs.find(rule_file, { path = ctx.filename, upward = true })
-                    return #found > 0 and found[1]
+                    }, { path = ctx.filename, upward = true }) > 0
                 end,
                 cmd = "golangci-lint",
-                args = {
-                    "run",
-                    "--out-format=json",
-                    "--path-prefix=" .. vim.fn.getcwd(),
-                    vim.fn.expand("%:p"),
-                },
+                args = function()
+                    return {
+                        "run",
+                        "--output.json.path",
+                        "stdout", -- output JSON ke stdout (v2)
+                        "--show-stats=false", -- tidak perlu statistik
+                        "--issues-exit-code=0", -- jangan error meski ada issue
+                        "--whole-files", -- tampilkan semua issue, bukan hanya diff
+                        "--allow-parallel-runners", -- hindari lock jika ada instance lain
+                        "--max-issues-per-linter",
+                        "20", -- batasi jumlah issue per linter
+                        "--max-same-issues",
+                        "5", -- batasi issue duplikat
+                        "--sort-order",
+                        "severity", -- issue paling penting duluan
+                        "--timeout",
+                        "30s", -- batas waktu eksekusi
+                        "--path-prefix",
+                        vim.fn.getcwd(),
+                        vim.fn.expand("%:p"),
+                    }
+                end,
                 stdin = false,
                 stream = "stdout",
                 parser = function(output, _)
@@ -31,18 +45,18 @@ return {
                         return {}
                     end
                     local ok, decoded = pcall(vim.json.decode, output)
-                    if not ok or not decoded.Issues then
+                    if not ok or not decoded or not decoded.Issues then
                         return {}
                     end
-
                     return vim.iter(decoded.Issues)
                         :map(function(issue)
+                            local pos = issue.Pos or {}
                             return {
-                                lnum = (issue.Pos.Line or 1) - 1,
-                                col = (issue.Pos.Column or 1) - 1,
-                                end_lnum = (issue.Pos.Line or 1) - 1,
-                                end_col = (issue.Pos.Column or 1) - 1,
-                                severity = vim.diagnostic.severity[issue.Severity] or vim.diagnostic.severity.WARN,
+                                lnum = (pos.Line or 1) - 1,
+                                col = (pos.Column or 1) - 1,
+                                end_lnum = (pos.Line or 1) - 1,
+                                end_col = (pos.Column or 1) - 1,
+                                severity = vim.diagnostic.severity.WARN,
                                 source = issue.FromLinter,
                                 message = issue.Text,
                             }

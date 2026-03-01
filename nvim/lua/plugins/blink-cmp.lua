@@ -91,7 +91,7 @@ return {
             end,
         },
         fuzzy = {
-            implementation = "prefer_rust",
+            implementation = "rust",
             max_typos = function(keyword)
                 return math.floor(#keyword / 4)
             end,
