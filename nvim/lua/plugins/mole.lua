@@ -41,10 +41,8 @@ return {
             next_annotation = "]a",
             prev_annotation = "[a",
         },
-
         window = { width = 0.35 },
-        input = { width = 60, border = "rounded" },
-
+        input = { width = 60, border = vim.o.winborder },
         format = {
             header = function(info)
                 local title = info.title or "Untitled Session"
