@@ -30,7 +30,6 @@ return {
             hl.SnacksPickerInputTitle = title
             hl.SnacksPickerInputBorder = grey_border
             hl.SnacksPickerBoxTitle = title
-
             hl.TreesitterContext = { bg = c.bg_dark, bold = true, underline = true, sp = c.purple }
         end,
     },

@@ -142,9 +142,9 @@ return {
                     elseif action.type == "delete" then
                         table.insert(msgs, " Deleted: " .. src)
                     elseif action.type == "move" then
-                        table.insert(msgs, " Moved: " .. src .. " → " .. dest)
+                        table.insert(msgs, " Moved: " .. src .. " -> " .. dest)
                     elseif action.type == "copy" then
-                        table.insert(msgs, " Copied: " .. src .. " → " .. dest)
+                        table.insert(msgs, " Copied: " .. src .. " -> " .. dest)
                     end
                 end
                 if #msgs > 0 then
