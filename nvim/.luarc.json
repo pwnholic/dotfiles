@@ -4,5 +4,8 @@
     "format.enable": true,
     "workspace.library": [
         "/usr/share/nvim/runtime/lua"
+    ],
+    "diagnostics.disable": [
+        "unused-local"
     ]
 }
