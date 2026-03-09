@@ -38,10 +38,10 @@ return {
     },
     {
         "nvim-lualine/lualine.nvim",
-        optional = true,
         opts = function(_, opts)
             opts.sections = opts.sections or {}
             opts.sections.lualine_c = opts.sections.lualine_c or {}
+
             local function get_harpoon_info()
                 local ok, harpoon = pcall(require, "harpoon")
                 if not ok then
@@ -52,12 +52,10 @@ return {
                 if total == 0 then
                     return 0, nil
                 end
-
                 local bufpath = vim.api.nvim_buf_get_name(0)
                 if bufpath == "" then
                     return total, nil
                 end
-
                 local active = nil
                 for i = 1, total do
                     local item = list:get(i)
@@ -72,6 +70,7 @@ return {
                 return total, active
             end
 
+            -- Harpoon indicator
             table.insert(opts.sections.lualine_c, 1, {
                 function()
                     local total, active = get_harpoon_info()
@@ -92,6 +91,16 @@ return {
                 cond = function()
                     local ok, harpoon = pcall(require, "harpoon")
                     return ok and harpoon:list():length() > 0
+                end,
+            })
+
+            table.insert(opts.sections.lualine_c, 2, {
+                function()
+                    return " " .. vim.fn.tabpagenr()
+                end,
+                color = { fg = "#f5a97f", bg = "NONE" },
+                cond = function()
+                    return vim.fn.tabpagenr("$") > 1
                 end,
             })
         end,

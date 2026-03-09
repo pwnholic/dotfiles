@@ -57,11 +57,3 @@ autocmd("Autosave", { "BufLeave", "WinLeave", "FocusLost" }, {
         buf_save(args.buf, args.file)
     end,
 })
-
-autocmd("FileTypeOpts", { "FileType" }, {
-    pattern = { "help", "qf", "man" },
-    desc = "Close certain filetypes with q.",
-    callback = function(args)
-        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = args.buf, silent = true })
-    end,
-})

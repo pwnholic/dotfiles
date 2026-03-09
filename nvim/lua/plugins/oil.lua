@@ -16,7 +16,6 @@ return {
             end,
             desc = "Oil: open cwd",
         },
-        { "-", "<cmd>Oil<cr>", desc = "Oil: parent directory" },
     },
     opts = {
         default_file_explorer = true,
