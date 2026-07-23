@@ -1,0 +1,144 @@
+# ════════════════════════════════════════════════════════════════════
+#  Shell Settings — global UI, fonts, animations, shadows
+#  Docs: https://docs.noctalia.dev/v5/shell/
+# ════════════════════════════════════════════════════════════════════
+
+[shell]
+# ── General ────────────────────────────────────────────────────────
+corner_radius_scale = 1.0                 # 0 = square, 1 = default, 2 = extra rounded
+button_borders = true                     # draw outlines around buttons
+input_borders = true                      # draw outlines around text fields
+popup_borders = true                      # draw outlines around popups/dropdowns
+popup_shadows = true                      # drop shadows behind popups
+font_family = "Iosevka NF"                # Pango family; Fontconfig handles fallback
+lang = "en"                               # override language detection
+time_format = "{:%H:%M}"
+date_format = "%A, %x"
+offline_mode = false
+external_ip_enabled = false
+telemetry_enabled = false
+setup_wizard_enabled = false              # skip first-run wizard (already set up)
+polkit_agent = true                       # register native polkit agent
+password_style = "default"
+settings_show_advanced = true             # show advanced settings by default
+middle_click_opens_widget_settings = true
+show_location = true
+shared_gl_context = true                  # share GPU textures across surfaces
+disable_mipmaps = false
+
+# ── Clipboard ──────────────────────────────────────────────────────
+clipboard_enabled = true
+clipboard_history_max_entries = 200
+clipboard_confirm_clear_history = true
+clipboard_auto_paste = "auto"
+
+# ── App Icon Colorization ─────────────────────────────────────────
+app_icon_colorize = false # keep original app icon colors
+
+# ── Animation ──────────────────────────────────────────────────────
+[shell.animation]
+enabled = true
+speed = 1.0    # 1.0 = normal speed
+
+# ── Shadow ──────────────────────────────────────────────────────────
+[shell.shadow]
+direction = "down" # center | up | down | left | right | corners
+alpha = 0.55       # multiplied by each component's bg opacity
+
+# ── Panel ──────────────────────────────────────────────────────────
+[shell.panel]
+transparency_mode = "glass"            # solid | soft | glass (glass = translucent + readable)
+borders = true
+shadow = true
+list_item_background = false
+launcher_placement = "floating"
+clipboard_placement = "floating"
+control_center_placement = "floating"
+wallpaper_placement = "attached"
+session_placement = "attached"
+polkit_placement = "floating"
+polkit_position = "center"
+floating_offset = 8
+open_near_click_control_center = false
+open_near_click_launcher = false
+open_near_click_clipboard = false
+open_near_click_wallpaper = false
+open_near_click_session = false
+
+# ── Launcher ────────────────────────────────────────────────────────
+[shell.launcher]
+categories = true
+show_icons = true
+compact = false
+app_grid = false
+sort_by_usage = true
+fetch_exchange_rates = true
+provider_prefix = "/"
+
+[shell.launcher.providers.calculator]
+prefix = ""
+global = true
+
+[shell.launcher.providers.emoji]
+prefix = "emo"
+
+[shell.launcher.providers.session]
+prefix = "session"
+global = false
+
+[shell.launcher.providers.wallpaper]
+prefix = "wall"
+
+[shell.launcher.providers.windows]
+prefix = "win"
+
+# ── Screenshot ──────────────────────────────────────────────────────
+[shell.screenshot]
+save_to_file = true
+directory = "~/Pictures/Screenshots"
+filename_pattern = "screenshot_%Y%m%d_%H%M%S"
+copy_to_clipboard = true
+freeze_screen = false
+confirm_region = false
+show_cursor = false
+pipe_to_command = false
+pipe_command = ""
+
+# ── Session ─────────────────────────────────────────────────────────
+[shell.session]
+grid = false
+grid_columns = 3
+show_shortcuts = true
+
+# ── MPRIS ──────────────────────────────────────────────────────────
+[shell.mpris]
+blacklist = []
+
+# ── Screen Corners ─────────────────────────────────────────────────
+[shell.screen_corners]
+enabled = false
+size = 32
+
+# ── Hot Corners ─────────────────────────────────────────────────────
+# Niri handles hot corners natively (in niri config), so we disable
+# Noctalia's hot corners to avoid double-triggering.
+[hot_corners]
+enabled = false
+
+# ── Accessibility ───────────────────────────────────────────────────
+[accessibility]
+ui_scale = 1.0
+high_contrast = false
+
+# ── Keybinds ────────────────────────────────────────────────────────
+# These are for shell-internal navigation (Settings, Control Center,
+# launcher). Compositor-level keybinds are in niri config.
+[keybinds]
+validate = ["return", "kp_enter"]
+cancel = ["escape"]
+left = ["left"]
+right = ["right"]
+up = ["up"]
+down = ["down"]
+tab_next = ["tab"]
+tab_previous = ["shift+tab", "iso_left_tab"]

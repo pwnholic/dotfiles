@@ -1,0 +1,50 @@
+{
+  "lastChangelogVersion": "0.81.1",
+  "defaultThinkingLevel": "high",
+  "thinkingBudgets": {
+    "minimal": 2048,
+    "low": 8192,
+    "medium": 16384,
+    "high": 32768,
+    "xhigh": 81920
+  },
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 32768,
+    "keepRecentTokens": 40000
+  },
+  "branchSummary": {
+    "reserveTokens": 32768
+  },
+  "retry": {
+    "enabled": true,
+    "maxRetries": 4,
+    "baseDelayMs": 2000,
+    "provider": {
+      "timeoutMs": 3600000,
+      "maxRetries": 0,
+      "maxRetryDelayMs": 60000
+    }
+  },
+  "terminal": {
+    "showImages": true,
+    "imageWidthCells": 60
+  },
+  "images": {
+    "autoResize": true
+  },
+  "collapseChangelog": true,
+  "doubleEscapeAction": "tree",
+  "autocompleteMaxVisible": 10,
+  "editorPaddingX": 1,
+  "warnings": {
+    "anthropicExtraUsage": true
+  },
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access"
+  ],
+  "defaultProvider": "zai",
+  "defaultModel": "glm-5.2",
+  "theme": "noctalia"
+}

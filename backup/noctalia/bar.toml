@@ -1,0 +1,75 @@
+# ════════════════════════════════════════════════════════════════════
+#  Bar — floating top bar with Tokyo Night styling
+#  Docs: https://docs.noctalia.dev/v5/bar/
+# ════════════════════════════════════════════════════════════════════
+
+[bar]
+order = ["main"]
+
+[bar.main]
+position = "top"
+enabled = true
+auto_hide = false
+smart_auto_hide = false
+show_on_workspace_switch = true
+reserve_space = true
+layer = "top"
+
+# ── Dimensions ─────────────────────────────────────────────────────
+thickness = 36
+background_opacity = 1.0
+border = "outline"
+border_width = 1.5
+shadow = true
+contact_shadow = false
+panel_overlap = 1
+
+# ── Corner Radius ──────────────────────────────────────────────────
+radius = 8
+radius_top_left = 8
+radius_top_right = 8
+radius_bottom_left = 8
+radius_bottom_right = 8
+concave_edge_corners = false
+
+# ── Margins & Padding ─────────────────────────────────────────────
+margin_ends = 10
+margin_edge = 6
+margin_opposite_edge = 0
+padding = 10
+widget_spacing = 16
+hover_highlight = true
+scale = 1
+font_weight = 500
+font_family = "Iosevka NF"
+
+# ── Capsule Defaults ──────────────────────────────────────────────
+# capsule = true
+# capsule_fill = "surface_variant"
+# capsule_thickness = 0.76
+# capsule_radius = 8.0
+# capsule_opacity = 0
+# capsule_border = "outline"
+
+# ── Widget Layout ──────────────────────────────────────────────────
+start = ["launcher", "workspaces", "taskbar"]
+center = ["clock", "media"]
+end = [
+  "cpu",
+  "ram",
+  "temp",
+  "tray",
+  "notifications",
+  "clipboard",
+  "network",
+  "bluetooth",
+  "volume",
+  "brightness",
+  "battery",
+  "control-center",
+]
+
+# ── Dead Zone Actions (empty bar margins) ─────────────────────────
+[bar.main.dead_zone]
+command = "noctalia msg panel-toggle launcher"
+right_command = "noctalia msg panel-toggle control-center"

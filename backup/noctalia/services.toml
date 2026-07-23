@@ -1,0 +1,93 @@
+# ════════════════════════════════════════════════════════════════════
+#  Services — Audio, Brightness, Location, Night Light, Weather,
+#             System Monitor, Calendar
+#  Docs: https://docs.noctalia.dev/v5/services/
+# ════════════════════════════════════════════════════════════════════
+
+# ── Audio ──────────────────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/v5/services/audio/
+[audio]
+enable_overdrive = true  # allow volume above 100% up to 150% (laptop speakers)
+enable_sounds = true     # enable UI sound effects
+sound_volume = 0.4       # global sound playback volume (0.0 - 1.0)
+volume_change_sound = "" # empty = bundled default
+notification_sound = ""  # empty = bundled default
+
+# ── Brightness ────────────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/v5/services/brightness/
+# Hardware: intel_backlight on eDP-1, NVIDIA RTX 5050 laptop
+[brightness]
+enable_ddcutil = false    # no external monitors with DDC/CI yet
+minimum_brightness = 0.05 # never go completely dark (5% floor)
+sync_all_monitors = false
+
+# Pin eDP-1 to the kernel backlight interface explicitly.
+[brightness.monitor.eDP-1]
+backend = "backlight"
+backlight_device = "intel_backlight"
+
+# ── Location ──────────────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/v5/services/location/
+# Source for weather, night light schedule, and theme auto mode.
+[location]
+auto_locate = true # resolve coordinates from IP address
+# address   = "Jakarta, Indonesia"  # geocoded when auto_locate = false
+# latitude  = -6.2088
+# longitude = 106.8456
+
+# ── Night Light ───────────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/v5/services/night-light/
+# Uses wlr-gamma-control (supported by niri). Follows [location] schedule.
+[nightlight]
+enabled = false
+force = false
+temperature_day = 6500   # Kelvin (daytime, must be > night by 100)
+temperature_night = 3500 # Kelvin (nighttime, warmer for eye comfort)
+
+# ── Weather ───────────────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/v5/services/weather/
+# Requires [location] to be configured. Data from Open-Meteo.
+[weather]
+enabled = true
+refresh_minutes = 30
+unit = "metric"      # metric | imperial
+effects = true
+
+# ── System Monitor ────────────────────────────────────────────────
+# Docs: https://docs.noctalia.dev/v5/services/system-monitor/
+# NVIDIA NVML is available (libnvidia-ml.so.1 confirmed).
+# On hybrid laptop, NVML is skipped when dGPU is asleep; iGPU is reported.
+[system.monitor]
+enabled = true
+cpu_temp_sensor_path = ""  # auto-detect (coretemp/k10temp)
+cpu_poll_seconds = 2.0
+gpu_poll_seconds = 5.0     # enable GPU stats (NVML on NVIDIA)
+memory_poll_seconds = 2.0
+network_poll_seconds = 3.0
+disk_poll_seconds = 10.0
+
+# ── CPU threshold highlighting ───────────────────────────────────
+cpu_usage_activity_threshold = 60
+cpu_usage_critical_threshold = 90
+cpu_temp_activity_threshold = 70
+cpu_temp_critical_threshold = 90
+
+# ── GPU threshold highlighting ───────────────────────────────────
+gpu_temp_activity_threshold = 65
+gpu_temp_critical_threshold = 85
+gpu_usage_activity_threshold = 60
+gpu_usage_critical_threshold = 95
+gpu_vram_activity_threshold = 60
+gpu_vram_critical_threshold = 90
+
+# ── RAM threshold highlighting ───────────────────────────────────
+ram_pct_activity_threshold = 70
+ram_pct_critical_threshold = 90
+swap_pct_activity_threshold = 20
+swap_pct_critical_threshold = 80
+
+# ── Network threshold highlighting ───────────────────────────────
+net_rx_activity_threshold = 5
+net_rx_critical_threshold = 50
+net_tx_activity_threshold = 5
+net_tx_critical_threshold = 50

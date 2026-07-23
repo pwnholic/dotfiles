@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "sessions": {
+    "019eb193-eded-7208-bafe-6beaa75d46bd": {
+      "sessionId": "019eb193-eded-7208-bafe-6beaa75d46bd",
+      "cwd": "/home/pwnholic/note-shitt",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-note-shitt--/2026-06-10T12-48-42-477Z_019eb193-eded-7208-bafe-6beaa75d46bd.jsonl",
+      "updatedAt": "2026-06-10T13:04:08.970Z"
+    },
+    "019eb1a2-2f48-7d0b-8e83-c5deb9a57c7c": {
+      "sessionId": "019eb1a2-2f48-7d0b-8e83-c5deb9a57c7c",
+      "cwd": "/home/pwnholic/note-shitt",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-note-shitt--/2026-06-10T13-04-16-712Z_019eb1a2-2f48-7d0b-8e83-c5deb9a57c7c.jsonl",
+      "updatedAt": "2026-06-13T16:03:46.155Z"
+    },
+    "019ec11c-7719-7f62-a372-75158fa2c20d": {
+      "sessionId": "019ec11c-7719-7f62-a372-75158fa2c20d",
+      "cwd": "/home/pwnholic/Dev/sandbox/learn-eino",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-learn-eino--/2026-06-13T13-12-08-730Z_019ec11c-7719-7f62-a372-75158fa2c20d.jsonl",
+      "updatedAt": "2026-06-13T13:12:22.672Z"
+    },
+    "019eced8-bf53-7110-a2c6-501a2d13cbf5": {
+      "sessionId": "019eced8-bf53-7110-a2c6-501a2d13cbf5",
+      "cwd": "/home/pwnholic/Dev/sandbox/learn-eino",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-learn-eino--/2026-06-16T05-12-51-795Z_019eced8-bf53-7110-a2c6-501a2d13cbf5.jsonl",
+      "updatedAt": "2026-06-16T05:12:57.684Z"
+    },
+    "019ed07d-ca8d-7de0-baf9-6a6642e9719c": {
+      "sessionId": "019ed07d-ca8d-7de0-baf9-6a6642e9719c",
+      "cwd": "/home/pwnholic/Dev/sandbox/learn-eino",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-learn-eino--/2026-06-16T12-52-45-325Z_019ed07d-ca8d-7de0-baf9-6a6642e9719c.jsonl",
+      "updatedAt": "2026-06-21T10:48:18.325Z"
+    },
+    "019ed862-907f-7c40-837e-1c50c9bea135": {
+      "sessionId": "019ed862-907f-7c40-837e-1c50c9bea135",
+      "cwd": "/home/pwnholic/Dev/sandbox/gmgn-bug-bounty",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-gmgn-bug-bounty--/2026-06-18T01-39-58-720Z_019ed862-907f-7c40-837e-1c50c9bea135.jsonl",
+      "updatedAt": "2026-06-18T01:40:05.942Z"
+    },
+    "019edd7e-0fd5-7de2-8f66-21da28dfce45": {
+      "sessionId": "019edd7e-0fd5-7de2-8f66-21da28dfce45",
+      "cwd": "/home/pwnholic/Dev/work/behave-core-wallet",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-work-behave-core-wallet--/2026-06-19T01-28-06-869Z_019edd7e-0fd5-7de2-8f66-21da28dfce45.jsonl",
+      "updatedAt": "2026-06-25T01:47:36.197Z"
+    },
+    "019eed6c-2b4a-7085-b395-e4a8e23d02ff": {
+      "sessionId": "019eed6c-2b4a-7085-b395-e4a8e23d02ff",
+      "cwd": "/home/pwnholic/Dev/sandbox/helios-websocket",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-helios-websocket--/2026-06-22T03-42-29-707Z_019eed6c-2b4a-7085-b395-e4a8e23d02ff.jsonl",
+      "updatedAt": "2026-06-22T03:43:15.398Z"
+    },
+    "019eee41-34da-7582-9d01-990e15f34686": {
+      "sessionId": "019eee41-34da-7582-9d01-990e15f34686",
+      "cwd": "/home/pwnholic/Dev/sandbox/helios-websocket",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-helios-websocket--/2026-06-22T07-35-11-323Z_019eee41-34da-7582-9d01-990e15f34686.jsonl",
+      "updatedAt": "2026-06-22T07:35:16.206Z"
+    },
+    "019f01b7-8eea-7470-8f32-d5bbdcbdf866": {
+      "sessionId": "019f01b7-8eea-7470-8f32-d5bbdcbdf866",
+      "cwd": "/home/pwnholic/Dev/sandbox/gmgn-map-ws",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-gmgn-map-ws--/2026-06-26T02-17-14-730Z_019f01b7-8eea-7470-8f32-d5bbdcbdf866.jsonl",
+      "updatedAt": "2026-06-26T02:17:17.519Z"
+    },
+    "019f02db-bc02-7eca-96b6-3d568bf7ba76": {
+      "sessionId": "019f02db-bc02-7eca-96b6-3d568bf7ba76",
+      "cwd": "/home/pwnholic/Dev/work/behave-core-wallet",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-work-behave-core-wallet--/2026-06-26T07-36-22-786Z_019f02db-bc02-7eca-96b6-3d568bf7ba76.jsonl",
+      "updatedAt": "2026-06-26T07:36:28.624Z"
+    },
+    "019f0cf3-59f9-7939-b2b9-63f93492884b": {
+      "sessionId": "019f0cf3-59f9-7939-b2b9-63f93492884b",
+      "cwd": "/home/pwnholic/Dev/sandbox/pi-ext",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-pi-ext--/2026-06-28T06-38-22-713Z_019f0cf3-59f9-7939-b2b9-63f93492884b.jsonl",
+      "updatedAt": "2026-06-28T08:35:53.777Z"
+    },
+    "019f0d74-d54f-72c3-87d5-aca8c91381a5": {
+      "sessionId": "019f0d74-d54f-72c3-87d5-aca8c91381a5",
+      "cwd": "/home/pwnholic/Dev/sandbox/pi-ext",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-pi-ext--/2026-06-28T08-59-48-431Z_019f0d74-d54f-72c3-87d5-aca8c91381a5.jsonl",
+      "updatedAt": "2026-06-28T08:59:51.495Z"
+    },
+    "019f0e06-1f38-7cc9-9ae0-da8c13a695df": {
+      "sessionId": "019f0e06-1f38-7cc9-9ae0-da8c13a695df",
+      "cwd": "/home/pwnholic/Dev/sandbox/pi-ext",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-sandbox-pi-ext--/2026-06-28T11-38-30-072Z_019f0e06-1f38-7cc9-9ae0-da8c13a695df.jsonl",
+      "updatedAt": "2026-06-28T11:38:40.341Z"
+    },
+    "019f13ae-db70-7822-ac9d-abf84897bacb": {
+      "sessionId": "019f13ae-db70-7822-ac9d-abf84897bacb",
+      "cwd": "/home/pwnholic/Dev/work/behave-core-cms",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-work-behave-core-cms--/2026-06-29T14-00-54-385Z_019f13ae-db70-7822-ac9d-abf84897bacb.jsonl",
+      "updatedAt": "2026-06-29T14:01:07.986Z"
+    },
+    "019f4715-82f0-7f2e-968a-39d5ecc7b3f9": {
+      "sessionId": "019f4715-82f0-7f2e-968a-39d5ecc7b3f9",
+      "cwd": "/home/pwnholic/Dev/work/behave-core-promotion",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Dev-work-behave-core-promotion--/2026-07-09T13-33-39-952Z_019f4715-82f0-7f2e-968a-39d5ecc7b3f9.jsonl",
+      "updatedAt": "2026-07-10T01:17:27.982Z"
+    },
+    "019f88d0-5b93-7d7e-9597-590d8bb0525d": {
+      "sessionId": "019f88d0-5b93-7d7e-9597-590d8bb0525d",
+      "cwd": "/home/pwnholic/Projects/work/behave-core-crm",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Projects-work-behave-core-crm--/2026-07-22T07-53-04-147Z_019f88d0-5b93-7d7e-9597-590d8bb0525d.jsonl",
+      "updatedAt": "2026-07-22T07:53:08.255Z"
+    },
+    "019f88d4-a541-7bc5-8ba1-1aa084620b75": {
+      "sessionId": "019f88d4-a541-7bc5-8ba1-1aa084620b75",
+      "cwd": "/home/pwnholic/Projects/work/behave-core-crm",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Projects-work-behave-core-crm--/2026-07-22T07-57-45-153Z_019f88d4-a541-7bc5-8ba1-1aa084620b75.jsonl",
+      "updatedAt": "2026-07-22T08:51:48.876Z"
+    },
+    "019f8c9d-dd76-7792-be49-23c06b754a03": {
+      "sessionId": "019f8c9d-dd76-7792-be49-23c06b754a03",
+      "cwd": "/home/pwnholic/Projects/work/behave-core-crm",
+      "sessionFile": "/home/pwnholic/.pi/agent/sessions/--home-pwnholic-Projects-work-behave-core-crm--/2026-07-23T01-36-23-926Z_019f8c9d-dd76-7792-be49-23c06b754a03.jsonl",
+      "updatedAt": "2026-07-23T01:36:25.159Z"
+    }
+  }
+}

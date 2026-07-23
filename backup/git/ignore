@@ -1,0 +1,12 @@
+# Global gitignore (applies to every repo).
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.log
+.env
+.env.*
+node_modules/

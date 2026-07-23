@@ -1,0 +1,144 @@
+# ════════════════════════════════════════════════════════════════════
+#  Widget Definitions — per-widget settings for the bar
+#  Docs: https://docs.noctalia.dev/v5/bar/widgets/
+# ════════════════════════════════════════════════════════════════════
+
+# ── Clock ──────────────────────────────────────────────────────────
+[widget.clock]
+format = "{:%H:%M}"
+tooltip_format = "{:%A, %B %d, %Y}"
+capsule = false
+
+# ── Launcher Button ────────────────────────────────────────────────
+[widget.launcher]
+glyph = "menu-2"
+
+# ── Workspaces ────────────────────────────────────────────────────
+[widget.workspaces]
+style = "regular"                 # regular | minimal | focus_hint
+display = "name"                  # none | id | name (named workspaces show names)
+max_label_chars = 5
+pill_scale = 1.0
+active_pill_size = 2.2
+inactive_pill_size = 1.0
+focused_color = "primary"
+occupied_color = "secondary"
+empty_color = "surface_variant"
+urgent_color = "error"
+focused_output_only = false
+labels_only_when_occupied = false
+hide_when_empty = false
+enable_scroll = true
+
+# ── Taskbar ────────────────────────────────────────────────────────
+[widget.taskbar]
+pinned = ["firefox", "kitty", "nautilus"]
+pinned_opacity = 0.5
+group_by_workspace = true
+show_all_outputs = false
+only_active_workspace = false
+show_workspace_label = true
+workspace_label_placement = "corner"
+hide_empty_workspaces = true
+workspace_group_capsule = true
+group_single_icon_per_app = true
+show_active_indicator = true
+active_opacity = 1.0
+inactive_opacity = 0.8
+focused_color = "primary"
+occupied_color = "secondary"
+empty_color = "secondary"
+urgent_color = "error"
+focused_output_only = false
+enable_scroll = true
+
+# ── Active Window ──────────────────────────────────────────────────
+[widget.active_window]
+min_length = 80
+max_length = 200
+icon_size = 14
+title_scroll = "on_hover"
+display = "icon_and_text"
+show_empty_label = false
+
+# ── Volume ────────────────────────────────────────────────────────
+[widget.volume]
+device = "output"
+enable_scroll = true
+scroll_step = 5
+show_label = false
+mute_color = "error"
+
+# ── Brightness ────────────────────────────────────────────────────
+[widget.brightness]
+enable_scroll = true
+scroll_step = 5
+show_label = true
+
+# ── Battery ───────────────────────────────────────────────────────
+[widget.battery]
+display_mode = "graphic" # graphic = battery shape with fill
+show_label = true
+device = "auto"
+
+# ── Media ─────────────────────────────────────────────────────────
+[widget.media]
+album_art_only = false
+hide_artist = false
+artist_first = true
+min_length = 80
+max_length = 200
+art_size = 20
+title_scroll = "on_hover"
+hide_when_no_media = true
+enable_scroll = true
+
+# ── Notifications ─────────────────────────────────────────────────
+[widget.notifications]
+hide_when_no_unread = false
+
+# ── Tray ──────────────────────────────────────────────────────────
+[widget.tray]
+hidden = []
+pinned = []
+drawer = true
+drawer_columns = 3
+
+# ── Network ───────────────────────────────────────────────────────
+[widget.network]
+show_label = false
+
+# ── Bluetooth ─────────────────────────────────────────────────────
+[widget.bluetooth]
+show_label = false
+
+# ── Control Center Button ────────────────────────────────────────
+[widget.control-center]
+glyph = "noctalia"
+
+# ── Session Button ───────────────────────────────────────────────
+[widget.session]
+glyph = "shutdown"
+
+# ── Clipboard ────────────────────────────────────────────────────
+[widget.clipboard]
+glyph = "clipboard-list"
+
+# ── Screenshot ────────────────────────────────────────────────────
+[widget.screenshot]
+glyph = "screenshot"
+primary_click = "region"
+
+# ── System Monitor — CPU gauge ───────────────────────────────────
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+display = "gauge"
+show_label = true
+
+# ── System Monitor — RAM gauge ───────────────────────────────────
+[widget.ram]
+type = "sysmon"
+stat = "ram_pct"
+display = "gauge"
+show_label = true

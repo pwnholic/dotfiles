@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+        "codebase-memory-mcp": {
+            "command": "codebase-memory-mcp",
+            "args": []
+        },
+        "mempal-mcp": {
+            "command": "/home/pwnholic/.cargo/bin/mempal",
+            "args": [
+                "serve",
+                "--mcp"
+            ]
+        }
+    }
+}

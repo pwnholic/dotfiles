@@ -1,0 +1,43 @@
+// ════════════════════════════════════════════════════════════════════
+//  Outputs (Monitors)
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Outputs
+// ════════════════════════════════════════════════════════════════════
+//
+//  Verified with `niri msg outputs`:
+//    eDP-1: 1920x1200 @ 144.002 Hz, VRR supported (internal laptop panel)
+//
+//  Refresh rate values must match `niri msg outputs` to all three decimals.
+// ── Internal Laptop Panel ──────────────────────────────────────────
+output "eDP-1" {
+    mode "1920x1200@144.002"
+    scale 1.0
+    transform "normal"
+    focus-at-startup
+    // The panel advertises VRR support. Enabling it lets the display vary
+    // its refresh rate: lower when idle (saves power, smoother video),
+    // matching game FPS under load (reduces tearing without vsync lag).
+    //
+    // On NVIDIA 610+ drivers, VRR works well on this panel. If you ever
+    // see cursor stutter, add `disable-cursor-plane` to the debug block
+    // in general.kdl, or comment this line out.
+    //
+    // variable-refresh-rate
+    //
+    // Tokyo Night bg_dark — visible behind transparent workspace background
+    backdrop-color "#16161e"
+    // Hot corner: bottom-right triggers overview (matches gesture config)
+    hot-corners {
+        bottom-right
+    }
+}
+// ── External Monitor Placeholder ───────────────────────────────────
+// niri ignores disconnected outputs. Update mode/scale/position from
+// `niri msg outputs` when you plug something in.
+output "HDMI-A-1" {
+    mode "1920x1080@60.000"
+    scale 1.0
+    position x=1920 y=0
+ // right of eDP-1 (1920 logical px wide)    transform "normal"
+    variable-refresh-rate on-demand=true
+ // VRR only for games/video
+ }

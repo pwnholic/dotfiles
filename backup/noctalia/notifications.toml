@@ -1,0 +1,32 @@
+# ════════════════════════════════════════════════════════════════════
+#  Notifications — daemon, toast placement, filtering
+#  Docs: https://docs.noctalia.dev/v5/services/notifications/
+# ════════════════════════════════════════════════════════════════════
+
+[notification]
+enable_daemon = true       # claim org.freedesktop.Notifications
+show_app_name = true       # show sending app name in toasts
+show_actions = true        # show action buttons in toasts
+position = "top_right"     # top_right | top_left | top_center | bottom_*
+layer = "top"              # top | overlay (overlay = above fullscreen)
+scale = 1.0
+background_opacity = 0.95  # slightly translucent for blur to show through
+border = true
+offset_x = 16
+offset_y = 8
+monitors = []              # empty = all monitors
+collapse_on_dismiss = true # slide remaining toasts to close gaps
+filter_order = ["spotify"]
+
+# ── Filters ────────────────────────────────────────────────────────
+# Suppress notification spam from specific apps.
+# First matching enabled filter wins (in filter_order).
+
+# Spotify: don't show toast for "now playing" but keep in history
+[notification.filter.spotify]
+enabled = true
+match = "spotify"
+match_content = "now playing"
+show_toast = false
+save_history = true
+play_sound = false

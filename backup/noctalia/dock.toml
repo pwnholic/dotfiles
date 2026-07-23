@@ -1,0 +1,52 @@
+# ════════════════════════════════════════════════════════════════════
+#  Dock — macOS-style application dock
+#  Docs: https://docs.noctalia.dev/v5/dock/
+# ════════════════════════════════════════════════════════════════════
+
+[dock]
+enabled = true
+position = "bottom"
+active_monitor_only = false
+monitors = []
+
+# ── Dimensions ─────────────────────────────────────────────────────
+icon_size = 40
+main_axis_padding = 16
+cross_axis_padding = 8
+item_spacing = 6
+background_opacity = 0.90
+border = "outline"
+border_width = 1.5
+shadow = true
+radius = 16
+radius_top_left = 16
+radius_top_right = 16
+radius_bottom_left = 16
+radius_bottom_right = 16
+concave_edge_corners = true
+margin_ends = 4
+margin_edge = 4
+
+# ── Behavior ───────────────────────────────────────────────────────
+show_running = true
+auto_hide = false
+smart_auto_hide = true
+reserve_space = false
+
+# ── Icon Scaling & Magnification ───────────────────────────────────
+active_scale = 1.0
+inactive_scale = 0.85
+magnification = true
+magnification_scale = 1.35
+active_opacity = 1.0
+inactive_opacity = 0.85
+show_instance_count = true
+show_dots = false
+
+# ── Launcher Button ────────────────────────────────────────────────
+launcher_position = "start"
+launcher_icon = "grid-dots"
+
+# ── Pinned Apps ────────────────────────────────────────────────────
+# Desktop entry IDs, StartupWMClass, or human-readable names.
+pinned = ["firefox", "kitty", "Files", "Zed", "discord", "spotify"]

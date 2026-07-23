@@ -1,0 +1,51 @@
+// ============================================================================
+//  Input devices + gestures
+//  Docs: https://github.com/YaLTeR/niri/wiki/Configuration:-Input
+//        https://github.com/YaLTeR/niri/wiki/Configuration:-Gestures
+// ============================================================================
+
+input {
+    keyboard {
+        xkb {
+            // Leave empty to inherit the system layout from systemd-localed
+            // (check with `localectl`). Set it here to override:
+            // layout "us"
+        }
+        numlock
+        // repeat-delay 600
+        // repeat-rate 25
+    }
+
+    touchpad {
+        tap             // tap-to-click
+        natural-scroll  // "macOS-style" scrolling
+        // dwt           // disable the touchpad while typing (uncomment if you get stray taps)
+        // accel-profile "flat"
+    }
+
+    mouse {
+        accel-speed -0.1
+        // accel-profile "flat" // uncomment to disable mouse acceleration entirely
+    }
+
+    focus-follows-mouse          // focus the window under the cursor
+    workspace-auto-back-and-forth // pressing the same workspace index twice toggles back
+}
+
+// ---- Pointer / touchpad gestures -------------------------------------------
+gestures {
+    // Park the cursor in a screen corner to toggle the overview. Only the
+    // corners you list are active, so accidental triggers are avoided.
+    hot-corners {
+        // off
+        bottom-right
+    }
+
+    // Smoothly auto-scroll the tiling view when you drag a window or a file
+    // against a screen edge (and auto-switch workspaces during DnD in overview).
+    dnd-edge-view-scroll {
+        trigger-width 40
+        delay-ms 120
+        max-speed 1500
+    }
+}

@@ -1,0 +1,25 @@
+// ════════════════════════════════════════════════════════════════════
+//  Niri v2 Configuration — Entry Point
+// ════════════════════════════════════════════════════════════════════
+//  Hardware   : CachyOS 7.1.4 | Intel Core 5 210H | NVIDIA RTX 5050 Laptop
+//  Display    : eDP-1 1920x1200 @ 144.002 Hz (VRR capable)
+//  Compositor : Niri 26.04 (Wayland, scrollable-tiling)
+//  Shell      : Noctalia Shell v5
+//  Theme      : Tokyo Night (dark)
+//  Cursor     : capitaine-cursors @ 24px
+//
+//  Include order is positional — later includes override earlier ones.
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Include
+// ════════════════════════════════════════════════════════════════════
+include "general.kdl"
+include "blur.kdl"
+include "outputs.kdl"
+include "input.kdl"
+include "layout.kdl"
+include "animations.kdl"
+include "window-rules.kdl"
+include "layer-rules.kdl"
+include "recent-windows.kdl"
+include "keybinds.kdl"
+include "switch-events.kdl"
+include "autostart.kdl"

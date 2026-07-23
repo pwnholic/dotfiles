@@ -1,0 +1,19 @@
+// ════════════════════════════════════════════════════════════════════
+//  Global Blur Quality (applies to every background blur)
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Miscellaneous#blur
+//  Noctalia: https://docs.noctalia.dev/v5/compositor-settings/niri/
+// ════════════════════════════════════════════════════════════════════
+//
+//  Tuning recipe (wiki): raise `offset` first (free) until artifacts,
+//  then raise `passes` by one to smooth them. Repeat.
+//
+//  On NVIDIA RTX 5050, xray blur is cheap: niri blurs the wallpaper
+//  once and reuses it. Non-xray (realistic) blur costs more but is
+//  handled well by this GPU. We use non-xray for Noctalia surfaces
+//  (configured in layer-rules.kdl) for the most realistic look.
+blur {
+    passes 4
+    offset 5.0
+    noise 0.02
+    saturation 1.6
+}

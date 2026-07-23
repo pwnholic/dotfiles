@@ -1,0 +1,24 @@
+// ============================================================================
+//  Global blur quality (applies to every background blur)
+//  Docs: https://github.com/YaLTeR/niri/wiki/Window-Effects
+// ----------------------------------------------------------------------------
+//  Per-surface blur is turned on in window-rules.kdl / layer-rules.kdl. This
+//  file only tunes how that blur looks.
+//
+//  Tuning recipe (from the wiki): raise `offset` first (it is free) until you
+//  see artifacts, then raise `passes` by one to smooth them out. Repeat.
+//
+//  On NVIDIA, blur with xray (the default) is cheap: niri blurs the wallpaper
+//  once and reuses it, so the cost is nearly independent of window count.
+// ============================================================================
+
+blur {
+    // off          // uncomment to disable ALL blur everywhere
+    passes 4        // dual-kawase downsample/upsample passes; more = smoother, costlier
+    offset 5.0      // per-pass pixel offset; raise first since it costs nothing
+    noise 0.02      // subtle grain that hides color banding introduced by blur
+    saturation 1.6  // 1.0 = unchanged, >1 = punchier blurred wallpaper (niri default is 1.5)
+    //
+    // To push further on this GPU: passes 5 / offset 6.0 / saturation 1.8.
+    // Watch for banding/halos at very high offset; add a pass to clean it up.
+}

@@ -1,0 +1,79 @@
+// ════════════════════════════════════════════════════════════════════
+//  Layout: gaps, focus ring, border, shadow, column widths
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Layout
+// ════════════════════════════════════════════════════════════════════
+//
+//  Because this file is *included* (not the main config), the historical
+//  "empty border {} = enabled" shortcut does not apply. We enable
+//  shadow and focus-ring explicitly with `on`.
+layout {
+    // ── Gaps ──────────────────────────────────────────────────────
+    gaps 10
+    center-focused-column "on-overflow"
+    // Transparent so Noctalia's wallpaper layer shows through
+    background-color "transparent"
+    // ── Focus Ring (Tokyo Night palette) ────────────────────────────
+    // blue #7aa2f7 | cyan #7dcfff | magenta #bb9af7 | red #f7768e
+    // orange #ff9e64 | yellow #e0af68 | green #9ece6a | muted #414868
+    focus-ring {
+        on
+        width 2
+        active-gradient from="#7aa2f7" to="#bb9af7" angle=45
+        inactive-color "#414868"
+        urgent-color "#f7768e"
+    }
+    // ── Border (off — focus ring is enough) ───────────────────────
+    border {
+        off
+    }
+    // ── Insert Hint (matches accent) ──────────────────────────────
+    insert-hint {
+        color "#7aa2f780"
+    }
+    // ── Shadow ─────────────────────────────────────────────────────
+    shadow {
+        on
+        softness 25
+        spread 3
+        offset x=0 y=3
+        color "#00000060"
+        inactive-color "#00000030"
+    }
+    // ── Tab Indicator ──────────────────────────────────────────────
+    tab-indicator {
+        hide-when-single-tab
+        place-within-column
+        gap 4
+        width 3
+        length total-proportion=1.0
+        position "left"
+        gaps-between-tabs 2
+        corner-radius 4
+        active-color "#7aa2f7"
+        inactive-color "#414868"
+        urgent-color "#f7768e"
+    }
+    // ── Column Width Presets ──────────────────────────────────────
+    // Cycled by switch-preset-column-width (Mod+R)
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        fixed 1280
+    }
+    // New windows open at half the screen width
+    default-column-width {
+        proportion 0.5
+    }
+    // ── Window Height Presets ──────────────────────────────────────
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    // ── Struts (outer gaps for panels) ─────────────────────────────
+    // Empty: Noctalia reserves its own exclusive zone.
+    struts {
+
+    }
+}

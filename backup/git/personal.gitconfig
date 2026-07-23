@@ -1,0 +1,5 @@
+# Included for repos under ~/Projects/personal/
+[user]
+    name = Tono
+    email = wigtono41@gmail.com
+    signingkey = ~/.ssh/id_ed25519_personal.pub

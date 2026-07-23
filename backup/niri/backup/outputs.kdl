@@ -1,0 +1,36 @@
+// ============================================================================
+//  Outputs (monitors)
+//  Docs: https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
+// ----------------------------------------------------------------------------
+//  Verified with `niri msg outputs`:
+//    eDP-1  : 1920x1200 @ 144.002 Hz, VRR supported. (internal, connected)
+//    HDMI-A-1: placeholder for an external monitor (currently disconnected)
+//
+//  Refresh rate values must match `niri msg outputs` to all three decimals.
+// ============================================================================
+
+output "eDP-1" {
+    mode "1920x1200@144.002"
+    scale 1.0
+    transform "normal"
+
+    // The panel advertises VRR support. Enabling it lets the display vary its
+    // refresh rate: lower when idle (less stutter for video, smoother in games),
+    // matching the game fps under load.
+    //
+    // Trade-off: slightly higher idle GPU power, and on rare NVIDIA/driver combos
+    // the cursor can stutter - if so, add `disable-cursor-plane` to the debug
+    // block in general.kdl, or just comment this line out.
+
+    // variable-refresh-rate
+}
+
+// External monitor placeholder. niri ignores disconnected outputs, so this is
+// harmless until you plug something in. Replace the mode/scale/position with the
+// real values from `niri msg outputs` at that time.
+output "HDMI-A-1" {
+    mode "1920x1080@60.000"
+    scale 1.0
+    position x=1920 y=0 // to the right of eDP-1 (which is 1920 logical px wide)
+    transform "normal"
+}

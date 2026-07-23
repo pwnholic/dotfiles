@@ -1,0 +1,73 @@
+// ════════════════════════════════════════════════════════════════════
+//  General / Top-Level Options
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Miscellaneous
+// ════════════════════════════════════════════════════════════════════
+// Ask apps to drop client-side decorations so niri draws clean borders +
+// shadows. Restart already-running apps after changing this for full effect.
+prefer-no-csd
+// Where niri's built-in screenshot actions save to disk.
+// (Noctalia handles screenshots via IPC, but this is a fallback.)
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+// ── Environment ────────────────────────────────────────────────────
+// NVIDIA NOTE: niri talks EGL/GBM directly. On this hybrid (Intel iGPU +
+// NVIDIA dGPU), niri already renders on the NVIDIA dGPU. Legacy vars like
+// GBM_BACKEND=nvidia-drm or __GL_GSYNC_ALLOWED are unnecessary and can
+// break the hybrid setup, so they are intentionally omitted.
+environment {
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "gtk3"
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+    MOZ_ENABLE_WAYLAND "1"
+    SDL_VIDEODRIVER "wayland"
+}
+// ── Cursor ──────────────────────────────────────────────────────────
+cursor {
+    xcursor-theme "capitaine-cursors"
+    xcursor-size 24
+    hide-when-typing
+    hide-after-inactive-ms 3000
+}
+// ── Overview ────────────────────────────────────────────────────────
+// The bird's-eye view of all workspaces (Mod+O to toggle).
+overview {
+    zoom 0.4
+    backdrop-color "#16161e"
+    workspace-shadow {
+        softness 40
+        spread 10
+        offset x=0 y=10
+        color "#00000090"
+    }
+}
+// ── Xwayland Satellite ─────────────────────────────────────────────
+// Spawns xwayland-satellite on demand for X11-only apps.
+xwayland-satellite {
+    path "/usr/bin/xwayland-satellite"
+}
+// ── Clipboard ───────────────────────────────────────────────────────
+clipboard {
+    disable-primary
+}
+// ── Hotkey Overlay ─────────────────────────────────────────────────
+hotkey-overlay {
+    skip-at-startup
+    hide-not-bound
+}
+// ── Config Notification ────────────────────────────────────────────
+config-notification {
+    disable-failed
+}
+// ── Debug (NVIDIA + Noctalia workarounds) ──────────────────────────
+debug {
+    // Noctalia's notification actions and window-activation requests arrive
+    // with invalid activation serials (common for Electron/Qt apps like Discord,
+    // Telegram). This makes niri honor them so clicking tray icons works.
+    honor-xdg-activation-with-invalid-serial
+    // NVIDIA: skip cursor-only updates during VRR to prevent erratic refresh
+    // rate shifts in response to cursor movement in games.
+    // (Uncomment if you enable VRR and play games.)
+    // skip-cursor-only-updates-during-vrr
+}

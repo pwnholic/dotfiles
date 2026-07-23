@@ -1,0 +1,519 @@
+{
+    "agent_servers": {
+        "pi-acp": {
+            "type": "registry",
+        },
+    },
+    "disable_ai": false,
+    "language_models": {
+        "openai_compatible": {
+            "agentrouter": {
+                "api_url": "https://agentrouter.org/v1",
+                "available_models": [
+                    {
+                        "name": "glm-5.2",
+                        "max_tokens": 1000000,
+                        "max_output_tokens": 32000,
+                        "max_completion_tokens": 128000,
+                        "reasoning_effort": "high",
+                        "capabilities": {
+                            "tools": true,
+                            "images": true,
+                            "parallel_tool_calls": true,
+                            "prompt_cache_key": true,
+                            "chat_completions": true,
+                            "interleaved_reasoning": false,
+                            "max_tokens_parameter": true,
+                        },
+                    },
+                ],
+            },
+            "hcnsec": {
+                "api_url": "https://api.hcnsec.cn",
+                "available_models": [
+                    {
+                        "name": "glm-5.2",
+                        "max_tokens": 1000000,
+                        "max_output_tokens": 128000,
+                        "max_completion_tokens": 200000,
+                        "reasoning_effort": "high",
+                        "capabilities": {
+                            "tools": true,
+                            "images": true,
+                            "parallel_tool_calls": true,
+                            "prompt_cache_key": true,
+                            "chat_completions": true,
+                            "interleaved_reasoning": true,
+                            "max_tokens_parameter": true,
+                        },
+                    },
+                ],
+            },
+            "cline": {
+                "api_url": "https://api.cline.bot/api/v1",
+                "available_models": [
+                    {
+                        "name": "cline-pass/glm-5.2",
+                        "max_tokens": 1000000,
+                        "max_output_tokens": 128000,
+                        "max_completion_tokens": 200000,
+                        "reasoning_effort": "high",
+                        "capabilities": {
+                            "tools": true,
+                            "images": true,
+                            "parallel_tool_calls": true,
+                            "prompt_cache_key": false,
+                            "chat_completions": true,
+                            "interleaved_reasoning": true,
+                            "max_tokens_parameter": false,
+                        },
+                    },
+                ],
+            },
+        },
+    },
+    "cli_default_open_behavior": "existing_window",
+    "theme": "Catppuccin Mocha",
+    "icon_theme": "Material Icon Theme",
+    "ui_font_family": "Iosevka Nerd Font Mono",
+    "ui_font_size": 14,
+    "ui_font_weight": 450,
+    "buffer_font_family": "Iosevka Nerd Font Mono",
+    "buffer_font_size": 14,
+    "buffer_font_weight": 450,
+    "buffer_line_height": {
+        "custom": 2,
+    },
+    "cursor_shape": "block",
+    "cursor_blink": true,
+    "hide_mouse": "on_typing_and_action",
+    "current_line_highlight": "all",
+    "scrollbar": {
+        "show": "auto",
+    },
+    "minimap": {
+        "show": "auto",
+    },
+    "indent_guides": {
+        "enabled": true,
+        "coloring": "indent_aware",
+        "background_coloring": "disabled",
+    },
+    "vim_mode": true,
+    "vim": {
+        "highlight_on_yank_duration": 150,
+        "toggle_relative_line_numbers": true,
+        "use_smartcase_find": true,
+        "use_system_clipboard": "always",
+    },
+    "relative_line_numbers": "enabled",
+    "tab_size": 4,
+    "autosave": "on_window_change",
+    "format_on_save": "on",
+    "code_lens": "on",
+    "document_symbols": "on",
+    "show_completion_documentation": true,
+    "show_completions_on_input": true,
+    "show_edit_predictions": false,
+    "auto_signature_help": true,
+    "scroll_beyond_last_line": "off",
+    "vertical_scroll_margin": 5,
+    "active_pane_modifiers": {
+        "border_size": 2,
+        "inactive_opacity": 1,
+    },
+    "agent": {
+        "tool_permissions": {
+            "tools": {
+                "terminal": {
+                    "default": "allow",
+                    "always_allow": [
+                        {
+                            "pattern": "^bash\\s+curl\\.sh(\\s|$)",
+                        },
+                        {
+                            "pattern": "^curl\\b",
+                        },
+                    ],
+                },
+            },
+        },
+        "default_model": {
+            "provider": "agentrouter",
+            "model": "glm-5.2",
+            "enable_thinking": true,
+            "effort": "high",
+        },
+        "dock": "right",
+        "sidebar_side": "right",
+    },
+    "project_panel": {
+        "dock": "left",
+        "hide_root": true,
+        "bold_folder_labels": true,
+        "diagnostic_badges": true,
+        "git_status": true,
+        "git_status_indicator": true,
+    },
+    "git_panel": {
+        "dock": "left",
+    },
+    "collaboration_panel": {
+        "dock": "left",
+    },
+    "debugger": {
+        "dock": "right",
+    },
+    "bottom_dock_layout": "full",
+    "toolbar": {
+        "breadcrumbs": true,
+        "quick_actions": false,
+        "selections_menu": false,
+    },
+    "status_bar": {
+        "experimental.show": true,
+    },
+    "tab_bar": {
+        "show": true,
+    },
+    "tabs": {
+        "file_icons": true,
+        "git_status": true,
+        "show_close_button": "hover",
+        "show_diagnostics": "all",
+    },
+    "preview_tabs": {
+        "enable_preview_from_file_finder": true,
+    },
+    "git": {
+        "worktree_directory": ".git/zed-worktrees",
+        "branch_picker": {
+            "show_author_name": true,
+        },
+        "inline_blame": {
+            "enabled": true,
+            "delay_ms": 300,
+            "location": "inline",
+            "padding": 4,
+            "show_commit_summary": true,
+        },
+    },
+    "use_smartcase_search": true,
+    "search": {
+        "button": true,
+        "case_sensitive": false,
+        "center_on_match": false,
+        "include_ignored": false,
+        "regex": false,
+        "whole_word": false,
+    },
+    "completions": {
+        "lsp": true,
+        "lsp_fetch_timeout_ms": 0,
+        "lsp_insert_mode": "replace_suffix",
+        "words": "fallback",
+        "words_min_length": 4,
+    },
+    "diagnostics": {
+        "inline": {
+            "enabled": true,
+            "max_severity": "all",
+            "padding": 4,
+            "update_debounce_ms": 150,
+        },
+        "lsp_pull_diagnostics": {
+            "enabled": true,
+            "debounce_ms": 150,
+        },
+    },
+    "gutter": {
+        "folds": false,
+        "line_numbers": true,
+        "runnables": false,
+    },
+    "inlay_hints": {
+        "enabled": false,
+        "show_background": true,
+        "show_other_hints": true,
+        "show_parameter_hints": true,
+        "show_type_hints": true,
+        "edit_debounce_ms": 700,
+        "scroll_debounce_ms": 50,
+        "toggle_on_modifiers_press": {
+            "alt": true,
+            "control": true,
+            "function": true,
+            "platform": true,
+            "shift": true,
+        },
+    },
+    "terminal": {
+        "dock": "bottom",
+        "font_family": "Iosevka Nerd Font Mono",
+        "line_height": {
+            "custom": 2,
+        },
+    },
+    "private_files": [
+        "**/.env*",
+        "**/*.pem",
+        "**/*.key",
+        "**/*.cert",
+        "**/*.crt",
+        "**/secrets.yml",
+    ],
+    "edit_predictions": {
+        "disabled_globs": [
+            "**/.env*",
+            "**/*.pem",
+            "**/*.key",
+            "**/*.cert",
+            "**/*.crt",
+            "**/.dev.vars",
+            "**/secrets.yml",
+        ],
+    },
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false,
+    },
+    "languages": {
+        "Go": {
+            "semantic_tokens": "combined",
+            "language_servers": ["gopls"],
+        },
+        "TOML": {
+            "formatter": {
+                "external": {
+                    "command": "taplo",
+                    "arguments": ["fmt", "-"],
+                },
+            },
+        },
+    },
+    "lsp": {
+        "gopls": {
+            "initialization_options": {
+                "semanticTokens": true,
+                "renameMovesSubpackages": true,
+            },
+            "settings": {
+                "gopls": {
+                    "staticcheck": true,
+                    "usePlaceholders": false,
+                    "completeUnimported": true,
+                    "analyses": {
+                        "nilness": true,
+                        "unusedparams": true,
+                        "unusedwrite": true,
+                        "useany": true,
+                    },
+                    "codelenses": {
+                        "test": true,
+                        "generate": true,
+                        "regenerate_cgo": true,
+                        "tidy": true,
+                        "upgrade_dependency": true,
+                        "vendor": true,
+                        "vulncheck": true,
+                    },
+                    "gofumpt": true,
+                    "directoryFilters": [
+                        "-.git",
+                        "-.vscode",
+                        "-.idea",
+                        "-.vscode-test",
+                        "-node_modules",
+                    ],
+                    "hints": {
+                        "assignVariableTypes": true,
+                        "compositeLiteralFields": true,
+                        "compositeLiteralTypes": true,
+                        "constantValues": true,
+                        "functionTypeParameters": true,
+                        "parameterNames": true,
+                        "rangeVariableTypes": true,
+                    },
+                },
+            },
+        },
+        "rust-analyzer": {
+            "binary": {
+                "ignore_system_version": true,
+            },
+            "initialization_options": {
+                "cargo": {
+                    "allTargets": true,
+                    "target": "x86_64-unknown-linux-gnu",
+                },
+                "procMacro": {
+                    "enable": true,
+                },
+                "diagnostics": {
+                    "experimental": {
+                        "enable": true,
+                    },
+                },
+                "check": {
+                    "workspace": true,
+                },
+            },
+            "settings": {
+                "rust-analyzer": {
+                    "cargo": {
+                        "allTargets": true,
+                        "buildScripts": {
+                            "enable": true,
+                        },
+                        "features": "all",
+                        "loadOutDirsFromCheck": true,
+                    },
+                    "cachePriming": {
+                        "enable": true,
+                    },
+                    "checkOnSave": true,
+                    "check": {
+                        "command": "clippy",
+                        "allTargets": true,
+                        "features": "all",
+                        "workspace": true,
+                    },
+                    "procMacro": {
+                        "enable": true,
+                    },
+                    "diagnostics": {
+                        "enable": true,
+                        "experimental": {
+                            "enable": true,
+                        },
+                        "styleLints": {
+                            "enable": true,
+                        },
+                    },
+                    "completion": {
+                        "autoimport": {
+                            "enable": true,
+                        },
+                        "autoself": {
+                            "enable": true,
+                        },
+                        "autoAwait": {
+                            "enable": true,
+                        },
+                        "autoIter": {
+                            "enable": true,
+                        },
+                        "addColonsToModule": true,
+                        "addSemicolonToUnit": true,
+                        "callable": {
+                            "snippets": "fill_arguments",
+                        },
+                        "fullFunctionSignatures": {
+                            "enable": true,
+                        },
+                        "postfix": {
+                            "enable": true,
+                        },
+                    },
+                    "hover": {
+                        "memoryLayout": {
+                            "enable": true,
+                        },
+                    },
+                    "imports": {
+                        "granularity": {
+                            "group": "module",
+                            "enforce": true,
+                        },
+                        "group": {
+                            "enable": true,
+                        },
+                        "merge": {
+                            "glob": true,
+                        },
+                        "preferPrelude": true,
+                    },
+                    "lens": {
+                        "enable": true,
+                        "debug": {
+                            "enable": true,
+                        },
+                        "implementations": {
+                            "enable": true,
+                        },
+                        "references": {
+                            "adt": {
+                                "enable": true,
+                            },
+                            "enumVariant": {
+                                "enable": true,
+                            },
+                            "method": {
+                                "enable": true,
+                            },
+                            "trait": {
+                                "enable": true,
+                            },
+                        },
+                        "run": {
+                            "enable": true,
+                        },
+                        "updateTest": {
+                            "enable": true,
+                        },
+                    },
+                    "inlayHints": {
+                        "bindingModeHints": {
+                            "enable": true,
+                        },
+                        "closingBraceHints": {
+                            "enable": true,
+                            "minLines": 10,
+                        },
+                        "closureCaptureHints": {
+                            "enable": true,
+                        },
+                        "closureReturnTypeHints": {
+                            "enable": "always",
+                        },
+                        "discriminantHints": {
+                            "enable": "always",
+                        },
+                        "expressionAdjustmentHints": {
+                            "enable": "always",
+                        },
+                        "implicitDrops": {
+                            "enable": true,
+                        },
+                        "lifetimeElisionHints": {
+                            "enable": "always",
+                        },
+                        "parameterHints": {
+                            "enable": true,
+                        },
+                        "typeHints": {
+                            "enable": true,
+                        },
+                    },
+                    "semanticHighlighting": {
+                        "operator": {
+                            "enable": true,
+                        },
+                        "punctuation": {
+                            "enable": true,
+                        },
+                        "strings": {
+                            "enable": true,
+                        },
+                    },
+                },
+            },
+        },
+    },
+    "context_servers": {
+        "codebase-memory-mcp": {
+            "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
+            "args": [""],
+        },
+    },
+}

@@ -1,0 +1,71 @@
+# ════════════════════════════════════════════════════════════════════
+#  Desktop Widgets — on-desktop clock, weather, sysmon
+#  Docs: https://docs.noctalia.dev/v5/desktop/widgets/
+# ════════════════════════════════════════════════════════════════════
+#
+#  Positions are in logical pixels relative to the output center (cx, cy).
+#  eDP-1 is 1920x1200, so center = (960, 600).
+#  Use the interactive editor (noctalia msg desktop-widgets-edit) to
+#  fine-tune positions visually.
+
+[desktop_widgets]
+enabled = true
+schema_version = 2
+widget_order = ["clock_main", "weather_main", "sysmon_cpu"]
+
+# ── Clock (centered, large) ───────────────────────────────────────
+[desktop_widgets.widget.clock_main]
+type = "clock"
+output = "eDP-1"
+cx = 960.0
+cy = 600.0
+box_width = 0.0
+box_height = 0.0
+rotation = 0.0
+
+[desktop_widgets.widget.clock_main.settings]
+clock_style = "digital"
+format = "{:%H:%M}"
+color = "on_surface"
+shadow = true
+center_text = true
+background = false
+
+# ── Weather (top-left) ────────────────────────────────────────────
+[desktop_widgets.widget.weather_main]
+type = "weather"
+output = "eDP-1"
+cx = 150.0
+cy = 150.0
+box_width = 0.0
+box_height = 0.0
+rotation = 0.0
+
+[desktop_widgets.widget.weather_main.settings]
+color = "on_surface"
+shadow = true
+show_forecast = false
+forecast_days = 3
+
+# ── System Monitor — CPU graph (bottom-left) ─────────────────────
+[desktop_widgets.widget.sysmon_cpu]
+type = "sysmon"
+output = "eDP-1"
+cx = 180.0
+cy = 900.0
+box_width = 300.0
+box_height = 150.0
+rotation = 0.0
+
+[desktop_widgets.widget.sysmon_cpu.settings]
+display = "graph"
+stat = "cpu_usage"
+stat2 = "cpu_temp"
+color = "primary"
+color2 = "secondary"
+show_label = true
+shadow = true
+background = true
+background_color = "surface"
+background_radius = 12.0
+background_padding = 1.0

@@ -1,0 +1,54 @@
+// ════════════════════════════════════════════════════════════════════
+//  Input Devices + Gestures
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Input
+//        https://github.com/niri-wm/niri/wiki/Configuration:-Gestures
+// ════════════════════════════════════════════════════════════════════
+input {
+    keyboard {
+        // Leave xkb empty to inherit system layout from systemd-localed.
+        // Check with: localectl status
+        xkb {
+            layout "us"
+        }
+        numlock
+        repeat-delay 400
+        repeat-rate 50
+    }
+    touchpad {
+        tap
+        natural-scroll
+        dwt
+        accel-profile "flat"
+        scroll-factor 1.0
+    }
+    mouse {
+        accel-speed 1.0
+        accel-profile "flat"
+    }
+    // Focus the window under the cursor without clicking
+    focus-follows-mouse max-scroll-amount="10%"
+    // Pressing the same workspace index twice toggles back to previous
+    workspace-auto-back-and-forth
+    // Warp mouse to newly focused windows
+    warp-mouse-to-focus
+}
+// ── Gestures ──────────────────────────────────────────────────────
+// Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Gestures
+gestures {
+    // Hot corner: bottom-right of the screen toggles overview
+    hot-corners {
+        bottom-right
+    }
+    // Auto-scroll the tiling view when dragging against a screen edge
+    dnd-edge-view-scroll {
+        trigger-width 40
+        delay-ms 120
+        max-speed 1500
+    }
+    // Auto-switch workspaces when dragging against top/bottom in overview
+    dnd-edge-workspace-switch {
+        trigger-height 50
+        delay-ms 100
+        max-speed 1500
+    }
+}

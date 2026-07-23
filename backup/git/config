@@ -1,0 +1,98 @@
+# ~/.config/git/config  -- global git config (read via XDG).
+# ~/.gitconfig is intentionally NOT used; this is the single source of truth.
+
+# --- Default identity (personal). Overridden per-directory via includeIf. ---
+# Default signing key = personal (overridden to the work key inside ~/Projects/work/).
+[user]
+    name = Tono
+    email = wigtono41@gmail.com
+    signingkey = ~/.ssh/id_ed25519_personal.pub
+
+[init]
+    defaultBranch = main
+
+# --- diff / merge ---
+[diff]
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+[merge]
+    conflictstyle = zdiff3
+[rerere]
+    enabled = true
+    autoupdate = true
+
+# --- push / pull / fetch ---
+[push]
+    default = simple
+    autoSetupRemote = true
+    followTags = true
+[pull]
+    rebase = true
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+
+# --- UX ---
+[help]
+    autocorrect = prompt
+[commit]
+    verbose = true
+    gpgsign = true
+[column]
+    ui = auto
+[branch]
+    sort = -committerdate
+[tag]
+    sort = version:refname
+    gpgsign = true
+[log]
+    abbrevCommit = true
+
+# --- core / editor / ignores / performance ---
+[core]
+    editor = nvim
+    autocrlf = input
+    excludesfile = ~/.config/git/ignore
+    fsmonitor = true
+    untrackedCache = true
+    commitGraph = true
+[gc]
+    writeCommitGraph = true
+
+# --- security: validate object integrity on transfer (CVE / corruption) ---
+[transfer]
+    fsckObjects = true
+
+# --- commit signing via SSH (uses the same ed25519 keys) ---
+[gpg]
+    format = ssh
+[gpg "ssh"]
+    allowedSignersFile = ~/.config/git/allowed_signers
+# user.signingkey is set per-identity in the include files below.
+
+# --- aliases ---
+[alias]
+    co = checkout
+    sw = switch
+    rs = restore
+    br = branch
+    ci = commit
+    st = status
+    last = log -1 HEAD
+    lg = log --oneline --graph --decorate -25
+    unstage = reset HEAD --
+    amend = commit --amend --no-edit
+    undo = reset --soft HEAD~1
+
+# --- per-directory identity + signing key ---
+[includeIf "gitdir:~/Projects/personal/"]
+    path = ~/.config/git/personal.gitconfig
+[includeIf "gitdir:~/Projects/work/"]
+    path = ~/.config/git/work.gitconfig

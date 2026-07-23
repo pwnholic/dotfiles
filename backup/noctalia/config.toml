@@ -1,0 +1,43 @@
+# ════════════════════════════════════════════════════════════════════
+#  Noctalia v5 Configuration — Entry Point
+# ════════════════════════════════════════════════════════════════════
+#  Hardware   : CachyOS | Intel Core 5 210H | NVIDIA RTX 5050 Laptop
+#  Display    : eDP-1 1920x1200 @ 144 Hz (intel_backlight)
+#  Shell      : Noctalia v5.0.0
+#  Compositor : Niri 26.04
+#  Theme      : Tokyo Night (dark)
+#
+#  Noctalia reads every *.toml in ~/.config/noctalia/ alphabetically and
+#  merges them. To avoid clashing with existing config files, this v2
+#  config lives in a subdirectory. To activate it:
+#
+#    1. Back up existing config:  mv ~/.config/noctalia/*.json ~/.config/noctalia/backup/
+#    2. Copy these files:          cp ~/.config/noctalia/niri-v2/*.toml ~/.config/noctalia/
+#    3. Validate:                  noctalia config validate
+#    4. Reload:                    noctalia msg config-reload
+#
+#  Alternatively, use the [include] mechanism from a root config.toml:
+#
+#    [include]
+#    files = ["niri-v2/"]
+#
+#  Docs: https://docs.noctalia.dev/v5/configuration/
+# ════════════════════════════════════════════════════════════════════
+
+[include]
+autoload = false
+files = [
+  "shell.toml",
+  "theme.toml",
+  "bar.toml",
+  "widgets.toml",
+  "dock.toml",
+  "services.toml",
+  "wallpaper.toml",
+  "notifications.toml",
+  "osd.toml",
+  "lockscreen.toml",
+  "idle.toml",
+  # "desktop-widgets.toml",
+  "hooks.toml",
+]

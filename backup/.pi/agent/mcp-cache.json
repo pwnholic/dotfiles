@@ -1,0 +1,2173 @@
+{
+  "version": 1,
+  "servers": {
+    "codebase-memory-mcp": {
+      "configHash": "b2fc531ec64ec79539df05241e25e7b8254e733ba348e3cac15af871e314b741",
+      "tools": [
+        {
+          "name": "index_repository",
+          "description": "Index a repository into the knowledge graph. Special mode 'cross-repo-intelligence': skip extraction, only match Routes/Channels across projects to create CROSS_HTTP_CALLS/CROSS_ASYNC_CALLS/CROSS_CHANNEL edges. Requires target_projects param. Ensure target projects have fresh indexes first.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "repo_path": {
+                "type": "string",
+                "description": "Path to the repository"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "full",
+                  "moderate",
+                  "fast",
+                  "cross-repo-intelligence"
+                ],
+                "default": "full",
+                "description": "All modes run type-aware LSP call/usage resolution (per-file + cross-file). full: all files + similarity/semantic edges. moderate: filtered files + similarity/semantic. fast: filtered files, no similarity/semantic. cross-repo-intelligence: match Routes/Channels across projects."
+              },
+              "target_projects": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Projects to search for cross-repo links (cross-repo-intelligence mode). Use [\"*\"] for all indexed projects. Run list_projects to see available projects."
+              },
+              "persistence": {
+                "type": "boolean",
+                "default": false,
+                "description": "Write compressed artifact to .codebase-memory/graph.db.zst for team sharing. Teammates can bootstrap from the artifact instead of full re-indexing."
+              }
+            },
+            "required": [
+              "repo_path"
+            ]
+          }
+        },
+        {
+          "name": "search_graph",
+          "description": "Search the code knowledge graph for functions, classes, routes, and variables. Use INSTEAD OF grep/glob when finding code definitions, implementations, or relationships. Three search modes: (1) query='update settings' for BM25 ranked full-text search with camelCase splitting and structural label boosting — recommended for natural-language discovery; (2) name_pattern='.*regex.*' for exact pattern matching; (3) semantic_query=[...] for vector cosine search that bridges vocabulary (finds 'publish' when you search 'send'). The three modes are independent and can be combined in a single call. PAGINATION: results are capped at limit (default 200) — broader queries are silently truncated. The response always includes 'total' (full match count before limit) and 'has_more' (true when total > offset+returned). Detect truncation with has_more, then page by re-calling with offset=offset+limit until has_more is false. Narrow first via label/file_pattern/min_degree before paginating large result sets.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              },
+              "query": {
+                "type": "string",
+                "description": "Natural-language or keyword full-text search using BM25 ranking. Tokens are split on whitespace; camelCase identifiers are indexed as individual words (updateCloudClient → update, cloud, client). Results are ranked with structural boosting: Functions/Methods +10, Routes +8, Classes/Interfaces +5. Noise labels (File/Folder/Module/Variable) are filtered out. When provided, name_pattern is ignored."
+              },
+              "label": {
+                "type": "string"
+              },
+              "name_pattern": {
+                "type": "string"
+              },
+              "qn_pattern": {
+                "type": "string"
+              },
+              "file_pattern": {
+                "type": "string"
+              },
+              "relationship": {
+                "type": "string"
+              },
+              "min_degree": {
+                "type": "integer"
+              },
+              "max_degree": {
+                "type": "integer"
+              },
+              "exclude_entry_points": {
+                "type": "boolean"
+              },
+              "include_connected": {
+                "type": "boolean"
+              },
+              "semantic_query": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "MUST be an ARRAY of keyword strings (e.g. [\"send\",\"pubsub\",\"publish\"]) — NOT a single string. Each keyword is scored independently via per-keyword min-cosine; results reflect functions that score well on ALL keywords. Requires moderate/full index mode. Results appear in the 'semantic_results' field (separate from 'results')."
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Max results per call. Default 200. Response carries 'total' (full match count) and 'has_more' (true if truncated) so callers can detect the limit and paginate."
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0,
+                "description": "Skip the first N matching nodes. Combine with 'limit' to page: increment offset by limit and re-call while has_more is true."
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "query_graph",
+          "description": "Execute a Cypher query against the knowledge graph for complex multi-hop patterns, aggregations, and cross-service analysis. The response includes 'total' (returned row count). There is a hard 100k row ceiling — for broad queries add LIMIT in the Cypher itself or use search_graph + offset/limit pagination instead. COMPLEXITY / BOTTLENECKS: every Function and Method node carries queryable complexity properties — cyclomatic (complexity), cognitive, loop_count, loop_depth (max nested-loop depth, a polynomial-degree proxy), plus interprocedural transitive_loop_depth (worst-case nested-loop degree propagated along CALLS edges) and a recursive flag. Additional hot-path signals: linear_scan_in_loop (count of find/contains/indexOf-style scans inside a loop — the hidden O(n^2) that loop_depth misses), alloc_in_loop (allocations/appends inside a loop), recursion_in_loop (a self-call inside a loop), unguarded_recursion (recursion with no conditionally-guarded base case), param_count and max_access_depth (structure smells). Find all hot-path candidates in one query, e.g. MATCH (f:Function) WHERE f.transitive_loop_depth >= 3 OR f.linear_scan_in_loop >= 1 RETURN f.qualified_name, f.transitive_loop_depth, f.linear_scan_in_loop ORDER BY f.transitive_loop_depth DESC.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "Cypher query"
+              },
+              "project": {
+                "type": "string"
+              },
+              "max_rows": {
+                "type": "integer",
+                "description": "Optional row limit. Default: unlimited up to a 100k row ceiling. No offset support — use search_graph for paginated browsing."
+              }
+            },
+            "required": [
+              "query",
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "trace_path",
+          "description": "Trace paths through the code graph. Modes: calls (callers/callees), data_flow (value propagation with args at each hop), cross_service (through HTTP/async Route nodes). Use INSTEAD OF grep for callers, dependencies, impact analysis, or data flow tracing.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "function_name": {
+                "type": "string"
+              },
+              "project": {
+                "type": "string"
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "inbound",
+                  "outbound",
+                  "both"
+                ],
+                "default": "both"
+              },
+              "depth": {
+                "type": "integer",
+                "default": 3
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "calls",
+                  "data_flow",
+                  "cross_service"
+                ],
+                "default": "calls",
+                "description": "calls: follow CALLS edges. data_flow: follow CALLS+DATA_FLOWS with arg expressions. cross_service: follow HTTP_CALLS+ASYNC_CALLS+DATA_FLOWS through Routes."
+              },
+              "parameter_name": {
+                "type": "string",
+                "description": "For data_flow mode: scope trace to a specific parameter name"
+              },
+              "edge_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "risk_labels": {
+                "type": "boolean",
+                "default": false,
+                "description": "Add risk classification (CRITICAL/HIGH/MEDIUM/LOW) based on hop distance"
+              },
+              "include_tests": {
+                "type": "boolean",
+                "default": false,
+                "description": "Include test files in results. When false (default), test files are filtered out. When true, test nodes are included with is_test=true marker."
+              }
+            },
+            "required": [
+              "function_name",
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "get_code_snippet",
+          "description": "Read source code for a function/class/symbol. IMPORTANT: First call search_graph to find the exact qualified_name, then pass it here. This is a read tool, not a search tool. Accepts full qualified_name (exact match) or short function name (returns suggestions if ambiguous).",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "qualified_name": {
+                "type": "string",
+                "description": "Full qualified_name from search_graph, or short function name"
+              },
+              "project": {
+                "type": "string"
+              },
+              "include_neighbors": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "qualified_name",
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "get_graph_schema",
+          "description": "Get the schema of the knowledge graph (node labels, edge types)",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "get_architecture",
+          "description": "Get high-level architecture overview — packages, services, dependencies, and project structure at a glance. Includes 'clusters': Leiden community detection over the call/import graph, surfacing the de-facto modules (each with a label, member count, cohesion score, representative top_nodes, and the packages/edge_types that bind it) — use these to grasp the real architectural seams, which often cut across the folder layout.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              },
+              "aspects": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "search_code",
+          "description": "Graph-augmented code search. Finds text patterns via grep, then enriches results with the knowledge graph: deduplicates matches into containing functions, ranks by structural importance (definitions first, popular functions next, tests last). Modes: compact (default, signatures only — token efficient), full (with source), files (just file paths). Use path_filter regex to scope results. TRUNCATION: enriched results are capped at limit (default 10). Response carries 'total_grep_matches' (raw grep hit count) and 'total_results' (deduplicated function count) — compare to limit to detect truncation. There is no offset parameter; to see more, raise limit or narrow the query with file_pattern / path_filter.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string"
+              },
+              "project": {
+                "type": "string"
+              },
+              "file_pattern": {
+                "type": "string",
+                "description": "Glob for grep --include (e.g. *.go)"
+              },
+              "path_filter": {
+                "type": "string",
+                "description": "Regex filter on result file paths (e.g. ^src/ or \\.(go|ts)$)"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "compact",
+                  "full",
+                  "files"
+                ],
+                "default": "compact",
+                "description": "compact: signatures+metadata (default). full: with source. files: just file list."
+              },
+              "context": {
+                "type": "integer",
+                "description": "Lines of context around each match (like grep -C). Only used in compact mode."
+              },
+              "regex": {
+                "type": "boolean",
+                "default": false
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Max enriched results per call. Default 10. Response includes 'total_grep_matches' and 'total_results' so callers can detect truncation. No offset parameter — raise limit or narrow with file_pattern / path_filter to see more.",
+                "default": 10
+              }
+            },
+            "required": [
+              "pattern",
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "list_projects",
+          "description": "List all indexed projects",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "name": "delete_project",
+          "description": "Delete a project from the index",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "index_status",
+          "description": "Get the indexing status of a project",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "detect_changes",
+          "description": "Detect code changes and their impact",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              },
+              "depth": {
+                "type": "integer",
+                "default": 2
+              },
+              "base_branch": {
+                "type": "string",
+                "default": "main"
+              },
+              "since": {
+                "type": "string",
+                "description": "Git ref or date to compare from (e.g. HEAD~5, v0.5.0, 2026-01-01)"
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "manage_adr",
+          "description": "Create or update Architecture Decision Records",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "get",
+                  "update",
+                  "sections"
+                ]
+              },
+              "content": {
+                "type": "string"
+              },
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "project"
+            ]
+          }
+        },
+        {
+          "name": "ingest_traces",
+          "description": "Ingest runtime traces to enhance the knowledge graph",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "traces": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "project": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "traces",
+              "project"
+            ]
+          }
+        }
+      ],
+      "resources": [],
+      "cachedAt": 1783587700828
+    },
+    "zread": {
+      "configHash": "08583d0caa7c0e997d21a14e69d694f9f48576f66bccfcc343b82867fa140e11",
+      "tools": [
+        {
+          "name": "search_doc",
+          "description": "Search documentation, issues, and commits of a GitHub repository.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "repo_name": {
+                "type": "string",
+                "description": "GitHub repository: owner/repo (e.g. \"vitejs/vite\")"
+              },
+              "query": {
+                "type": "string",
+                "description": "The search keywords or question about the repository."
+              },
+              "language": {
+                "type": "string",
+                "description": "'zh' or 'en' (choose according to context language)."
+              }
+            },
+            "required": [
+              "repo_name",
+              "query"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "name": "read_file",
+          "description": "Read the full code content of a specific file in a GitHub repository.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "repo_name": {
+                "type": "string",
+                "description": "GitHub repository: owner/repo (e.g. \"vitejs/vite\")"
+              },
+              "file_path": {
+                "type": "string",
+                "description": "The relative path to the file (e.g. \"src/index.ts\")."
+              }
+            },
+            "required": [
+              "repo_name",
+              "file_path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "name": "get_repo_structure",
+          "description": "Get the directory structure and file list of a GitHub repository.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "repo_name": {
+                "type": "string",
+                "description": "GitHub repository: owner/repo (e.g. \"vitejs/vite\")"
+              },
+              "dir_path": {
+                "type": "string",
+                "description": "The directory path to inspect (default: root \"/\")"
+              }
+            },
+            "required": [
+              "repo_name"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ],
+      "resources": [],
+      "cachedAt": 1782530695033
+    },
+    "mempal-mcp": {
+      "configHash": "8335ff35839d187e3e2d394c582ad7fb652188d78cc49f811ac74ee9bc33548f",
+      "tools": [
+        {
+          "name": "mempal_brief",
+          "description": "Assemble a deterministic citation-first cognitive brief from memory. Returns summary, key facts, evidence, cards, unresolved items, uncertainty, and next actions without LLM synthesis or writes.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "cwd": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dao_tian_limit": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "domain": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "field": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "max_items": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_context",
+          "description": "Assemble a mind-model runtime context pack from typed memory. Use this when you need ordered guidance rather than raw search results: dao_tian -> dao_ren -> shu -> qi, with evidence and Phase-2 knowledge cards opt-in. Returns source-backed items with citations and trigger_hints metadata, but never executes skills.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "cwd": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dao_tian_limit": {
+                "description": "Maximum number of `dao_tian` items to include. Defaults to 1; 0 disables\nthe `dao_tian` section while preserving lower-tier context.",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "domain": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "field": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "include_cards": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "include_distill_suggestions": {
+                "description": "P106: include the read-only `distill_suggestions` signal. Defaults to\ntrue; set false to omit it. Never changes the assembled sections.",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "include_evidence": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "max_items": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_cowork_bus",
+          "description": "Multi-agent cowork bus for concrete agent instances in one project. Actions: register/list/send/broadcast/drain/events/deliveries/ack/heartbeat/channel_set/channel_list/channel_send/tmux_peek/doctor/session_create/session_list/session_status/session_close/handoff/capture. Uses explicit agent_id values such as claude-main, codex-a, codex-b, per-agent inbox files, and append-only events under ~/.mempal/cowork-bus/<project>. This is separate from legacy mempal_cowork_push partner routing and does not infer concrete instances from MCP client names. Most actions are file-backed runtime ops; action=capture writes evidence only when execute=true.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "description": "Action to execute. P85+ uses one MCP tool so agents do not need many\nseparate tool names for the same multi-agent bus.",
+                "type": "string"
+              },
+              "agent_id": {
+                "default": null,
+                "description": "Concrete target/current agent id for register/drain actions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "agents": {
+                "default": [],
+                "description": "Concrete agent ids for channel_set action.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "capture": {
+                "default": null,
+                "description": "Explicit capture switch for action \"session_close\".",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "channel": {
+                "default": null,
+                "description": "Optional channel name for send/broadcast metadata and channel actions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cwd": {
+                "description": "Absolute filesystem path of the project cwd. Internally normalized to\ngit repo root so all agents in one project share the same bus registry.",
+                "type": "string"
+              },
+              "execute": {
+                "default": null,
+                "description": "Explicit write switch for action \"capture\" and \"session_close\".",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "from": {
+                "default": null,
+                "description": "Concrete source agent id for send/broadcast actions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "goal": {
+                "default": null,
+                "description": "Session goal for action \"session_create\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "limit": {
+                "default": null,
+                "description": "Optional max number of latest events for action \"events\".",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "lines": {
+                "default": null,
+                "description": "Optional line count for action \"tmux_peek\".",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "message": {
+                "default": null,
+                "description": "Message body for send/broadcast actions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "message_id": {
+                "default": null,
+                "description": "Delivery event id for action \"ack\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "note": {
+                "default": null,
+                "description": "Optional note for action \"capture\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "now": {
+                "default": null,
+                "description": "Optional RFC3339 timestamp for deterministic list presence checks.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "probe_tmux": {
+                "default": null,
+                "description": "Optional tmux reachability probe for action \"doctor\".",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "room": {
+                "default": null,
+                "description": "Evidence room for action \"capture\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "seen_at": {
+                "default": null,
+                "description": "Optional RFC3339 timestamp for action \"heartbeat\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "session_id": {
+                "default": null,
+                "description": "Session id for session and handoff/capture actions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "default": null,
+                "description": "Session status for action \"session_status\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "summary_source": {
+                "default": null,
+                "description": "Capture summary source for action \"capture\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "thread_id": {
+                "default": null,
+                "description": "Optional thread id metadata for send/broadcast/channel_send actions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "title": {
+                "default": null,
+                "description": "Session title for action \"session_create\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tmux_target": {
+                "default": null,
+                "description": "Optional tmux target for `transport=tmux`.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "to": {
+                "default": [],
+                "description": "Concrete target agent ids for send/broadcast actions.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "tool": {
+                "default": null,
+                "description": "Tool family/name for register action, e.g. \"claude\" or \"codex\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "transport": {
+                "default": null,
+                "description": "Transport metadata for register action. Defaults to \"inbox\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "wing": {
+                "default": null,
+                "description": "Evidence wing for action \"capture\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "action",
+              "cwd"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_cowork_push",
+          "description": "Proactively deliver a short handoff message to the PARTNER agent's inbox. Partner reads it at their next UserPromptSubmit hook, NOT real-time. Use for transient handoffs too important for mempal_peek_partner and too ephemeral for mempal_ingest. Max 8 KB per message; total inbox capped at 32 KB / 16 messages (InboxFull error means partner must drain). Pass target_tool=\"claude\"/\"codex\" explicitly, or omit to infer partner from MCP client identity. Self-push is rejected.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "description": "The message content to deliver. Maximum 8 KB. Short status updates,\ndecision summaries, or drawer_id pointers. Do NOT push search results\nor large reasoning blocks — see Rule 10 in MEMORY_PROTOCOL.",
+                "type": "string"
+              },
+              "cwd": {
+                "description": "Absolute filesystem path of the project cwd this push is scoped to.\nInternally normalized to git repo root via `project_identity()` so\nsubdirectory callers land on the same inbox as repo-root callers.",
+                "type": "string"
+              },
+              "target_tool": {
+                "default": null,
+                "description": "Target agent: \"claude\" or \"codex\". OMIT to infer partner from MCP\nclient identity (Claude → Codex, Codex → Claude). Self-push is rejected.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "content",
+              "cwd"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_delete",
+          "description": "Soft-delete a drawer by ID. The drawer is marked with a deleted_at timestamp and excluded from search results, but not physically removed. Use the CLI `mempal purge` to permanently remove soft-deleted drawers. Returns the drawer_id and whether it was found.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "drawer_id": {
+                "description": "The drawer_id to soft-delete. The drawer is marked with a deleted_at\ntimestamp but not physically removed. Use `mempal purge` CLI to\npermanently remove soft-deleted drawers.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "drawer_id"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_doctor",
+          "description": "MCP runtime diagnostics for mempal install/schema compatibility and server-advertised runtime tools. Read-only; does not migrate or create the database.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_fact_check",
+          "description": "Detect contradictions in text against KG triples + known entities. Returns SimilarNameConflict (similar-name typos), RelationContradiction (incompatible predicate for same endpoints), and StaleFact (KG valid_to expired) issues. Pure read, zero LLM, zero network, deterministic. Call before ingesting decisions that assert relationships between named entities to catch typos or outdated assumptions early.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "now": {
+                "description": "Optional RFC3339 timestamp for the `now` cutoff used by\nStaleFact detection. OMIT to use current UTC time.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "room": {
+                "description": "Optional room filter within a wing. OMIT unless explicitly named.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "text": {
+                "description": "Text to check for contradictions against KG triples + known entities.",
+                "type": "string"
+              },
+              "wing": {
+                "description": "Optional wing filter for known-entity scope. OMIT unless you have\nalready seen the exact wing name via mempal_status.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_field_taxonomy",
+          "description": "Read-only mind-model field taxonomy guidance. Lists recommended Stage-1 field values such as general, epistemics, software-engineering, debugging, tooling, research, writing, and diary. Guidance only; custom fields remain accepted.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "name": "mempal_ingest",
+          "description": "Persist a decision, bug fix, or design insight to project memory. Call this when a decision is reached in conversation — include the rationale, not just the outcome. Wing is required; let mempal auto-route the room. Set dry_run=true to preview the drawer_id without writing. By default this writes a raw EVIDENCE drawer — pass only content plus wing/room/importance/source. Do NOT pass knowledge-only fields (statement, tier, status, supporting_refs, counterexample_refs, teaching_refs, verification_refs, scope_constraints, trigger_hints) on a default ingest: an evidence drawer rejects them. To distill existing evidence drawers into a governed typed rule, use mempal_knowledge_distill instead.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "anchor_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "anchor_kind": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "content": {
+                "type": "string"
+              },
+              "counterexample_refs": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "cwd": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "diary_rollup": {
+                "description": "If true, append this entry to one agent-diary drawer for the current\nUTC day. Requires wing=\"agent-diary\" and an explicit room.",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "domain": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dry_run": {
+                "description": "If true, return the drawer_id that WOULD be created without actually\nwriting to the database. Use this to preview before committing.",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "field": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "importance": {
+                "description": "Importance ranking (0-5). Higher values appear first in wake-up context.\nDefault 0. Use 3-5 for key decisions, architecture choices, and lessons learned.",
+                "format": "int32",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "memory_kind": {
+                "description": "Memory layer. Defaults to \"evidence\" (a raw, verbatim record) when\nomitted. Set \"knowledge\" ONLY for a fully-formed typed knowledge drawer,\nin which case statement, tier, status, and supporting_refs are ALL\nrequired and provenance is forbidden. To turn existing evidence drawers\ninto a governed rule, prefer mempal_knowledge_distill over a hand-built\nknowledge ingest.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "parent_anchor_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "provenance": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "room": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "scope_constraints": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "statement": {
+                "description": "Knowledge-only field — NOT for an evidence drawer. A default (evidence)\ningest REJECTS this and the other knowledge-only fields (tier, status,\nsupporting_refs, counterexample_refs, teaching_refs, verification_refs,\nscope_constraints, trigger_hints). Only valid with\nmemory_kind=\"knowledge\". To distill evidence into a rule, use\nmempal_knowledge_distill.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supporting_refs": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "teaching_refs": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "tier": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_hints": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TriggerHintsDto"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill."
+              },
+              "verification_refs": {
+                "description": "Knowledge-only (see `statement`). Rejected on an evidence drawer; use\nmemory_kind=\"knowledge\" or mempal_knowledge_distill.",
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "wing": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "content",
+              "wing"
+            ],
+            "$defs": {
+              "TriggerHintsDto": {
+                "properties": {
+                  "intent_tags": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "tool_needs": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "workflow_bias": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "intent_tags",
+                  "workflow_bias",
+                  "tool_needs"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_kg",
+          "description": "Knowledge graph: add, query, or invalidate triples (subject-predicate-object). Use 'add' to record structured relationships between entities. Use 'query' to find relationships by subject, predicate, or object. Use 'invalidate' to mark a triple as no longer valid.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "description": "Action: \"add\", \"query\", or \"invalidate\".",
+                "type": "string"
+              },
+              "active_only": {
+                "description": "Only return currently-valid triples (default true).",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "object": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "predicate": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_drawer": {
+                "description": "Link to the source drawer that evidences this triple.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subject": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "triple_id": {
+                "description": "Triple ID (required for invalidate).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_knowledge_cards",
+          "description": "Phase-2 knowledge card inspection, linked-evidence retrieval, and governed lifecycle. Actions: list/get/retrieve/events/gate/promote/demote. Retrieve searches linked evidence and returns active cards with citations; promote/demote require evidence refs and append knowledge_events transactionally.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string"
+              },
+              "allow_counterexamples": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "anchor_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "anchor_kind": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "card_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cwd": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "domain": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "enforce_gate": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "evidence_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "evidence_top_k": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "field": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "query": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reason_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewer": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_status": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tier": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "top_k": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "verification_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_knowledge_demote",
+          "description": "Demote or retire a knowledge drawer with counterexample evidence. Appends evidence refs to counterexample_refs, updates lifecycle status, and writes an audit entry without touching vectors or schema.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "drawer_id": {
+                "type": "string"
+              },
+              "evidence_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "reason_type": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "drawer_id",
+              "status",
+              "evidence_refs",
+              "reason",
+              "reason_type"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_knowledge_distill",
+          "description": "Create candidate knowledge from existing evidence drawer refs. Deterministic Stage-1 distill: writes memory_kind=knowledge/status=candidate for tier dao_ren or qi, validates refs are evidence drawers, and never calls an LLM, promotes, or creates Phase-2 knowledge cards.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "counterexample_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "cwd": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "domain": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dry_run": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "field": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "importance": {
+                "format": "int32",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "room": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "scope_constraints": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "statement": {
+                "type": "string"
+              },
+              "supporting_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "teaching_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "tier": {
+                "type": "string"
+              },
+              "trigger_hints": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TriggerHintsDto"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "wing": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "statement",
+              "content",
+              "tier",
+              "supporting_refs"
+            ],
+            "$defs": {
+              "TriggerHintsDto": {
+                "properties": {
+                  "intent_tags": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "tool_needs": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "workflow_bias": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "intent_tags",
+                  "workflow_bias",
+                  "tool_needs"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_knowledge_gate",
+          "description": "Read-only promotion readiness check for a knowledge drawer. Evaluates whether dao_tian/dao_ren/shu/qi knowledge has enough supporting, verification, teaching, reviewer, and counterexample evidence for the target status. Does not mutate drawers, vectors, schema, audit logs, or lifecycle state.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "allow_counterexamples": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "drawer_id": {
+                "type": "string"
+              },
+              "reviewer": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_status": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "drawer_id"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_knowledge_policy",
+          "description": "Read-only Stage-1 knowledge promotion policy table. Lists deterministic gate thresholds for dao_tian -> canonical, dao_ren -> promoted, shu -> promoted, and qi -> promoted without requiring a drawer and without mutating storage.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "name": "mempal_knowledge_promote",
+          "description": "Promote a knowledge drawer after a deterministic gate pass. Appends verification evidence refs, evaluates promotion readiness, then updates lifecycle status and audit log only if the gate allows it.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "allow_counterexamples": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "drawer_id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "reviewer": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "type": "string"
+              },
+              "verification_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "drawer_id",
+              "status",
+              "verification_refs",
+              "reason"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_knowledge_publish_anchor",
+          "description": "Publish active knowledge outward across anchor scope. Metadata-only operation for worktree -> repo or repo -> global publication; updates anchor fields and audit log without touching content, vectors, schema, or tier/status lifecycle.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "cwd": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "drawer_id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "reviewer": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_anchor_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "drawer_id",
+              "to",
+              "reason"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_peek_partner",
+          "description": "Read the partner coding agent's LIVE session log (Claude Code ↔ Codex) without storing it in mempal. Returns the most recent user+assistant messages from their active session file. Use this for CURRENT partner state; use mempal_search for CRYSTALLIZED past decisions. Peek is a pure read — it never writes to mempal drawers. Pass tool=\"auto\" to infer the partner from MCP ClientInfo, or tool=\"claude\"/\"codex\" explicitly. Pass cwd to read a partner session in another project; when omitted it reads the partner session for the project this server runs in.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "cwd": {
+                "description": "Optional project directory whose partner session to read. Use this to\npeek a partner working in another project; when omitted, mempal reads the\npartner session for the project this MCP server runs in.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "limit": {
+                "description": "Maximum number of user+assistant messages to return. Default 30.",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "since": {
+                "description": "Optional RFC3339 timestamp cutoff — only messages strictly newer than\nthis are returned.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tool": {
+                "description": "Which agent tool's session to read. \"auto\" uses MCP ClientInfo.name\nto infer the partner (Claude ↔ Codex); \"claude\" or \"codex\" bypasses\ninference. If you explicitly name your own tool the call is rejected\nto prevent self-peek.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tool"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_phase3",
+          "description": "Phase-3 runtime adoption evidence and readiness gates. Actions: guidance/instrumentation_policy/prepare_record/capture/evaluator_advise/default_proposal/rollback_control/check_record/record_checked/review/readiness/analytics/record/list/stats/gate/research_validate_plan/research_ingest_plan. Guidance explains when agents should record used/accepted/rejected/miss/rollback signals; instrumentation_policy defines opt-in live instrumentation boundaries without writing; prepare_record validates and returns record inputs without writing; capture maps surface/outcome observations into checked record inputs and writes only with execute=true; evaluator_advise returns deterministic advisory-only evaluator output and a surface=evaluator capture plan without lifecycle authority; default_proposal combines readiness with rollback criteria without changing defaults; rollback_control evaluates card-context rollback evidence without writing; check_record evaluates record quality without writing; record_checked runs the quality gate before writing; review summarizes adoption evidence without writing; readiness evaluates default eligibility without writing; analytics groups adoption evidence by track and feature without writing; record appends runtime_adoption_events; list/stats/gate are read-only; research_validate_plan validates external research report JSON; research_ingest_plan previews evidence drawer refs and distill suggestions without ingesting or promoting knowledge.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string"
+              },
+              "allow_warnings": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "candidate": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "card_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "context_hash": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "counterexample_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "evaluator_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "evidence_refs": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "execute": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "feature": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "limit": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "metadata": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "outcome": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "proposed_action": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "query": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "report": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "research_report_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "risk_notes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "rollback_criteria": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "signal": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subject_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subject_kind": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "surface": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "track": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "action",
+              "metadata",
+              "report"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_projects",
+          "description": "List every project (wing) mempal knows — name, absolute worktree path, drawer counts, and last activity — newest first. Read-only; works from any directory. Use it to discover which project to resume.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "name": "mempal_resume",
+          "description": "Resume a project by fuzzy name from any directory. Resolves the query against wing names and worktree-path basenames and returns the project's worktree path, recent decisions, in-flight candidate knowledge, and a concrete next step — or candidate projects when ambiguous, or the available projects when not found. Read-only: mempal returns the path to cd into, it does not move you.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "candidate_limit": {
+                "description": "In-flight candidate knowledge drawers to include (default 5).",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "evidence_limit": {
+                "description": "Recent evidence drawers to include (default 5).",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "query": {
+                "description": "Project name or fragment; matches a wing or a worktree-path basename.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_search",
+          "description": "Search persistent project memory via vector embedding with optional wing/room filters. PREFER THIS over grepping files or guessing from general knowledge when answering ANY project-specific question — past decisions, design rationale, implementation details, bug history, how a component works, why something was built a certain way, or any other project knowledge. Every result includes drawer_id and source_file for citation, plus structured AAAK-derived signals (`entities`, `topics`, `flags`, `emotions`, `importance_stars`) for filtering and ranking.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "anchor_kind": {
+                "description": "Optional anchor kind filter (`global`, `repo`, `worktree`).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "domain": {
+                "description": "Optional domain filter (`project`, `agent`, `skill`, `global`).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "field": {
+                "description": "Optional bootstrap field filter.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "memory_kind": {
+                "description": "Optional memory kind filter (`evidence` or `knowledge`).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "query": {
+                "description": "Natural-language query. Use the user's actual question verbatim\nwhen possible — the embedding model handles paraphrase and translation.",
+                "type": "string"
+              },
+              "room": {
+                "description": "Optional room filter within a wing. Same rule as wing: OMIT unless you\nhave seen the exact room name in a prior mempal_status call. Guessing\nreturns zero results.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "description": "Optional knowledge status filter.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tier": {
+                "description": "Optional knowledge tier filter.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "top_k": {
+                "description": "Maximum number of results to return. Defaults to 10 when omitted.",
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "wing": {
+                "description": "Optional wing filter. OMIT (leave null) unless you already know the\nEXACT wing name from a prior mempal_status call or the user named it\nexplicitly. Wing filtering is a strict equality match, so guessing a\nwing name (e.g. \"engineering\", \"backend\") will silently return zero\nresults. When in doubt, leave this field unset for a global search\nacross all wings.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "with_neighbors": {
+                "description": "If true and top_k <= 10, include previous/next chunks from the same source.",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_status",
+          "description": "Return schema version, drawer counts, taxonomy counts, database size, scope breakdown, the AAAK format spec, and the memory protocol. Call once at session start if you haven't seen the protocol yet.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        {
+          "name": "mempal_taxonomy",
+          "description": "List or edit wing/room taxonomy entries that drive query routing keywords.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string"
+              },
+              "keywords": {
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "array",
+                  "null"
+                ]
+              },
+              "room": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "wing": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        {
+          "name": "mempal_tunnels",
+          "description": "Discover or manage cross-wing tunnels. Actions: discover/list passive same-room links, add/list/delete/follow explicit semantic links.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "description": "Action: \"discover\" (default), \"list\", \"add\", \"delete\", or \"follow\".",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "from": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TunnelEndpointDto"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "kind": {
+                "description": "Filter for list: \"passive\", \"explicit\", or \"all\" (default).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "left": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TunnelEndpointDto"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "max_hops": {
+                "description": "Follow depth. Must be 1 or 2. Defaults to 1.",
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "right": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/TunnelEndpointDto"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tunnel_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "wing": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "$defs": {
+              "TunnelEndpointDto": {
+                "properties": {
+                  "room": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "wing": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "wing"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+          }
+        }
+      ],
+      "resources": [],
+      "cachedAt": 1782983718991
+    }
+  }
+}

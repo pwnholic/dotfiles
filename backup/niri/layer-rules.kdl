@@ -1,0 +1,69 @@
+// ════════════════════════════════════════════════════════════════════
+//  Layer-Shell Rules (Noctalia v5 integration)
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Layer-Rules
+//        https://docs.noctalia.dev/v5/compositor-settings/niri/
+// ════════════════════════════════════════════════════════════════════
+//
+//  Verified Noctalia v5 layer namespaces (via `niri msg layers`):
+//    noctalia-backdrop       — blurred wallpaper for overview backdrop
+//    noctalia-wallpaper      — regular wallpaper
+//    noctalia-bar-default    — top bar
+//    noctalia-dock           — app dock
+//    noctalia-notification   — notification popups
+//    noctalia-panel-*        — panels (launcher, control-center, etc.)
+//    noctalia-attached-panel — attached panels
+//    noctalia-osd            — on-screen display (volume/brightness)
+//    noctalia-window-switcher — Alt+Tab overlay
+// ── Option 1: Blurred Overview Wallpaper (prettier) ───────────────
+// Places Noctalia's dedicated backdrop layer (blurred + tinted wallpaper
+// copy) within niri's overview backdrop for a smooth blur effect.
+layer-rule {
+    match namespace="^noctalia-backdrop"
+    place-within-backdrop true
+}
+// ── Option 2: Stationary Wallpaper (uncomment if preferred) ───────
+// Keeps the regular wallpaper visible at all times (no scroll on
+// workspace switch). Comment out Option 1 above if using this.
+// layer-rule {
+//     match namespace="^noctalia-wallpaper"
+//     place-within-backdrop true
+// }
+// ── Noctalia Surfaces: realistic (non-xray) blur ──────────────────
+// Noctalia publishes its own blur regions via ext-background-effect,
+// so disabling xray looks more realistic (blurs actual content behind
+// the surface, not just a cached wallpaper).
+//
+// Targets: bar, notifications, dock, panels, attached panels, OSD.
+layer-rule {
+    match namespace="^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
+    background-effect {
+        xray false
+    }
+}
+// ── Window Switcher: blur on, non-xray ────────────────────────────
+layer-rule {
+    match namespace="^noctalia-window-switcher"
+    background-effect {
+        blur true
+        xray false
+    }
+}
+// ── Desktop Widgets: non-xray blur ────────────────────────────────
+// Match all desktop widgets (clock, weather, sysmon, etc.)
+layer-rule {
+    match namespace="^noctalia-desktop-widget-"
+    background-effect {
+        xray false
+    }
+}
+// ── Popups: blur behind waybar/panel popup menus ──────────────────
+layer-rule {
+    match namespace="^noctalia-bar"
+    popups {
+        geometry-corner-radius 8
+        background-effect {
+            blur true
+            xray false
+        }
+    }
+}

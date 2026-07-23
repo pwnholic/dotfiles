@@ -1,0 +1,27 @@
+# ════════════════════════════════════════════════════════════════════
+#  Idle — idle behaviors, lock, screen-off, suspend
+#  Docs: https://docs.noctalia.dev/v5/services/idle/
+# ════════════════════════════════════════════════════════════════════
+
+[idle]
+# Seconds to fade a fullscreen surface-tint overlay before running the
+# idle command. 0 = no overlay (command runs immediately).
+pre_action_fade_seconds = 10.0
+
+# ── Lock after 10 minutes idle ─────────────────────────────────────
+[idle.behavior.lock]
+timeout = 600   # 10 minutes
+action = "lock"
+enabled = true
+
+# ── Turn off screen after 11 minutes idle ─────────────────────────
+[idle.behavior.screen-off]
+timeout = 660         # 11 minutes
+action = "screen_off"
+enabled = true
+
+# ── Suspend after 15 minutes idle (lock first) ────────────────────
+[idle.behavior.suspend]
+timeout = 900               # 15 minutes
+action = "lock_and_suspend"
+enabled = true

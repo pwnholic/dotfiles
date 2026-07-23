@@ -1,0 +1,15 @@
+// ════════════════════════════════════════════════════════════════════
+//  Startup (Noctalia Shell v5 + session environment)
+//  Noctalia: https://docs.noctalia.dev/v5/getting-started/running-the-shell/
+// ════════════════════════════════════════════════════════════════════
+// Start Noctalia Shell v5 (bar, launcher, wallpaper, notifications, dock,
+// control center, media/brightness/volume OSDs, window switcher — all
+// in one process).
+spawn-at-startup "noctalia"
+// Export the Wayland session into the systemd/D-Bus environment so
+// dbus-activated and systemd user services can talk to the compositor.
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+ // Start xwayland-satellite for X11-only apps (niri handles this
+// automatically when xwayland-satellite is configured in general.kdl).
+// spawn-at-startup "xwayland-satellite"

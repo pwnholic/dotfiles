@@ -1,0 +1,41 @@
+# ════════════════════════════════════════════════════════════════════
+#  Hooks — event-driven automation
+#  Docs: https://docs.noctalia.dev/v5/automation/hooks/
+# ════════════════════════════════════════════════════════════════════
+#
+#  Each event is a shell command string or an array of strings that run
+#  in order. Use "noctalia msg ..." when a hook needs to call Noctalia IPC.
+
+[hooks]
+# ── Shell started ──────────────────────────────────────────────────
+# Runs once after Noctalia finishes startup (IPC ready).
+started = "systemctl --user start noctalia-ready.target"
+
+# ── Session lock/unlock ───────────────────────────────────────────
+# Pause media and hide bar on lock; restore on unlock.
+session_locked = ["playerctl pause", "noctalia msg bar-hide"]
+session_unlocked = ["noctalia msg bar-show"]
+
+# ── Theme mode changed ────────────────────────────────────────────
+# Apply GTK theme and reload relevant services on light/dark switch.
+theme_mode_changed = "noctalia msg do-screen-transition"
+
+# ── Wallpaper changed ─────────────────────────────────────────────
+# Sync Noctalia Greeter appearance with new wallpaper.
+# Requires noctalia-greeter-apply-appearance on PATH.
+# wallpaper_changed = "noctalia msg greeter-sync"
+
+# ── Battery events ────────────────────────────────────────────────
+# Log battery state changes for debugging/power management.
+battery_charging = "logger -t noctalia-hooks 'Battery charging'"
+battery_discharging = "logger -t noctalia-hooks 'Battery discharging'"
+battery_plugged = "logger -t noctalia-hooks 'Battery fully charged'"
+battery_percentage_changed = "logger -t noctalia-hooks \"Battery: $NOCTALIA_BATTERY_STATE $NOCTALIA_BATTERY_PERCENT%\""
+
+# ── Power profile changed ─────────────────────────────────────────
+power_profile_changed = "logger -t noctalia-hooks \"Power profile: $NOCTALIA_POWER_PROFILE_PREVIOUS -> $NOCTALIA_POWER_PROFILE ($NOCTALIA_POWER_PROFILE_ORIGIN)\""
+
+# ── Session end ──────────────────────────────────────────────────
+logging_out = "logger -t noctalia-hooks 'logout requested'"
+rebooting = "logger -t noctalia-hooks 'rebooting'"
+shutting_down = "logger -t noctalia-hooks 'shutting down'"
