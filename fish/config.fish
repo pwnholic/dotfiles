@@ -1,22 +1,20 @@
 # ~/.config/fish/config.fish
 #
-# Fish startup order:
-#   1. ~/.config/fish/conf.d/*.fish   (sourced alphabetically)
-#   2. this file                       (config.fish)
-#   3. ~/.config/fish/functions/*.fish (lazy-loaded on first use)
+# Thin entry point. Fish startup order:
+#   1. /etc/fish config + vendor files
+#   2. ~/.config/fish/conf.d/*.fish   (sourced alphabetically)
+#   3. this file                       (config.fish)
+#   4. ~/.config/fish/functions/*.fish (lazy-loaded on first use)
 #
-# This file is intentionally minimal: all environment, PATH and tool setup lives
-# in numbered files under conf.d/. There are NO `abbr` and NO `alias`
-# anywhere in this config; every convenience command is a plain fish function
-# (see conf.d/50-functions.fish and functions/).
-#
-# See README.md for the full layout and how to add new tools.
+# The CachyOS base config is sourced first -- it sets the fastfetch greeting,
+# the `done` desktop-notification hook, the `!!`/`!$` history bindings and a
+# base PATH. starship then takes over the prompt and atuin takes over history.
+# Everything else (env vars, per-tool PATH, fzf, gh switching) lives in the
+# numbered files under conf.d/, so this file stays minimal.
 
+# CachyOS base: greeting (fastfetch), done notifications, !! / !$, base PATH.
 source /usr/share/cachyos-fish-config/cachyos-config.fish
 
+# Prompt + shell history (override the CachyOS defaults).
 starship init fish | source
 atuin init fish | source
-
-# Added by codebase-memory-mcp install
-fish_add_path /home/pwnholic/.local/bin
-

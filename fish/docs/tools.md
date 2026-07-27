@@ -1,31 +1,74 @@
 # Tools reference
 
-Per-tool setup notes, install commands, and the version-specific decisions
-behind this config. Sources are linked inline.
+Per-tool setup notes, install commands, and version-specific decisions.
+
+## Base shell: CachyOS fish config
+
+The system package `cachyos-fish-config` provides `/usr/share/cachyos-fish-config/cachyos-config.fish`,
+sourced from `config.fish`. It sets up:
+
+- `fish_greeting` -> `fastfetch` system summary.
+- the [`done`](https://github.com/franciscolourenco/done) hook (desktop
+  notification when a long command finishes), configured via the
+  `__done_*` universal variables in `fish_variables`.
+- bash-style `!!` / `!$` history bindings.
+- `MANPAGER` / `MANROFFOPT` (bat-rendered man pages).
+- a base PATH (`~/.local/bin`, `~/.cargo/bin`, ...).
+
+We deliberately do **not** duplicate any of this in `conf.d/`.
+
+## starship (prompt)
+
+Source: <https://starship.rs>
+
+Initialised in `config.fish` with `starship init fish | source`, replacing the
+CachyOS default prompt. Its own configuration lives at
+`~/.config/starship.toml` (not part of this fish config).
+
+## atuin (shell history)
+
+Source: <https://docs.atuin.sh>
+
+Initialised in `config.fish` with `atuin init fish | source`. Configured in
+`~/.config/atuin/config.toml`. Highlights of the chosen setup:
+
+- **Ctrl-R** searches the full global history (every machine); **Up arrow**
+  searches only commands run in the *current directory* (`filter_mode_shell_up_key_binding = "directory"`).
+- `workspaces = true` -- inside a git repo, up-arrow matches commands run
+  anywhere under that repo.
+- `search_mode = "fuzzy"`, `inline_height = 40`, `enter_accept = true`,
+  `secrets_filter = true` (never saves things that look like tokens).
+- The history UI shows `duration | directory | command` (`[ui] columns`).
+
+Log in to enable sync across machines:
+
+```sh
+atuin login -u <username>
+```
+
+Or self-host by setting `sync_address` in the config.
 
 ## ripgrep / fd / bat / eza
 
-System packages, no env needed. Used as:
+System packages, no env needed:
 
-- **ripgrep** — default fzf file finder: `rg --files --hidden --glob "!.git/*"`.
-- **fd** — fzf directory finder for ALT-C: `fd --type d ...`.
-- **bat** — man-page renderer and fzf preview (`bat -n --color=always {}`).
-- **eza** — powers the `ls`/`ll`/`la`/`lt` functions. Icons require a Nerd Font.
+- **ripgrep** -- fzf default + CTRL-T finder (`rg --files --hidden --glob "!.git/*"`).
+- **fd** -- fzf ALT-C directory finder (`fd --type d --hidden --follow --exclude .git`).
+- **bat** -- man renderer and fzf preview (`bat -n --color=always {}`). Theme: `TwoDay`.
+- **eza** -- modern `ls`. Available as `eza` directly; `ls` is **not** overridden.
 
 ## fzf (0.74)
 
 Source: <https://junegunn.github.io/fzf/shell-integration/>
 
-- Bindings use the modern, officially-recommended **`fzf --fish | source`**
-  (available since fzf 0.48). This replaces the older
-  `source /usr/share/fish/vendor_functions.d/fzf_key_bindings.fish` +
-  `fzf_key_bindings` approach, which is still installed as a vendor file but is
-  now superseded.
-- Bindings: **CTRL-T** (files), **CTRL-R** (history), **ALT-C** (cd into dir).
-  In the file preview, **CTRL-/** toggles/hides the preview window.
-- `FZF_DEFAULT_COMMAND` / `FZF_CTRL_T_COMMAND` use ripgrep; `FZF_ALT_C_COMMAND`
-  uses fd. (Modern fzf also has a built-in `--walker`; explicit commands are
-  used here so the "ripgrep as default finder" requirement is explicit.)
+Uses the modern, officially-recommended **`fzf --fish | source`** (fzf >= 0.48),
+which registers CTRL-T (files), CTRL-R (history) and ALT-C (cd into dir). In
+the file preview, CTRL-/ toggles the preview window.
+
+> Note: atuin also binds CTRL-R. atuin is initialised *after* fzf in
+> `config.fish`, so **CTRL-R opens atuin** (the richer, synced history search),
+> while fzf's bindings (CTRL-T, ALT-C) remain available. This is the intended
+> setup; if you ever want fzf's CTRL-R back, initialise fzf after atuin.
 
 ## Neovim
 
@@ -33,22 +76,22 @@ Source: <https://junegunn.github.io/fzf/shell-integration/>
 
 ## Rust (rustup / cargo)
 
-`RUSTUP_HOME` and `CARGO_HOME` are set to their defaults explicitly (fish does
-not source rustup's `profile.d` snippet). `~/.cargo/bin` is on PATH.
+`RUSTUP_HOME` and `CARGO_HOME` are set explicitly to their defaults
+(`~/.local/share/rustup`, `~/.local/share/cargo`) -- fish does not source
+rustup's `profile.d` snippet. `~/.local/share/cargo/bin` is on PATH.
 
 ## Go
 
-`GOPATH=~/go`, `GOBIN=~/go/bin`, `GOPROXY=https://proxy.golang.org,direct`.
-`~/go/bin` is added to PATH the moment it exists (after the first
-`go install`).
+`GOPATH=~/.local/share/go`, `GOBIN=$GOPATH/bin`,
+`GOPROXY=https://proxy.golang.org,direct`. `$GOBIN` is added to PATH the moment
+it exists (after the first `go install`).
 
-## Node.js — fnm
+## Node.js -- fnm
 
 Source: <https://github.com/Schniz/fnm> (Shell Setup > Fish)
 
-Chosen over nvm/volta: nvm has no native fish support (needs `bass`/a fork);
-volta's fish support is community-only. fnm is Rust-based, fast, and has a
-first-class fish integration.
+Chosen over nvm/volta: nvm has no native fish support; volta's fish support is
+community-only. fnm is Rust-based, fast, and first-class for fish.
 
 Install:
 
@@ -57,104 +100,37 @@ curl -fsSL https://fnm.vercel.app/install | bash
 # or: cargo install fnm
 ```
 
-The config sources `fnm env --use-on-cd --shell fish`, which:
+`fnm env --use-on-cd --shell fish` puts the active Node on PATH and
+auto-switches version on `cd` into a `.nvmrc` / `.node-version`. Until fnm is
+installed, the system Node (`/usr/bin/node`) is used as-is.
 
-- puts the active Node version on PATH, and
-- auto-switches Node version on cd when a `.nvmrc` / `.node-version` is present.
+## Python -- uv
 
-Until fnm is installed, the system Node (`/usr/bin/node`) is used as-is.
+`uv` (system package) replaces pyenv + pipx + venv in one tool, including
+Python version management (`uv python install <version>`). No env required.
+Uncomment `UV_PYTHON_PREFERENCE managed` in `conf.d/20-python-uv.fish` to prefer
+uv-managed interpreters over the system one.
 
-## Python — uv
+## zellij / yazi
 
-`uv` (already a system package) replaces pyenv + pipx + venv in one tool,
-including Python version management (`uv python install <version>`). No env is
-required. Uncomment `UV_PYTHON_PREFERENCE managed` in
-`conf.d/20-python-uv.fish` to prefer uv-managed interpreters over the system
-one.
+Both are system packages and need no shell environment.
 
-## Solana CLI / Anchor (avm)
-
-Sources:
-
-- Solana: <https://docs.anza.xyz/cli/install-solana-cli> (install command +
-  `~/.local/share/solana/install/active_release/bin` path).
-- Anchor/AVM: <https://www.anchor-lang.com/docs/references/avm>
-  (default data dir `~/.avm`, shim at `~/.avm/bin`).
-
-Install:
-
-```sh
-# Solana CLI (Agave)
-sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
-
-# Anchor via AVM
-cargo install --git https://github.com/coral-xyz/anchor avm --force
-avm install <version>
-avm use <version>
-```
-
-Both PATH entries (`~/.local/share/solana/.../bin` and `~/.avm/bin`) are
-no-ops until the install dirs exist.
-
-## yazi
-
-Source: <https://yazi-rs.github.io/docs/quick-start#shell-wrapper> (Fish tab).
-
-`functions/y.fish` is the **official** yazi shell wrapper verbatim (plus a
-guard if yazi is missing). Use `y` instead of `yazi` so that quitting (q) drops
-you into the directory yazi was in; press **Q** to quit without moving.
-
-Install: `sudo pacman -S yazi`.
-
-## zellij
-
-No shell environment is required — it is a terminal multiplexer with its own
-config (`~/.config/zellij/`). To auto-attach zellij when opening a terminal,
-add to `config.fish`:
-
-```fish
-if status is-interactive; and not set -q ZELLIJ; and type -q zellij
-    zellij attach --create
-end
-```
-
-(Omitted by default because it changes terminal workflow significantly.)
+- **zellij** is a terminal multiplexer with its own config (`~/.config/zellij/`).
+- **yazi** is used directly (`yazi`); there is no `y` cd-on-exit wrapper here.
+  To add the official wrapper, see
+  <https://yazi-rs.github.io/docs/quick-start#shell-wrapper> and drop a
+  `functions/y.fish` file.
 
 ## git / GitHub CLI
 
-git is a system package. `gh`, once installed (`sudo pacman -S github-cli`),
-lands in `/usr/bin` and needs no extra PATH entry.
+git is a system package. `gh` (`sudo pacman -S github-cli`) lands in `/usr/bin`
+and needs no extra PATH entry.
 
-Generate fish completions for cargo-installed CLIs (fnm, uv already ship
-theirs via the package):
+`conf.d/60-gh.fish` auto-switches the active `gh` account based on the current
+directory: `pwnholic` everywhere except under `~/Projects/work`, which uses the
+work account. This mirrors the `git includeIf` split.
 
-```sh
-fnm completions --shell fish > ~/.config/fish/completions/fnm.fish   # if installed via cargo
-```
+## pi coding agent
 
-## pi & Claude coding agents
-
-- pi is at `~/.pi/agent/bin` (on PATH via `conf.d/10-paths.fish`).
-- Claude Code installs to `~/.local/bin` (the native installer) which is
-  already on PATH; no extra setup.
-
-## NVIDIA / CUDA (development)
-
-Source: <https://wiki.archlinux.org/title/GPGPU#CUDA>
-
-The Arch `cuda` package installs to `/opt/cuda` and normally exports PATH /
-`LD_LIBRARY_PATH` through `/etc/profile.d/cuda.sh`. **Fish does not source
-`/etc/profile.d/*.sh`**, so those exports never apply — `conf.d/30-nvidia.fish`
-sets the equivalent variables itself (`CUDA_HOME`, `CUDA_PATH`, PATH, and
-`LD_LIBRARY_PATH` for `lib64` + CUPTI), guarded on `/opt/cuda` existing.
-
-Install the toolkit:
-
-```sh
-sudo pacman -S cuda
-```
-
-Note: this machine has an **RTX 5050 Laptop GPU** (Blackwell, compute capability
-`sm_120`). Blackwell requires **CUDA >= 12.8**; the installed driver
-(610.x) supports current CUDA releases. Verify with `nvcc --version` after
-install.
+`pi` lives at `~/.pi/agent/bin` (on PATH via `conf.d/10-paths.fish`).
+Claude Code installs to `~/.local/bin` (already on PATH); no extra setup.
