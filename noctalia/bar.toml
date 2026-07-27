@@ -1,0 +1,111 @@
+# ════════════════════════════════════════════════════════════════════
+#  Bar — floating top bar, Tokyo Night Storm, maximally informative
+#  Docs: https://docs.noctalia.dev/v5/bar/
+#  Gestures/dead zone: https://docs.noctalia.dev/v5/bar/actions/
+# ════════════════════════════════════════════════════════════════════
+
+[bar]
+order = ["main"]
+
+[bar.main]
+position = "top"
+enabled = true
+auto_hide = false
+smart_auto_hide = false
+show_on_workspace_switch = true
+reserve_space = true
+layer = "top"
+
+# ── Dimensions ─────────────────────────────────────────────────────
+# Transparent bar: no fill, no outline, no shadow. Every lane item floats
+# as a frosted capsule. niri blurs content behind Noctalia surfaces
+# (non-xray) — see ~/.config/niri/layer-rules.kdl.
+thickness = 40
+background_opacity = 0.0
+border = "outline"
+border_width = 0
+shadow = false
+contact_shadow = false
+panel_overlap = 1
+
+# ── Corner Radius ──────────────────────────────────────────────────
+radius = 8
+radius_top_left = 8
+radius_top_right = 8
+radius_bottom_left = 8
+radius_bottom_right = 8
+concave_edge_corners = false
+
+# ── Margins & Padding ─────────────────────────────────────────────
+margin_ends = 10
+margin_edge = 4
+margin_opposite_edge = 0
+padding = 10
+widget_spacing = 8
+hover_highlight = true
+scale = 1.1
+font_weight = 500
+font_family = "Iosevka NF"
+
+# ── Capsule defaults ──────────────────────────────────────────────
+# Bar background is transparent, so every lane item is a capsule.
+# Group members (vitals/net) set capsule = false in widgets.toml.
+capsule = true
+capsule_fill = "surface_variant"     # Tokyo Night #1f2335 (dark pill)
+capsule_foreground = "#a9b1d6"     # Tokyo Night classic fg (lavender, not near-white)
+capsule_opacity = 0.8
+capsule_thickness = 0.86
+capsule_radius     = 8.0
+capsule_padding = 10
+capsule_border = "outline"
+
+# ── Widget Layout ──────────────────────────────────────────────────
+start  = [
+	"launcher",
+	"workspaces",
+	"taskbar",
+  	"group:vitals"
+]
+
+center = ["clock", "media"]
+
+end    = [
+	"group:net",
+   	"notifications",
+  	"volume",
+	"brightness",
+	"battery",
+	"tray",
+  	"control-center"
+]
+
+# ── Capsule Group: system vitals (CPU/GPU/RAM in one shared pill) ─
+[[bar.main.capsule_group]]
+id = "vitals"
+members = ["cpu", "cpu-temp", "gpu", "gpu-temp", "ram"]
+fill = "surface_variant"
+foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender)
+opacity = 0.8
+border = "outline"
+padding = 10.0
+enabled = true
+
+# ── Capsule Group: network throughput (down/up in one shared pill) ─
+[[bar.main.capsule_group]]
+id = "net"
+members = ["net-down", "net-up"]
+fill = "surface_variant"
+foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender)
+opacity = 0.8
+border = "outline"
+padding = 10.0
+enabled = true
+
+# ── Dead Zone Actions (empty bar margins) ─────────────────────────
+# Left-click empty bar → launcher; right-click → control center (default).
+# Scroll empty bar → volume, so the bar's margins are not wasted space.
+[bar.main.dead_zone.actions]
+left = "panel-toggle launcher"
+middle = "panel-toggle clipboard"   # clipboard tucked off the bar
+scroll_up = "volume-up"
+scroll_down = "volume-down"

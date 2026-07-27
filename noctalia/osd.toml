@@ -1,0 +1,31 @@
+# ════════════════════════════════════════════════════════════════════
+#  OSD — on-screen display for volume, brightness, toggles
+#  Docs: https://docs.noctalia.dev/v5/shell/#osd
+# ════════════════════════════════════════════════════════════════════
+
+[osd]
+position = "top_center"          # top_right | top_left | top_center | bottom_* | center_*
+position_vertical = "top_center" # used when orientation = "vertical"
+orientation = "horizontal"       # horizontal | vertical (sliders only)
+scale = 1.0                      # OSD size multiplier on top of ui_scale
+background_opacity = 0.95
+border = true
+offset_x = 20
+offset_y = 8
+# monitors           = ["eDP-1"]    # empty = all monitors
+
+# ── OSD Kinds (which popups are enabled) ───────────────────────────
+[osd.kinds]
+volume = true
+volume_output = true
+volume_input = true
+brightness = true
+wifi = true
+bluetooth = true
+power_profile = true
+caffeine = true
+nightlight = true
+dnd = true
+lock_keys = true
+keyboard_layout = true
+privacy = true

@@ -1,0 +1,5 @@
+# Included for repos under ~/Projects/work/
+[user]
+    name = Tono
+    email = tono@technopartner.co.id
+    signingkey = ~/.ssh/id_ed25519_work.pub

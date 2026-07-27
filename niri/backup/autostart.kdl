@@ -1,0 +1,21 @@
+// ============================================================================
+//  Startup (Noctalia Shell v5 + session environment)
+// ============================================================================
+
+// Start Noctalia Shell v5 (bar, launcher, wallpaper, notifications, lock,
+// media/brightness/volume OSDs, window switcher - all in one instance).
+spawn-at-startup "noctalia"
+
+// Export the Wayland session into the systemd/D-Bus environment so that
+// dbus-activated and systemd user services can talk to the compositor.
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+
+// --- Lid switch: lock + suspend on lid close --------------------------------
+// Docs: https://docs.noctalia.dev/v5/compositor-settings/niri/
+// Also tell logind not to handle the lid itself in /etc/systemd/logind.conf:
+//   HandleLidSwitch=ignore
+//   HandleLidSwitchExternalPower=ignore
+switch-events {
+    lid-close { spawn "noctalia" "msg" "session" "lock-and-suspend"; }
+}

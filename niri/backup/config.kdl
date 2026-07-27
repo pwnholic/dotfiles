@@ -1,0 +1,25 @@
+// ============================================================================
+//  Niri config (v2) - entry point
+// ----------------------------------------------------------------------------
+//  Hardware : CachyOS, NVIDIA RTX 5050 Laptop (nvidia-open 610) + Intel iGPU
+//  Compositor: Niri 26.04 (Wayland, scrollable tiling)
+//  Shell    : Noctalia Shell (started in autostart.kdl)
+//
+//  This file only includes topic-specific files. Each topic lives in its own
+//  file so you can edit one concern without touching the rest. Settings from
+//  included files merge positionally; see the "Include" wiki page for details:
+//  https://github.com/YaLTeR/niri/wiki/Configuration:-Include
+//
+//  Includes are siblings of this file, so the whole v2/ folder is portable.
+// ============================================================================
+
+include "general.kdl"
+include "blur.kdl"
+include "outputs.kdl"
+include "input.kdl"
+include "layout.kdl"
+include "animations.kdl"
+include "window-rules.kdl"
+include "layer-rules.kdl"
+include "keybinds.kdl"
+include "autostart.kdl"

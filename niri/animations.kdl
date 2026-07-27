@@ -1,0 +1,59 @@
+// ════════════════════════════════════════════════════════════════════
+//  Animations (springs + easings) — "fluid" preset
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Animations
+// ════════════════════════════════════════════════════════════════════
+//
+//  Critically damped (damping-ratio 1.0 = no bounce) with lower stiffness
+//  than niri defaults (800-1000). Lower stiffness → longer, smoother
+//  motion visible at 144 Hz, without springy overshoot.
+//
+//  Related motions share the same spring so synchronized resizes
+//  look coherent (wiki recommends keeping these matched).
+//
+//  Tune springs visually with the Elastic app (Flathub).
+//  For a bouncier "Hyprland/macOS" feel, drop damping-ratio to ~0.82.
+animations {
+    // Uncomment to slow every animation while tuning:
+    // slowdown 2.0
+    // ── Spring Animations (physics-based) ─────────────────────────
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    window-movement {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    window-resize {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    recent-windows-close {
+        spring damping-ratio=1.0 stiffness=700 epsilon=0.001
+    }
+
+    // ── Underdamped Springs (slight bounce) ───────────────────────
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+    }
+    exit-confirmation-open-close {
+        spring damping-ratio=0.6 stiffness=500 epsilon=0.01
+    }
+
+    // ── Easing Animations ─────────────────────────────────────────
+    window-open {
+        duration-ms 220
+        curve "ease-out-expo"
+    }
+    window-close {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    screenshot-ui-open {
+        duration-ms 250
+        curve "ease-out-expo"
+    }
+}

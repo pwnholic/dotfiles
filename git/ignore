@@ -1,0 +1,10 @@
+**/node_modules
+**/.svn
+**/.hg
+**/.jj
+**/CVS
+**/.DS_Store
+**/Thumbs.db
+**/.classpath
+**/.settings
+**/.env**

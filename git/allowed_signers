@@ -1,0 +1,6 @@
+# allowed_signers for SSH signature verification (git verify-commit / verify-tag).
+# Format: <email> <keytype> <pubkey> [<optional principals>]
+# Regenerated 2025 for the current ed25519 keys (see ~/.ssh/).
+
+wigtono41@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGZGFfQKrv2Lr29U7QZywsqGxFUnAuX8unHWcN9X6Vhj wigtono41@gmail.com
+tono@technopartner.co.id ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqKxJd5bojzuty7fv6BAlci/0NVtIsVNKw0pGLFQn6e tono@technopartner.co.id

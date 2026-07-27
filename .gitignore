@@ -1,0 +1,43 @@
+# ════════════════════════════════════════════════════════════════════
+#  ~/.config/.gitignore
+#  Track dotfiles only — exclude huge/sensitive/machine-specific data.
+#  NOTE: gitignore has NO inline comments — keep comments on their own line.
+# ════════════════════════════════════════════════════════════════════
+
+# ── Browsers & Electron apps (huge + tokens/cookies/profiles) ──────
+discord/
+mozilla/
+BraveSoftware/
+
+# ── Machine-specific / binary runtime state ───────────────────────
+pulse/
+dconf/
+
+# ── Bundled app data (reinstalled with the app, not user config) ──
+micro/syntax/
+
+# ── Distro-generated junk ─────────────────────────────────────────
+cachyos-hello.json
+
+# ── Generic junk / editor backups ─────────────────────────────────
+*.log
+*.lock
+*.sock
+*.tmp
+*.swp
+*.bak
+*.cache
+*~
+.DS_Store
+Thumbs.db
+
+# ── Secrets — never commit if they ever appear ────────────────────
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*credentials*
+*credential*
+*token*
+*secret*
+*.kdbx

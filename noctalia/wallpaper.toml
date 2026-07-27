@@ -1,0 +1,32 @@
+# ════════════════════════════════════════════════════════════════════
+#  Wallpaper — fill modes, transitions, automation
+#  Docs: https://docs.noctalia.dev/v5/desktop/wallpaper/
+# ════════════════════════════════════════════════════════════════════
+
+[wallpaper]
+enabled = true
+fill_mode = "crop"                                                    # center | crop | fit | stretch | repeat | span
+fill_color = "surface"                                                # palette role for fallback/fill
+transition = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
+transition_duration = 1500                                            # milliseconds
+edge_smoothness = 0.3                                                 # 0.0 – 1.0
+transition_on_startup = false
+
+# Directory browsed by the wallpaper picker panel.
+# Create this directory and add your wallpapers.
+directory = "~/Pictures/Wallpapers"
+# Theme-aware directories (used when theme mode is Light/Dark; Auto falls back to directory)
+directory_light = "~/Pictures/Wallpapers/Light"
+directory_dark = "~/Pictures/Wallpapers/Dark"
+per_monitor_directories = false
+
+# Default wallpaper (set to your preferred image).
+# [wallpaper.default]
+# path = "~/Pictures/Wallpapers/default.png"
+
+# ── Wallpaper Automation ──────────────────────────────────────────
+[wallpaper.automation]
+enabled = true         # set true to auto-rotate wallpapers
+interval_seconds = 300 # 30 minutes
+order = "random"        # random | alphabetical
+recursive = true        # scan subdirectories

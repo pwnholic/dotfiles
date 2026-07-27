@@ -1,0 +1,103 @@
+// ════════════════════════════════════════════════════════════════════
+//  Window Rules: rounded corners, blur, shadows, per-app behavior
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Window-Rules
+//  Noctalia: https://docs.noctalia.dev/v5/compositor-settings/niri/
+// ════════════════════════════════════════════════════════════════════
+// ── Global: rounded corners + clip for every window ────────────────
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true       // clip window content (and CSD shadows) to that shape
+ // modern rounded corners (Noctalia recommended)    clip-to-geometry true
+ // clip window content + CSD shadows to rounded shape    // Blur behind translucent windows. xray=false gives "realistic" blur
+    // (blurs actual content behind window, not just cached wallpaper).
+    // Caveat (wiki): effect briefly vanishes during open/close animations.
+    background-effect {
+        blur false
+        xray false
+    }
+}
+// ── Noctalia Settings Window: floating at fixed size ──────────────
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+    default-column-width {
+        fixed 1080
+    }
+    default-window-height {
+        fixed 920
+    }
+}
+// ── Firefox: open maximized on the browser workspace ──────────────
+window-rule {
+    match app-id="firefox$"
+    open-maximized true
+}
+// ── Firefox Picture-in-Picture: small floating window ────────────
+window-rule {
+    match app-id="firefox$" title="^Picture-in-Picture$"
+    open-floating true
+    default-column-width {
+        fixed 480
+    }
+    default-window-height {
+        fixed 270
+    }
+    default-floating-position x=20 y=20 relative-to="bottom-right"
+    open-focused false
+}
+// ── Steam: tile the library, float everything else ────────────────
+window-rule {
+    match app-id="steam"
+    exclude title="^[Ss]team$"
+    open-floating true
+}
+// Steam notification toasts: tidy in the bottom-right corner
+window-rule {
+    match app-id="steam" title="^notificationtoasts_\\d+_desktop$"
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+    open-focused false
+}
+// ── mpv: enable VRR on-demand for smooth video playback ───────────
+window-rule {
+    match app-id="^mpv$"
+    variable-refresh-rate true
+}
+// ── Games: enable VRR for tear-free gaming ────────────────────────
+window-rule {
+    match app-id="^steam_app_#"
+    variable-refresh-rate true
+    open-fullscreen true
+}
+// ── Discord/Telegram: open on chat workspace ──────────────────────
+window-rule {
+    match app-id="^discord$"
+    open-on-workspace "chat"
+}
+window-rule {
+    match app-id="^org\\.telegram\\.desktop$"
+    open-on-workspace "chat"
+}
+// ── Inactive windows: slight transparency for depth ───────────────
+window-rule {
+    match is-active=false
+    opacity 0.97
+}
+// ── Floating windows: enable shadow (extra depth) ─────────────────
+window-rule {
+    match is-floating=true
+    shadow {
+        on
+    }
+}
+// ── Screencast indicator: red border for casted windows ───────────
+window-rule {
+    match is-window-cast-target=true
+    focus-ring {
+        active-color "#f7768e"
+        inactive-color "#7d0d2d"
+    }
+    border {
+        on
+        inactive-color "#7d0d2d"
+    }
+}

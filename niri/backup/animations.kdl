@@ -1,0 +1,59 @@
+// ============================================================================
+//  Animations (springs + easings) - "fluid" preset
+//  Docs: https://github.com/YaLTeR/niri/wiki/Configuration:-Animations
+// ----------------------------------------------------------------------------
+//  Critically damped (damping-ratio 1.0, no bounce) but with lower stiffness
+//  than niri's defaults (800-1000). Lower stiffness => longer, smoother motion
+//  that you can actually see at 144 Hz, without any springy overshoot.
+//
+//  Related motions (horizontal-view-movement / window-movement / window-resize)
+//  intentionally share the same spring so synchronized resizes look coherent.
+//
+//  To preview/tune springs, the Elastic app (Flathub) is very handy. For a
+//  bouncier "Hyprland/macOS" feel, drop damping-ratio to ~0.82 on the springs.
+//
+//  All animation subsections must live in ONE file (they do not merge across
+//  includes), so keep them together here.
+// ============================================================================
+
+animations {
+    // Uncomment to slow every animation down (handy while tuning):
+    // slowdown 2.0
+
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    window-movement {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    window-resize {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+    }
+    exit-confirmation-open-close {
+        spring damping-ratio=0.6 stiffness=500 epsilon=0.01
+    }
+    recent-windows-close {
+        spring damping-ratio=1.0 stiffness=700 epsilon=0.001
+    }
+    screenshot-ui-open {
+        duration-ms 250
+        curve "ease-out-expo"
+    }
+    window-open {
+        duration-ms 220
+        curve "ease-out-expo"
+    }
+    window-close {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+}

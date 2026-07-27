@@ -1,0 +1,48 @@
+# ════════════════════════════════════════════════════════════════════
+#  Desktop Widgets — focal clock, weather, and sysmon graphs
+#  Docs: https://docs.noctalia.dev/v5/desktop/widgets/
+#  Visual editor:  noctalia msg desktop-widgets-edit
+# ════════════════════════════════════════════════════════════════════
+#
+#  Positions are logical pixels relative to the output center.
+#  eDP-1 is 1920x1200 → center = (cx=960, cy=600). Fine-tune with the
+#  interactive editor on an empty workspace.
+
+[desktop_widgets]
+enabled = true
+schema_version = 2
+widget_order = ["clock_main", "weather_main", "sysmon_cpu", "sysmon_net", "sysmon_ram"]
+
+# ── Clock — focal, top-center, time + date ────────────────────────
+[desktop_widgets.widget.clock_main]
+type = "clock"
+output = "eDP-1"
+cx = 960.0
+cy = 210.0
+box_width = 0.0
+box_height = 0.0
+rotation = 0.0
+
+[desktop_widgets.widget.clock_main.settings]
+clock_style = "digital"
+format = "{:%H:%M}\n{:%A, %B %d}"
+color = "on_surface"
+shadow = true
+center_text = true
+background = false
+
+# ── Weather — top-left, with 3-day forecast ───────────────────────
+[desktop_widgets.widget.weather_main]
+type = "weather"
+output = "eDP-1"
+cx = 220.0
+cy = 210.0
+box_width = 0.0
+box_height = 0.0
+rotation = 0.0
+
+[desktop_widgets.widget.weather_main.settings]
+color = "on_surface"
+shadow = true
+show_forecast = true
+forecast_days = 3

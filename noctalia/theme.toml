@@ -1,0 +1,21 @@
+# ════════════════════════════════════════════════════════════════════
+#  Theme — palette source and dark/light mode
+#  Docs: https://docs.noctalia.dev/v5/theming/
+#        https://docs.noctalia.dev/v5/theming/palette/
+# ════════════════════════════════════════════════════════════════════
+
+[theme]
+mode = "dark"
+source = "community"
+community_palette = "Tokyo Night Storm"
+# custom_palette    = "MyPalette"  # when source = "custom" (palettes/MyPalette.json)
+# wallpaper_scheme  = "m3-content" # when source = "wallpaper"
+
+# ── Backdrop (blurred wallpaper for niri overview) ─────────────────
+# Enabled so the niri overview shows a blurred, tinted wallpaper copy.
+# The niri layer-rule places this surface inside the overview backdrop.
+# Docs: https://docs.noctalia.dev/v5/desktop/wallpaper/#backdrop
+[backdrop]
+enabled = false
+blur_intensity = 0.6  # 0.0 = no blur, 1.0 = maximum
+tint_intensity = 0.35 # 0.0 = no tint, 1.0 = fully opaque tint

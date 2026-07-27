@@ -1,0 +1,40 @@
+// ============================================================================
+//  Layer-shell rules (Noctalia v5 integration)
+//  Docs: https://github.com/YaLTeR/niri/wiki/Configuration:-Layer-Rules
+//        https://docs.noctalia.dev/v5/compositor-settings/niri/
+// ============================================================================
+
+// --- Wallpaper -> overview backdrop (Option 2: stationary wallpaper) --------
+// Keeps the wallpaper visible behind workspaces and in the overview.
+layer-rule {
+    match namespace="^noctalia-wallpaper"
+    place-within-backdrop false
+}
+
+// Option 1 (blurred overview backdrop) is the prettier choice, but needs
+// Noctalia's blurred backdrop layer enabled in Settings. To switch: comment the
+// rule above and uncomment this one:
+// layer-rule {
+//     match namespace="^noctalia-backdrop"
+//     place-within-backdrop true
+// }
+
+// --- Noctalia surfaces: realistic (non-xray) blur ---------------------------
+// Noctalia publishes its own blur regions, so disabling xray looks more
+// realistic. Targets bar, notifications, dock, panels, attached panels, OSD.
+// (Raw string so the regex is taken literally; the docs' quoted form is buggy.)
+layer-rule {
+    match namespace=r#"^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"#
+    background-effect {
+        xray false
+    }
+}
+
+// Window switcher overlay: blur on, non-xray.
+layer-rule {
+    match namespace="^noctalia-window-switcher"
+    background-effect {
+        blur true
+        xray false
+    }
+}

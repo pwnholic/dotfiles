@@ -1,0 +1,17 @@
+// ════════════════════════════════════════════════════════════════════
+//  Switch Events (Lid / Tablet Mode)
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Switch-Events
+//  Noctalia: https://docs.noctalia.dev/v5/compositor-settings/niri/
+// ════════════════════════════════════════════════════════════════════
+switch-events {
+    // Lock the session and suspend when the laptop lid is closed.
+    // Also set in /etc/systemd/logind.conf:
+    //   HandleLidSwitch=ignore
+    //   HandleLidSwitchExternalPower=ignore
+    lid-close {
+        spawn "noctalia" "msg" "session" "lock-and-suspend"
+    }
+    lid-open {
+        spawn "noctalia" "msg" "brightness-up"
+    }
+}

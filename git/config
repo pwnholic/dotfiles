@@ -1,0 +1,209 @@
+# ~/.config/git/config  -- global git config (read via XDG: $XDG_CONFIG_HOME/git/config)
+# ~/.gitconfig is intentionally NOT used; this file is the single source of truth.
+# Git: 2.55.0  |  Host: CachyOS  |  Last reviewed: based on git-scm 2.55 docs
+#
+# References (best-practice research):
+#   - https://blog.gitbutler.com/how-git-core-devs-configure-git/
+#   - https://jvns.ca/blog/2024/02/16/popular-git-config-options/
+#   - https://git-scm.com/docs/git-config/2.55.0
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IDENTITY (default = personal). Overridden per-directory via includeIf below.
+# ─────────────────────────────────────────────────────────────────────────────
+[user]
+    name = Tono
+    email = wigtono41@gmail.com
+    # SSH commit signing: pointing to the .pub file works (git/ssh-keygen resolve
+    # the matching private key). Overridden per-identity in the include files.
+    signingkey = ~/.ssh/id_ed25519_personal.pub
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INIT / NEW REPOS
+# ─────────────────────────────────────────────────────────────────────────────
+[init]
+    defaultBranch = main          # modern default (was 'master')
+[add]
+    normalize = true              # respect .gitattributes (CRLF/text) on add
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PERFORMANCE  (safe to leave on; helps a lot on big repos)
+# ─────────────────────────────────────────────────────────────────────────────
+[core]
+    fsmonitor = true              # built-in fsmonitor daemon (git 2.37+) -> fast `git status`
+    untrackedCache = true         # cache untracked-file results across runs
+    commitGraph = true            # use commit-graph file for fast traversals
+    # precomposeUnicode = true   # macOS-only; leave commented on Linux
+[feature]
+    # Enables perf-optimised defaults for many-file repos:
+    #   index.version=4, core.indexVersion=4, core.untrackedCache=true, index.skipHash=true
+    # NOTE: index.skipHash means git < 2.13 can't read the index (irrelevant here, we're on 2.55).
+    manyFiles = true
+[gc]
+    writeCommitGraph = true       # keep commit-graph up to date after gc
+[pack]
+    writeReverseIndex = true      # write .rev files -> faster random access to packs
+[index]
+    version = 4                   # prefix-compressed index (smaller + faster)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DIFF / MERGE / CONFLICTS
+# ─────────────────────────────────────────────────────────────────────────────
+[diff]
+    algorithm = histogram         # best low-noise diff algo (better than myers/patience)
+    colorMoved = default          # detect & color moved code blocks
+    mnemonicPrefix = true         # show a/ b/ as i/ w/ c/ o/ (index/worktree/commit/object)
+    renames = copies              # detect renames AND copies
+    wsErrorHighlight = all        # highlight trailing-space errors in all diff views
+[merge]
+    conflictstyle = zdiff3        # 3-way + original (best for resolving conflicts)
+    tool = nvimdiff               # `git mergetool` opens nvim
+[merge "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE $MERGED $BASE
+[diff "nvimdiff"]
+    # (no-op section; tool invoked via `git difftool`)
+[rerere]
+    enabled = true                # reuse recorded resolution -> auto-resolve repeats
+    autoupdate = true             # stage the resolution immediately
+[mergetool]
+    keepBackup = false            # don't leave .orig files after mergetool
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BRANCH / CHECKOUT
+# ─────────────────────────────────────────────────────────────────────────────
+[branch]
+    sort = -committerdate         # most-recently-touched branches first
+[checkout]
+    defaultRemote = origin        # disambiguate when multiple remotes exist
+[switch]
+    # (defaults are fine)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FETCH / PULL / PUSH / REBASE
+# ─────────────────────────────────────────────────────────────────────────────
+[fetch]
+    prune = true                  # delete stale remote-tracking refs on fetch
+    pruneTags = true              # prune remote tags too
+    all = true                    # fetch from all remotes by default
+    writeCommitGraph = false      # avoid fetch-time slowdowns (gc handles it)
+[pull]
+    rebase = true                 # rebase instead of merge (linear history)
+[push]
+    default = simple              # push current branch to same-name upstream
+    autoSetupRemote = true        # create upstream tracking branch on first push
+    followTags = true             # push annotated tags with commits
+    useForceIfLease = false       # keep `push -f` explicit; use `--force-with-lease` manually
+[rebase]
+    autoSquash = true             # `fixup!`/`squash!` commits reorder automatically
+    autoStash = true              # stash+pop around rebase so WIP doesn't block
+    updateRefs = true             # rebase stacked branches (`branch --fork-point`)
+[amend]
+    # (no built-ins needed)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# COMMIT / TAG / LOG
+# ─────────────────────────────────────────────────────────────────────────────
+[commit]
+    verbose = true                # show full diff in the commit-message editor
+    cleanup = scissors            # safer than 'strip': cuts at scissors line, keeps # lines
+    gpgsign = true                # sign every commit (SSH)
+[tag]
+    sort = version:refname        # semver order for tags
+    gpgsign = true                # sign annotated tags
+[log]
+    abbrevCommit = true           # short SHAs in log
+    date = iso8601                # consistent, sortable timestamps (2025-07-27 21:30:09 +0700)
+[rerere]                          # (declared above; kept here intentionally only once)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SECURITY
+# ─────────────────────────────────────────────────────────────────────────────
+[transfer]
+    fsckObjects = true            # validate object integrity on fetch/push (catch corruption/CVEs)
+[fetch]
+    fsckObjects = true            # validate on fetch too
+[receive]
+    fsckObjects = true            # validate on receive (push)
+[safe]
+    # bareRepository = explicit  # uncomment to harden against accidental bare-repo attacks
+# If you ever hit "detected dubious ownership", fix per-repo instead of '*' globally:
+#   git config --global --add safe.directory ~/path/to/repo
+
+# ─────────────────────────────────────────────────────────────────────────────
+# UX / DISPLAY
+# ─────────────────────────────────────────────────────────────────────────────
+[help]
+    autocorrect = prompt          # offer to run mistyped commands; ask first
+[advice]
+    detachedHead = false          # silence the verbose detached-HEAD warning
+    addEmptyPathspec = false      # silence "you ran git add with nothing"
+[color]
+    ui = auto                     # colorize output when on a TTY
+[column]
+    ui = auto                     # column mode for branch/tag listings
+[blame]
+    coloring = highlightRecent   # color recent commits in blame output
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PAGER: delta (git-delta)  -> beautiful, side-by-side capable diffs
+# ─────────────────────────────────────────────────────────────────────────────
+[core]
+    editor = nvim
+    excludesfile = ~/.config/git/ignore
+    pager = delta                 # route all paged output through delta
+[interactive]
+    diffFilter = delta --color-only   # keep delta colors in `git add -p`
+[delta]
+    navigate = true               # n/N to jump between diff hunks
+    line-numbers = true           # show line numbers in diffs
+    # side-by-side = true         # uncomment if you prefer side-by-side diffs
+    # syntax-theme = Dracula      # uncomment to force a theme; omit to auto-detect terminal bg
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SSH COMMIT SIGNING  (uses the same ed25519 keys as auth)
+# ─────────────────────────────────────────────────────────────────────────────
+[gpg]
+    format = ssh
+[gpg "ssh"]
+    allowedSignersFile = ~/.config/git/allowed_signers   # for `git verify-commit`/`verify-tag`
+# user.signingkey is overridden per-identity in the includeIf files below.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ALIASES
+# ─────────────────────────────────────────────────────────────────────────────
+[alias]
+    # --- basics ---
+    co = checkout
+    sw = switch
+    rs = restore
+    br = branch
+    ci = commit
+    st = status
+    # --- log views ---
+    last = log -1 HEAD
+    lg = log --oneline --graph --decorate -25
+    ll = log --format='%C(auto)%h%Creset %C(green)(%cr)%Creset %C(bold blue)%an%Creset %s' --graph -30
+    recent = for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)'
+    # --- staging / undoing ---
+    unstage = reset HEAD --
+    amend = commit --amend --no-edit
+    undo = reset --soft HEAD~1           # undo last commit, keep changes staged
+    # --- wip (work-in-progress snapshots) ---
+    wip = !git add -A && git commit -m 'WIP'
+    unwip = reset HEAD~1                 # pop the last WIP commit, keep changes
+    # --- remote hygiene ---
+    prune-all = remote update --prune
+    sync = !git fetch --prune && git pull --rebase --autostash
+    # --- helpers ---
+    aliases = !git config --get-regexp ^alias\\. | cut -d. -f2- | column -t -s ' '
+    contributors = shortlog -sn --all
+    conflicts = diff --name-only --diff-filter=U
+    head = log --oneline -1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CONDITIONAL INCLUDES  (per-directory identity + signing key)
+# Put work repos under ~/Projects/work/  and  personal repos under ~/Projects/personal/
+# ─────────────────────────────────────────────────────────────────────────────
+[includeIf "gitdir:~/Projects/personal/"]
+    path = ~/.config/git/personal.gitconfig
+[includeIf "gitdir:~/Projects/work/"]
+    path = ~/.config/git/work.gitconfig

@@ -1,0 +1,14 @@
+# ════════════════════════════════════════════════════════════════════
+#  Lock Screen — session lock, fingerprint, desktop capture
+#  Docs: https://docs.noctalia.dev/v5/shell/#lock-screen
+# ════════════════════════════════════════════════════════════════════
+
+[lockscreen]
+enabled = true               # master switch for session lock
+fingerprint = true           # allow fingerprint (PAM) authentication
+allow_empty_password = false
+blurred_desktop = true       # capture desktop before lock for bg
+blur_intensity = 0.6         # blur strength for lock screen bg (0.0–1.0)
+tint_intensity = 0.4         # surface-color tint over bg (0.0–1.0)
+wallpaper = ""               # empty = desktop wallpaper per output
+monitors = []                # empty = all outputs

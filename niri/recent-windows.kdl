@@ -1,0 +1,37 @@
+// ════════════════════════════════════════════════════════════════════
+//  Recent Windows Switcher (Alt-Tab)
+//  Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Recent-Windows
+// ════════════════════════════════════════════════════════════════════
+//
+//  Noctalia has its own window switcher (noctalia msg window-switcher),
+//  but niri's built-in recent-windows switcher is faster and works
+//  without a layer surface. We keep both: Mod+Tab for niri's built-in,
+//  Alt+Tab for Noctalia's visual switcher (in keybinds.kdl).
+recent-windows {
+    debounce-ms 500
+    open-delay-ms 120
+    highlight {
+        active-color "#7aa2f740"
+        urgent-color "#f7768e40"
+        padding 20
+        corner-radius 12
+    }
+    previews {
+        max-height 400
+        max-scale 0.5
+    }
+    binds {
+        Mod+Tab {
+            next-window
+        }
+        Mod+Shift+Tab {
+            previous-window
+        }
+        Mod+Grave {
+            next-window filter="app-id"
+        }
+        Mod+Shift+Grave {
+            previous-window filter="app-id"
+        }
+    }
+}
