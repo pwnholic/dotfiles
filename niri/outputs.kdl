@@ -29,7 +29,8 @@ output "eDP-1" {
     // `variable-refresh-rate true` window rule (mpv, Steam games — see
     // window-rules.kdl). Stays off the rest of the time, which avoids the
     // idle/cursor VRR quirks on NVIDIA.
-    variable-refresh-rate on-demand=true
+    //
+    // variable-refresh-rate on-demand=true
     //
     // Tokyo Night bg_dark — visible behind transparent workspace background
     backdrop-color "#16161e"

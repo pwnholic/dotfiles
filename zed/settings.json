@@ -1,75 +1,12 @@
 {
+    "agent": {
+        "dock": "right",
+        "favorite_models": [],
+        "model_parameters": [],
+    },
     "agent_servers": {
         "pi-acp": {
             "type": "registry",
-        },
-    },
-    "disable_ai": false,
-    "language_models": {
-        "openai_compatible": {
-            "agentrouter": {
-                "api_url": "https://agentrouter.org/v1",
-                "available_models": [
-                    {
-                        "name": "glm-5.2",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 32000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": true,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                ],
-            },
-            "hcnsec": {
-                "api_url": "https://api.hcnsec.cn",
-                "available_models": [
-                    {
-                        "name": "glm-5.2",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 200000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": true,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": true,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                ],
-            },
-            "cline": {
-                "api_url": "https://api.cline.bot/api/v1",
-                "available_models": [
-                    {
-                        "name": "cline-pass/glm-5.2",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 200000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": true,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": false,
-                            "chat_completions": true,
-                            "interleaved_reasoning": true,
-                            "max_tokens_parameter": false,
-                        },
-                    },
-                ],
-            },
         },
     },
     "cli_default_open_behavior": "existing_window",
@@ -89,10 +26,10 @@
     "hide_mouse": "on_typing_and_action",
     "current_line_highlight": "all",
     "scrollbar": {
-        "show": "auto",
+        "show": "never",
     },
     "minimap": {
-        "show": "auto",
+        "show": "never",
     },
     "indent_guides": {
         "enabled": true,
@@ -122,33 +59,8 @@
         "border_size": 2,
         "inactive_opacity": 1,
     },
-    "agent": {
-        "tool_permissions": {
-            "tools": {
-                "terminal": {
-                    "default": "allow",
-                    "always_allow": [
-                        {
-                            "pattern": "^bash\\s+curl\\.sh(\\s|$)",
-                        },
-                        {
-                            "pattern": "^curl\\b",
-                        },
-                    ],
-                },
-            },
-        },
-        "default_model": {
-            "provider": "agentrouter",
-            "model": "glm-5.2",
-            "enable_thinking": true,
-            "effort": "high",
-        },
-        "dock": "right",
-        "sidebar_side": "right",
-    },
     "project_panel": {
-        "dock": "left",
+        "dock": "right",
         "hide_root": true,
         "bold_folder_labels": true,
         "diagnostic_badges": true,
@@ -292,16 +204,6 @@
         },
     },
     "lsp": {
-        "harper-ls": {
-            "settings": {
-                "harper-ls": {
-                    "dialect": "American",
-                    "linters": {
-                        "RuleName": false,
-                    },
-                },
-            },
-        },
         "gopls": {
             "initialization_options": {
                 "semanticTokens": true,
@@ -518,12 +420,6 @@
                     },
                 },
             },
-        },
-    },
-    "context_servers": {
-        "codebase-memory-mcp": {
-            "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
-            "args": [""],
         },
     },
 }

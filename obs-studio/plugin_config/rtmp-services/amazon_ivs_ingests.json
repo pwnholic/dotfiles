@@ -1,0 +1,130 @@
+{
+    "ingests": [
+        {
+            "_id": 0,
+            "availability": 1.0,
+            "default": false,
+            "name": "Default",
+            "url_template": "rtmp://ingest.global-contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://ingest.global-contribute.live-video.net/app/{stream_key}",
+            "priority": 0
+        },
+        {
+            "_id": 1,
+            "availability": 1.0,
+            "default": false,
+            "name": "Asia Pacific (Singapore)",
+            "url_template": "rtmp://aps10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://aps10.contribute.live-video.net/app/{stream_key}",
+            "priority": 1
+        },
+        {
+            "_id": 2,
+            "availability": 1.0,
+            "default": false,
+            "name": "Asia Pacific (Mumbai)",
+            "url_template": "rtmp://aps30.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://aps30.contribute.live-video.net/app/{stream_key}",
+            "priority": 2
+        },
+        {
+            "_id": 3,
+            "availability": 1.0,
+            "default": false,
+            "name": "Asia Pacific (Sydney)",
+            "url_template": "rtmp://aps20.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://aps20.contribute.live-video.net/app/{stream_key}",
+            "priority": 3
+        },
+        {
+            "_id": 4,
+            "availability": 1.0,
+            "default": false,
+            "name": "Asia Pacific (Seoul)",
+            "url_template": "rtmp://apn20.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://apn20.contribute.live-video.net/app/{stream_key}",
+            "priority": 4
+        },
+        {
+            "_id": 5,
+            "availability": 1.0,
+            "default": false,
+            "name": "Asia Pacific (Tokyo)",
+            "url_template": "rtmp://apn10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://apn10.contribute.live-video.net/app/{stream_key}",
+            "priority": 5
+        },
+        {
+            "_id": 6,
+            "availability": 1.0,
+            "default": false,
+            "name": "Europe (Stockholm)",
+            "url_template": "rtmp://eun10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://eun10.contribute.live-video.net/app/{stream_key}",
+            "priority": 6
+        },
+        {
+            "_id": 7,
+            "availability": 1.0,
+            "default": false,
+            "name": "Europe (Frankfurt)",
+            "url_template": "rtmp://euc10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://euc10.contribute.live-video.net/app/{stream_key}",
+            "priority": 7
+        },
+        {
+            "_id": 8,
+            "availability": 1.0,
+            "default": false,
+            "name": "Europe (Paris)",
+            "url_template": "rtmp://euw30.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://euw30.contribute.live-video.net/app/{stream_key}",
+            "priority": 8
+        },
+        {
+            "_id": 9,
+            "availability": 1.0,
+            "default": false,
+            "name": "Europe (Ireland)",
+            "url_template": "rtmp://euw10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://euw10.contribute.live-video.net/app/{stream_key}",
+            "priority": 9
+        },
+        {
+            "_id": 10,
+            "availability": 1.0,
+            "default": false,
+            "name": "US West (Oregon)",
+            "url_template": "rtmp://usw20.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://usw20.contribute.live-video.net/app/{stream_key}",
+            "priority": 10
+        },
+        {
+            "_id": 11,
+            "availability": 1.0,
+            "default": false,
+            "name": "South America (São Paulo)",
+            "url_template": "rtmp://sae10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://sae10.contribute.live-video.net/app/{stream_key}",
+            "priority": 11
+        },
+        {
+            "_id": 12,
+            "availability": 1.0,
+            "default": false,
+            "name": "US East (Ohio)",
+            "url_template": "rtmp://use20.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://use20.contribute.live-video.net/app/{stream_key}",
+            "priority": 12
+        },
+        {
+            "_id": 13,
+            "availability": 1.0,
+            "default": false,
+            "name": "US East (N. Virginia)",
+            "url_template": "rtmp://use10.contribute.live-video.net/app/{stream_key}",
+            "url_template_secure": "rtmps://use10.contribute.live-video.net/app/{stream_key}",
+            "priority": 13
+        }
+    ]
+}

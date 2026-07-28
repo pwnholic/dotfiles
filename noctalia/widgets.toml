@@ -242,7 +242,7 @@ show_label = true
 glyph = "arrow-up"
 
 # ── Pomodoro timer (thepunkoff/pomodoro) ─────────────────────────
-[widget.widget]
+[widget.pomodoro]
 type = "thepunkoff/pomodoro:widget"
-color = "#bb9af7"
-icon_color = "#bb9af7"
+color = "#bb9af7"                   # Tokyo Night purple
+icon_color = "#73daca"
