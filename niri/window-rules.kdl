@@ -6,14 +6,12 @@
 // ── Global: rounded corners + clip for every window ────────────────
 window-rule {
     geometry-corner-radius 8
-    clip-to-geometry true       // clip window content (and CSD shadows) to that shape
- // modern rounded corners (Noctalia recommended)    clip-to-geometry true
- // clip window content + CSD shadows to rounded shape    // Blur behind translucent windows. xray=false gives "realistic" blur
-    // (blurs actual content behind window, not just cached wallpaper).
-    // Caveat (wiki): effect briefly vanishes during open/close animations.
+    clip-to-geometry true
+    // Blur OFF for regular windows (Noctalia surfaces get their blur via
+    // layer-rules.kdl). Non-xray blur also vanishes during open/close
+    // animations (wiki caveat), so windows are kept crisp.
     background-effect {
         blur false
-        xray false
     }
 }
 // ── Noctalia Settings Window: floating at fixed size ──────────────
@@ -64,7 +62,9 @@ window-rule {
 }
 // ── Games: enable VRR for tear-free gaming ────────────────────────
 window-rule {
-    match app-id="^steam_app_#"
+    // Steam Proton game app-ids are `steam_app_<digits>`. The old pattern
+    // `^steam_app_#` required a literal '#', so it never matched.
+    match app-id=r#"^steam_app_\d+$"#
     variable-refresh-rate true
     open-fullscreen true
 }
