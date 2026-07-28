@@ -28,5 +28,5 @@ per_monitor_directories = false
 [wallpaper.automation]
 enabled = true         # set true to auto-rotate wallpapers
 interval_seconds = 300 # 30 minutes
-order = "random"        # random | alphabetical
-recursive = true        # scan subdirectories
+order = "random"       # random | alphabetical
+recursive = true       # scan subdirectories

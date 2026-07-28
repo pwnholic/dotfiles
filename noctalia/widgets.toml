@@ -12,7 +12,7 @@
 
 # ── Clock ──────────────────────────────────────────────────────────
 [widget.clock]
-color = "#a9b1d6"      # Tokyo Night foreground (lavender)
+color = "#a9b1d6"                   # Tokyo Night foreground (lavender)
 format = "{:%H:%M}"
 tooltip_format = "{:%A, %B %d, %Y}"
 
@@ -93,7 +93,7 @@ scroll_down = "brightness-down current 5%"
 
 # ── Battery ───────────────────────────────────────────────────────
 [widget.battery]
-color = "#9ece6a"      # Tokyo Night green
+color = "#9ece6a"        # Tokyo Night green
 icon_color = "#9ece6a"
 display_mode = "graphic" # graphic = battery shape with fill
 show_label = true
@@ -102,7 +102,7 @@ device = "auto"
 # ── Media ─────────────────────────────────────────────────────────
 [widget.media]
 color = "#a9b1d6"
-album_art_only = false      # show album art + track title
+album_art_only = false    # show album art + track title
 hide_artist = false
 artist_first = true
 min_length = 80
@@ -168,7 +168,7 @@ glyph = "screenshot"
 type = "sysmon"
 capsule = false
 color = "#7aa2f7"      # Tokyo Night blue (text)
-icon_color = "#7aa2f7"  # Tokyo Night blue (icon)
+icon_color = "#7aa2f7" # Tokyo Night blue (icon)
 stat = "cpu_usage"
 display = "text"
 show_label = true
@@ -217,7 +217,7 @@ show_label = true
 [widget.net-down]
 type = "sysmon"
 capsule = false
-color = "#7dcfff"      # Tokyo Night cyan (download)
+color = "#7dcfff"            # Tokyo Night cyan (download)
 icon_color = "#7dcfff"
 stat = "net_rx"
 interface = "wlan0"
@@ -231,7 +231,7 @@ glyph = "arrow-down"
 [widget.net-up]
 type = "sysmon"
 capsule = false
-color = "#7aa2f7"      # Tokyo Night blue (upload)
+color = "#7aa2f7"            # Tokyo Night blue (upload)
 icon_color = "#7aa2f7"
 stat = "net_tx"
 interface = "wlan0"
@@ -240,3 +240,9 @@ network_speed_unit = "auto"
 network_speed_compact = true
 show_label = true
 glyph = "arrow-up"
+
+# ── Pomodoro timer (thepunkoff/pomodoro) ─────────────────────────
+[widget.widget]
+type = "thepunkoff/pomodoro:widget"
+color = "#bb9af7"
+icon_color = "#bb9af7"

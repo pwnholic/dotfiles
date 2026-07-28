@@ -51,32 +51,26 @@ font_family = "Iosevka NF"
 # Bar background is transparent, so every lane item is a capsule.
 # Group members (vitals/net) set capsule = false in widgets.toml.
 capsule = true
-capsule_fill = "surface_variant"     # Tokyo Night #1f2335 (dark pill)
-capsule_foreground = "#a9b1d6"     # Tokyo Night classic fg (lavender, not near-white)
+capsule_fill = "surface_variant" # Tokyo Night #1f2335 (dark pill)
+capsule_foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender, not near-white)
 capsule_opacity = 0.8
 capsule_thickness = 0.86
-capsule_radius     = 8.0
+capsule_radius = 8.0
 capsule_padding = 10
 capsule_border = "outline"
 
 # ── Widget Layout ──────────────────────────────────────────────────
-start  = [
-	"launcher",
-	"workspaces",
-	"taskbar",
-  	"group:vitals"
-]
-
+start = ["launcher", "workspaces", "taskbar", "group:vitals"]
 center = ["clock", "media"]
-
-end    = [
-	"group:net",
-   	"notifications",
-  	"volume",
-	"brightness",
-	"battery",
-	"tray",
-  	"control-center"
+end = [
+  "group:net",
+  "pomodoro",
+  "notifications",
+  "volume",
+  "brightness",
+  "battery",
+  "tray",
+  "control-center",
 ]
 
 # ── Capsule Group: system vitals (CPU/GPU/RAM in one shared pill) ─
@@ -84,7 +78,7 @@ end    = [
 id = "vitals"
 members = ["cpu", "cpu-temp", "gpu", "gpu-temp", "ram"]
 fill = "surface_variant"
-foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender)
+foreground = "#a9b1d6"                                  # Tokyo Night classic fg (lavender)
 opacity = 0.8
 border = "outline"
 padding = 10.0
@@ -95,7 +89,7 @@ enabled = true
 id = "net"
 members = ["net-down", "net-up"]
 fill = "surface_variant"
-foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender)
+foreground = "#a9b1d6"           # Tokyo Night classic fg (lavender)
 opacity = 0.8
 border = "outline"
 padding = 10.0
@@ -106,6 +100,6 @@ enabled = true
 # Scroll empty bar → volume, so the bar's margins are not wasted space.
 [bar.main.dead_zone.actions]
 left = "panel-toggle launcher"
-middle = "panel-toggle clipboard"   # clipboard tucked off the bar
+middle = "panel-toggle clipboard" # clipboard tucked off the bar
 scroll_up = "volume-up"
 scroll_down = "volume-down"

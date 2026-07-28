@@ -34,6 +34,7 @@ files = [
   "theme.toml",
   "bar.toml",
   "widgets.toml",
+  "plugins.toml",
   "dock.toml",
   "services.toml",
   "wallpaper.toml",
@@ -41,6 +42,6 @@ files = [
   "osd.toml",
   "lockscreen.toml",
   "idle.toml",
-  "desktop-widgets.toml",  # clock + weather + sysmon graphs
+  "desktop-widgets.toml", # clock + weather + sysmon graphs
   "hooks.toml",
 ]

@@ -11,7 +11,7 @@
 [desktop_widgets]
 enabled = true
 schema_version = 2
-widget_order = ["clock_main", "weather_main", "sysmon_cpu", "sysmon_net", "sysmon_ram"]
+widget_order = ["clock_main", "weather_main"]
 
 # ── Clock — focal, top-center, time + date ────────────────────────
 [desktop_widgets.widget.clock_main]

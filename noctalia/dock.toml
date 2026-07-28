@@ -23,7 +23,7 @@ radius_top_left = 16
 radius_top_right = 16
 radius_bottom_left = 16
 radius_bottom_right = 16
-concave_edge_corners = false  # convex: dock floats (margin_edge = 4); concave needs margin_edge = 0
+concave_edge_corners = false # convex: dock floats (margin_edge = 4); concave needs margin_edge = 0
 margin_ends = 4
 margin_edge = 4
 

@@ -72,8 +72,8 @@ disk_poll_seconds = 10.0
 # ── CPU threshold highlighting (Intel Core 5 210H, Tjmax 100°C) ──
 cpu_usage_activity_threshold = 60
 cpu_usage_critical_threshold = 90
-cpu_temp_activity_threshold = 75    # laptops run warm; tint past 75°C
-cpu_temp_critical_threshold = 95    # approaching throttle
+cpu_temp_activity_threshold = 75  # laptops run warm; tint past 75°C
+cpu_temp_critical_threshold = 95  # approaching throttle
 
 # ── GPU threshold highlighting (RTX 5050 Max-Q, throttle ~87°C) ──
 gpu_temp_activity_threshold = 70
@@ -86,11 +86,11 @@ gpu_vram_critical_threshold = 90
 # ── RAM threshold highlighting (16 GiB RAM + 15 GiB zram swap) ───
 ram_pct_activity_threshold = 70
 ram_pct_critical_threshold = 90
-swap_pct_activity_threshold = 20    # zram is fast/compressed; advisory tint
+swap_pct_activity_threshold = 20 # zram is fast/compressed; advisory tint
 swap_pct_critical_threshold = 80
 
 # ── Network threshold highlighting (Wi-Fi wlan0) ─────────────────
-net_rx_activity_threshold = 5       # MB/s
+net_rx_activity_threshold = 5  # MB/s
 net_rx_critical_threshold = 50
 net_tx_activity_threshold = 5
 net_tx_critical_threshold = 50
