@@ -17,6 +17,9 @@ source /usr/share/cachyos-fish-config/cachyos-config.fish
 
 # Prompt + shell history (override the CachyOS defaults).
 starship init fish | source
-atuin init fish | source
 
 fish_add_path -m ~/.local/share/nvim/mason/bin
+fish_add_path -m ~/.foundry/bin
+
+# Added by codebase-memory-mcp install
+fish_add_path /home/pwnholic/.local/bin

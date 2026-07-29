@@ -1,6 +1,56 @@
 {
+    "language_models": {
+        "openai_compatible": {
+            "OrcaRouter": {
+                "api_url": "https://api.orcarouter.ai/v1",
+                "available_models": [
+                    {
+                        "name": "kimi/kimi-k3",
+                        "max_tokens": 1000000,
+                        "max_output_tokens": 32000,
+                        "max_completion_tokens": 128000,
+                        "reasoning_effort": "high",
+                        "capabilities": {
+                            "tools": true,
+                            "images": true,
+                            "parallel_tool_calls": true,
+                            "prompt_cache_key": true,
+                            "chat_completions": true,
+                            "interleaved_reasoning": false,
+                            "max_tokens_parameter": true,
+                        },
+                    },
+                ],
+            },
+        },
+    },
     "agent": {
-        "dock": "right",
+        "tool_permissions": {
+            "tools": {
+                "mcp:codebase-memory-mcp:search_graph": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:get_architecture": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:index_repository": {
+                    "default": "allow",
+                },
+                "create_directory": {
+                    "default": "allow",
+                },
+                "terminal": {
+                    "default": "allow",
+                },
+            },
+        },
+        "default_model": {
+            "provider": "OrcaRouter",
+            "model": "kimi/kimi-k3",
+            "enable_thinking": true,
+            "effort": "high",
+        },
+        "dock": "left",
         "favorite_models": [],
         "model_parameters": [],
     },
@@ -420,6 +470,16 @@
                     },
                 },
             },
+        },
+    },
+    "context_servers": {
+        "codebase-memory-mcp": {
+            "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
+            "args": [""],
+        },
+        "code-review-graph": {
+            "command": "uvx",
+            "args": ["code-review-graph", "serve"],
         },
     },
 }

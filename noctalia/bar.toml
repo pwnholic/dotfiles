@@ -53,7 +53,7 @@ font_family = "Iosevka NF"
 capsule = true
 capsule_fill = "surface_variant" # Tokyo Night #1f2335 (dark pill)
 capsule_foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender, not near-white)
-capsule_opacity = 0.8
+capsule_opacity = 1.0
 capsule_thickness = 0.86
 capsule_radius = 8.0
 capsule_padding = 10
@@ -65,6 +65,7 @@ center = ["clock", "media"]
 end = [
   "group:net",
   "pomodoro",
+  "package_updater",
   "notifications",
   "volume",
   "brightness",
@@ -79,7 +80,7 @@ id = "vitals"
 members = ["cpu", "cpu-temp", "gpu", "gpu-temp", "ram"]
 fill = "surface_variant"
 foreground = "#a9b1d6"                                  # Tokyo Night classic fg (lavender)
-opacity = 0.8
+opacity = 1.0
 border = "outline"
 padding = 10.0
 enabled = true
@@ -90,7 +91,7 @@ id = "net"
 members = ["net-down", "net-up"]
 fill = "surface_variant"
 foreground = "#a9b1d6"           # Tokyo Night classic fg (lavender)
-opacity = 0.8
+opacity = 1.0
 border = "outline"
 padding = 10.0
 enabled = true

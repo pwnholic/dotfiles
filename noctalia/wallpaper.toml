@@ -16,8 +16,8 @@ transition_on_startup = false
 # Create this directory and add your wallpapers.
 directory = "~/Pictures/Wallpapers"
 # Theme-aware directories (used when theme mode is Light/Dark; Auto falls back to directory)
-directory_light = "~/Pictures/Wallpapers/Light"
-directory_dark = "~/Pictures/Wallpapers/Dark"
+# directory_light = "~/Pictures/Wallpapers/Light"
+# directory_dark = "~/Pictures/Wallpapers/Dark"
 per_monitor_directories = false
 
 # Default wallpaper (set to your preferred image).

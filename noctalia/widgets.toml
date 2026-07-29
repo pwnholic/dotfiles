@@ -246,3 +246,8 @@ glyph = "arrow-up"
 type = "thepunkoff/pomodoro:widget"
 color = "#bb9af7"                   # Tokyo Night purple
 icon_color = "#73daca"
+
+[widget.package_updater]
+color = "#bb9af7"                  # Tokyo Night purple
+icon_color = "#73daca"
+type = "yuuto/arch-updater:widget"
