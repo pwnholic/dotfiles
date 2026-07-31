@@ -15,6 +15,10 @@
 # CachyOS base: greeting (fastfetch), done notifications, !! / !$, base PATH.
 # source /usr/share/cachyos-fish-config/cachyos-config.fish
 
+function fish_greeting
+    # do nothing
+end
+
 # Prompt + shell history (override the CachyOS defaults).
 starship init fish | source
 

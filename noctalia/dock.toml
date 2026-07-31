@@ -5,7 +5,7 @@
 
 [dock]
 enabled = true
-position = "right"
+position = "bottom"
 active_monitor_only = false
 monitors = []
 
@@ -13,7 +13,7 @@ monitors = []
 icon_size = 40
 main_axis_padding = 16
 cross_axis_padding = 8
-item_spacing = 6
+item_spacing = 4
 background_opacity = 0.90
 border = "outline"
 border_width = 1.5
