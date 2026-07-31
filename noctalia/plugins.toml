@@ -2,16 +2,4 @@
 # `official` and `community` git sources are scanned automatically, so a plugin
 # id like "thepunkoff/pomodoro" is fetched from the community source on demand.
 [plugins]
-enabled = ["thepunkoff/pomodoro", "yuuto/arch-updater"]
-
-# Plugin-level settings shared across all of a plugin's parts. The pomodoro
-# plugin exposes a panel (opened from its bar widget); these control how that
-# panel floats instead of attaching to a screen edge.
-[plugin_settings."thepunkoff/pomodoro"]
-panel_open_near_click = false
-panel_placement = "floating"
-
-[plugin_settings."yuuto/arch-updater"]
-aur_helper = "paru"
-auto_check_hours = 72
-panel_placement = "floating"
+enabled = []

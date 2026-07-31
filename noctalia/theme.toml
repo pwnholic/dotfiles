@@ -16,6 +16,6 @@ community_palette = "Tokyo Night Storm"
 # The niri layer-rule places this surface inside the overview backdrop.
 # Docs: https://docs.noctalia.dev/v5/desktop/wallpaper/#backdrop
 [backdrop]
-enabled = false
+enabled = true
 blur_intensity = 0.6  # 0.0 = no blur, 1.0 = maximum
 tint_intensity = 0.35 # 0.0 = no tint, 1.0 = fully opaque tint

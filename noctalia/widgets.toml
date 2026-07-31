@@ -12,8 +12,8 @@
 
 # ── Clock ──────────────────────────────────────────────────────────
 [widget.clock]
-color = "#a9b1d6"                   # Tokyo Night foreground (lavender)
-format = "{:%H:%M}"
+color = "#bb9af7"
+format = "{:%A} {:%d %B • %H:%M:%S}"
 tooltip_format = "{:%A, %B %d, %Y}"
 
 # ── Launcher Button ────────────────────────────────────────────────
@@ -240,14 +240,3 @@ network_speed_unit = "auto"
 network_speed_compact = true
 show_label = true
 glyph = "arrow-up"
-
-# ── Pomodoro timer (thepunkoff/pomodoro) ─────────────────────────
-[widget.pomodoro]
-type = "thepunkoff/pomodoro:widget"
-color = "#bb9af7"                   # Tokyo Night purple
-icon_color = "#73daca"
-
-[widget.package_updater]
-color = "#bb9af7"                  # Tokyo Night purple
-icon_color = "#73daca"
-type = "yuuto/arch-updater:widget"

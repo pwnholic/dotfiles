@@ -9,7 +9,7 @@
 #  interactive editor on an empty workspace.
 
 [desktop_widgets]
-enabled = true
+enabled = false                               ## disable
 schema_version = 2
 widget_order = ["clock_main", "weather_main"]
 

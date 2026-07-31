@@ -27,7 +27,7 @@ shared_gl_context = true # share GPU textures across surfaces
 disable_mipmaps = false
 
 # ── Clipboard ──────────────────────────────────────────────────────
-clipboard_enabled = true
+clipboard_enabled = false
 clipboard_history_max_entries = 200
 clipboard_confirm_clear_history = true
 clipboard_auto_paste = "auto"
@@ -54,8 +54,9 @@ list_item_background = false
 launcher_placement = "floating"
 clipboard_placement = "floating"
 control_center_placement = "floating"
-wallpaper_placement = "attached"
-session_placement = "attached"
+wallpaper_placement = "floating"
+session_placement = "floating"
+session_position = "center"
 polkit_placement = "floating"
 polkit_position = "center"
 floating_offset = 8
@@ -85,6 +86,7 @@ prefix = "emo"
 [shell.launcher.providers.session]
 prefix = "session"
 global = false
+borders = true
 
 [shell.launcher.providers.wallpaper]
 prefix = "wall"

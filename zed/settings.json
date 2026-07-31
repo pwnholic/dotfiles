@@ -105,7 +105,7 @@
     "show_edit_predictions": false,
     "auto_signature_help": true,
     "scroll_beyond_last_line": "off",
-    "vertical_scroll_margin": 5,
+    "vertical_scroll_margin": 14,
     "active_pane_modifiers": {
         "border_size": 2,
         "inactive_opacity": 1,
@@ -120,24 +120,32 @@
     },
     "git_panel": {
         "dock": "left",
+        "show_count_badge": true,
+        "file_icons": true,
+        "tree_view": true,
     },
     "collaboration_panel": {
         "dock": "left",
     },
     "debugger": {
         "dock": "right",
+        "timeout": 5000,
     },
     "bottom_dock_layout": "full",
     "toolbar": {
         "breadcrumbs": true,
         "quick_actions": false,
-        "selections_menu": false,
+        "selections_menu": true,
+        "code_actions": true,
     },
     "status_bar": {
         "experimental.show": true,
+        "line_endings_button": true,
+        "show_active_file": true,
     },
     "tab_bar": {
         "show": true,
+        "show_pinned_tabs_in_separate_row": true,
     },
     "tabs": {
         "file_icons": true,
@@ -172,10 +180,10 @@
     },
     "completions": {
         "lsp": true,
-        "lsp_fetch_timeout_ms": 0,
+        "lsp_fetch_timeout_ms": 15,
         "lsp_insert_mode": "replace_suffix",
         "words": "fallback",
-        "words_min_length": 4,
+        "words_min_length": 3,
     },
     "diagnostics": {
         "inline": {
@@ -190,9 +198,10 @@
         },
     },
     "gutter": {
-        "folds": false,
+        "folds": true,
         "line_numbers": true,
-        "runnables": false,
+        "min_line_number_digits": 4,
+        "runnables": true,
     },
     "inlay_hints": {
         "enabled": false,
@@ -478,8 +487,8 @@
             "enabled": true,
             "remote": false,
             "settings": {
-                "exa_api_key": "626ccca8-97ec-4cc1-b7dc-5d67c4147f20"
-            }
+                "exa_api_key": "626ccca8-97ec-4cc1-b7dc-5d67c4147f20",
+            },
         },
         "codebase-memory-mcp": {
             "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",

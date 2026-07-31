@@ -5,7 +5,7 @@
 
 [dock]
 enabled = true
-position = "bottom"
+position = "right"
 active_monitor_only = false
 monitors = []
 
