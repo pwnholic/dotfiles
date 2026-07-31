@@ -52,3 +52,11 @@ gestures {
         max-speed 1500
     }
 }
+
+
+cursor {
+    xcursor-theme "Adwaita"
+    xcursor-size 24
+    hide-when-typing
+    hide-after-inactive-ms 1000
+}

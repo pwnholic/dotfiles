@@ -43,7 +43,7 @@ output "eDP-1" {
 // Verified via `niri msg outputs`. niri ignores this block while the
 // monitor is unplugged, so it's safe to keep permanently.
 output "HDMI-A-1" {
-    mode "1920x1080@60.000"
+    mode "1920x1080@99.999"
     scale 1.0
     transform "normal"
     // Physically on the LEFT of the laptop → origin. eDP-1 sits to its

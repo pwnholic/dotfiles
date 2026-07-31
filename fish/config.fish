@@ -13,7 +13,7 @@
 # numbered files under conf.d/, so this file stays minimal.
 
 # CachyOS base: greeting (fastfetch), done notifications, !! / !$, base PATH.
-source /usr/share/cachyos-fish-config/cachyos-config.fish
+# source /usr/share/cachyos-fish-config/cachyos-config.fish
 
 # Prompt + shell history (override the CachyOS defaults).
 starship init fish | source

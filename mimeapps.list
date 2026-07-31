@@ -1,5 +1,6 @@
 [Default Applications]
 x-scheme-handler/tonsite=org.telegram.desktop.desktop
+x-scheme-handler/jetbrains=jetbrainsd.desktop
 
 [Added Associations]
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;

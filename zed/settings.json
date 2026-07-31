@@ -25,6 +25,7 @@
         },
     },
     "agent": {
+        "sidebar_side": "right",
         "tool_permissions": {
             "tools": {
                 "mcp:codebase-memory-mcp:search_graph": {
@@ -50,7 +51,7 @@
             "enable_thinking": true,
             "effort": "high",
         },
-        "dock": "left",
+        "dock": "right",
         "favorite_models": [],
         "model_parameters": [],
     },
@@ -60,8 +61,8 @@
         },
     },
     "cli_default_open_behavior": "existing_window",
-    "theme": "Catppuccin Mocha",
-    "icon_theme": "Material Icon Theme",
+    "theme": "Ayu Classic Dark",
+    "icon_theme": "Colored Zed Icons Theme Dark",
     "ui_font_family": "Iosevka Nerd Font Mono",
     "ui_font_size": 14,
     "ui_font_weight": 450,
@@ -110,7 +111,7 @@
         "inactive_opacity": 1,
     },
     "project_panel": {
-        "dock": "right",
+        "dock": "left",
         "hide_root": true,
         "bold_folder_labels": true,
         "diagnostic_badges": true,
@@ -473,6 +474,13 @@
         },
     },
     "context_servers": {
+        "mcp-server-exa-search": {
+            "enabled": true,
+            "remote": false,
+            "settings": {
+                "exa_api_key": "626ccca8-97ec-4cc1-b7dc-5d67c4147f20"
+            }
+        },
         "codebase-memory-mcp": {
             "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
             "args": [""],
