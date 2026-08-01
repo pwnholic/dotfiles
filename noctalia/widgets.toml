@@ -165,6 +165,7 @@ glyph = "screenshot"
 
 # ── CPU usage (text) ─────────────────────────────────────────────
 [widget.cpu]
+glyph = "cpu"
 type = "sysmon"
 capsule = false
 color = "#7aa2f7"      # Tokyo Night blue (text)
@@ -211,6 +212,7 @@ color = "#73daca"      # Tokyo Night teal
 icon_color = "#73daca"
 stat = "ram_pct"
 display = "text"
+glyph = "chart-column"
 show_label = true
 
 # ── Network download (text, wlan0) ────────────────────────────────
@@ -219,13 +221,13 @@ type = "sysmon"
 capsule = false
 color = "#7dcfff"            # Tokyo Night cyan (download)
 icon_color = "#7dcfff"
+glyph = "download"
 stat = "net_rx"
 interface = "wlan0"
 display = "text"
 network_speed_unit = "auto"
 network_speed_compact = true
 show_label = true
-glyph = "arrow-down"
 
 # ── Network upload (text, wlan0) ──────────────────────────────────
 [widget.net-up]
@@ -238,5 +240,5 @@ interface = "wlan0"
 display = "text"
 network_speed_unit = "auto"
 network_speed_compact = true
+glyph = "upload"
 show_label = true
-glyph = "arrow-up"

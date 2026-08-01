@@ -64,10 +64,10 @@ start = ["launcher", "workspaces", "taskbar", "group:vitals"]
 center = ["clock", "media"]
 end = [
   "group:net",
-  "notifications",
   "volume",
   "brightness",
   "battery",
+  "notifications",
   "tray",
   "control-center",
 ]
