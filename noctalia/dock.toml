@@ -41,7 +41,7 @@ magnification_scale = 1.35
 active_opacity = 1.0
 inactive_opacity = 0.85
 show_instance_count = true
-show_dots = false
+show_dots = true
 
 # ── Launcher Button ────────────────────────────────────────────────
 launcher_position = "start"
@@ -49,4 +49,4 @@ launcher_icon = "grid-dots"
 
 # ── Pinned Apps ────────────────────────────────────────────────────
 # Desktop entry IDs, StartupWMClass, or human-readable names.
-pinned = ["firefox", "kitty", "Files", "Zed", "discord", "spotify"]
+pinned = ["firefox", "kitty", "Files", "Zed", "discord", "spotify","obsidian"]
