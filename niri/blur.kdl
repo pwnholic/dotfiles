@@ -7,10 +7,9 @@
 //  Tuning recipe (wiki): raise `offset` first (free) until artifacts,
 //  then raise `passes` by one to smooth them. Repeat.
 //
-//  On NVIDIA RTX 5050, xray blur is cheap: niri blurs the wallpaper
-//  once and reuses it. Non-xray (realistic) blur costs more but is
-//  handled well by this GPU. We use non-xray for Noctalia surfaces
-//  (configured in layer-rules.kdl) for the most realistic look.
+//  Note: blur is currently disabled for all Noctalia surfaces and
+//  regular windows (see layer-rules.kdl / window-rules.kdl). This
+//  block only tunes the quality if blur is re-enabled somewhere.
 blur {
     passes 4
     offset 5.0

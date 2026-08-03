@@ -28,12 +28,7 @@ layer-rule {
 //     match namespace="^noctalia-wallpaper"
 //     place-within-backdrop true
 // }
-// ── Noctalia Surfaces: realistic (non-xray) blur ──────────────────
-// Noctalia publishes its own blur regions via ext-background-effect,
-// so disabling xray looks more realistic (blurs actual content behind
-// the surface, not just a cached wallpaper).
-//
-// Targets: bar, notifications, dock, panels, attached panels, OSD.
+// ── Noctalia Surfaces: blur disabled ──────────────────────────────
 // Bar: PURE transparent background — no blur behind it. Gaps are
 // see-through to the wallpaper/windows; capsules float with their own
 // fill + border (configured in Noctalia's bar.toml).
@@ -44,37 +39,37 @@ layer-rule {
     }
 }
 
-// Other Noctalia surfaces: realistic (non-xray) blur.
+// All other Noctalia surfaces (notifications, dock, panels, attached
+// panels, OSD): blur off. The regex covers plain namespaces
+// (noctalia-notification, noctalia-osd) and prefixed ones such as
+// noctalia-panel-launcher / noctalia-panel-control-center.
 layer-rule {
-    match namespace="^noctalia-(notification|dock|panel|attached-panel|osd)$"
+    match namespace="^noctalia-(notification|dock|panel|attached-panel|osd)(-|$)"
     background-effect {
-        xray false
+        blur false
     }
 }
-// ── Window Switcher: blur on, non-xray ────────────────────────────
+// ── Window Switcher: blur off ─────────────────────────────────────
 layer-rule {
     match namespace="^noctalia-window-switcher"
     background-effect {
-        blur true
-        xray false
+        blur false
     }
 }
-// ── Desktop Widgets: non-xray blur ────────────────────────────────
-// Match all desktop widgets (clock, weather, sysmon, etc.)
+// ── Desktop Widgets: blur off ─────────────────────────────────────
 layer-rule {
     match namespace="^noctalia-desktop-widget-"
     background-effect {
-        xray false
+        blur false
     }
 }
-// ── Popups: blur behind waybar/panel popup menus ──────────────────
+// ── Popups (context menus, tray drawer): blur off ─────────────────
 layer-rule {
     match namespace="^noctalia-bar"
     popups {
         geometry-corner-radius 8
         background-effect {
-            blur true
-            xray false
+            blur false
         }
     }
 }

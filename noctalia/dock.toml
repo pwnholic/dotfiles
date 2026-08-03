@@ -14,7 +14,7 @@ icon_size = 40
 main_axis_padding = 16
 cross_axis_padding = 8
 item_spacing = 4
-background_opacity = 0.90
+background_opacity = 1.0  # fully opaque = no translucent blur behind the dock
 border = "outline"
 border_width = 1.5
 shadow = true
@@ -49,4 +49,4 @@ launcher_icon = "grid-dots"
 
 # ── Pinned Apps ────────────────────────────────────────────────────
 # Desktop entry IDs, StartupWMClass, or human-readable names.
-pinned = ["firefox", "kitty", "Files", "Zed", "discord", "spotify","obsidian"]
+pinned = ["firefox", "kitty", "Files", "Zed", "discord", "spotify", "obsidian"]

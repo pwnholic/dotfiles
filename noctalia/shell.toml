@@ -47,7 +47,7 @@ alpha = 0.55       # multiplied by each component's bg opacity
 
 # ── Panel ──────────────────────────────────────────────────────────
 [shell.panel]
-transparency_mode = "glass"            # solid | soft | glass (glass = translucent + readable)
+transparency_mode = "solid"            # solid | soft | glass (glass = translucent + readable)
 borders = true
 shadow = true
 list_item_background = false

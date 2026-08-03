@@ -5,17 +5,61 @@
 //
 //  Verified with `niri msg outputs`:
 //    eDP-1: 1920x1200 @ 144.002 Hz, VRR supported (internal laptop panel)
+//    DP-1 : 1920x1080 @ 60.000 Hz, NO VRR (external MSI MD2412P)
 //
 //  Refresh rate values must match `niri msg outputs` to all three decimals.
+//
+// ── OLD LAYOUT (side-by-side; external on the LEFT) ─────────────────
+//  Disabled: external monitor is now physically ABOVE the laptop, so the
+//  outputs were rearranged (see new blocks below). Also, the monitor was
+//  previously matched as "HDMI-A-1" but is currently connected via DP-1.
+//
+// output "eDP-1" {
+//     mode "1920x1200@144.002"
+//     scale 1.0
+//     transform "normal"
+//     // External monitor is physically on the LEFT (HDMI-A-1 at x=0), so the
+//     // laptop panel sits to its right at x=1920. (HDMI is 1920 logical px
+//     // wide at scale 1.0.)
+//     position x=1920 y=0
+//     focus-at-startup
+//     // variable-refresh-rate on-demand=true
+//     backdrop-color "#16161e"
+//     hot-corners {
+//         bottom-right
+//     }
+// }
+//
+// output "HDMI-A-1" {
+//     mode "1920x1080@99.999"
+//     scale 1.0
+//     transform "normal"
+//     // Physically on the LEFT of the laptop → origin. eDP-1 sits to its
+//     // right at x=1920.
+//     position x=0 y=0
+// }
+//
+// ── EXTERNAL MONITOR (MSI MD2412P) — ABOVE the laptop ───────────────
+//  Currently connected via DP-1, mode 1920x1080@60.000 (preferred).
+//  Physically on TOP of the laptop → origin (y=0). The laptop panel sits
+//  below at y=1080 (external is 1080 logical px tall at scale 1.0). Both
+//  panels are 1920 px wide, so x=0 centers them.
+output "DP-1" {
+    mode "1920x1080@60.000"
+    scale 1.0
+    transform "normal"
+    position x=0 y=0
+    // This panel does NOT advertise VRR (`Variable refresh rate: not
+    // supported` in `niri msg outputs`), so no variable-refresh-rate here.
+}
+
 // ── Internal Laptop Panel ──────────────────────────────────────────
 output "eDP-1" {
     mode "1920x1200@144.002"
     scale 1.0
     transform "normal"
-    // External monitor is physically on the LEFT (HDMI-A-1 at x=0), so the
-    // laptop panel sits to its right at x=1920. (HDMI is 1920 logical px
-    // wide at scale 1.0.)
-    position x=1920 y=0
+    // Below the external monitor (which is 1080 logical px tall).
+    position x=0 y=1080
     focus-at-startup
     // The panel advertises VRR support. Enabling it lets the display vary
     // its refresh rate: lower when idle (saves power, smoother video),
@@ -38,17 +82,4 @@ output "eDP-1" {
     hot-corners {
         bottom-right
     }
-}
-// ── External Monitor (MSI MD2412P, 1080p@60, NO VRR) ──────────────
-// Verified via `niri msg outputs`. niri ignores this block while the
-// monitor is unplugged, so it's safe to keep permanently.
-output "HDMI-A-1" {
-    mode "1920x1080@99.999"
-    scale 1.0
-    transform "normal"
-    // Physically on the LEFT of the laptop → origin. eDP-1 sits to its
-    // right at x=1920.
-    position x=0 y=0
-    // This panel does NOT advertise VRR (`Variable refresh rate: not
-    // supported` in `niri msg outputs`), so no variable-refresh-rate here.
 }
