@@ -1,0 +1,7 @@
+# keymap.toml -- keybindings, we keep the defaults and only add a few extras.
+# Reference: https://yazi-rs.github.io/docs/configuration/keymap
+
+[manager]
+prepend_keymap = [
+	# Open files with the default editor (nvim) via <Enter>; keep original.
+]

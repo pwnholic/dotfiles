@@ -1,0 +1,22 @@
+# theme.toml -- Tokyo Night (flavor) + overrides for status bar & indicator
+# Flavor: https://github.com/BennyOe/tokyo-night.yazi
+# References:
+#   https://yazi-rs.github.io/docs/configuration/theme
+#   https://yazi-rs.github.io/docs/configuration/overview#configuration-mixing
+
+[flavor]
+dark = "tokyo-night"
+light = "tokyo-night"
+
+# Status bar: sharp powerline (non-rounded) with clear fg/bg.
+# (The flavor ships rounded separator glyphs; we override with the sharp ones.)
+[status]
+overall = { fg = "#7aa2f7" }
+
+# Indicator of the hovered file: explicit colors instead of the default
+# `reversed` style, which renders dim against the dark background. This is
+# the bar that highlights the currently active folder/file in each pane.
+[indicator]
+parent  = { fg = "#1a1b26", bg = "#7aa2f7", bold = true }
+current = { fg = "#1a1b26", bg = "#bb9af7", bold = true }
+preview = { fg = "#1a1b26", bg = "#7aa2f7", bold = true }

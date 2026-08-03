@@ -1,0 +1,19 @@
+# yazi.toml -- general configuration, tuned for this machine (yazi 26.5.6)
+# Reference: https://yazi-rs.github.io/docs/configuration/yazi
+
+[manager]
+show_hidden = true
+sort_by = "mtime"
+sort_sensitive = false
+sort_reverse = false
+sort_dir_first = true
+show_symlink = true
+mouse_events = [ "scroll", "touch" ]
+scrolloff = 5
+
+[input]
+prompt = "> "
+
+[preview]
+max_width = 1000
+max_height = 1000
