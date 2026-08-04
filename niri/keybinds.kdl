@@ -9,39 +9,39 @@
 // ════════════════════════════════════════════════════════════════════
 binds {
     // ─── Hotkey Overlay & Inhibit Escape ───
-    Mod+Shift+Escape { show-hotkey-overlay; }
+    Mod+Shift+Escape  hotkey-overlay-title="<b>Hotkey Overlay</b>" { show-hotkey-overlay; }
     // Breaks out of apps that grabbed all shortcuts (VMs, remote desktop).
-    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Escape allow-inhibiting=false hotkey-overlay-title="<b>Toggle</b> Shortcut Inhibit" { toggle-keyboard-shortcuts-inhibit; }
 
     // ─── Applications ───
-    Mod+Return hotkey-overlay-title="Terminal: kitty" { spawn-sh "kitty"; }
-    Mod+Space  hotkey-overlay-title="Launcher: Noctalia" { spawn-sh "noctalia msg panel-toggle launcher"; }
-    Mod+B      hotkey-overlay-title="Browser: Firefox" { spawn "firefox"; }
-    Mod+E      hotkey-overlay-title="Files: Nautilus" { spawn "nautilus"; }
+    Mod+Return hotkey-overlay-title="<b>Terminal</b> <span foreground='#7dcfff'>kitty</span>" { spawn-sh "kitty"; }
+    Mod+Space  hotkey-overlay-title="<b>Launcher</b> <span foreground='#bb9af7'>Noctalia</span>" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Mod+B      hotkey-overlay-title="<b>Browser</b> <span foreground='#e0af68'>Firefox</span>" { spawn "firefox"; }
+    Mod+E      hotkey-overlay-title="<b>Files</b> <span foreground='#9ece6a'>Nautilus</span>" { spawn "nautilus"; }
 
     // ─── Noctalia v5 Panels & Overview ───
-    Mod+S      hotkey-overlay-title="Control Center" { spawn-sh "noctalia msg panel-toggle control-center"; }
-    Mod+Comma  hotkey-overlay-title="Settings: Noctalia" { spawn-sh "noctalia msg settings-toggle"; }
-    Mod+Shift+V hotkey-overlay-title="Clipboard History" { spawn-sh "noctalia msg panel-toggle clipboard"; }
-    Alt+Tab    hotkey-overlay-title="Window Switcher: Noctalia" { spawn-sh "noctalia msg window-switcher"; }
-    Mod+O repeat=false hotkey-overlay-title="Overview" { toggle-overview; }
+    Mod+S      hotkey-overlay-title="<b>Control Center</b>" { spawn-sh "noctalia msg panel-toggle control-center"; }
+    Mod+Comma  hotkey-overlay-title="<b>Settings</b> <span foreground='#bb9af7'>Noctalia</span>" { spawn-sh "noctalia msg settings-toggle"; }
+    Mod+Shift+V hotkey-overlay-title="<b>Clipboard</b> History" { spawn-sh "noctalia msg panel-toggle clipboard"; }
+    Alt+Tab    hotkey-overlay-title="<b>Window Switcher</b> <span foreground='#bb9af7'>Noctalia</span>" { spawn-sh "noctalia msg window-switcher"; }
+    Mod+O repeat=false hotkey-overlay-title="<b>Overview</b>" { toggle-overview; }
     // Dark/Light theme + niri screen crossfade (freeze → apps redraw → reveal).
-    Mod+Slash hotkey-overlay-title="Toggle Dark/Light Theme" { spawn-sh "niri msg action do-screen-transition && noctalia msg theme-mode-toggle"; }
+    Mod+Slash hotkey-overlay-title="<b>Toggle</b> <span foreground='#e0af68'>Dark</span>/<span foreground='#7dcfff'>Light</span> Theme" { spawn-sh "niri msg action do-screen-transition && noctalia msg theme-mode-toggle"; }
 
     // ─── Session / Power ───
-    Mod+Alt+L       hotkey-overlay-title="Lock Screen" { spawn-sh "noctalia msg session lock"; }
-    Mod+Shift+Q     hotkey-overlay-title="Session Menu" { spawn-sh "noctalia msg panel-toggle session"; }
-    Ctrl+Alt+Delete { quit; }
-    Mod+Shift+P     hotkey-overlay-title="Power Off Monitors (DPMS)" { power-off-monitors; }
-    Mod+P           hotkey-overlay-title="Power Profile (cycle)" { spawn-sh "noctalia msg power-cycle"; }
+    Mod+Alt+L       hotkey-overlay-title="<b>Lock</b> Screen" { spawn-sh "noctalia msg session lock"; }
+    Mod+Shift+Q     hotkey-overlay-title="<b>Session</b> Menu" { spawn-sh "noctalia msg panel-toggle session"; }
+    Ctrl+Alt+Delete hotkey-overlay-title="<b>Quit</b> Niri" { quit; }
+    Mod+Shift+P     hotkey-overlay-title="<b>Power Off</b> Monitors <span foreground='#f7768e'>DPMS</span>" { power-off-monitors; }
+    Mod+P           hotkey-overlay-title="<b>Power</b> Profile <span foreground='#9ece6a'>(cycle)</span>" { spawn-sh "noctalia msg power-cycle"; }
 
     // ─── System Toggles (Noctalia) ───
     // Moved off Mod+Shift+C: that combo sits exactly on the terminal's
     // universal copy shortcut (Ctrl+Shift+C), so a Super-slip would toggle
     // caffeine instead of copying. F12 is unbound; overlay keeps it visible.
-    // Mod+Shift+C hotkey-overlay-title="Caffeine (inhibit idle)" { spawn-sh "noctalia msg caffeine-toggle"; }
-    Mod+Shift+N hotkey-overlay-title="Night Light" { spawn-sh "noctalia msg nightlight-toggle"; }
-    Mod+Shift+D hotkey-overlay-title="Do Not Disturb" { spawn-sh "noctalia msg notification-dnd-toggle"; }
+    Mod+Shift+C hotkey-overlay-title="<b>Caffeine</b> <span foreground='#e0af68'>(inhibit idle)</span>" { spawn-sh "noctalia msg caffeine-toggle"; }
+    Mod+Shift+N hotkey-overlay-title="<b>Night Light</b>" { spawn-sh "noctalia msg nightlight-toggle"; }
+    Mod+Shift+D hotkey-overlay-title="<b>Do Not Disturb</b>" { spawn-sh "noctalia msg notification-dnd-toggle"; }
 
     // ─── Hardware Keys (work even when locked) ───
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "noctalia msg volume-up"; }
@@ -57,24 +57,24 @@ binds {
     XF86Bluetooth allow-when-locked=true { spawn-sh "noctalia msg bluetooth-toggle"; }
 
     // ─── Window Management ───
-    Mod+Q { close-window; }
+    Mod+Q  hotkey-overlay-title="<b>Close</b> Window" { close-window; }
     // Tab = flip back to the previously focused window (vs Alt+Tab switcher).
-    Mod+Tab { focus-window-previous; }
-    Mod+F { fullscreen-window; }
+    Mod+Tab  hotkey-overlay-title="<b>Focus</b> Previous Window" { focus-window-previous; }
+    Mod+F  hotkey-overlay-title="<b>Fullscreen</b> Window" { fullscreen-window; }
     // Shift+F = borderless windowed fullscreen (games that dislike real FS).
-    Mod+Shift+F { toggle-windowed-fullscreen; }
+    Mod+Shift+F  hotkey-overlay-title="<b>Windowed</b> Fullscreen" { toggle-windowed-fullscreen; }
     // T = toggle floating; Shift+T = jump focus between floating & tiling layers.
-    Mod+T       { toggle-window-floating; }
-    Mod+Shift+T { switch-focus-between-floating-and-tiling; }
-    Mod+W { toggle-column-tabbed-display; }
+    Mod+T       hotkey-overlay-title="<b>Toggle</b> Floating" { toggle-window-floating; }
+    Mod+Shift+T hotkey-overlay-title="<b>Focus</b> Floating/Tiling" { switch-focus-between-floating-and-tiling; }
+    Mod+W  hotkey-overlay-title="<b>Toggle</b> Column Tabbed" { toggle-column-tabbed-display; }
     // M = maximize column (fill width). Shift+M = maximize window to screen edges.
-    Mod+M       { maximize-column; }
-    Mod+Shift+M { maximize-window-to-edges; }
+    Mod+M       hotkey-overlay-title="<b>Maximize</b> Column" { maximize-column; }
+    Mod+Shift+M hotkey-overlay-title="<b>Maximize</b> Window" { maximize-window-to-edges; }
     // 0 = reset the focused window's height back to automatic.
-    Mod+0 { reset-window-height; }
+    Mod+0  hotkey-overlay-title="<b>Reset</b> Window Height" { reset-window-height; }
     // [ / ] = merge the window into the adjacent column, or expel it back out.
-    Mod+BracketLeft  { consume-or-expel-window-left; }
-    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+BracketLeft  hotkey-overlay-title="<b>Consume/Expel</b> Left" { consume-or-expel-window-left; }
+    Mod+BracketRight hotkey-overlay-title="<b>Consume/Expel</b> Right" { consume-or-expel-window-right; }
 
     // ─── Focus (Vim + Arrows) — column/monitor aware ───
     // At a workspace edge these cross onto the adjacent monitor.
@@ -143,9 +143,6 @@ binds {
     // ─── Column / Window Sizing ───
     Mod+Ctrl+F { expand-column-to-available-width; }
     Mod+C      { center-column; }
-    // Shift+C = center a single (e.g. floating) window, distinct from column.
-    Mod+Shift+C { center-window; }
-    Mod+Ctrl+C { center-visible-columns; }
     Mod+R            { switch-preset-column-width; }
     Mod+Shift+R      { switch-preset-column-width-back; }
     Mod+Ctrl+R       { switch-preset-window-width; }
@@ -156,11 +153,11 @@ binds {
     Mod+Shift+Equal { set-window-height "+10%"; }
 
     // ─── Screenshots ───
-    Print       { spawn-sh "noctalia msg screenshot-region"; }
-    Shift+Print { spawn-sh "noctalia msg screenshot-fullscreen"; }
+    Print       hotkey-overlay-title="<b>Screenshot</b> Region" { spawn-sh "noctalia msg screenshot-region"; }
+    Shift+Print hotkey-overlay-title="<b>Screenshot</b> Fullscreen" { spawn-sh "noctalia msg screenshot-fullscreen"; }
     // Focused-window capture (niri builtin → clipboard + screenshot-path).
-    Ctrl+Print  { screenshot-window; }
+    Ctrl+Print  hotkey-overlay-title="<b>Screenshot</b> Window" { screenshot-window; }
 
     // ─── Wallpaper ───
-    Mod+Shift+W hotkey-overlay-title="Next Wallpaper" { spawn-sh "noctalia msg wallpaper-next"; }
+    Mod+Shift+W hotkey-overlay-title="<b>Next</b> Wallpaper" { spawn-sh "noctalia msg wallpaper-next"; }
 }
