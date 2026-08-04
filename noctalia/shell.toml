@@ -27,7 +27,7 @@ shared_gl_context = true # share GPU textures across surfaces
 disable_mipmaps = false
 
 # ── Clipboard ──────────────────────────────────────────────────────
-clipboard_enabled = false
+clipboard_enabled = true
 # Stop Noctalia from re-offering the live selection to keep it alive after the
 # source app closes; that re-offer raced with new copies and overwrote them with
 # stale text ("paste shows previous text").
