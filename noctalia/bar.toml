@@ -20,7 +20,7 @@ layer = "top"
 # Transparent bar: no fill, no outline, no shadow. Every lane item floats
 # as a frosted capsule. niri blurs content behind Noctalia surfaces
 # (non-xray) — see ~/.config/niri/layer-rules.kdl.
-thickness = 40
+thickness = 36
 background_opacity = 0.0
 border = "outline"
 border_width = 0
@@ -37,13 +37,13 @@ radius_bottom_right = 8
 concave_edge_corners = false
 
 # ── Margins & Padding ─────────────────────────────────────────────
-margin_ends = 10
-margin_edge = 4
+margin_ends = 4
+margin_edge = 2
 margin_opposite_edge = 0
 padding = 10
 widget_spacing = 8
 hover_highlight = true
-scale = 1.1
+scale = 1.0
 font_weight = 500
 font_family = "Iosevka NF"
 
@@ -57,7 +57,7 @@ capsule_opacity = 1.0
 capsule_thickness = 0.86
 capsule_radius = 8.0
 capsule_padding = 10
-capsule_border = "outline"
+capsule_border = "#7aa2f7"
 
 # ── Widget Layout ──────────────────────────────────────────────────
 start = ["launcher", "workspaces", "taskbar", "group:vitals"]
@@ -79,7 +79,7 @@ members = ["cpu", "cpu-temp", "gpu", "gpu-temp", "ram"]
 fill = "surface_variant"
 foreground = "#a9b1d6"                                  # Tokyo Night classic fg (lavender)
 opacity = 1.0
-border = "outline"
+border = "#7aa2f7"
 padding = 10.0
 enabled = true
 
@@ -90,7 +90,7 @@ members = ["net-down", "net-up"]
 fill = "surface_variant"
 foreground = "#a9b1d6"           # Tokyo Night classic fg (lavender)
 opacity = 1.0
-border = "outline"
+border = "#7aa2f7"
 padding = 10.0
 enabled = true
 
