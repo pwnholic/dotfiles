@@ -48,9 +48,8 @@ xwayland-satellite {
     path "/usr/bin/xwayland-satellite"
 }
 // ── Clipboard ───────────────────────────────────────────────────────
-clipboard {
-    disable-primary
-}
+// (Empty: keep niri's DEFAULT clipboard behavior — primary selection
+// enabled, so select-text + middle-click paste works as expected.)
 // ── Hotkey Overlay ─────────────────────────────────────────────────
 hotkey-overlay {
     skip-at-startup

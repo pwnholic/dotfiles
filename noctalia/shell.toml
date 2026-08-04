@@ -28,9 +28,9 @@ disable_mipmaps = false
 
 # ── Clipboard ──────────────────────────────────────────────────────
 clipboard_enabled = false
-clipboard_history_max_entries = 200
-clipboard_confirm_clear_history = true
-clipboard_auto_paste = "auto"
+# clipboard_history_max_entries = 200
+# clipboard_confirm_clear_history = true
+# clipboard_auto_paste = "auto"
 
 # ── App Icon Colorization ─────────────────────────────────────────
 app_icon_colorize = false # keep original app icon colors

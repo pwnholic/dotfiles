@@ -22,6 +22,7 @@ binds {
     // ─── Noctalia v5 Panels & Overview ───
     Mod+S      hotkey-overlay-title="Control Center" { spawn-sh "noctalia msg panel-toggle control-center"; }
     Mod+Comma  hotkey-overlay-title="Settings: Noctalia" { spawn-sh "noctalia msg settings-toggle"; }
+    Mod+Shift+V hotkey-overlay-title="Clipboard History" { spawn-sh "noctalia msg panel-toggle clipboard"; }
     Alt+Tab    hotkey-overlay-title="Window Switcher: Noctalia" { spawn-sh "noctalia msg window-switcher"; }
     Mod+O repeat=false hotkey-overlay-title="Overview" { toggle-overview; }
     // Dark/Light theme + niri screen crossfade (freeze → apps redraw → reveal).
@@ -35,7 +36,10 @@ binds {
     Mod+P           hotkey-overlay-title="Power Profile (cycle)" { spawn-sh "noctalia msg power-cycle"; }
 
     // ─── System Toggles (Noctalia) ───
-    Mod+Shift+C hotkey-overlay-title="Caffeine (inhibit idle)" { spawn-sh "noctalia msg caffeine-toggle"; }
+    // Moved off Mod+Shift+C: that combo sits exactly on the terminal's
+    // universal copy shortcut (Ctrl+Shift+C), so a Super-slip would toggle
+    // caffeine instead of copying. F12 is unbound; overlay keeps it visible.
+    // Mod+Shift+C hotkey-overlay-title="Caffeine (inhibit idle)" { spawn-sh "noctalia msg caffeine-toggle"; }
     Mod+Shift+N hotkey-overlay-title="Night Light" { spawn-sh "noctalia msg nightlight-toggle"; }
     Mod+Shift+D hotkey-overlay-title="Do Not Disturb" { spawn-sh "noctalia msg notification-dnd-toggle"; }
 
@@ -54,7 +58,11 @@ binds {
 
     // ─── Window Management ───
     Mod+Q { close-window; }
+    // Tab = flip back to the previously focused window (vs Alt+Tab switcher).
+    Mod+Tab { focus-window-previous; }
     Mod+F { fullscreen-window; }
+    // Shift+F = borderless windowed fullscreen (games that dislike real FS).
+    Mod+Shift+F { toggle-windowed-fullscreen; }
     // T = toggle floating; Shift+T = jump focus between floating & tiling layers.
     Mod+T       { toggle-window-floating; }
     Mod+Shift+T { switch-focus-between-floating-and-tiling; }
@@ -92,6 +100,15 @@ binds {
     Mod+Ctrl+J    { move-window-down; }
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
+    // Shift+Up/Down = send the focused WINDOW to the workspace above/below.
+    Mod+Shift+Up   { move-window-to-workspace-up; }
+    Mod+Shift+Down { move-window-to-workspace-down; }
+    // Shift+H/L = swap the focused window with the adjacent column's window.
+    Mod+Shift+H { swap-window-left; }
+    Mod+Shift+L { swap-window-right; }
+    // Alt+Left/Right = send the focused window to the other monitor.
+    Mod+Alt+Left  { move-window-to-monitor-left; }
+    Mod+Alt+Right { move-window-to-monitor-right; }
 
     // ─── Scroll ───
     Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
@@ -126,9 +143,12 @@ binds {
     // ─── Column / Window Sizing ───
     Mod+Ctrl+F { expand-column-to-available-width; }
     Mod+C      { center-column; }
+    // Shift+C = center a single (e.g. floating) window, distinct from column.
+    Mod+Shift+C { center-window; }
     Mod+Ctrl+C { center-visible-columns; }
     Mod+R            { switch-preset-column-width; }
     Mod+Shift+R      { switch-preset-column-width-back; }
+    Mod+Ctrl+R       { switch-preset-window-width; }
     Mod+Ctrl+Shift+R { switch-preset-window-height; }
     Mod+Minus       { set-column-width "-10%"; }
     Mod+Equal       { set-column-width "+10%"; }

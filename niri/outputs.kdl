@@ -4,12 +4,12 @@
 // ════════════════════════════════════════════════════════════════════
 //
 //  Verified with `niri msg outputs`:
-//    eDP-1: 1920x1200 @ 144.002 Hz, VRR supported (internal laptop panel)
-//    DP-1 : 1920x1080 @ 60.000 Hz, NO VRR (external MSI MD2412P)
+//    eDP-1 : 1920x1200 @ 144.002 Hz, VRR supported (internal laptop panel)
+//    HDMI-A-1: 1920x1080 @ 60.000 Hz, NO VRR (external MSI MD2412P)
 //
 //  Refresh rate values must match `niri msg outputs` to all three decimals.
 //
-// ── OLD LAYOUT (side-by-side; external on the LEFT) ─────────────────
+// ── LAYOUT (side-by-side; external on the LEFT) ────────────────────
 //  Disabled: external monitor is now physically ABOVE the laptop, so the
 //  outputs were rearranged (see new blocks below). Also, the monitor was
 //  previously matched as "HDMI-A-1" but is currently connected via DP-1.
@@ -39,12 +39,13 @@
 //     position x=0 y=0
 // }
 //
-// ── EXTERNAL MONITOR (MSI MD2412P) — ABOVE the laptop ───────────────
-//  Currently connected via DP-1, mode 1920x1080@60.000 (preferred).
-//  Physically on TOP of the laptop → origin (y=0). The laptop panel sits
-//  below at y=1080 (external is 1080 logical px tall at scale 1.0). Both
-//  panels are 1920 px wide, so x=0 centers them.
-output "DP-1" {
+// ── EXTERNAL MONITOR (MSI MD2412P) — LEFT of the laptop ────────────
+//  Connected via HDMI-A-1 (connector name depends on the cable/dock
+//  used; it was DP-1 at some point), mode 1920x1080@60.000 (preferred).
+//  Physically on the LEFT of the laptop → origin (x=0). The laptop panel
+//  sits to its right at x=1920 (external is 1920 logical px wide at
+//  scale 1.0). Both share y=0 for vertical alignment.
+output "HDMI-A-1" {
     mode "1920x1080@60.000"
     scale 1.0
     transform "normal"
@@ -58,8 +59,8 @@ output "eDP-1" {
     mode "1920x1200@144.002"
     scale 1.0
     transform "normal"
-    // Below the external monitor (which is 1080 logical px tall).
-    position x=0 y=1080
+    // To the right of the external monitor (which is 1920 logical px wide).
+    position x=1920 y=0
     focus-at-startup
     // The panel advertises VRR support. Enabling it lets the display vary
     // its refresh rate: lower when idle (saves power, smoother video),

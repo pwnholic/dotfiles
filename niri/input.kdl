@@ -32,6 +32,8 @@ input {
     // Warp mouse to newly focused windows
     warp-mouse-to-focus
 }
+
+
 // ── Gestures ──────────────────────────────────────────────────────
 // Docs: https://github.com/niri-wm/niri/wiki/Configuration:-Gestures
 gestures {
@@ -59,4 +61,8 @@ cursor {
     xcursor-size 24
     hide-when-typing
     hide-after-inactive-ms 1000
+}
+
+clipboard {
+    disable-primary
 }
