@@ -13,16 +13,17 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // NVIDIA dGPU), niri already renders on the NVIDIA dGPU. Legacy vars like
 // GBM_BACKEND=nvidia-drm or __GL_GSYNC_ALLOWED are unnecessary and can
 // break the hybrid setup, so they are intentionally omitted.
-environment {
-    ELECTRON_OZONE_PLATFORM_HINT "auto"
-    QT_QPA_PLATFORM "wayland"
-    QT_QPA_PLATFORMTHEME "gtk3"
-    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
-    XDG_CURRENT_DESKTOP "niri"
-    XDG_SESSION_TYPE "wayland"
-    MOZ_ENABLE_WAYLAND "1"
-    SDL_VIDEODRIVER "wayland"
-}
+// environment {
+//     ELECTRON_OZONE_PLATFORM_HINT "auto"
+//     QT_QPA_PLATFORM "wayland"
+//     QT_QPA_PLATFORMTHEME "gtk3"
+//     QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+//     XDG_CURRENT_DESKTOP "niri"
+//     XDG_SESSION_TYPE "wayland"
+//     MOZ_ENABLE_WAYLAND "1"
+//     SDL_VIDEODRIVER "wayland"
+// }
+
 // ── Cursor ──────────────────────────────────────────────────────────
 cursor {
     xcursor-theme "capitaine-cursors"

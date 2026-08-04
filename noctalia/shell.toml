@@ -28,6 +28,10 @@ disable_mipmaps = false
 
 # ── Clipboard ──────────────────────────────────────────────────────
 clipboard_enabled = false
+# Stop Noctalia from re-offering the live selection to keep it alive after the
+# source app closes; that re-offer raced with new copies and overwrote them with
+# stale text ("paste shows previous text").
+clipboard_keep_from_closed_apps = false
 # clipboard_history_max_entries = 200
 # clipboard_confirm_clear_history = true
 # clipboard_auto_paste = "auto"
