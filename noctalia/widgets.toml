@@ -25,11 +25,12 @@ glyph = "menu-2"
 [widget.workspaces]
 style = "regular"                 # regular | minimal | focus_hint
 display = "name"                  # none | id | name (named workspaces show names)
-max_label_chars = 5
-pill_scale = 1.0
-active_pill_size = 2.0
+max_label_chars = 9
+pill_scale = 1.1
+active_pill_size = 1.1
+scale = 1.2
 inactive_pill_size = 1.0
-focused_color = "primary"
+focused_color = "#73daca"
 occupied_color = "secondary"
 empty_color = "surface_variant"
 urgent_color = "error"

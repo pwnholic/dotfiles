@@ -1,13 +1,13 @@
 {
     "language_models": {
         "openai_compatible": {
-            "OrcaRouter": {
-                "api_url": "https://api.orcarouter.ai/v1",
+            "Cline": {
+                "api_url": "https://api.cline.bot/api/v1",
                 "available_models": [
                     {
-                        "name": "kimi/kimi-k3",
+                        "name": "cline-pass/deepseek-v4-flash",
                         "max_tokens": 1000000,
-                        "max_output_tokens": 32000,
+                        "max_output_tokens": 48000,
                         "max_completion_tokens": 128000,
                         "reasoning_effort": "high",
                         "capabilities": {
@@ -28,28 +28,46 @@
         "sidebar_side": "right",
         "tool_permissions": {
             "tools": {
-                "mcp:codebase-memory-mcp:search_graph": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:get_architecture": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:index_repository": {
-                    "default": "allow",
+                "fetch": {
+                    "default": "allow"
                 },
                 "create_directory": {
-                    "default": "allow",
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:get_community_tool": {
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:get_minimal_context_tool": {
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:list_graph_stats_tool": {
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:cross_repo_search_tool": {
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:list_repos_tool": {
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:get_architecture_overview_tool": {
+                    "default": "allow"
+                },
+                "mcp:code-review-graph:semantic_search_nodes_tool": {
+                    "default": "allow"
                 },
                 "terminal": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-exa-search:web_search_exa": {
                     "default": "allow",
                 },
             },
         },
         "default_model": {
-            "provider": "OrcaRouter",
-            "model": "kimi/kimi-k3",
+            "provider": "Cline",
+            "model": "cline-pass/deepseek-v4-flash",
             "enable_thinking": true,
-            "effort": "high",
+            "effort": "max",
         },
         "dock": "right",
         "favorite_models": [],
@@ -57,6 +75,9 @@
     },
     "agent_servers": {
         "pi-acp": {
+            "default_config_options": {
+                "thought_level": "xhigh",
+            },
             "type": "registry",
         },
     },
@@ -488,6 +509,7 @@
             "remote": false,
             "settings": {
                 "exa_api_key": "626ccca8-97ec-4cc1-b7dc-5d67c4147f20",
+                "tools": "web_search_exa,get_code_context_exa,deep_researcher_start,deep_researcher_check",
             },
         },
         "codebase-memory-mcp": {
@@ -495,8 +517,8 @@
             "args": [""],
         },
         "code-review-graph": {
-            "command": "uvx",
-            "args": ["code-review-graph", "serve"],
+            "command": "/home/pwnholic/.local/bin/code-review-graph",
+            "args": ["serve"],
         },
     },
 }
