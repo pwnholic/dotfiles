@@ -17,3 +17,5 @@ fish_add_path --path $HOME/.foundry/bin
 
 # pdtm (ProjectDiscovery tool manager) Go binaries.
 fish_add_path --path $HOME/.pdtm/go/bin
+
+fish_add_path --path $HOME/.local/share/solana/install/active_release/bin

@@ -55,15 +55,16 @@ capsule_fill = "surface_variant" # Tokyo Night #1f2335 (dark pill)
 capsule_foreground = "#a9b1d6"   # Tokyo Night classic fg (lavender, not near-white)
 capsule_opacity = 1.0
 capsule_thickness = 0.866
-capsule_radius = 1.0
+capsule_radius = 6.0
 capsule_padding = 10
 capsule_border = "#7aa2f7"
 
 # ── Widget Layout ──────────────────────────────────────────────────
-start = ["launcher", "workspaces", "taskbar", "group:vitals"]
+start = ["launcher",  "workspaces", "taskbar", "group:vitals"]
 center = ["clock", "media"]
 end = [
   "group:net",
+  "ai-switch",
   "volume",
   "brightness",
   "battery",

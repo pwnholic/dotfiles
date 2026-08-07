@@ -243,3 +243,7 @@ network_speed_unit = "auto"
 network_speed_compact = true
 glyph = "upload"
 show_label = true
+
+[widget.ai-switch]
+type = "pwnholic/ai-switch:launcher"
+

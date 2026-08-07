@@ -5,7 +5,7 @@
 
 [shell]
 # ── General ────────────────────────────────────────────────────────
-corner_radius_scale = 0.0     # 0 = square, 1 = default, 2 = extra rounded
+corner_radius_scale =1.0     # 0 = square, 1 = default, 2 = extra rounded
 button_borders = true         # draw outlines around buttons
 input_borders = true          # draw outlines around text fields
 popup_borders = true          # draw outlines around popups/dropdowns

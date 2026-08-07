@@ -1,0 +1,31 @@
+id = "pwnholic/ai-switch"
+name = "AI Switch"
+version = "1.0.0"
+plugin_api = 14
+author = "pwnholic"
+license = "MIT"
+icon = "bolt"
+description = "Panel floating untuk toggle ollama serve & deeptutor start dengan status warna + info GPU."
+tags = ["ai", "ollama", "toggle"]
+
+# ── Service: monitor background (poll 2s) → publish status ke noctalia.state ──
+[[service]]
+id = "monitor"
+entry = "monitor.luau"
+
+# ── Panel floating: toggle + info, dibuka via widget / IPC ──
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 300
+placement = "floating"
+position = "top_center"
+
+# ── Widget bar: buka panel; warna ikon = status ollama ──
+[[widget]]
+id = "launcher"
+entry = "launcher.luau"
+
+[widget.actions]
+left = "panel-toggle pwnholic/ai-switch:panel"

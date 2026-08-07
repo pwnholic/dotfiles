@@ -14,3 +14,6 @@
 starship init fish | source
 
 # The default greeting is suppressed via functions/fish_greeting.fish.
+
+# Vigolium CLI
+export PATH="/home/pwnholic/.local/bin:$PATH"

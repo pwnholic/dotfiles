@@ -2,4 +2,13 @@
 # `official` and `community` git sources are scanned automatically, so a plugin
 # id like "thepunkoff/pomodoro" is fetched from the community source on demand.
 [plugins]
-enabled = []
+enabled = ["pwnholic/ai-switch"]
+auto_update = false
+
+# Plugin lokal kami, di dalam folder config agar semua setup noctalia
+# terkumpul di ~/.config/noctalia. "path" = direktori immutable (tanpa git).
+[[plugins.source]]
+name = "local"
+kind = "path"
+location = "~/.config/noctalia/plugins"
+enabled = true

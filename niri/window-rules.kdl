@@ -5,7 +5,7 @@
 // ════════════════════════════════════════════════════════════════════
 // ── Global: rounded corners + clip for every window ────────────────
 window-rule {
-    geometry-corner-radius 0
+    geometry-corner-radius 6
     clip-to-geometry true
     // Blur OFF for regular windows (Noctalia surfaces get their blur via
     // layer-rules.kdl). Non-xray blur also vanishes during open/close
