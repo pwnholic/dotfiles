@@ -35,6 +35,6 @@ update_manifest_pubkey:
 - 0
 current_update_manifest: null
 update_poll_secs: 3600
-explicit_release: !Semver 2.3.0
+explicit_release: !Semver 2.1.0
 releases_dir: /home/pwnholic/.local/share/solana/install/releases
 active_release_dir: /home/pwnholic/.local/share/solana/install/active_release

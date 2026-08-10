@@ -20,47 +20,163 @@
                             "max_tokens_parameter": true,
                         },
                     },
+                    {
+                        "name": "cline-pass/qwen3.8-max",
+                        "max_tokens": 1000000,
+                        "max_output_tokens": 48000,
+                        "max_completion_tokens": 128000,
+                        "reasoning_effort": "high",
+                        "capabilities": {
+                            "tools": true,
+                            "images": true,
+                            "parallel_tool_calls": true,
+                            "prompt_cache_key": true,
+                            "chat_completions": true,
+                            "interleaved_reasoning": false,
+                            "max_tokens_parameter": true,
+                        },
+                    },
                 ],
             },
         },
     },
     "agent": {
         "sandbox_permissions": {
+            "allow_unsandboxed": true,
+            "write_paths": [
+                {
+                    "requested": "/home/pwnholic/.code-review-graph",
+                    "resolved": "/home/pwnholic/.code-review-graph",
+                },
+            ],
             "network_hosts": [
                 "github.com",
-                "raw.githubusercontent.com",
-                "registry.npmjs.org"
-            ]
+                "api.github.com",
+                "codeload.github.com",
+                "immunefi.com",
+                "ooosec.com",
+                "docs.meteora.ag",
+                "static.crates.io",
+                "index.crates.io",
+                "*.githubusercontent.com",
+                "*.npmjs.org",
+                "unpkg.com",
+                "cdn.jsdelivr.net",
+            ],
         },
         "sidebar_side": "right",
         "tool_permissions": {
             "tools": {
-                "fetch": {
+                "mcp:codebase-memory-mcp:get_architecture": {
                     "default": "allow"
+                },
+                "mcp:code-review-graph:embed_graph_tool": {
+                    "default": "allow",
+                },
+                "skill": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:get_commit": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:list_commits": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:create_or_update_file": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:search_issues": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:list_issues": {
+                    "default": "allow",
+                },
+                "write_file": {
+                    "default": "allow",
+                },
+                "delete_path": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:search_code": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:query_graph_tool": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:trace_path": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:find_large_functions_tool": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:get_graph_schema": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:query_graph": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:get_surprising_connections_tool": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:get_knowledge_gaps_tool": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:get_bridge_nodes_tool": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:get_hub_nodes_tool": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:search_graph": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:get_code_snippet": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:get_flow_tool": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:list_flows_tool": {
+                    "default": "allow",
+                },
+                "mcp:code-review-graph:build_or_update_graph_tool": {
+                    "default": "allow",
+                },
+                "mcp:codebase-memory-mcp:index_repository": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:get_me": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-exa-search:web_fetch_exa": {
+                    "default": "allow",
+                },
+                "fetch": {
+                    "default": "allow",
                 },
                 "create_directory": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:get_community_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:get_minimal_context_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:list_graph_stats_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:cross_repo_search_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:list_repos_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:get_architecture_overview_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:semantic_search_nodes_tool": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "terminal": {
                     "default": "allow",
@@ -74,7 +190,7 @@
             "provider": "Cline",
             "model": "cline-pass/deepseek-v4-flash",
             "enable_thinking": true,
-            "effort": "high",
+            "effort": "max",
         },
         "dock": "right",
         "favorite_models": [],
@@ -511,21 +627,28 @@
         },
     },
     "context_servers": {
+        "mcp-server-github": {
+            "enabled": true,
+            "remote": false,
+            "settings": {
+                "github_personal_access_token": "",
+            },
+        },
         "mcp-server-exa-search": {
             "enabled": true,
             "remote": false,
             "settings": {
-                "exa_api_key": "626ccca8-97ec-4cc1-b7dc-5d67c4147f20",
+                "exa_api_key": "",
                 "tools": "web_search_exa,get_code_context_exa,deep_researcher_start,deep_researcher_check",
             },
         },
+        // "code-review-graph": {
+        //     "command": "/home/pwnholic/.local/bin/code-review-graph",
+        //     "args": ["serve"],
+        // },
         "codebase-memory-mcp": {
             "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
             "args": [""],
-        },
-        "code-review-graph": {
-            "command": "/home/pwnholic/.local/bin/code-review-graph",
-            "args": ["serve"],
         },
     },
 }

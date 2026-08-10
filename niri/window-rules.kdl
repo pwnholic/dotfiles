@@ -101,3 +101,16 @@ window-rule {
         inactive-color "#7d0d2d"
     }
 }
+
+// Block development/browser apps from screencasts.
+window-rule {
+    match app-id=r#"^brave-browser$"#
+    // match app-id=r#"^dev\.zed\.Zed$"#
+    match app-id=r#"^code$"#
+    match app-id=r#"^discord$"#
+    match app-id=r#"^org.telegram.desktop$"#
+    match app-id=r#"^md.Obsidian$"#
+
+    block-out-from "screencast"
+}
+

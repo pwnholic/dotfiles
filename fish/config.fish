@@ -17,3 +17,5 @@ starship init fish | source
 
 # Vigolium CLI
 export PATH="/home/pwnholic/.local/bin:$PATH"
+
+fnm env --use-on-cd | source

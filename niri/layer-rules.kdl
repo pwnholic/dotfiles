@@ -73,3 +73,13 @@ layer-rule {
         }
     }
 }
+
+// Block out mako notifications from screencasts.
+layer-rule {
+    match namespace="^notifications$"
+    block-out-from "screencast"
+}
+    // Neovim GUI / terminal apps:
+    // Neovim sendiri biasanya TIDAK punya app-id,
+    // karena Neovim berjalan di dalam terminal.
+    

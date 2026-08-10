@@ -156,6 +156,19 @@ binds {
     // Focused-window capture (niri builtin → clipboard + screenshot-path).
     Ctrl+Print  hotkey-overlay-title="<b>Screenshot</b> Window" { screenshot-window; }
 
-    // ─── Wallpaper ───
-    Mod+Shift+W hotkey-overlay-title="<b>Next</b> Wallpaper" { spawn-sh "noctalia msg wallpaper-next"; }
+Mod+Shift+W hotkey-overlay-title="<b>Next</b> Wallpaper" {
+    spawn-sh "noctalia msg wallpaper-next";
+}
+
+// Mod+Alt+C hotkey-overlay-title="<b>Cast</b> Window" {
+//     set-dynamic-cast-window;
+// }
+//
+// Mod+Alt+M hotkey-overlay-title="<b>Cast</b> Monitor" {
+//     set-dynamic-cast-monitor;
+// }
+//
+// Mod+Alt+X hotkey-overlay-title="<b>Clear</b> Cast Target" {
+//     clear-dynamic-cast-target;
+// }
 }
