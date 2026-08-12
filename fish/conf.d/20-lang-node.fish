@@ -8,6 +8,8 @@
 
 fish_add_path --path $HOME/.local/share/fnm
 
+fish_add_path --path $HOME/.local/share/npm/bin
+
 # `fnm env` puts the active Node on PATH and registers an auto-switch hook for
 # .nvmrc / .node-version. Sourced whenever fnm is installed.
 if type -q fnm

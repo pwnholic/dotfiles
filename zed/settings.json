@@ -67,8 +67,14 @@
         "sidebar_side": "right",
         "tool_permissions": {
             "tools": {
+                "mcp:mcp-server-github:search_code": {
+                    "default": "allow",
+                },
+                "mcp:mcp-server-github:create_pull_request": {
+                    "default": "allow",
+                },
                 "mcp:codebase-memory-mcp:get_architecture": {
-                    "default": "allow"
+                    "default": "allow",
                 },
                 "mcp:code-review-graph:embed_graph_tool": {
                     "default": "allow",
@@ -642,10 +648,10 @@
                 "tools": "web_search_exa,get_code_context_exa,deep_researcher_start,deep_researcher_check",
             },
         },
-        // "code-review-graph": {
-        //     "command": "/home/pwnholic/.local/bin/code-review-graph",
-        //     "args": ["serve"],
-        // },
+        "code-review-graph": {
+            "command": "/home/pwnholic/.local/bin/code-review-graph",
+            "args": ["serve"],
+        },
         "codebase-memory-mcp": {
             "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
             "args": [""],

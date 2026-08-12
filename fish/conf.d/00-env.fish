@@ -15,11 +15,11 @@ set -gx VISUAL nvim
 set -gx PAGER less
 if type -q bat
     set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
-    set -gx MANROFFOPT "-c"
+    set -gx MANROFFOPT -c
 end
-set -gx LESS "-R"          # allow ANSI color escape codes in less
-set -gx LESSHISTFILE "-"   # do not write a ~/.lesshst file
-set -gx BAT_THEME "TwoDark"
+set -gx LESS -R # allow ANSI color escape codes in less
+set -gx LESSHISTFILE - # do not write a ~/.lesshst file
+set -gx BAT_THEME TwoDark
 
 # Neovim runtime
 # nvim locates its own runtime by default; pin VIMRUNTIME when the bundled
