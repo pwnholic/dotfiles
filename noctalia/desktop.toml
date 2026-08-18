@@ -1,0 +1,45 @@
+
+[desktop_widgets.grid]
+cell_size = 16
+major_interval = 4
+visible = false
+
+[desktop_widgets.widget.fancy_audio_visualizer]
+box_height = 528.0
+box_width = 592.0
+cx = 960.0
+cy = 600.0
+output = "eDP-1"
+rotation = 0.0
+type = "fancy_audio_visualizer"
+
+[desktop_widgets.widget.fancy_audio_visualizer.settings]
+background = false
+bar_width = 0.5
+bloom_intensity = 0.5
+fade_when_idle = true
+ring_opacity = 0.6
+rotation_speed = 0.6
+sensitivity = 1.2
+visualization_mode = "all"
+wave_thickness = 0.6
+
+
+[wallpaper]
+enabled = true
+fill_mode = "crop"
+fill_color = "surface"
+transition_duration = 1500
+edge_smoothness = 0.3
+transition_on_startup = false
+directory = "/home/pwnholic/Pictures/Wallpapers"
+per_monitor_directories = false
+
+[wallpaper.default]
+path = "/home/pwnholic/Pictures/Wallpapers/wallhaven-2136g6.jpg"
+
+[wallpaper.automation]
+interval_seconds = 1800
+order = "random"
+recursive = true
+enabled = true

@@ -1,0 +1,66 @@
+[user]
+	name = pwnholic
+	email = wigtono41@gmail.com
+
+[init]
+	defaultBranch = main   # default branch -> main instead of master
+
+[core]
+	editor = nvim   # use Neovim for commit messages, rebase, etc.
+	autocrlf = false          # don't touch OS line endings (Linux / LF)
+	excludesfile = ~/.config/git/ignore   # global ignore file
+	attributesfile = ~/.config/git/attributes   # global attributes
+
+[color]
+	ui = auto
+
+[column]
+	ui = auto
+
+[branch]
+	sort = -committerdate   # list branches by most recently worked on
+
+[tag]
+	sort = version:refname
+
+[diff]
+	algorithm = histogram    # cleaner diffs than default (myers)
+	colorMoved = plain       # highlight moved lines
+	mnemonicPrefix = true
+	renames = true           # detect renames automatically
+
+[merge]
+	conflictstyle = zdiff3   # clearer 3-way conflict markers
+
+[push]
+	default = simple
+	autoSetupRemote = true   # no manual -u on first push
+	followTags = true        # push tags referenced by pushed commits
+
+[pull]
+	rebase = true            # keep history linear
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+	updateRefs = true
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[commit]
+	verbose = true
+
+[rerere]
+	enabled = true           # remember conflict resolutions
+	autoupdate = true
+
+[help]
+	autocorrect = prompt     # ask before auto-correcting typos
+
+[status]
+	submoduleSummary = true
+
+[includeIf "gitdir:~/Code/work/"]
+	path = ~/.config/git/config.work

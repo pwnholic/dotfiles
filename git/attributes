@@ -1,0 +1,17 @@
+# Global git attributes (linked via core.attributesfile).
+
+# normalize line endings to LF for text files
+* text=auto
+
+# Binaries - never normalize
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

@@ -1,0 +1,77 @@
+[system.monitor]
+enabled = true
+cpu_temp_sensor_path = ""
+cpu_poll_seconds = 2.0
+gpu_poll_seconds = 5.0
+memory_poll_seconds = 2.0
+network_poll_seconds = 3.0
+disk_poll_seconds = 10.0
+
+[audio]
+enable_overdrive = true
+enable_sounds = true
+sound_volume = 0.5
+volume_change_sound = ""
+notification_sound = ""
+
+[battery]
+warning_threshold = 20
+
+[brightness]
+enable_ddcutil = false
+ignore_mmids = []
+minimum_brightness = 0.05
+sync_all_monitors = false
+
+[brightness.monitor.eDP-1]
+backend = "backlight"
+
+[idle]
+behavior_order = ["lock", "screen-off"]
+pre_action_fade_seconds = 2.0
+
+[idle.behavior.lock]
+timeout = 600
+action = "lock"
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 660         # 11 menit
+action = "screen_off"
+enabled = true
+
+[location]
+auto_locate = false
+address = "Yogyakarta, Indonesia"
+
+[nightlight]
+enabled = true
+force = false
+temperature_day = 6500
+temperature_night = 4000
+
+[notification]
+enable_daemon = true
+show_app_name = true
+show_actions = true
+position = "top_right"        # bar ada di atas; toast kanan-atas default aman
+layer = "top"
+scale = 1.0
+background_opacity = 0.97
+border = true
+offset_x = 20
+offset_y = 8
+monitors = []
+collapse_on_dismiss = true
+max_visible = 0
+history_retention_hours = 168 # simpan history 7 hari
+
+[calendar]
+enabled = false
+refresh_minutes = 15
+
+[weather]
+enabled = true
+refresh_minutes = 30
+unit = "metric"
+effects = true

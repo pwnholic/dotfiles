@@ -1,0 +1,6 @@
+# WORK identity (tpid-tono @ PT Technopartner).
+# Auto-applied to repos under the [includeIf] work dir in the main config.
+
+[user]
+	name = tpid-tono
+	email = tono@technopartner.co.id

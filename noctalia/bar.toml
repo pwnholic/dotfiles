@@ -1,0 +1,333 @@
+[bar]
+order = ["default"]
+
+[bar.default]
+position = "top"
+enabled = true
+thickness = 36
+background_opacity = 0.0
+reserve_space = true
+layer = "top"
+shadow = false
+border_width = 0.0
+margin_ends = 0
+margin_edge = 0
+padding = 6
+widget_spacing = 10
+hover_highlight = true
+scale = 1.0
+font_weight = 500
+capsule = true
+capsule_foreground = "on_surface"
+capsule_border = "outline"
+capsule_thickness = 0.86
+capsule_radius = 0.0
+capsule_padding = 10
+capsule_opacity = 1.0
+start = ["launcher", "workspaces", "taskbar"]
+center = ["media", "clock"]
+end = [
+  "group:network",
+  "group:audio",
+  "group:power",
+  "group:system",
+  "group:updates",
+  "group:wallhaven",
+  "group:status",
+  "tray",
+  "control-center",
+]
+
+[bar.default.dead_zone.actions]
+left = "panel-toggle launcher"
+middle = "exec kitty"
+scroll_up = "volume-up"
+scroll_down = "volume-down"
+back = "media previous"
+forward = "media next"
+
+[[bar.default.capsule_group]]
+id = "network"
+members = ["network", "net_rx", "net_tx", "dns-switcher"]
+foreground = "on_surface"
+border = "secondary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+accordion = true
+accordion_direction = "start"
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "audio"
+members = ["volume", "mic"]
+foreground = "on_surface"
+border = "tertiary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+accordion = false
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "status"
+members = ["notifications", "privacy", "caffeine", "nightlight", "theme_mode"]
+foreground = "on_surface"
+border = "secondary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+accordion = true
+accordion_direction = "start"
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "power"
+members = ["battery", "brightness"]
+foreground = "on_surface"
+border = "tertiary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+accordion = true
+accordion_direction = "start"
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "system"
+members = ["cpu", "temp", "gpu", "gpu_temp", "ram"]
+foreground = "on_surface"
+border = "primary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+accordion = true
+accordion_direction = "start"
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "updates"
+members = ["arch-updater"]
+foreground = "secondary"
+border = "secondary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "wallhaven"
+members = ["wallhaven", "recorder"]
+foreground = "tertiary"
+border = "tertiary"
+padding = 10.0
+radius = 0.0
+opacity = 1.0
+enabled = true
+accordion = true
+accordion_direction = "start"
+widget_spacing = 8
+
+[widget.workspaces]
+style = "minimal"
+capsule_border = "primary"
+label_source = "name"
+max_label_chars = 10
+focused_color = "primary"
+occupied_color = "secondary"
+empty_color = "secondary"
+urgent_color = "error"
+color = "primary"
+icon_color = "primary"
+
+[widget.launcher]
+capsule_border = "primary"
+color = "primary"
+icon_color = "primary"
+
+[widget.taskbar]
+pinned = []
+capsule_border = "secondary"
+show_active_indicator = true
+active_indicator_color = "primary"
+color = "secondary"
+icon_color = "secondary"
+
+[widget.clock]
+format = "{:%A, %d %B • %H:%M}"
+tooltip_format = "{:%A, %B %d, %Y}"
+capsule_border = "primary"
+color = "primary"
+icon_color = "primary"
+
+[widget.clock.actions]
+right = "panel-toggle control-center calendar"
+
+[widget.media]
+hide_when_no_media = true
+capsule_border = "secondary"
+color = "secondary"
+icon_color = "secondary"
+
+[widget.media.actions]
+back = "media previous"
+forward = "media next"
+
+[widget.tray]
+capsule_border = "secondary"
+color = "secondary"
+icon_color = "secondary"
+match_adjacent_spacing = true
+detached_panel = true
+drawer = true
+drawer_columns = 4
+drawer_item_size = 20.0
+
+[widget.control-center]
+capsule_border = "primary"
+color = "primary"
+icon_color = "primary"
+
+[widget.network]
+show_label = true
+vpn_status = "replace"
+color = "primary"
+icon_color = "primary"
+
+[widget.net_rx]
+type = "sysmon"
+stat = "net_rx"
+visualization = "none"
+show_value = true
+show_glyph = true
+network_speed_compact = true
+color = "tertiary"
+icon_color = "tertiary"
+
+[widget.net_tx]
+type = "sysmon"
+stat = "net_tx"
+visualization = "none"
+show_value = true
+show_glyph = true
+network_speed_compact = true
+color = "on_surface_variant"
+icon_color = "on_surface_variant"
+
+[widget.volume]
+device = "output"
+show_label = true
+mute_color = "error"
+color = "primary"
+icon_color = "primary"
+
+[widget.volume.actions]
+middle = "volume-mute"
+scroll_up = "volume-up 10%"
+scroll_down = "volume-down 10%"
+
+[widget.mic]
+type = "volume"
+device = "input"
+show_label = true
+mute_color = "error"
+color = "secondary"
+icon_color = "secondary"
+
+[widget.mic.actions]
+middle = "mic-mute"
+scroll_up = "mic-volume-up 5%"
+scroll_down = "mic-volume-down 5%"
+
+[widget.notifications]
+color = "primary"
+icon_color = "primary"
+
+[widget.privacy]
+hide_inactive = true
+active_color = "primary"
+inactive_color = "outline"
+color = "error"
+icon_color = "error"
+
+[widget.caffeine]
+color = "tertiary"
+icon_color = "tertiary"
+
+[widget.nightlight]
+color = "secondary"
+icon_color = "secondary"
+
+[widget.theme_mode]
+color = "on_surface_variant"
+icon_color = "on_surface_variant"
+
+[widget.battery]
+display_mode = "glyph"
+show_label = true
+label_content = "percent"
+hide_when_plugged = false
+warning_color = "error"
+color = "primary"
+icon_color = "primary"
+
+
+[widget.brightness]
+show_label = true
+color = "tertiary"
+icon_color = "tertiary"
+
+[widget.brightness.actions]
+scroll_up = "brightness-up"
+scroll_down = "brightness-down"
+
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+visualization = "none"
+show_value = true
+highlight_color = "error"
+color = "primary"
+icon_color = "primary"
+
+[widget.ram]
+type = "sysmon"
+stat = "ram_pct"
+visualization = "none"
+show_value = true
+highlight_color = "error"
+color = "secondary"
+icon_color = "secondary"
+
+[widget.gpu]
+type = "sysmon"
+stat = "gpu_usage"
+visualization = "none"
+show_value = true
+highlight_color = "error"
+color = "tertiary"
+icon_color = "tertiary"
+
+[widget.temp]
+type = "sysmon"
+stat = "cpu_temp"
+visualization = "none"
+show_value = true
+highlight_color = "error"
+color = "error"
+icon_color = "error"
+
+[widget.gpu_temp]
+type = "sysmon"
+stat = "gpu_temp"
+visualization = "none"
+show_value = true
+highlight_color = "error"
+color = "error"
+icon_color = "error"

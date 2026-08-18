@@ -1,0 +1,34 @@
+[dock]
+enabled = true
+position = "bottom"
+active_monitor_only = false
+monitors = []
+
+icon_size = 40
+main_axis_padding = 14
+cross_axis_padding = 8
+item_spacing = 6
+background_opacity = 1.0
+border = "primary"
+border_width = 1.5
+shadow = true
+radius = 0
+margin_edge = 20
+show_running = true
+auto_hide = true
+smart_auto_hide = false
+reserve_space = false
+layer = "top"
+active_scale = 1.0
+inactive_scale = 0.85
+magnification = true
+magnification_scale = 1.35
+active_opacity = 1.0
+inactive_opacity = 0.85
+show_instance_count = true
+show_dots = false
+
+launcher_icon = ""
+launcher_position = "none"
+
+pinned = ["firefox", "kitty", "zed", "obsidian", "discord", "spotify"]

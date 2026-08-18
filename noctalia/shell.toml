@@ -1,0 +1,189 @@
+[storage]
+key_source = "secret-service"
+
+[shell]
+corner_radius_scale = 0.0
+button_borders = true
+input_borders = true
+popup_borders = true
+card_borders = false
+popup_shadows = true
+font_family = "Iosevka"
+lang = ""
+time_format = "{:%H:%M}"
+date_format = "%A, %x"
+external_ip_enabled = false
+telemetry_enabled = false
+setup_wizard_enabled = true
+polkit_agent = true
+password_style = "default"
+avatar_path = "~/Pictures/avatar.png"
+settings_show_advanced = true
+settings_window_translucent = false
+show_location = false
+launch_apps_as_systemd_services = true
+screen_time_enabled = false
+app_icon_colorize = false
+clipboard_enabled = true
+clipboard_keep_from_closed_apps = true
+clipboard_history_max_entries = 100
+clipboard_confirm_clear_history = true
+clipboard_auto_paste = "auto"
+clipboard_image_action_command = "satty -f -"
+shared_gl_context = true
+disable_mipmaps = false
+
+[shell.keyboard_layout.custom_labels]
+"English (US)" = "US"
+
+[shell.animation]
+enabled = true
+speed = 1.0
+
+[shell.shadow]
+direction = "down"
+alpha = 0.6
+
+[shell.panel]
+transparency_mode = "solid"
+borders = true
+shadow = true
+list_item_background = false
+floating_layer = "overlay"
+launcher_placement = "floating"
+clipboard_placement = "floating"
+control_center_placement = "floating"
+wallpaper_placement = "floating"
+session_placement = "floating"
+polkit_placement = "floating"
+launcher_position = "center"
+session_position = "center"
+clipboard_position = "auto"
+polkit_position = "center"
+floating_offset = 8
+open_near_click_control_center = false
+open_near_click_launcher = false
+open_near_click_clipboard = false
+open_near_click_wallpaper = false
+open_near_click_session = false
+
+[shell.launcher]
+categories = true
+show_icons = true
+compact = false
+app_grid = false
+sort_by_usage = true
+fetch_exchange_rates = false # privacy
+provider_prefix = "/"
+auto_paste = "auto"
+
+[shell.launcher.providers.calculator]
+prefix = "calc"
+global = true
+
+[shell.launcher.providers.emoji]
+prefix = "emo"
+
+[shell.launcher.providers.session]
+prefix = "session"
+global = false
+
+[shell.launcher.providers.wallpaper]
+prefix = "wall"
+
+[shell.launcher.providers.windows]
+prefix = "win"
+
+[shell.launcher.dmenu.entry.ssh]
+command = "awk '/^Host /{print $2}' ~/.ssh/config"
+exec = "kitty ssh {selection}"
+prefix = "ssh"
+glyph = "server"
+global = false
+
+[shell.screen_corners]
+enabled = false
+size = 32
+
+[hot_corners]
+enabled = true
+delay_ms = 300
+
+[hot_corners.top_left]
+action = "none"
+
+[hot_corners.top_right]
+action = "control-center"
+
+[hot_corners.bottom_left]
+action = "launcher"
+
+[hot_corners.bottom_right]
+action = "command"
+command = "noctalia msg session lock"
+
+[shell.mpris]
+blacklist = []
+
+[shell.privacy]
+mic_filter_regex = ""
+cam_filter_regex = ""
+screen_filter_regex = ""
+
+[shell.screenshot]
+save_to_file = true
+directory = ""
+filename_pattern = ""
+copy_to_clipboard = true
+freeze_screen = true
+confirm_region = false
+remember_last_region = false
+show_cursor = false
+pipe_to_command = false
+
+[shell.greeter_sync]
+auto_sync = false
+
+[osd]
+position = "bottom_center"
+position_vertical = "bottom_center"
+orientation = "horizontal"
+scale = 1.0
+background_opacity = 0.97
+border = true
+offset_x = 20
+offset_y = 12
+
+[osd.kinds]
+volume = true
+volume_output = true
+volume_input = true
+brightness = true
+wifi = true
+bluetooth = true
+power_profile = true
+caffeine = true
+nightlight = true
+dnd = true
+lock_keys = true
+keyboard_layout = true
+media = true
+privacy = true
+keyboard_backlight = true
+
+[accessibility]
+ui_scale = 1.0        # eDP-1 1920x1200 @ 16" bukan HiDPI
+high_contrast = false
+
+[keybinds]
+validate = ["return", "kp_enter"]
+cancel = ["escape"]
+left = ["left"]
+right = ["right"]
+up = ["up"]
+down = ["down"]
+tab_next = ["tab"]
+tab_previous = ["shift+tab", "iso_left_tab"]
+copy = ["ctrl+c"]
+save = ["ctrl+s"]
+delete = ["del"]

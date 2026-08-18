@@ -1,0 +1,31 @@
+[control_center]
+sidebar = "compact"
+sidebar_section = "compact"
+width = 760
+show_shortcut_labels = true
+show_session_button = true
+hidden_tabs = []
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "nightlight"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "power_profile"
+
+[[control_center.shortcuts]]
+type = "session"
+
+[control_center.calendar]
+show_events_card = false
+show_week_numbers = false
+event_date_format = "%A %e %B"
+event_time_format = "%H:%M"

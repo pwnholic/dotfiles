@@ -1,0 +1,9 @@
+[Added Associations]
+x-scheme-handler/tonsite=org.telegram.desktop.desktop;
+
+[Default Applications]
+inode/directory=org.kde.dolphin.desktop;
+text/plain=org.gnome.TextEditor.desktop;
+x-scheme-handler/http=firefox.desktop;
+x-scheme-handler/https=firefox.desktop;
+x-scheme-handler/tonsite=org.telegram.desktop.desktop

@@ -1,0 +1,29 @@
+[lockscreen]
+enabled = true
+lock_before_suspend = true
+fingerprint = true
+allow_empty_password = false
+blurred_desktop = false
+blur_intensity = 1.0
+tint_intensity = 1.0
+wallpaper = ""
+monitors = []
+
+[lockscreen_widgets]
+enabled = true
+
+[lockscreen_widgets.widget.clock_main]
+type = "clock"
+cx = 960.0
+cy = 300.0
+box_width = 0.0
+box_height = 0.0
+rotation = 0.0
+
+[lockscreen_widgets.widget.clock_main.settings]
+clock_style = "digital"
+format = "{:%H:%M}"
+color = "on_surface"
+shadow = true
+background = false
+center_text = true

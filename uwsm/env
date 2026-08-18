@@ -1,0 +1,27 @@
+# ~/.config/uwsm/env — sourced by uwsm at session start when using the
+# "Hyprland (uwsm-managed)" entry (hyprland-uwsm.desktop). Session-wide vars
+# live here; they reach every process the session envelope starts (xdg-autostart,
+# systemd units, Hyprland, child apps, ...).
+
+export BROWSER=firefox
+export TERM=xterm-kitty
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME="qt6ct"
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+export HYPRCURSOR_THEME="Bibata-Modern-Ice"
+export HYPRCURSOR_SIZE=24
+export XCURSOR_THEME="Bibata-Modern-Ice"
+export XCURSOR_SIZE=24
+
+# ── GPU / NVIDIA variables — DO NOT define here ─────────────────────────
+# GPU/NVIDIA env is set in ~/.config/hypr/config/environment.lua via hl.env()
+# (more up-to-date: NVD_BACKEND=direct + AQ_DRM_DEVICES for the hybrid
+# Intel iGPU + NVIDIA dGPU setup). The lines below are kept for reference
+# only — they are OUTDATED (GBM_BACKEND and __GL_GSYNC_ALLOWED are no longer
+# recommended on modern drivers per the Nvidia wiki) and enabling them would
+# just double-set vars Hyprland already handles.
+#
+# export GBM_BACKEND=nvidia-drm
+# export __GLX_VENDOR_LIBRARY_NAME=nvidia
+# export LIBVA_DRIVER_NAME=nvidia
+# export __GL_GSYNC_ALLOWED=1
