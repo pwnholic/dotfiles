@@ -43,3 +43,6 @@ Crashpad/
 
 # === Misc ===
 .DS_Store
+
+go/
+pgcli/
