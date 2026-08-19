@@ -97,10 +97,9 @@ hl.config({
     },
     misc = {
         -- Global UI font for Hyprland-rendered text (splash, notifications,
-        -- config errors). Family "Iosevka" verified installed via fc-list;
-        -- the "Iosevka Nerd Font" name does not resolve in fontconfig.
-        font_family = "Iosevka",
-        splash_font_family = "Iosevka",
+        -- config errors). Resolves to the installed "Iosevka Nerd Font" family.
+        font_family = "Iosevka Nerd Font",
+        splash_font_family = "Iosevka Nerd Font",
         col = {
             splash = S.palette.primary,
         },
