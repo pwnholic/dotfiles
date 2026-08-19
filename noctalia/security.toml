@@ -4,8 +4,8 @@ lock_before_suspend = true
 fingerprint = true
 allow_empty_password = false
 blurred_desktop = false
-blur_intensity = 1.0
-tint_intensity = 1.0
+blur_intensity = 0.3
+tint_intensity = 0.35
 wallpaper = "/home/pwnholic/Pictures/Wallpapers/wallhaven-2136g6.jpg"
 monitors = []
 
