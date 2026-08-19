@@ -12,7 +12,7 @@ hl.monitor({
 	output = S.monitors.external,
 	mode = "1920x1080@100",
 	position = "0x0",
-	scale = 1,
+	scale = 1.0,
 	bitdepth = 10,
 	cm = "auto",
 })
@@ -21,7 +21,7 @@ hl.monitor({
 	output = S.monitors.internal,
 	mode = "1920x1200@144",
 	position = "1920x0",
-	scale = 1,
+	scale = 1.0,
 	-- 10-bit + cm=auto: panel runs XRGB2101010. Note: hardwareCursorsInUse is
 	-- false either way (tested at 8-bit too), so this is NOT a cursor tradeoff;
 	-- software cursor on this hybrid Intel/NVIDIA setup is expected.

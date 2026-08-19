@@ -102,6 +102,12 @@ hl.window_rule({
 	match = { class = "^(com\\.obsproject\\.Studio)$" },
 	monitor = S.monitors.primary,
 })
+-- Privacy: blank Obsidian so its content NEVER appears in screen shares / recordings.
+-- (Hyprland >= 0.50; draws a black rectangle over the window during capture.)
+hl.window_rule({
+	match = { class = "^(md\\.obsidian\\.Obsidian)$" },
+	no_screen_share = true,
+})
 -- OBS projector / fullscreen previews: float, always on top, no focus steal
 hl.window_rule({
 	match = { class = "^(com\\.obsproject\\.Studio)$", title = "^(.*)[Pp]rojector(.*)$" },
