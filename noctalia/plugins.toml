@@ -1,0 +1,52 @@
+[plugins]
+auto_update = false
+enabled = [
+  "yuuto/arch-updater",
+  "noctalia/wallhaven",
+  "nightwatch75/dns-switcher",
+  "noctalia/screen_recorder",
+]
+
+[plugin_settings."yuuto/arch-updater"]
+aur_helper = "paru"
+auto_check_hours = 6
+panel_placement = "floating"
+
+[widget.arch-updater]
+type = "yuuto/arch-updater:widget"
+glyph = "package"
+show_count = true
+check_arch_news = false
+flatpak_enabled = false
+hide_on_empty = true
+
+[plugin_settings."nightwatch75/dns-switcher"]
+panel_placement = "floating"
+privilege_command = "pkexec"
+
+[widget.dns-switcher]
+type = "nightwatch75/dns-switcher:dns-switcher"
+show_label = true
+color = "secondary"
+icon_color = "tertiary"
+
+[plugin_settings."noctalia/wallhaven"]
+api_key = ""
+browser_placement = "floating"
+download_dir = "/home/pwnholic/Pictures/Wallpapers"
+
+[widget.wallhaven]
+type = "noctalia/wallhaven:wallhaven"
+glyph = "photo"
+
+[plugin_settings."noctalia/screen_recorder"]
+audio_bitrate = 128
+audio_source = "both"
+copy_to_clipboard = true
+video_source = "focused"
+hide_inactive = false
+
+[widget.recorder]
+type = "noctalia/screen_recorder:recorder"
+color = "secondary"
+icon_color = "tertiary"
