@@ -42,18 +42,6 @@ hl.window_rule({
 	float = true,
 	size = { "monitor_w*0.70", "monitor_h*0.70" },
 })
-hl.window_rule({
-	match = {
-		class = "^(org\\.kde\\.dolphin)$",
-		title = "negative:^(Moving.*|Create New.*|Extract.*|Compress.*|Copying.*|Progress.*|Configure.*|Properties.*|Choose\\sApplication.*)$",
-	},
-	float = true,
-	size = { "max(monitor_w, monitor_h)*0.50", "min(monitor_w, monitor_h)*0.55" },
-	move = {
-		"max(20,min(cursor_x-(window_w*0.50),monitor_w-window_w+20))", -- X axis clamping
-		"max(20,min(cursor_y-50,monitor_h-window_h+20))", -- Y axis clamping
-	},
-})
 
 -- Opacity overrides: one rule instead of three (terminals + media players get
 -- full opacity so terminal-configured transparency / video pipelines win).
