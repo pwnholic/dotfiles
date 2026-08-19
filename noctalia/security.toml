@@ -6,7 +6,7 @@ allow_empty_password = false
 blurred_desktop = false
 blur_intensity = 1.0
 tint_intensity = 1.0
-wallpaper = ""
+wallpaper = "/home/pwnholic/Pictures/Wallpapers/wallhaven-2136g6.jpg"
 monitors = []
 
 [lockscreen_widgets]
