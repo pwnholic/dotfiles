@@ -43,6 +43,19 @@ hl.window_rule({
 	size = { "monitor_w*0.70", "monitor_h*0.70" },
 })
 
+hl.window_rule({
+	match = {
+		class = "^(org\\.gnome\\.Nautilus)$",
+		title = "negative:^(Moving.*|Create New.*|Extract.*|Compress.*|Copying.*|Progress.*|Configure.*|Properties.*|Choose\\sApplication.*)$",
+	},
+	float = true,
+	size = { "max(monitor_w, monitor_h)*0.50", "min(monitor_w, monitor_h)*0.55" },
+	move = {
+		"max(20,min(cursor_x-(window_w*0.50),monitor_w-window_w+20))", -- X axis clamping
+		"max(20,min(cursor_y-50,monitor_h-window_h+20))", -- Y axis clamping
+	},
+})
+
 -- Opacity overrides: one rule instead of three (terminals + media players get
 -- full opacity so terminal-configured transparency / video pipelines win).
 -- Terminal class list is shared with decorations.lua via settings.classes.
@@ -76,7 +89,7 @@ local FLOAT_MATCHES = {
 	},
 	{ initial_title = "^(Open File)$" },
 	{ class = "^([Xx]dg-desktop-portal-gtk)$" },
-	{ title = "^(File Upload|Choose wallpaper|Library)(.*)$" },
+	{ title = "^(Enter name of file to save to.*|Save As.*|Open File.*)$" },
 	{ class = "^(.*dialog.*)$" },
 	{ title = "^(.*dialog.*)$" },
 	{ class = "^(hyprland-share-picker)$" },
@@ -84,6 +97,14 @@ local FLOAT_MATCHES = {
 for _, m in ipairs(FLOAT_MATCHES) do
 	hl.window_rule({ match = m, float = true })
 end
+
+-- Portal dialogs: constrain size so they don't blow up to monitor dimensions
+hl.window_rule({
+	match = { class = "^([Xx]dg-desktop-portal-gtk)$" },
+	float = true,
+	center = true,
+	size = { "max(monitor_w, monitor_h)*0.55", "max(monitor_w, monitor_h)*0.55" },
+})
 
 -- Streaming & recording apps
 hl.window_rule({
