@@ -197,6 +197,7 @@ icon_color = "primary"
 [widget.network]
 show_label = true
 vpn_status = "replace"
+show_vpn_label = true
 color = "primary"
 icon_color = "primary"
 

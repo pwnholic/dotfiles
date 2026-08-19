@@ -1,5 +1,3 @@
-# === SECRETS — JANGAN PERNAH COMMIT ===
-# OBS Studio WebSocket password
 obs-studio/plugin_config/obs-websocket/
 
 # OBS stream keys (YouTube/Twitch/RTMP stream key = kredensial langsung)
@@ -9,17 +7,14 @@ obs-studio/profiler_data/
 obs-studio/user.ini
 obs-studio/global.ini
 
-# Kunci API aplikasi
 noctalia/plugins.toml
 
-# === Tokens / sesi browser & editor ===
 BraveSoftware/
 VSCodium/
 mozilla/
 github-copilot/
 obsidian/
 
-# === Aplikasi dengan data akun/sesi user ===
 spotify/
 telegram-desktop/
 atuin/
@@ -29,7 +24,6 @@ gpu-screen-recorder/
 pi/
 htop/
 
-# === DB & cache & log ===
 *.db
 *.db-wal
 *.db-shm
@@ -41,7 +35,6 @@ Cache/
 Crashpad/
 *.log
 
-# === Misc ===
 .DS_Store
 
 go/
