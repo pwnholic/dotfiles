@@ -27,10 +27,10 @@ capsule_opacity = 1.0
 start = ["launcher", "workspaces", "taskbar"]
 center = ["media", "clock"]
 end = [
-  "group:network",
   "group:audio",
   "group:power",
   "group:system",
+  "group:network",
   "group:updates",
   "group:wallhaven",
   "group:status",
@@ -196,7 +196,7 @@ color = "primary"
 icon_color = "primary"
 
 [widget.network]
-show_label = true
+show_label = false
 vpn_status = "replace"
 show_vpn_label = true
 color = "primary"
