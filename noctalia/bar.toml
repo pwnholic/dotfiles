@@ -48,7 +48,7 @@ forward = "media next"
 
 [[bar.default.capsule_group]]
 id = "network"
-members = ["network", "net_rx", "net_tx", "dns-switcher"]
+members = ["network", "net_rx", "net_tx"]
 foreground = "on_surface"
 border = "secondary"
 padding = 10.0

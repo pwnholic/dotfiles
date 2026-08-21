@@ -3,7 +3,6 @@ auto_update = false
 enabled = [
   "yuuto/arch-updater",
   "noctalia/wallhaven",
-  "nightwatch75/dns-switcher",
   "noctalia/screen_recorder",
 ]
 
@@ -19,16 +18,6 @@ show_count = true
 check_arch_news = false
 flatpak_enabled = false
 hide_on_empty = true
-
-[plugin_settings."nightwatch75/dns-switcher"]
-panel_placement = "floating"
-privilege_command = "pkexec"
-
-[widget.dns-switcher]
-type = "nightwatch75/dns-switcher:dns-switcher"
-show_label = true
-color = "secondary"
-icon_color = "tertiary"
 
 [plugin_settings."noctalia/wallhaven"]
 api_key = ""
