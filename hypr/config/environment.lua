@@ -14,6 +14,6 @@ hl.env("NVD_BACKEND", "direct") -- VA-API direct backend
 
 -- Hybrid GPU: Intel iGPU primary renderer (battery), NVIDIA dGPU included for external HDMI
 -- Symlinks created by /etc/udev/rules.d/99-hypr-gpu-symlinks.rules (colon-free, per Multi-GPU wiki)
-hl.env("AQ_DRM_DEVICES", "/dev/dri/intel-igpu:/dev/dri/nvidia-dgpu")
+-- hl.env("AQ_DRM_DEVICES", "/dev/dri/intel-igpu:/dev/dri/nvidia-dgpu")
 
 hl.env("HYPRCURSOR_SIZE", "20")

@@ -13,7 +13,6 @@ export HYPRCURSOR_SIZE=24
 export XCURSOR_THEME="Bibata-Modern-Ice"
 export XCURSOR_SIZE=24
 
-# ── GPU / NVIDIA variables — DO NOT define here ─────────────────────────
 # GPU/NVIDIA env is set in ~/.config/hypr/config/environment.lua via hl.env()
 # (more up-to-date: NVD_BACKEND=direct + AQ_DRM_DEVICES for the hybrid
 # Intel iGPU + NVIDIA dGPU setup). The lines below are kept for reference
@@ -25,3 +24,4 @@ export XCURSOR_SIZE=24
 # export __GLX_VENDOR_LIBRARY_NAME=nvidia
 # export LIBVA_DRIVER_NAME=nvidia
 # export __GL_GSYNC_ALLOWED=1
+export AQ_DRM_DEVICES="/dev/dri/intel-igpu:/dev/dri/nvidia-dgpu"

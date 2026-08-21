@@ -103,7 +103,7 @@ hl.window_rule({
 	match = { class = "^([Xx]dg-desktop-portal-gtk)$" },
 	float = true,
 	center = true,
-	size = { "max(monitor_w, monitor_h)*0.55", "max(monitor_w, monitor_h)*0.55" },
+	size = { "max(monitor_w, monitor_h)*0.60", "max(monitor_w, monitor_h)*0.40" },
 })
 
 -- Streaming & recording apps
