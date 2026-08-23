@@ -27,6 +27,8 @@ download_dir = "/home/pwnholic/Pictures/Wallpapers"
 [widget.wallhaven]
 type = "noctalia/wallhaven:wallhaven"
 glyph = "photo"
+color = "tertiary"
+icon_color = "tertiary"
 
 [plugin_settings."noctalia/screen_recorder"]
 audio_bitrate = 128

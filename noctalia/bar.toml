@@ -32,7 +32,6 @@ end = [
   "group:system",
   "group:network",
   "group:updates",
-  "group:wallhaven",
   "group:status",
   "tray",
   "control-center",
@@ -73,7 +72,7 @@ widget_spacing = 8
 
 [[bar.default.capsule_group]]
 id = "status"
-members = ["notifications", "privacy", "caffeine", "nightlight", "theme_mode"]
+members = ["notifications", "privacy", "caffeine", "nightlight", "theme_mode", "wallhaven", "recorder"]
 foreground = "on_surface"
 border = "secondary"
 padding = 10.0
@@ -99,7 +98,7 @@ widget_spacing = 8
 
 [[bar.default.capsule_group]]
 id = "system"
-members = ["cpu", "temp", "gpu", "gpu_temp", "ram"]
+members = ["cpu", "temp", "gpu", "gpu_temp","ram"]
 foreground = "on_surface"
 border = "primary"
 padding = 10.0
@@ -119,19 +118,6 @@ padding = 10.0
 radius = 0.0
 opacity = 1.0
 enabled = true
-widget_spacing = 8
-
-[[bar.default.capsule_group]]
-id = "wallhaven"
-members = ["wallhaven", "recorder"]
-foreground = "tertiary"
-border = "tertiary"
-padding = 10.0
-radius = 0.0
-opacity = 1.0
-enabled = true
-accordion = true
-accordion_direction = "start"
 widget_spacing = 8
 
 [widget.workspaces]
