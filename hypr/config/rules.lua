@@ -117,6 +117,17 @@ hl.window_rule({
 	match = { class = "^(md\\.obsidian\\.Obsidian)$" },
 	no_screen_share = true,
 })
+
+hl.window_rule({
+	match = { class = "^(org\\.telegram\\.desktop)$" },
+	no_screen_share = true,
+})
+
+hl.window_rule({
+	match = { class = "discord" },
+	no_screen_share = true,
+})
+
 -- OBS projector / fullscreen previews: float, always on top, no focus steal
 hl.window_rule({
 	match = { class = "^(com\\.obsproject\\.Studio)$", title = "^(.*)[Pp]rojector(.*)$" },
