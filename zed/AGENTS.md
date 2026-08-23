@@ -1,44 +1,205 @@
 # AGENTS.md
 
-## Purpose
+# Repository Agent Operating System
 
-This file is the **top-level task router and operating policy** for AI agents working in this repository.
+This file is the **top-level orchestration and task-routing instruction** for AI agents operating in this repository.
 
-Do not treat this file as the complete engineering or security methodology.
+`AGENTS.md` does not contain the complete security-research or software-engineering methodology. Its primary responsibility is to determine **which specialized operating mode applies to the current task** and load the corresponding instruction file.
 
-Instead, determine which operational mode applies to the current task and load the corresponding instruction file:
-
-- `SECURITY_RESEARCHER.md` — security research, vulnerability discovery, exploit analysis, threat modeling, adversarial analysis, smart-contract security, protocol analysis, bug bounty research, and security validation.
-- `SOFTWARE_ENGINEER.md` — software development, implementation, refactoring, debugging, testing, architecture, performance, maintainability, developer tooling, and ordinary engineering tasks.
-
-The agent must select the appropriate mode **before performing substantive work**.
+The specialized instruction files are located in the **same directory as this file**.
 
 ---
 
-## 1. Instruction Priority
+## 1. Instruction File Layout
 
-Instruction resolution order:
+The repository must maintain the following structure:
 
-1. System and platform instructions
-2. Repository-level instructions with higher precedence, if explicitly applicable
-3. `AGENTS.md`
-4. Selected operational mode:
-   - `SECURITY_RESEARCHER.md`
-   - `SOFTWARE_ENGINEER.md`
+```text
+<repository-root>/
+├── AGENTS.md
+├── SECURITY_RESEARCHER.md
+└── SOFTWARE_ENGINEER.md
+```
 
-5. Task-specific instructions from the user
+The specialized instruction files are therefore resolved relative to `AGENTS.md`:
 
-When two instruction sources conflict, follow the higher-priority source.
+```text
+./SECURITY_RESEARCHER.md
+./SOFTWARE_ENGINEER.md
+```
 
-Never silently ignore a relevant instruction file.
+Do not assume they exist inside another directory such as:
+
+```text
+.github/
+docs/
+security/
+src/
+agent/
+agents/
+.ai/
+```
+
+unless the repository explicitly defines another instruction hierarchy.
+
+The three files form one instruction system:
+
+```text
+                         ┌─────────────────────┐
+                         │      AGENTS.md      │
+                         │  Task Router /      │
+                         │  Orchestrator       │
+                         └──────────┬──────────┘
+                                    │
+                     ┌──────────────┴──────────────┐
+                     │                             │
+                     ▼                             ▼
+       ┌────────────────────────┐    ┌────────────────────────┐
+       │ SECURITY_RESEARCHER.md │    │ SOFTWARE_ENGINEER.md   │
+       │ Security Methodology   │    │ Engineering Methodology│
+       └────────────────────────┘    └────────────────────────┘
+```
 
 ---
 
-## 2. Task Classification
+# 2. Core Responsibility
 
-Before acting, classify the user's request into one of these modes:
+Before performing substantive work, the agent must determine the **primary objective of the task**.
 
-### `SECURITY`
+The agent must classify the task into exactly one of:
+
+```text
+MODE=SECURITY
+MODE=ENGINEERING
+MODE=BOTH
+```
+
+The selected mode determines which specialized instruction file(s) must be used.
+
+---
+
+# 3. Mode Selection
+
+## MODE=SECURITY
+
+Select:
+
+```text
+./SECURITY_RESEARCHER.md
+```
+
+when the primary objective is to discover, analyze, validate, reproduce, or reason about security weaknesses or attacker behavior.
+
+Examples include:
+
+- vulnerability research
+- bug bounty research
+- exploit analysis
+- exploit development
+- smart-contract security
+- blockchain protocol security
+- DeFi security
+- protocol attack-surface analysis
+- adversarial analysis
+- threat modeling
+- privilege escalation analysis
+- authorization bypass analysis
+- authentication attacks
+- cryptographic misuse
+- race-condition analysis
+- TOCTOU analysis
+- state-machine attacks
+- cross-contract attacks
+- cross-component attacks
+- trust-boundary analysis
+- oracle manipulation
+- replay attacks
+- transaction-ordering attacks
+- economic attacks
+- MEV-related security analysis
+- denial-of-service analysis
+- invariant violations
+- security-sensitive dependency analysis
+- upgradeability attacks
+- initialization attacks
+- governance attacks
+- exploitability analysis
+- root-cause analysis of security vulnerabilities
+- investigating behavior that may not be visible from straightforward source inspection
+- finding vulnerabilities in systems that are already audited or heavily hardened
+
+Security mode applies whenever the primary purpose is **attacker-oriented understanding** of the system.
+
+---
+
+# 4. MODE=ENGINEERING
+
+Select:
+
+```text
+./SOFTWARE_ENGINEER.md
+```
+
+when the primary objective is to build, modify, maintain, debug, test, optimize, or improve software without security research being the primary objective.
+
+Examples include:
+
+- implementing features
+- fixing ordinary bugs
+- refactoring
+- API implementation
+- API design
+- architecture
+- code organization
+- test development
+- unit testing
+- integration testing
+- end-to-end testing
+- CI/CD
+- build systems
+- dependency management
+- package management
+- database migrations
+- performance optimization
+- developer tooling
+- observability
+- reliability
+- maintainability
+- documentation
+- code generation
+- infrastructure changes
+- deployment automation
+- ordinary debugging
+
+Engineering mode applies when the primary objective is **software construction or maintenance**.
+
+---
+
+# 5. MODE=BOTH
+
+Some tasks genuinely require both security research and software engineering.
+
+Examples:
+
+- discover a vulnerability and patch it
+- audit code and implement the remediation
+- develop an exploit and then write a regression test
+- investigate an attack and modify the implementation
+- harden a smart contract
+- audit a protocol and implement mitigations
+- reproduce a vulnerability and create a permanent test
+- perform security analysis and subsequently refactor the vulnerable component
+
+For these tasks, load both files:
+
+```text
+./SECURITY_RESEARCHER.md
+./SOFTWARE_ENGINEER.md
+```
+
+Use the following precedence between the two specialized methodologies:
+
+### During security discovery and validation
 
 Use:
 
@@ -46,37 +207,22 @@ Use:
 SECURITY_RESEARCHER.md
 ```
 
-when the primary objective is to discover, analyze, validate, exploit, reproduce, or reason about security weaknesses.
+as the primary methodology.
 
-Typical signals include:
+The agent must prioritize:
 
-- vulnerability research
-- bug bounty
-- exploit development
-- smart-contract security
-- protocol security
-- adversarial analysis
-- threat modeling
-- attack-surface analysis
-- privilege escalation
-- authentication or authorization flaws
-- cryptographic misuse
-- economic/security invariants
-- MEV/security analysis
-- state-machine attacks
-- cross-contract or cross-component attacks
-- trust-boundary analysis
-- invariant violations
-- exploitability analysis
-- postmortem/root-cause security analysis
-- finding bugs that are intentionally difficult to detect
-- analyzing behavior beyond obvious source-code weaknesses
+- attacker capabilities
+- threat models
+- attack surfaces
+- trust boundaries
+- invariants
+- exploitability
+- unintended behavior
+- state transitions
+- economic incentives
+- cross-component interactions
 
-The security mode applies even when the task also requires coding.
-
----
-
-### `ENGINEERING`
+### During implementation and remediation
 
 Use:
 
@@ -84,322 +230,653 @@ Use:
 SOFTWARE_ENGINEER.md
 ```
 
-when the primary objective is to build, modify, maintain, test, debug, or improve software.
+as the primary methodology.
 
-Typical signals include:
+The agent must prioritize:
 
-- implementing a feature
-- fixing an ordinary bug
-- refactoring
-- API design
+- correctness
+- maintainability
 - architecture
-- code review for maintainability/correctness
 - testing
-- CI/CD
-- build systems
-- dependency management
-- performance optimization
-- developer tooling
-- documentation
-- code generation
-- migrations
-- database changes
-- observability
-- reliability engineering
+- regression prevention
+- readability
+- reliability
+- performance
+- integration quality
 
-The engineering mode applies when security is not the primary objective.
+Security reasoning must continue during implementation. Engineering constraints must never be used as a reason to prematurely dismiss a potentially exploitable security condition.
 
 ---
 
-## 3. Dual-Mode Tasks
+# 6. Primary Objective Rule
 
-Some tasks legitimately require both modes.
+Classification must be based on the **actual objective of the task**, not merely on technologies or keywords.
+
+Do not classify a task based solely on words such as:
+
+```text
+security
+audit
+Solidity
+Rust
+smart contract
+API
+backend
+Docker
+cryptography
+```
+
+Instead determine what the user is actually trying to accomplish.
 
 Examples:
 
-- implementing a security fix
-- writing an exploit reproducer and then patching it
-- hardening a smart contract
-- auditing a feature and modifying the vulnerable implementation
-- researching a vulnerability and building a regression test
-- analyzing a protocol and then implementing mitigations
-
-For these tasks:
-
-1. Load `SECURITY_RESEARCHER.md`
-2. Load `SOFTWARE_ENGINEER.md`
-3. Treat `SECURITY_RESEARCHER.md` as the primary reasoning methodology for identifying and validating the security issue.
-4. Treat `SOFTWARE_ENGINEER.md` as the primary methodology for implementation, testing, maintainability, and code quality.
-5. Do not let engineering assumptions suppress adversarial security reasoning.
-
-Conceptually:
+```text
+"Implement an ERC-20 token."
+→ MODE=ENGINEERING
+```
 
 ```text
-              ┌──────────────────────┐
-              │      User Task       │
-              └──────────┬───────────┘
-                         │
-                         ▼
-              ┌──────────────────────┐
-              │  Classify Objective  │
-              └──────────┬───────────┘
-                         │
-              ┌──────────┼──────────┐
-              │          │          │
-              ▼          ▼          ▼
-          SECURITY    ENGINEERING   BOTH
-              │          │          │
-              ▼          ▼          ▼
-     SECURITY_...  SOFTWARE_...   BOTH FILES
+"Find a way to bypass the ERC-20 allowance invariant."
+→ MODE=SECURITY
+```
+
+```text
+"Audit this ERC-20 and patch anything exploitable."
+→ MODE=BOTH
+```
+
+```text
+"Refactor this Solidity contract."
+→ MODE=ENGINEERING
+```
+
+```text
+"Determine whether this Solidity implementation is exploitable."
+→ MODE=SECURITY
+```
+
+```text
+"Write a regression test for this authorization vulnerability."
+→ MODE=BOTH
+```
+
+```text
+"Optimize this transaction-processing pipeline."
+→ MODE=ENGINEERING
+```
+
+```text
+"Determine whether transaction ordering creates an economically exploitable state."
+→ MODE=SECURITY
 ```
 
 ---
 
-## 4. Primary Objective Rule
+# 7. Security Objective Takes Precedence
 
-Classify the task according to its **primary objective**, not merely the technologies involved.
+When a task involves software development but its primary purpose is to understand or exploit security behavior, use:
 
-For example:
+```text
+MODE=SECURITY
+```
 
-- "Implement an ERC-20 token" → `ENGINEERING`
-- "Find a way to bypass the ERC-20 allowance invariant" → `SECURITY`
-- "Audit this ERC-20 and patch the vulnerability" → `BOTH`
-- "Refactor this Solidity code" → `ENGINEERING`
-- "Determine whether this Solidity implementation is exploitable" → `SECURITY`
-- "Write a regression test for a discovered authorization bug" → `BOTH`
-- "Optimize a transaction-processing pipeline" → `ENGINEERING`
-- "Determine whether transaction ordering permits an economically exploitable state" → `SECURITY`
+Do not allow normal engineering assumptions to suppress adversarial reasoning.
 
-Do not classify solely from keywords such as `Solidity`, `security`, `audit`, `Docker`, `Rust`, or `API`.
+For security-related tasks, the agent must consider that the intended behavior of the system may differ from its actual behavior.
 
-Reason about the actual objective.
+Security investigation may require reasoning about:
 
----
-
-## 5. Security Takes Precedence During Security Analysis
-
-When a task contains both engineering and security concerns, do not prematurely constrain the investigation to normal developer assumptions.
-
-Security analysis must consider:
-
-- unexpected state transitions
 - attacker-controlled inputs
+- malicious users
+- malicious contracts
+- compromised dependencies
+- unexpected state transitions
 - privilege boundaries
+- authorization boundaries
 - trust assumptions
-- cross-component interactions
+- hidden state
 - race conditions
-- TOCTOU conditions
-- economic incentives
-- oracle manipulation
-- initialization and upgrade paths
-- replay and ordering behavior
-- denial-of-service conditions
+- transaction ordering
+- timing
+- initialization
+- upgrade paths
+- configuration
+- deployment state
 - dependency behavior
-- configuration-dependent behavior
-- external system assumptions
-- protocol invariants
-- emergent behavior across components
-- discrepancies between intended and actual behavior
-- discrepancies between off-chain and on-chain behavior
-- behavior that cannot be identified through simple source inspection alone
+- external protocols
+- external services
+- off-chain/on-chain inconsistencies
+- economic incentives
+- protocol composition
+- emergent behavior
+- invariant violations
+- discrepancies between specification and implementation
+- discrepancies between implementation and deployed behavior
 
-The presence of extensive audits, tests, formal verification, or hardened code does not automatically imply that the system is secure.
+The existence of:
+
+- audits
+- formal verification
+- extensive tests
+- static-analysis tooling
+- hardened architecture
+- security reviews
+- bug bounty programs
+
+does **not** constitute proof that a system is secure.
+
+Never treat "already audited" as a reason to stop security investigation.
 
 ---
 
-## 6. Mode Loading Rule
+# 8. Behavioral Security Rule
 
-The agent should conceptually resolve instructions as:
+For security tasks, do not automatically restrict investigation to superficial source-code inspection.
+
+When appropriate, reason across multiple layers:
 
 ```text
-AGENTS.md
-   │
-   ├── Security objective?
-   │       └── Load SECURITY_RESEARCHER.md
-   │
-   ├── Engineering objective?
-   │       └── Load SOFTWARE_ENGINEER.md
-   │
-   └── Both?
-           ├── Load SECURITY_RESEARCHER.md
-           └── Load SOFTWARE_ENGINEER.md
+Specification
+      ↓
+Architecture
+      ↓
+Source Code
+      ↓
+Compiler / Build Behavior
+      ↓
+Runtime Behavior
+      ↓
+Dependencies
+      ↓
+Deployment Configuration
+      ↓
+On-chain / Production State
+      ↓
+External Systems
+      ↓
+Economic / Adversarial Behavior
 ```
 
-When the files exist, their contents are authoritative for their respective domains.
-
-Do not duplicate their detailed methodologies inside this file unless necessary for routing.
+The objective is to understand **actual security properties**, not merely whether the source code looks correct.
 
 ---
 
-## 7. Ambiguous Tasks
+# 9. Mode Resolution Procedure
 
-If the objective cannot be classified confidently from the request, inspect the repository context and task wording before acting.
-
-Use the following decision rule:
+Before substantive work, perform the following procedure:
 
 ```text
-Is the agent primarily being asked to
-discover or reason about attacker behavior?
-        │
-       YES ──> SECURITY
-        │
-       NO
-        │
-        ▼
-Is the agent primarily being asked to
-build, modify, debug, test, or maintain software?
-        │
-       YES ──> ENGINEERING
-        │
-       NO
-        │
-        ▼
-Use the closest applicable mode and explicitly state
-the chosen operating mode internally before proceeding.
+STEP 1
+Understand the user's actual objective.
+
+STEP 2
+Determine whether the objective is primarily:
+    Security
+    Engineering
+    Both
+
+STEP 3
+Select:
+    MODE=SECURITY
+    MODE=ENGINEERING
+    MODE=BOTH
+
+STEP 4
+Load the applicable specialized instruction file(s).
+
+STEP 5
+Read and follow their methodology.
+
+STEP 6
+Inspect repository-specific constraints.
+
+STEP 7
+Perform the task.
+
+STEP 8
+Validate the result according to the selected mode(s).
 ```
 
-Do not ask unnecessary clarification questions when repository context is sufficient to determine the mode.
-
 ---
 
-## 8. Execution Discipline
+# 10. File Loading Rules
 
-Before making substantive changes:
+## Security Mode
 
-1. Identify the task objective.
-2. Select the operating mode.
-3. Load the applicable instruction file(s).
-4. Understand repository-specific constraints.
-5. Perform the task.
-6. Validate the result according to the selected mode(s).
-
-The agent must not:
-
-- assume `AGENTS.md` is the only instruction source
-- ignore a relevant mode file
-- mix security and engineering methodologies carelessly
-- perform implementation-first reasoning when security analysis is the actual objective
-- reduce a security investigation to static code reading alone when the task requires behavioral or adversarial analysis
-
----
-
-## 9. Final Mode Declaration
-
-For internal task control, classify every substantive task as exactly one of:
+When:
 
 ```text
 MODE=SECURITY
-MODE=ENGINEERING
-MODE=BOTH
 ```
 
-This classification determines which instruction files are applicable.
-
-Examples:
+load:
 
 ```text
-MODE=SECURITY
-→ SECURITY_RESEARCHER.md
+./SECURITY_RESEARCHER.md
 ```
 
-```text
-MODE=ENGINEERING
-→ SOFTWARE_ENGINEER.md
-```
-
-```text
-MODE=BOTH
-→ SECURITY_RESEARCHER.md
-→ SOFTWARE_ENGINEER.md
-```
+and treat it as the authoritative specialized methodology for security research.
 
 ---
 
-## 10. Separation of Responsibilities
+## Engineering Mode
 
-Keep the three files conceptually separate:
+When:
 
-### AGENTS.md
+```text
+MODE=ENGINEERING
+```
+
+load:
+
+```text
+./SOFTWARE_ENGINEER.md
+```
+
+and treat it as the authoritative specialized methodology for software engineering.
+
+---
+
+## Both Mode
+
+When:
+
+```text
+MODE=BOTH
+```
+
+load:
+
+```text
+./SECURITY_RESEARCHER.md
+./SOFTWARE_ENGINEER.md
+```
+
+Apply each file to its respective domain.
+
+---
+
+# 11. Instruction Separation
+
+The responsibilities of the three files must remain clearly separated.
+
+## AGENTS.md
 
 Responsible for:
 
 - task classification
 - mode selection
-- instruction precedence
 - orchestration
+- instruction resolution
+- instruction precedence
 - security/engineering boundaries
 - dual-mode behavior
+- repository-level agent workflow
 
-### SECURITY_RESEARCHER.md
+---
+
+## SECURITY_RESEARCHER.md
 
 Responsible for:
 
 - security methodology
 - adversarial reasoning
 - vulnerability discovery
-- exploit analysis
+- exploit reasoning
 - threat modeling
+- attack-surface analysis
 - security validation
-- attack-surface methodology
-- protocol and smart-contract security methodology
+- security testing
+- protocol security
+- smart-contract security
+- bug bounty methodology
+- attacker modeling
+- security-specific research workflows
 
-### SOFTWARE_ENGINEER.md
+---
+
+## SOFTWARE_ENGINEER.md
 
 Responsible for:
 
-- implementation methodology
+- software development methodology
+- implementation
 - architecture
-- coding standards
-- testing
 - debugging
+- testing
 - refactoring
-- reliability
 - performance
 - maintainability
-- engineering quality
+- reliability
+- engineering standards
+- developer tooling
+- code quality
 
-Do not turn `AGENTS.md` into a second copy of either specialized file.
+Do not unnecessarily duplicate the contents of either specialized file inside `AGENTS.md`.
+
+`AGENTS.md` should remain the **router**, not become a third giant methodology document.
 
 ---
 
-## 11. Repository Integrity
+# 12. Ambiguous Tasks
 
-The agent should preserve this hierarchy:
+When task classification is ambiguous, inspect the task wording and repository context before deciding.
+
+Use this decision tree:
 
 ```text
-AGENTS.md
-│
-├── routes work
-│
-├── SECURITY_RESEARCHER.md
-│     └── defines security methodology
-│
-└── SOFTWARE_ENGINEER.md
-      └── defines engineering methodology
+Is the primary objective to understand,
+discover, validate, or exploit attacker behavior?
+            │
+           YES
+            │
+            ▼
+     MODE=SECURITY
+            │
+           NO
+            │
+            ▼
+Is the primary objective to build,
+modify, debug, test, or maintain software?
+            │
+           YES
+            │
+            ▼
+    MODE=ENGINEERING
+            │
+           NO
+            │
+            ▼
+Does the task explicitly require
+both security investigation and implementation?
+            │
+           YES
+            │
+            ▼
+        MODE=BOTH
 ```
 
-When improving one specialized methodology, modify the corresponding specialized file rather than unnecessarily expanding `AGENTS.md`.
+If repository context makes the answer obvious, do not ask the user unnecessary clarification questions.
+
+Make the best-supported classification from the available evidence.
 
 ---
 
-## 12. Default
+# 13. Security Research Followed by Engineering
 
-When no security objective exists:
+A common workflow is:
+
+```text
+Discover
+   ↓
+Understand
+   ↓
+Validate
+   ↓
+Exploit / Reproduce
+   ↓
+Root Cause
+   ↓
+Patch
+   ↓
+Regression Test
+   ↓
+Validate Patch
+```
+
+For such workflows, the agent must not switch entirely from security reasoning to engineering reasoning after discovering a vulnerability.
+
+Instead:
+
+```text
+SECURITY_RESEARCHER.md
+        ↓
+Discovery
+        ↓
+Validation
+        ↓
+Root Cause
+        │
+        ▼
+SOFTWARE_ENGINEER.md
+        ↓
+Patch
+        ↓
+Regression Test
+        ↓
+Quality Validation
+        │
+        ▼
+SECURITY_RESEARCHER.md
+        ↓
+Re-assess Exploitability
+        ↓
+Confirm Mitigation
+```
+
+Both methodologies remain active across the lifecycle where necessary.
+
+---
+
+# 14. Repository Context
+
+Before making repository changes, inspect the relevant context.
+
+Depending on the task, this may include:
+
+- repository structure
+- source files
+- tests
+- configuration
+- dependencies
+- build system
+- CI configuration
+- deployment configuration
+- documentation
+- generated code
+- contracts
+- scripts
+- infrastructure
+- runtime configuration
+- repository-specific instructions
+
+Do not assume that a single file represents the complete behavior of the system.
+
+---
+
+# 15. Change Discipline
+
+When modifying the repository:
+
+- preserve existing functionality unless intentionally changing it
+- minimize unrelated changes
+- avoid unnecessary rewrites
+- maintain consistency with the existing architecture
+- update tests when behavior changes
+- preserve security invariants
+- validate changes against the task objective
+- avoid introducing unrelated dependencies
+- avoid silently changing configuration semantics
+
+For security-related changes, also validate that the patch actually eliminates the underlying attack condition rather than merely hiding the observed symptom.
+
+---
+
+# 16. Validation
+
+The validation strategy must match the selected mode.
+
+## Security
+
+Validation may include:
+
+- exploit reproduction
+- adversarial test cases
+- invariant validation
+- state-transition analysis
+- boundary testing
+- negative testing
+- fuzzing
+- property-based testing
+- differential testing
+- runtime verification
+- deployment-state inspection
+- protocol interaction testing
+- economic reasoning
+
+Use whichever methods are appropriate to establish exploitability or non-exploitability.
+
+---
+
+## Engineering
+
+Validation may include:
+
+- unit tests
+- integration tests
+- end-to-end tests
+- type checking
+- compilation
+- linting
+- formatting
+- static analysis
+- benchmarks
+- compatibility checks
+- build verification
+- regression testing
+
+Use the minimum sufficient validation required to establish correctness, while applying stronger validation when the change warrants it.
+
+---
+
+## Both
+
+For `MODE=BOTH`, validate:
+
+```text
+Security correctness
+        +
+Implementation correctness
+        +
+Regression resistance
+```
+
+---
+
+# 17. Do Not Confuse "Code Correctness" With "System Security"
+
+A program may be:
+
+- well-written
+- type-safe
+- tested
+- audited
+- formally verified
+- standards-compliant
+- maintainable
+
+and still contain a security vulnerability caused by:
+
+- incorrect assumptions
+- protocol composition
+- unexpected state transitions
+- economic incentives
+- integration behavior
+- external dependencies
+- deployment configuration
+- privilege interactions
+- timing
+- ordering
+- cross-component effects
+- emergent system behavior
+
+Therefore:
+
+```text
+Implementation Correctness ≠ Security Correctness
+```
+
+Security tasks must evaluate the system from an adversarial perspective.
+
+---
+
+# 18. Default Mode
+
+When there is no meaningful security objective:
 
 ```text
 MODE=ENGINEERING
 ```
 
-When security research is explicitly or implicitly the primary objective:
+When security is the primary purpose:
 
 ```text
 MODE=SECURITY
 ```
 
-When the task requires both adversarial security analysis and software implementation:
+When both security research and implementation are essential:
 
 ```text
 MODE=BOTH
 ```
 
-The goal is to ensure that the agent always uses the **smallest correct instruction set necessary for the task**, while still activating both methodologies when the task genuinely spans security and engineering.
+---
+
+# 19. Final Operating Contract
+
+The agent must follow this contract:
+
+```text
+1. Read AGENTS.md.
+
+2. Locate:
+   ./SECURITY_RESEARCHER.md
+   ./SOFTWARE_ENGINEER.md
+
+3. Classify the task:
+   SECURITY
+   ENGINEERING
+   BOTH
+
+4. Load the appropriate specialized instruction file(s).
+
+5. Apply the specialized methodology.
+
+6. Execute the task using repository context.
+
+7. Validate the result.
+
+8. For security-sensitive work, verify the actual security property,
+   not merely the apparent correctness of the implementation.
+```
+
+The intended hierarchy is:
+
+```text
+                     AGENTS.md
+                         │
+                ┌────────┴────────┐
+                │                 │
+                ▼                 ▼
+     SECURITY_RESEARCHER.md   SOFTWARE_ENGINEER.md
+                │                 │
+                └────────┬────────┘
+                         │
+                         ▼
+                    Agent Task
+```
+
+The files must remain siblings in the repository root:
+
+```text
+<repository-root>/
+├── AGENTS.md
+├── SECURITY_RESEARCHER.md
+└── SOFTWARE_ENGINEER.md
+```
+
+`AGENTS.md` decides **which methodology applies**.
+
+`SECURITY_RESEARCHER.md` defines **how security research is performed**.
+
+`SOFTWARE_ENGINEER.md` defines **how software engineering is performed**.
