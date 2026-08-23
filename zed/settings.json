@@ -1,858 +1,862 @@
 {
-    "language_models": {
-        "openai_compatible": {
-            "cline": {
-                "api_url": "https://api.cline.bot/api/v1",
-                "available_models": [
-                    {
-                        "name": "cline-pass/glm-5.2",
-                        "display_name": "GLM-5.2",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/glm-5.3",
-                        "display_name": "GLM-5.3",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/kimi-k3",
-                        "display_name": "Kimi K3",
-                        "max_tokens": 1048576,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/kimi-k2.7-code",
-                        "display_name": "Kimi K2.7 Code",
-                        "max_tokens": 262144,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/kimi-k2.6",
-                        "display_name": "Kimi K2.6",
-                        "max_tokens": 262144,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/deepseek-v4-pro",
-                        "display_name": "DeepSeek V4 Pro",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 384000,
-                        "max_completion_tokens": 384000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/deepseek-v4-flash",
-                        "display_name": "DeepSeek V4 Flash",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 384000,
-                        "max_completion_tokens": 384000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/mimo-v2.5",
-                        "display_name": "MiMo-V2.5",
-                        "max_tokens": 1048576,
-                        "max_output_tokens": 131072,
-                        "max_completion_tokens": 131072,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/mimo-v2.5-pro",
-                        "display_name": "MiMo-V2.5-Pro",
-                        "max_tokens": 1048576,
-                        "max_output_tokens": 131072,
-                        "max_completion_tokens": 131072,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/minimax-m3",
-                        "display_name": "MiniMax M3",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 128000,
-                        "max_completion_tokens": 128000,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/qwen3.8-max",
-                        "display_name": "Qwen3.8 Max",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 131072,
-                        "max_completion_tokens": 131072,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/qwen3.7-max",
-                        "display_name": "Qwen3.7 Max",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 131072,
-                        "max_completion_tokens": 131072,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                    {
-                        "name": "cline-pass/qwen3.7-plus",
-                        "display_name": "Qwen3.7 Plus",
-                        "max_tokens": 1000000,
-                        "max_output_tokens": 131072,
-                        "max_completion_tokens": 131072,
-                        "reasoning_effort": "high",
-                        "capabilities": {
-                            "tools": true,
-                            "images": false,
-                            "parallel_tool_calls": true,
-                            "prompt_cache_key": true,
-                            "chat_completions": true,
-                            "interleaved_reasoning": false,
-                            "max_tokens_parameter": true,
-                        },
-                    },
-                ],
-            },
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "icon_theme": "Material Icon Theme",
+  "language_models": {
+    "openai_compatible": {
+      "cline": {
+        "api_url": "https://api.cline.bot/api/v1",
+        "available_models": [
+          {
+            "name": "cline-pass/glm-5.2",
+            "display_name": "GLM-5.2",
+            "max_tokens": 1000000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/glm-5.3",
+            "display_name": "GLM-5.3",
+            "max_tokens": 1000000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/kimi-k3",
+            "display_name": "Kimi K3",
+            "max_tokens": 1048576,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/kimi-k2.7-code",
+            "display_name": "Kimi K2.7 Code",
+            "max_tokens": 262144,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/kimi-k2.6",
+            "display_name": "Kimi K2.6",
+            "max_tokens": 262144,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/deepseek-v4-pro",
+            "display_name": "DeepSeek V4 Pro",
+            "max_tokens": 1000000,
+            "max_output_tokens": 384000,
+            "max_completion_tokens": 384000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/deepseek-v4-flash",
+            "display_name": "DeepSeek V4 Flash",
+            "max_tokens": 1000000,
+            "max_output_tokens": 384000,
+            "max_completion_tokens": 384000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/mimo-v2.5",
+            "display_name": "MiMo-V2.5",
+            "max_tokens": 1048576,
+            "max_output_tokens": 131072,
+            "max_completion_tokens": 131072,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/mimo-v2.5-pro",
+            "display_name": "MiMo-V2.5-Pro",
+            "max_tokens": 1048576,
+            "max_output_tokens": 131072,
+            "max_completion_tokens": 131072,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/minimax-m3",
+            "display_name": "MiniMax M3",
+            "max_tokens": 1000000,
+            "max_output_tokens": 128000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/qwen3.8-max",
+            "display_name": "Qwen3.8 Max",
+            "max_tokens": 1000000,
+            "max_output_tokens": 131072,
+            "max_completion_tokens": 131072,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/qwen3.7-max",
+            "display_name": "Qwen3.7 Max",
+            "max_tokens": 1000000,
+            "max_output_tokens": 131072,
+            "max_completion_tokens": 131072,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          },
+          {
+            "name": "cline-pass/qwen3.7-plus",
+            "display_name": "Qwen3.7 Plus",
+            "max_tokens": 1000000,
+            "max_output_tokens": 131072,
+            "max_completion_tokens": 131072,
+            "reasoning_effort": "high",
+            "capabilities": {
+              "tools": true,
+              "images": false,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": false,
+              "max_tokens_parameter": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "agent": {
+    "sandbox_permissions": {
+      "allow_unsandboxed": true,
+      "write_paths": [
+        {
+          "requested": "/home/pwnholic/.code-review-graph",
+          "resolved": "/home/pwnholic/.code-review-graph"
+        }
+      ],
+      "network_hosts": [
+        "github.com",
+        "api.github.com",
+        "codeload.github.com",
+        "immunefi.com",
+        "ooosec.com",
+        "docs.meteora.ag",
+        "static.crates.io",
+        "index.crates.io",
+        "*.githubusercontent.com",
+        "*.npmjs.org",
+        "unpkg.com",
+        "cdn.jsdelivr.net"
+      ]
+    },
+    "sidebar_side": "right",
+    "tool_permissions": {
+      "tools": {
+        "mcp:mcp-server-github:search_code": {
+          "default": "allow"
         },
-    },
-    "agent": {
-        "sandbox_permissions": {
-            "allow_unsandboxed": true,
-            "write_paths": [
-                {
-                    "requested": "/home/pwnholic/.code-review-graph",
-                    "resolved": "/home/pwnholic/.code-review-graph",
-                },
-            ],
-            "network_hosts": [
-                "github.com",
-                "api.github.com",
-                "codeload.github.com",
-                "immunefi.com",
-                "ooosec.com",
-                "docs.meteora.ag",
-                "static.crates.io",
-                "index.crates.io",
-                "*.githubusercontent.com",
-                "*.npmjs.org",
-                "unpkg.com",
-                "cdn.jsdelivr.net",
-            ],
+        "mcp:mcp-server-github:create_pull_request": {
+          "default": "allow"
         },
-        "sidebar_side": "right",
-        "tool_permissions": {
-            "tools": {
-                "mcp:mcp-server-github:search_code": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:create_pull_request": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:get_architecture": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:embed_graph_tool": {
-                    "default": "allow",
-                },
-                "skill": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:get_commit": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:list_commits": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:create_or_update_file": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:search_issues": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:list_issues": {
-                    "default": "allow",
-                },
-                "write_file": {
-                    "default": "allow",
-                },
-                "delete_path": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:search_code": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:query_graph_tool": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:trace_path": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:find_large_functions_tool": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:get_graph_schema": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:query_graph": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_surprising_connections_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_knowledge_gaps_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_bridge_nodes_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_hub_nodes_tool": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:search_graph": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:get_code_snippet": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_flow_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:list_flows_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:build_or_update_graph_tool": {
-                    "default": "allow",
-                },
-                "mcp:codebase-memory-mcp:index_repository": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-github:get_me": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-exa-search:web_fetch_exa": {
-                    "default": "allow",
-                },
-                "fetch": {
-                    "default": "allow",
-                },
-                "create_directory": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_community_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_minimal_context_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:list_graph_stats_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:cross_repo_search_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:list_repos_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:get_architecture_overview_tool": {
-                    "default": "allow",
-                },
-                "mcp:code-review-graph:semantic_search_nodes_tool": {
-                    "default": "allow",
-                },
-                "terminal": {
-                    "default": "allow",
-                },
-                "mcp:mcp-server-exa-search:web_search_exa": {
-                    "default": "allow",
-                },
-            },
+        "mcp:codebase-memory-mcp:get_architecture": {
+          "default": "allow"
         },
-        "default_model": {
-            "provider": "Cline",
-            "model": "cline-pass/glm-5.3",
-            "enable_thinking": true,
-            "effort": "high",
+        "mcp:code-review-graph:embed_graph_tool": {
+          "default": "allow"
         },
-        "dock": "right",
-        "favorite_models": [],
-        "model_parameters": [],
-    },
-    "agent_servers": {
-        "cline": {
-            "default_config_options": {
-                "model": "cline-pass/deepseek-v4-flash",
-                "auto_approve": true,
-                "provider": "cline-pass",
-            },
-            "type": "registry",
+        "skill": {
+          "default": "allow"
         },
-        "pi-acp": {
-            "default_config_options": {
-                "model": "cline/cline-pass/deepseek-v4-pro",
-                "thought_level": "xhigh",
-            },
-            "type": "registry",
+        "mcp:mcp-server-github:get_commit": {
+          "default": "allow"
         },
-    },
-    "cli_default_open_behavior": "existing_window",
-    "theme": "Aurora",
-    "ui_font_family": "Iosevka",
-    "ui_font_size": 15,
-    "ui_font_weight": 500,
-    "buffer_font_family": "Iosevka",
-    "buffer_font_size": 15,
-    "buffer_font_weight": 450,
-    "buffer_line_height": {
-        "custom": 2,
-    },
-    "cursor_shape": "block",
-    "cursor_blink": true,
-    "hide_mouse": "on_typing_and_action",
-    "current_line_highlight": "all",
-    "scrollbar": {
-        "show": "never",
-    },
-    "minimap": {
-        "show": "never",
-    },
-    "indent_guides": {
-        "enabled": true,
-        "coloring": "indent_aware",
-        "background_coloring": "disabled",
-    },
-    "vim_mode": true,
-    "vim": {
-        "highlight_on_yank_duration": 150,
-        "toggle_relative_line_numbers": true,
-        "use_smartcase_find": true,
-        "use_system_clipboard": "always",
-    },
-    "relative_line_numbers": "enabled",
-    "tab_size": 4,
-    "autosave": "on_window_change",
-    "format_on_save": "on",
-    "code_lens": "on",
-    "document_symbols": "on",
-    "show_completion_documentation": true,
-    "show_completions_on_input": true,
-    "show_edit_predictions": false,
-    "auto_signature_help": true,
-    "scroll_beyond_last_line": "off",
-    "vertical_scroll_margin": 14,
-    "active_pane_modifiers": {
-        "border_size": 2,
-        "inactive_opacity": 1,
-    },
-    "project_panel": {
-        "dock": "left",
-        "hide_root": true,
-        "bold_folder_labels": true,
-        "diagnostic_badges": true,
-        "git_status": true,
-        "git_status_indicator": true,
-    },
-    "git_panel": {
-        "dock": "left",
-        "show_count_badge": true,
-        "file_icons": true,
-        "tree_view": true,
-    },
-    "collaboration_panel": {
-        "dock": "left",
-    },
-    "debugger": {
-        "dock": "right",
-        "timeout": 5000,
-    },
-    "bottom_dock_layout": "full",
-    "toolbar": {
-        "breadcrumbs": true,
-        "quick_actions": false,
-        "selections_menu": true,
-        "code_actions": true,
-    },
-    "status_bar": {
-        "experimental.show": true,
-        "line_endings_button": true,
-        "show_active_file": true,
-    },
-    "tab_bar": {
-        "show": true,
-        "show_pinned_tabs_in_separate_row": true,
-    },
-    "tabs": {
-        "file_icons": true,
-        "git_status": true,
-        "show_close_button": "hover",
-        "show_diagnostics": "all",
-    },
-    "preview_tabs": {
-        "enable_preview_from_file_finder": true,
-    },
-    "git": {
-        "worktree_directory": ".git/zed-worktrees",
-        "branch_picker": {
-            "show_author_name": true,
+        "mcp:mcp-server-github:list_commits": {
+          "default": "allow"
         },
-        "inline_blame": {
-            "enabled": true,
-            "delay_ms": 300,
-            "location": "inline",
-            "padding": 4,
-            "show_commit_summary": true,
+        "mcp:mcp-server-github:create_or_update_file": {
+          "default": "allow"
         },
-    },
-    "use_smartcase_search": true,
-    "search": {
-        "button": true,
-        "case_sensitive": false,
-        "center_on_match": false,
-        "include_ignored": false,
-        "regex": false,
-        "whole_word": false,
-    },
-    "completions": {
-        "lsp": true,
-        "lsp_fetch_timeout_ms": 15,
-        "lsp_insert_mode": "replace_suffix",
-        "words": "fallback",
-        "words_min_length": 3,
-    },
-    "diagnostics": {
-        "inline": {
-            "enabled": true,
-            "max_severity": "all",
-            "padding": 4,
-            "update_debounce_ms": 150,
+        "mcp:mcp-server-github:search_issues": {
+          "default": "allow"
         },
-        "lsp_pull_diagnostics": {
-            "enabled": true,
-            "debounce_ms": 150,
+        "mcp:mcp-server-github:list_issues": {
+          "default": "allow"
         },
-    },
-    "gutter": {
-        "folds": true,
-        "line_numbers": true,
-        "min_line_number_digits": 4,
-        "runnables": true,
-    },
-    "inlay_hints": {
-        "enabled": false,
-        "show_background": true,
-        "show_other_hints": true,
-        "show_parameter_hints": true,
-        "show_type_hints": true,
-        "edit_debounce_ms": 700,
-        "scroll_debounce_ms": 50,
-        "toggle_on_modifiers_press": {
-            "alt": true,
-            "control": true,
-            "function": true,
-            "platform": true,
-            "shift": true,
+        "write_file": {
+          "default": "allow"
         },
-    },
-    "terminal": {
-        "dock": "bottom",
-        "font_family": "Iosevka Term Slab",
-        "font_size": 15,
-        "line_height": {
-            "custom": 2,
+        "delete_path": {
+          "default": "allow"
         },
-    },
-    "private_files": [
-        "**/.env*",
-        "**/*.pem",
-        "**/*.key",
-        "**/*.cert",
-        "**/*.crt",
-        "**/secrets.yml",
-    ],
-    "edit_predictions": {
-        "disabled_globs": [
-            "**/.env*",
-            "**/*.pem",
-            "**/*.key",
-            "**/*.cert",
-            "**/*.crt",
-            "**/.dev.vars",
-            "**/secrets.yml",
-        ],
-    },
-    "telemetry": {
-        "diagnostics": false,
-        "metrics": false,
-    },
-    "languages": {
-        "Go": {
-            "semantic_tokens": "combined",
-            "language_servers": ["gopls"],
+        "mcp:codebase-memory-mcp:search_code": {
+          "default": "allow"
         },
-        "TOML": {
-            "formatter": {
-                "external": {
-                    "command": "taplo",
-                    "arguments": ["fmt", "-"],
-                },
-            },
+        "mcp:code-review-graph:query_graph_tool": {
+          "default": "allow"
         },
+        "mcp:codebase-memory-mcp:trace_path": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:find_large_functions_tool": {
+          "default": "allow"
+        },
+        "mcp:codebase-memory-mcp:get_graph_schema": {
+          "default": "allow"
+        },
+        "mcp:codebase-memory-mcp:query_graph": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_surprising_connections_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_knowledge_gaps_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_bridge_nodes_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_hub_nodes_tool": {
+          "default": "allow"
+        },
+        "mcp:codebase-memory-mcp:search_graph": {
+          "default": "allow"
+        },
+        "mcp:codebase-memory-mcp:get_code_snippet": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_flow_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:list_flows_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:build_or_update_graph_tool": {
+          "default": "allow"
+        },
+        "mcp:codebase-memory-mcp:index_repository": {
+          "default": "allow"
+        },
+        "mcp:mcp-server-github:get_me": {
+          "default": "allow"
+        },
+        "mcp:mcp-server-exa-search:web_fetch_exa": {
+          "default": "allow"
+        },
+        "fetch": {
+          "default": "allow"
+        },
+        "create_directory": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_community_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_minimal_context_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:list_graph_stats_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:cross_repo_search_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:list_repos_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:get_architecture_overview_tool": {
+          "default": "allow"
+        },
+        "mcp:code-review-graph:semantic_search_nodes_tool": {
+          "default": "allow"
+        },
+        "terminal": {
+          "default": "allow"
+        },
+        "mcp:mcp-server-exa-search:web_search_exa": {
+          "default": "allow"
+        }
+      }
     },
-    "lsp": {
+    "default_model": {
+      "provider": "cline",
+      "model": "cline-pass/deepseek-v4-pro",
+      "enable_thinking": true,
+      "effort": "high"
+    },
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "agent_servers": {
+    "cline": {
+      "default_config_options": {
+        "model": "cline-pass/deepseek-v4-flash",
+        "auto_approve": true,
+        "provider": "cline-pass"
+      },
+      "type": "registry"
+    },
+    "pi-acp": {
+      "default_config_options": {
+        "model": "cline/cline-pass/glm-5.3",
+        "thought_level": "xhigh"
+      },
+      "type": "registry"
+    }
+  },
+  "cli_default_open_behavior": "existing_window",
+  "theme": "Catppuccin Mocha",
+  "ui_font_family": "Iosevka Nerd Font",
+  "ui_font_size": 15,
+  "ui_font_weight": 500,
+  "buffer_font_family": "Iosevka Nerd Font",
+  "buffer_font_size": 15,
+  "buffer_font_weight": 450,
+  "buffer_line_height": {
+    "custom": 2
+  },
+  "cursor_shape": "block",
+  "cursor_blink": true,
+  "hide_mouse": "on_typing_and_action",
+  "current_line_highlight": "all",
+  "scrollbar": {
+    "show": "never"
+  },
+  "minimap": {
+    "show": "never"
+  },
+  "indent_guides": {
+    "enabled": true,
+    "coloring": "indent_aware",
+    "background_coloring": "disabled"
+  },
+  "vim_mode": true,
+  "vim": {
+    "highlight_on_yank_duration": 150,
+    "toggle_relative_line_numbers": true,
+    "use_smartcase_find": true,
+    "use_system_clipboard": "always"
+  },
+  "relative_line_numbers": "enabled",
+  "tab_size": 4,
+  "autosave": "on_window_change",
+  "format_on_save": "on",
+  "code_lens": "on",
+  "document_symbols": "on",
+  "show_completion_documentation": true,
+  "show_completions_on_input": true,
+  "show_edit_predictions": false,
+  "auto_signature_help": true,
+  "scroll_beyond_last_line": "off",
+  "vertical_scroll_margin": 14,
+  "active_pane_modifiers": {
+    "border_size": 2,
+    "inactive_opacity": 1
+  },
+  "project_panel": {
+    "dock": "left",
+    "hide_root": true,
+    "bold_folder_labels": true,
+    "diagnostic_badges": true,
+    "git_status": true,
+    "git_status_indicator": true
+  },
+  "git_panel": {
+    "dock": "left",
+    "show_count_badge": true,
+    "file_icons": true,
+    "tree_view": true
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "debugger": {
+    "dock": "right",
+    "timeout": 5000
+  },
+  "bottom_dock_layout": "full",
+  "toolbar": {
+    "breadcrumbs": true,
+    "quick_actions": false,
+    "selections_menu": true,
+    "code_actions": true
+  },
+  "status_bar": {
+    "experimental.show": true,
+    "line_endings_button": true,
+    "show_active_file": true
+  },
+  "tab_bar": {
+    "show": true,
+    "show_pinned_tabs_in_separate_row": true
+  },
+  "tabs": {
+    "file_icons": true,
+    "git_status": true,
+    "show_close_button": "hover",
+    "show_diagnostics": "all"
+  },
+  "preview_tabs": {
+    "enable_preview_from_file_finder": true
+  },
+  "git": {
+    "worktree_directory": ".git/zed-worktrees",
+    "branch_picker": {
+      "show_author_name": true
+    },
+    "inline_blame": {
+      "enabled": true,
+      "delay_ms": 300,
+      "location": "inline",
+      "padding": 4,
+      "show_commit_summary": true
+    }
+  },
+  "use_smartcase_search": true,
+  "search": {
+    "button": true,
+    "case_sensitive": false,
+    "center_on_match": false,
+    "include_ignored": false,
+    "regex": false,
+    "whole_word": false
+  },
+  "completions": {
+    "lsp": true,
+    "lsp_fetch_timeout_ms": 15,
+    "lsp_insert_mode": "replace_suffix",
+    "words": "fallback",
+    "words_min_length": 3
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+      "max_severity": "all",
+      "padding": 4,
+      "update_debounce_ms": 150
+    },
+    "lsp_pull_diagnostics": {
+      "enabled": true,
+      "debounce_ms": 150
+    }
+  },
+  "gutter": {
+    "folds": true,
+    "line_numbers": true,
+    "min_line_number_digits": 4,
+    "runnables": true
+  },
+  "inlay_hints": {
+    "enabled": false,
+    "show_background": true,
+    "show_other_hints": true,
+    "show_parameter_hints": true,
+    "show_type_hints": true,
+    "edit_debounce_ms": 700,
+    "scroll_debounce_ms": 50,
+    "toggle_on_modifiers_press": {
+      "alt": true,
+      "control": true,
+      "function": true,
+      "platform": true,
+      "shift": true
+    }
+  },
+  "terminal": {
+    "dock": "bottom",
+    "font_family": "IosevkaTermSlab Nerd Font Mono",
+    "font_size": 15,
+    "line_height": {
+      "custom": 2
+    }
+  },
+  "private_files": [
+    "**/.env*",
+    "**/*.pem",
+    "**/*.key",
+    "**/*.cert",
+    "**/*.crt",
+    "**/secrets.yml"
+  ],
+  "edit_predictions": {
+    "disabled_globs": [
+      "**/.env*",
+      "**/*.pem",
+      "**/*.key",
+      "**/*.cert",
+      "**/*.crt",
+      "**/.dev.vars",
+      "**/secrets.yml"
+    ]
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "languages": {
+    "Go": {
+      "semantic_tokens": "combined",
+      "language_servers": ["gopls"]
+    },
+    "TOML": {
+      "formatter": {
+        "external": {
+          "command": "taplo",
+          "arguments": ["fmt", "-"]
+        }
+      }
+    }
+  },
+  "lsp": {
+    "gopls": {
+      "initialization_options": {
+        "semanticTokens": true,
+        "renameMovesSubpackages": true
+      },
+      "settings": {
         "gopls": {
-            "initialization_options": {
-                "semanticTokens": true,
-                "renameMovesSubpackages": true,
-            },
-            "settings": {
-                "gopls": {
-                    "staticcheck": true,
-                    "usePlaceholders": false,
-                    "completeUnimported": true,
-                    "analyses": {
-                        "nilness": true,
-                        "unusedparams": true,
-                        "unusedwrite": true,
-                        "useany": true,
-                    },
-                    "codelenses": {
-                        "test": true,
-                        "generate": true,
-                        "regenerate_cgo": true,
-                        "tidy": true,
-                        "upgrade_dependency": true,
-                        "vendor": true,
-                        "vulncheck": true,
-                    },
-                    "gofumpt": true,
-                    "directoryFilters": [
-                        "-.git",
-                        "-.vscode",
-                        "-.idea",
-                        "-.vscode-test",
-                        "-node_modules",
-                    ],
-                    "hints": {
-                        "assignVariableTypes": true,
-                        "compositeLiteralFields": true,
-                        "compositeLiteralTypes": true,
-                        "constantValues": true,
-                        "functionTypeParameters": true,
-                        "parameterNames": true,
-                        "rangeVariableTypes": true,
-                    },
-                },
-            },
+          "staticcheck": true,
+          "usePlaceholders": false,
+          "completeUnimported": true,
+          "analyses": {
+            "nilness": true,
+            "unusedparams": true,
+            "unusedwrite": true,
+            "useany": true
+          },
+          "codelenses": {
+            "test": true,
+            "generate": true,
+            "regenerate_cgo": true,
+            "tidy": true,
+            "upgrade_dependency": true,
+            "vendor": true,
+            "vulncheck": true
+          },
+          "gofumpt": true,
+          "directoryFilters": [
+            "-.git",
+            "-.vscode",
+            "-.idea",
+            "-.vscode-test",
+            "-node_modules"
+          ],
+          "hints": {
+            "assignVariableTypes": true,
+            "compositeLiteralFields": true,
+            "compositeLiteralTypes": true,
+            "constantValues": true,
+            "functionTypeParameters": true,
+            "parameterNames": true,
+            "rangeVariableTypes": true
+          }
+        }
+      }
+    },
+    "rust-analyzer": {
+      "binary": {
+        "ignore_system_version": true
+      },
+      "initialization_options": {
+        "cargo": {
+          "allTargets": true,
+          "target": "x86_64-unknown-linux-gnu"
         },
+        "procMacro": {
+          "enable": true
+        },
+        "diagnostics": {
+          "experimental": {
+            "enable": true
+          }
+        },
+        "check": {
+          "workspace": true
+        }
+      },
+      "settings": {
         "rust-analyzer": {
-            "binary": {
-                "ignore_system_version": true,
+          "cargo": {
+            "allTargets": true,
+            "buildScripts": {
+              "enable": true
             },
-            "initialization_options": {
-                "cargo": {
-                    "allTargets": true,
-                    "target": "x86_64-unknown-linux-gnu",
-                },
-                "procMacro": {
-                    "enable": true,
-                },
-                "diagnostics": {
-                    "experimental": {
-                        "enable": true,
-                    },
-                },
-                "check": {
-                    "workspace": true,
-                },
+            "features": "all",
+            "loadOutDirsFromCheck": true
+          },
+          "cachePriming": {
+            "enable": true
+          },
+          "checkOnSave": true,
+          "check": {
+            "command": "clippy",
+            "allTargets": true,
+            "features": "all",
+            "workspace": true
+          },
+          "procMacro": {
+            "enable": true
+          },
+          "diagnostics": {
+            "enable": true,
+            "experimental": {
+              "enable": true
             },
-            "settings": {
-                "rust-analyzer": {
-                    "cargo": {
-                        "allTargets": true,
-                        "buildScripts": {
-                            "enable": true,
-                        },
-                        "features": "all",
-                        "loadOutDirsFromCheck": true,
-                    },
-                    "cachePriming": {
-                        "enable": true,
-                    },
-                    "checkOnSave": true,
-                    "check": {
-                        "command": "clippy",
-                        "allTargets": true,
-                        "features": "all",
-                        "workspace": true,
-                    },
-                    "procMacro": {
-                        "enable": true,
-                    },
-                    "diagnostics": {
-                        "enable": true,
-                        "experimental": {
-                            "enable": true,
-                        },
-                        "styleLints": {
-                            "enable": true,
-                        },
-                    },
-                    "completion": {
-                        "autoimport": {
-                            "enable": true,
-                        },
-                        "autoself": {
-                            "enable": true,
-                        },
-                        "autoAwait": {
-                            "enable": true,
-                        },
-                        "autoIter": {
-                            "enable": true,
-                        },
-                        "addColonsToModule": true,
-                        "addSemicolonToUnit": true,
-                        "callable": {
-                            "snippets": "fill_arguments",
-                        },
-                        "fullFunctionSignatures": {
-                            "enable": true,
-                        },
-                        "postfix": {
-                            "enable": true,
-                        },
-                    },
-                    "hover": {
-                        "memoryLayout": {
-                            "enable": true,
-                        },
-                    },
-                    "imports": {
-                        "granularity": {
-                            "group": "module",
-                            "enforce": true,
-                        },
-                        "group": {
-                            "enable": true,
-                        },
-                        "merge": {
-                            "glob": true,
-                        },
-                        "preferPrelude": true,
-                    },
-                    "lens": {
-                        "enable": true,
-                        "debug": {
-                            "enable": true,
-                        },
-                        "implementations": {
-                            "enable": true,
-                        },
-                        "references": {
-                            "adt": {
-                                "enable": true,
-                            },
-                            "enumVariant": {
-                                "enable": true,
-                            },
-                            "method": {
-                                "enable": true,
-                            },
-                            "trait": {
-                                "enable": true,
-                            },
-                        },
-                        "run": {
-                            "enable": true,
-                        },
-                        "updateTest": {
-                            "enable": true,
-                        },
-                    },
-                    "inlayHints": {
-                        "bindingModeHints": {
-                            "enable": true,
-                        },
-                        "closingBraceHints": {
-                            "enable": true,
-                            "minLines": 10,
-                        },
-                        "closureCaptureHints": {
-                            "enable": true,
-                        },
-                        "closureReturnTypeHints": {
-                            "enable": "always",
-                        },
-                        "discriminantHints": {
-                            "enable": "always",
-                        },
-                        "expressionAdjustmentHints": {
-                            "enable": "always",
-                        },
-                        "implicitDrops": {
-                            "enable": true,
-                        },
-                        "lifetimeElisionHints": {
-                            "enable": "always",
-                        },
-                        "parameterHints": {
-                            "enable": true,
-                        },
-                        "typeHints": {
-                            "enable": true,
-                        },
-                    },
-                    "semanticHighlighting": {
-                        "operator": {
-                            "enable": true,
-                        },
-                        "punctuation": {
-                            "enable": true,
-                        },
-                        "strings": {
-                            "enable": true,
-                        },
-                    },
-                },
+            "styleLints": {
+              "enable": true
+            }
+          },
+          "completion": {
+            "autoimport": {
+              "enable": true
             },
-        },
+            "autoself": {
+              "enable": true
+            },
+            "autoAwait": {
+              "enable": true
+            },
+            "autoIter": {
+              "enable": true
+            },
+            "addColonsToModule": true,
+            "addSemicolonToUnit": true,
+            "callable": {
+              "snippets": "fill_arguments"
+            },
+            "fullFunctionSignatures": {
+              "enable": true
+            },
+            "postfix": {
+              "enable": true
+            }
+          },
+          "hover": {
+            "memoryLayout": {
+              "enable": true
+            }
+          },
+          "imports": {
+            "granularity": {
+              "group": "module",
+              "enforce": true
+            },
+            "group": {
+              "enable": true
+            },
+            "merge": {
+              "glob": true
+            },
+            "preferPrelude": true
+          },
+          "lens": {
+            "enable": true,
+            "debug": {
+              "enable": true
+            },
+            "implementations": {
+              "enable": true
+            },
+            "references": {
+              "adt": {
+                "enable": true
+              },
+              "enumVariant": {
+                "enable": true
+              },
+              "method": {
+                "enable": true
+              },
+              "trait": {
+                "enable": true
+              }
+            },
+            "run": {
+              "enable": true
+            },
+            "updateTest": {
+              "enable": true
+            }
+          },
+          "inlayHints": {
+            "bindingModeHints": {
+              "enable": true
+            },
+            "closingBraceHints": {
+              "enable": true,
+              "minLines": 10
+            },
+            "closureCaptureHints": {
+              "enable": true
+            },
+            "closureReturnTypeHints": {
+              "enable": "always"
+            },
+            "discriminantHints": {
+              "enable": "always"
+            },
+            "expressionAdjustmentHints": {
+              "enable": "always"
+            },
+            "implicitDrops": {
+              "enable": true
+            },
+            "lifetimeElisionHints": {
+              "enable": "always"
+            },
+            "parameterHints": {
+              "enable": true
+            },
+            "typeHints": {
+              "enable": true
+            }
+          },
+          "semanticHighlighting": {
+            "operator": {
+              "enable": true
+            },
+            "punctuation": {
+              "enable": true
+            },
+            "strings": {
+              "enable": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "context_servers": {
+    "mcp-server-github": {
+      "enabled": true,
+      "remote": false,
+      "settings": {
+        "github_personal_access_token": ""
+      }
     },
-    "context_servers": {
-        "mcp-server-github": {
-            "enabled": true,
-            "remote": false,
-            "settings": {
-                "github_personal_access_token": "",
-            },
-        },
-        "mcp-server-exa-search": {
-            "enabled": true,
-            "remote": false,
-            "settings": {
-                "exa_api_key": "",
-                "tools": "web_search_exa,get_code_context_exa,deep_researcher_start,deep_researcher_check",
-            },
-        },
-        "code-review-graph": {
-            "command": "/home/pwnholic/.local/bin/code-review-graph",
-            "args": ["serve"],
-        },
-        "codebase-memory-mcp": {
-            "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
-            "args": [""],
-        },
+    "mcp-server-exa-search": {
+      "enabled": true,
+      "remote": false,
+      "settings": {
+        "exa_api_key": "",
+        "tools": "web_search_exa,get_code_context_exa,deep_researcher_start,deep_researcher_check"
+      }
     },
+    "code-review-graph": {
+      "command": "/home/pwnholic/.local/bin/code-review-graph",
+      "args": [
+        "serve",
+        "--tools",
+        "build_or_update_graph_tool,run_postprocess_tool,get_minimal_context_tool,get_impact_radius_tool,get_review_context_tool,query_graph_tool,traverse_graph_tool,semantic_search_nodes_tool,embed_graph_tool,list_graph_stats_tool,get_docs_section_tool,find_large_functions_tool,list_flows_tool,get_flow_tool,get_affected_flows_tool,list_communities_tool,get_community_tool,get_architecture_overview_tool,detect_changes_tool,get_hub_nodes_tool,get_bridge_nodes_tool,get_knowledge_gaps_tool,get_surprising_connections_tool,get_suggested_questions_tool,refactor_tool,apply_refactor_tool,generate_wiki_tool,get_wiki_page_tool,list_repos_tool,cross_repo_search_tool"
+      ]
+    }
+  }
 }
