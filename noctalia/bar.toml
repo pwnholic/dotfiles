@@ -142,6 +142,8 @@ pinned = []
 capsule_border = "secondary"
 show_active_indicator = true
 active_indicator_color = "primary"
+only_active_workspace = true
+workspace_group_capsule = false
 color = "secondary"
 icon_color = "secondary"
 
