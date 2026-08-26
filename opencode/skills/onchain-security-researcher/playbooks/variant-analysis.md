@@ -214,9 +214,3 @@ unsearched topology and reopen conditions
 Closure means the declared semantic transformations and propagation surfaces
 were searched with recorded limitations. It never means no other variant
 exists.
-
-## Research leads
-
-- Historical storage and patch analysis (CollisionRepair):
-  https://www.usenix.org/conference/usenixsecurity25/presentation/pan-yu
-  Use research artifacts as method leads and retain their dataset/version limits.

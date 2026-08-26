@@ -121,12 +121,7 @@ For online DDL, inspect the exact database/version semantics. “Concurrent” o
 “online” can still require waits, additional scans, CPU/I/O, cleanup of invalid
 artifacts, or restrictions outside a transaction.
 
-## Current research leads
+## Current semantic source
 
 - PostgreSQL current CREATE INDEX/CONCURRENTLY semantics:
   https://www.postgresql.org/docs/current/sql-createindex.html
-- SWE Refactor Bench migration-completeness evaluation (preprint):
-  https://arxiv.org/abs/2608.23564
-
-Treat benchmark results as an empirical warning to verify both completion and
-behavior, not as a universal agent success rate.

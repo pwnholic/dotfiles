@@ -100,13 +100,3 @@ data to improve an agent's success. Evaluation evidence must come from
 authorized project artifacts and observable behavior.
 
 A sub-agent report is evidence, not completion.
-
-## Current research leads
-
-- Coordination measurement across coding-agent teams (preprint):
-  https://arxiv.org/abs/2608.16801
-- OpenTelemetry-aligned multi-agent observability/fault injection (preprint):
-  https://arxiv.org/abs/2608.24271
-
-Treat reported coordination savings or team-size effects as empirical priors;
-validate them against the current repository and task shape.

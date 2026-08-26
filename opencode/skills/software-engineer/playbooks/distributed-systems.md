@@ -2,6 +2,10 @@
 
 Load when correctness depends on multiple processes/services, queues, replicated state, asynchronous delivery, partial failure, or network behavior.
 
+`system-design.md` owns the overall architecture. This playbook owns the
+correctness and failure semantics of distributed edges and returns those
+constraints to the design.
+
 ## Model
 
 Do not reason only about happy-path request/response.

@@ -107,7 +107,10 @@ rollout and disclosure only within authorization.
 
 ## Handoff Back
 
-After implementation, return to the `security-researcher` methodology for adversarial re-validation.
+After implementation, return to the `onchain-security-researcher` methodology
+for adversarial re-validation when the target is on-chain. For other security
+domains, use the appropriate authorized specialist rather than applying an
+on-chain model by analogy.
 
 A passing unit test does not prove exploitability is closed.
 

@@ -178,5 +178,3 @@ left unresolved with the exploit verdict downgraded.
 - OP Stack differences/finality: https://docs.optimism.io/op-stack/protocol/differences
 - Chainlink sequencer feeds: https://docs.chain.link/data-feeds/l2-sequencer-feeds
 - Solana program execution: https://solana.com/docs/core/programs/program-execution
-- zkEVM verification case study: https://www.usenix.org/conference/usenixsecurity25/presentation/peng-xinghao
-- Move-to-EVM case study: https://www.usenix.org/conference/usenixsecurity25/presentation/benetollo

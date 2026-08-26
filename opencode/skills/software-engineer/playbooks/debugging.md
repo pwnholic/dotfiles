@@ -94,14 +94,5 @@ existing relevant behavior → still succeeds
 
 If reproduction is impossible, state the environment gap and do not invent a root cause.
 
-## Current research leads
-
-- Google SRE troubleshooting methodology: https://sre.google/sre-book/effective-troubleshooting/
-- OpenTelemetry trace/log correlation: https://opentelemetry.io/docs/specs/otel/logs/
-- Limits of code-only flaky-test detection (preprint):
-  https://arxiv.org/abs/2607.09345
-- Reproducible flaky-failure dataset (preprint):
-  https://arxiv.org/abs/2605.21677
-
-Treat empirical papers as priorities and method leads, not project-specific
-facts.
+When observability semantics are causal, consult the version-pinned
+[OpenTelemetry logs specification](https://opentelemetry.io/docs/specs/otel/logs/).

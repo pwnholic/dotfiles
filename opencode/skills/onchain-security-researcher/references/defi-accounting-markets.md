@@ -121,11 +121,10 @@ profit = realized proceeds - capital cost - fees - gas - slippage
 Optimize over capital, repetitions, route, timing, and market depth. Report
 the feasible region and sensitivity, not one favorable point.
 
-## Current research leads
+## Current standards
 
 Re-check status and target adoption before use:
 
 - ERC-4626: https://eips.ethereum.org/EIPS/eip-4626
 - ERC-7540 asynchronous vaults: https://eips.ethereum.org/EIPS/eip-7540
 - ERC-7575 multi-asset vaults: https://eips.ethereum.org/EIPS/eip-7575
-- Profit-centric fuzzing (VERITE): https://arxiv.org/abs/2501.08834

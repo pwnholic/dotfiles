@@ -117,5 +117,3 @@ instability (change-fail and deployment-rework rates).
   https://argo-rollouts.readthedocs.io/en/stable/features/analysis/
 - Current DORA delivery metrics:
   https://dora.dev/guides/dora-metrics-four-keys/
-- DORA 2025 AI-assisted development report:
-  https://dora.dev/research/2025/dora-report/

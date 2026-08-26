@@ -128,12 +128,3 @@ Never describe verification more broadly than what actually ran.
 
 Report claims established, environment/state binding, failures, flaky or
 skipped checks, stale evidence, and residual uncertainty.
-
-## Current research leads
-
-- AgentLens lucky-pass analysis (preprint): https://arxiv.org/abs/2605.12925
-- ORACLE-SWE information-signal study (preprint):
-  https://arxiv.org/abs/2604.07789
-- SWE Refactor Bench completeness/behavior separation (preprint):
-  https://arxiv.org/abs/2608.23564
-- Hypothesis property-based testing: https://hypothesis.readthedocs.io/en/latest/

@@ -109,6 +109,22 @@ Keep behavioral completeness separate from implementation completeness. Passing
 tests does not prove that a requested migration, dependency transition,
 architectural boundary, cleanup, or rollout actually occurred.
 
+## Evidence Ownership
+
+Playbooks contribute evidence without redefining completion:
+
+```text
+debugging owns diagnosis and causal reproduction
+system design owns architecture decisions and concern-to-view traceability
+verification owns behavior and compatibility claims
+migrations owns persistent-state transition completeness
+production rollout owns deployed-state and rollback claims
+security remediation owns the property-repair implementation handoff
+```
+
+The primary engineer integrates these claims, resolves contradictions, and owns
+the final bounded conclusion.
+
 ## Design
 
 For non-trivial work, the design should answer:
@@ -161,17 +177,13 @@ fail → pass   = required behavior was added/fixed
 pass → pass   = required existing behavior was preserved
 ```
 
-For higher-risk changes, also challenge the test oracle itself using negative controls, mutation testing, property-based testing, metamorphic testing, or independent acceptance checks when appropriate.
-
-Evaluate both outcome and causal process. Inspect the final diff, intermediate
-failures, test selection, environment substitutions, and any unexplained retry
-or workaround. A green result reached through a stale fixture, accidental
-fallback, skipped migration, or unrelated behavior is not sufficient evidence.
+For higher-risk changes, challenge the oracle and causal process. Load
+[verification.md](playbooks/verification.md) for the claim-to-evidence matrix, negative controls,
+mutation/property/metamorphic techniques, and completeness witnesses.
 
 ## Current External Evidence
 
-When a standard, runtime, dependency, tool, benchmark, or empirical result is
-causal to a decision, re-check it for the current task and record:
+When external behavior is causal, re-check it for the current task and record:
 
 ```text
 claim and source class
@@ -189,9 +201,8 @@ EMPIRICAL PRIOR what a dataset suggests should be prioritized
 METHOD LEAD     a technique that still needs project-specific evaluation
 ```
 
-Prefer executable project behavior and version-pinned primary sources over
-generic guidance. Do not turn benchmark rates or one organization's operational
-practice into universal requirements.
+Prefer executable project behavior and version-pinned primary sources. Treat
+benchmarks and organizational studies as bounded priors, never universal rules.
 
 ## Delegation Default
 
@@ -222,23 +233,31 @@ Before completion, confirm the requested behavior, relevant compatibility, appro
 
 Load only the relevant playbooks.
 
-- `playbooks/debugging.md`
+- [debugging.md](playbooks/debugging.md)
   - bugs, crashes, unexpected behavior, flaky failures, root-cause investigation.
-- `playbooks/verification.md`
+- [system-design.md](playbooks/system-design.md)
+  - implementation-ready architecture for a new system, subsystem, service, or material redesign.
+- [verification.md](playbooks/verification.md)
   - behavioral changes, meaningful fixes, test design, verification-oracle quality.
-- `playbooks/long-horizon-context.md`
+- [long-horizon-context.md](playbooks/long-horizon-context.md)
   - long tasks, many tool calls, many files, interruptions, multi-stage work.
-- `playbooks/multi-agent.md`
+- [multi-agent.md](playbooks/multi-agent.md)
   - multiple agents or parallel workers.
-- `playbooks/distributed-systems.md`
+- [distributed-systems.md](playbooks/distributed-systems.md)
   - services, queues, retries, consensus, partial failure, network partitions, replicated state.
-- `playbooks/migrations.md`
+- [migrations.md](playbooks/migrations.md)
   - database/schema/data migrations or persistent-state transitions.
-- `playbooks/performance.md`
+- [performance.md](playbooks/performance.md)
   - performance, latency, throughput, memory, CPU, I/O, resource optimization.
-- `playbooks/supply-chain.md`
+- [supply-chain.md](playbooks/supply-chain.md)
   - dependencies, build provenance, releases, artifacts, SBOM, attestations.
-- `playbooks/production-rollout.md`
+- [production-rollout.md](playbooks/production-rollout.md)
   - deployment, canary, staged rollout, production config, rollback.
-- `playbooks/security-remediation.md`
+- [security-remediation.md](playbooks/security-remediation.md)
   - implementing a confirmed vulnerability fix and handing back to security validation.
+
+## Maintainer Evidence
+
+When revising this methodology or evaluating whether the skill improves agent
+behavior, read [research-basis.md](references/research-basis.md). Do not load it
+during ordinary engineering unless its evidence is directly requested.

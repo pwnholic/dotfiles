@@ -22,13 +22,34 @@ For every non-trivial task:
 
 1. Read this file, including the shared execution core.
 2. Classify the task by its actual objective.
-3. Load exactly one primary specialist skill:
+3. Load exactly one matching primary specialist skill when one exists:
+    - `brainstorming/SKILL.md`
     - `software-engineer/SKILL.md`
-    - `security-researcher/SKILL.md`
+    - `onchain-security-researcher/SKILL.md`
+   If none matches, do not force-route the task. Continue under the shared core,
+   state the specialist gap when material, and load another trusted specialist
+   only if it is actually available.
 4. Load only the playbooks whose trigger conditions match the current task.
-5. If the task crosses both domains, keep one primary mode at a time and hand off explicitly at the boundary.
+5. If the task crosses specialist boundaries, keep one primary mode at a time and hand off explicitly at the boundary.
 
 ## Routing
+
+### Use `brainstorming/SKILL.md`
+
+Use when the primary objective is to frame an open problem, generate materially different possibilities, challenge assumptions, compare options, or synthesize a decision before committing to execution.
+
+Examples:
+
+- explore product, research, architecture, process, or strategy directions;
+- reframe an ambiguous problem;
+- generate alternatives to an initial proposal;
+- map an opportunity or solution space;
+- compare competing concepts and their tradeoffs;
+- identify high-value experiments that reduce decision uncertainty.
+
+Do not route ordinary implementation planning or attacker-oriented on-chain
+hypothesis validation here when software engineering or on-chain security
+research is already the primary objective.
 
 ### Use `software-engineer/SKILL.md`
 
@@ -49,7 +70,7 @@ Examples:
 - prepare a production rollout;
 - implement a security remediation after exploitability is already established.
 
-### Use `security-researcher/SKILL.md`
+### Use `onchain-security-researcher/SKILL.md`
 
 Use when the primary objective is attacker-oriented:
 
@@ -58,16 +79,56 @@ Use when the primary objective is attacker-oriented:
 - validate an attack chain;
 - perform bug-bounty or adversarial review;
 - challenge trust boundaries or security invariants;
-- analyze protocol, smart-contract, DeFi, cross-chain, runtime, framework, dependency, or infrastructure behavior for exploitable weakness.
+- analyze smart contracts, DeFi, bridges, rollups/L2s, governance, account
+  abstraction, or causally necessary runtime/dependency behavior for an
+  exploitable on-chain weakness.
+
+This specialist does not cover general web, cloud, native-code, endpoint,
+identity, network, or infrastructure security. Do not force those tasks into an
+on-chain methodology merely because they are attacker-oriented.
 
 Classify by the actual objective, not by keywords such as `security`, `audit`, `bug`, `contract`, or `crypto`.
 
-## Cross-Domain Handoff
+### Routing by Deliverable
 
-Use this lifecycle when both skills are needed:
+When terms such as `research`, `architecture`, `security`, or `design` are
+ambiguous, route by the requested outcome:
+
+| Primary deliverable | Specialist |
+| --- | --- |
+| option space, comparison, decision, or uncertainty-reducing experiment | `brainstorming` |
+| implementation-ready system architecture after direction is committed | `software-engineer` with system-design playbook |
+| committed implementation, repair, test, migration, or rollout | `software-engineer` |
+| attacker feasibility or a complete on-chain exploit chain | `onchain-security-researcher` |
+| patch for an already established vulnerability | `software-engineer` with security-remediation playbook |
+| adversarial re-validation of that patch | `onchain-security-researcher`, when the target is on-chain |
+
+Counterexamples:
+
+- API design inside an authorized implementation remains software engineering.
+- Generating alternative architectures without committing to one is brainstorming.
+- Designing an implementation-ready simple or distributed system after the
+  direction is committed is software engineering; load only complexity
+  playbooks whose causal triggers match.
+- A smart-contract bug fix is software engineering after the mechanism is
+  established; discovering whether it is exploitable is on-chain security research.
+
+## Cross-Specialist Handoff
+
+When ideation produces an actionable direction, hand off explicitly:
 
 ```text
-security research
+brainstorming
+    ↓
+selected direction / decision criteria / unresolved assumptions
+    ├──→ software engineering implementation
+    └──→ on-chain security research validation
+```
+
+Use this lifecycle when on-chain security research and software engineering are both needed:
+
+```text
+on-chain security research
     ↓
 confirmed mechanism / exploitability
     ↓
@@ -75,12 +136,13 @@ software engineering remediation
     ↓
 regression verification
     ↓
-security re-validation
+on-chain security re-validation
 ```
 
 Do not let software-engineering confidence substitute for adversarial exploit validation.
 
-Do not let security-research exploration silently expand an implementation task beyond its authorized scope.
+Do not let on-chain security research silently expand an implementation task
+beyond its authorized scope.
 
 ## Context Discipline
 
@@ -92,7 +154,8 @@ When the active task changes materially, re-evaluate which playbooks should rema
 
 ## Shared Execution Core
 
-These rules remain active across both software-engineering and security-research tasks.
+These rules remain active across all specialist tasks and any task handled
+directly under this shared core.
 
 ### 1. Authority
 

@@ -80,4 +80,3 @@ attacker-reachable equivalent before claiming exploitability.
 - Solana programs and deployment: https://solana.com/docs/core/programs
 - Solana CPI: https://solana.com/docs/core/cpi
 - Solana verified builds: https://solana.com/docs/programs/verified-builds
-- Move-to-EVM security preservation: https://www.usenix.org/conference/usenixsecurity25/presentation/benetollo

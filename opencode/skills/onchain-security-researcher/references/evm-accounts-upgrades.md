@@ -114,4 +114,3 @@ Re-check activation and deployed versions:
 - ERC-4337: https://eips.ethereum.org/EIPS/eip-4337
 - EntryPoint releases: https://github.com/eth-infinitism/account-abstraction/releases
 - OpenZeppelin upgrade constraints: https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable
-- EIP-7702 empirical risk study: https://www.usenix.org/conference/usenixsecurity26/presentation/huang-mingyuan

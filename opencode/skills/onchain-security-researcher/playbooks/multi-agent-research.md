@@ -137,9 +137,3 @@ negative evidence and uncovered questions
 ```
 
 Do not close work merely because every assignment returned.
-
-## Research lead
-
-Use empirical work on the human side of smart-contract fuzzing to design
-division of labor and tooling feedback, but validate transfer to the current
-team and target rather than turning study observations into universal rules.

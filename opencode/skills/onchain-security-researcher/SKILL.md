@@ -1,9 +1,9 @@
 ---
-name: security-researcher
+name: onchain-security-researcher
 description: Attacker-oriented research for smart contracts, DeFi, bridges, rollups/L2s, governance, account abstraction, and on-chain economic systems. Use to discover, falsify, reproduce, and bound exploitable security-property violations. Off-chain components are in scope only when causally necessary to an on-chain transition or impact; use software engineering for remediation after the mechanism is established.
 ---
 
-# Smart-Contract Security Researcher
+# On-Chain Security Researcher
 
 Determine whether a realistic attacker can drive the exact deployed system
 through reachable state transitions that violate a concrete security property
@@ -320,3 +320,10 @@ Conclude with:
 
 The conclusion is coverage-bounded. Never claim that a protocol is secure
 merely because no finding survived the explored model.
+
+## 12. Maintainer Evidence
+
+When revising this methodology, evaluating new research methods, or testing
+whether the skill improves agent behavior, read
+[research-basis.md](references/research-basis.md). Do not load it during an
+ordinary engagement unless the research basis itself is requested.

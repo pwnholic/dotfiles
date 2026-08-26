@@ -161,13 +161,7 @@ calibration metrics; none is a security percentage.
 Handoff only the property, generator/grammar, feedback vector, minimized trace,
 environment, oracle independence, coverage gaps, and synthetic-state ledger.
 
-## Research leads
-
-- Foundry invariant testing: https://getfoundry.sh/forge/invariant-testing
-- Vulseye state/code-target feedback: https://arxiv.org/abs/2408.10116
-- VERITE profit-centric search: https://arxiv.org/abs/2501.08834
-- LLAMA adaptive multi-feedback approach: https://arxiv.org/abs/2507.12084
-- Human side of smart-contract fuzzing: https://arxiv.org/abs/2506.07389
-
-Treat research methods as leads and verify the exact paper/artifact before
-claiming target-specific benefit.
+For Foundry targets, re-check the current
+[invariant-testing semantics](https://getfoundry.sh/forge/invariant-testing).
+Maintainer-only empirical method evidence is centralized in
+[research-basis.md](../references/research-basis.md).

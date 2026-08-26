@@ -6,42 +6,11 @@ Load for long-running tasks, many-file changes, many tool calls, multi-stage wor
 
 Prevent context explosion, semantic drift, repeated work, and stale conclusions.
 
-## Three-Layer State
+Use the shared core's stable task semantics, working set, and evidence ledger.
+This playbook adds milestone checkpoints, loop detection, and resume
+reconciliation; it does not duplicate those shared structures.
 
-### Stable Task Semantics
-
-Keep durable:
-
-- requirement;
-- scope;
-- non-goals;
-- acceptance criteria;
-- invariants;
-- compatibility constraints;
-- safety boundaries.
-
-### Working Set
-
-Keep current:
-
-- active files/components;
-- current design;
-- current hypothesis;
-- immediate next steps;
-- current blockers.
-
-### Evidence Ledger
-
-Track:
-
-- verified claims;
-- evidence source;
-- environment/state;
-- stale evidence;
-- blocked checks;
-- unresolved uncertainty.
-
-Also maintain an invalidation map:
+Maintain one additional invalidation map when the dependency graph is complex:
 
 ```text
 claim/evidence → source revision, config, dependency, environment or artifact
@@ -49,19 +18,6 @@ claim/evidence → source revision, config, dependency, environment or artifact
 
 When one binding changes, invalidate dependent evidence without discarding
 unaffected work.
-
-## Compaction Rule
-
-When context grows:
-
-1. discard redundant narration;
-2. summarize completed branches;
-3. preserve decisions with their rationale;
-4. preserve blockers and negative evidence;
-5. preserve unresolved contradictions;
-6. preserve exact completion state.
-
-Never compact away the conditions that determine correctness or safety.
 
 ## Checkpoints
 
@@ -109,10 +65,3 @@ On resume, re-check current repository state before trusting old working-set det
 
 Reconcile the checkpoint against current files, dependencies, generated
 artifacts, running processes, and prior verification freshness before writing.
-
-## Current research leads
-
-- FailFast-RestartSmart long-trajectory control (preprint):
-  https://arxiv.org/abs/2608.03222
-- SWE-rebench V2 reproducible environments and task confounders (preprint):
-  https://arxiv.org/abs/2602.23866

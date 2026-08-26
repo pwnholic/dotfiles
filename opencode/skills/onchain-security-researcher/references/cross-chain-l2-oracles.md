@@ -110,4 +110,3 @@ Re-check current specifications and deployed implementations:
 - OP Stack withdrawal lifecycle: https://docs.optimism.io/op-stack/bridging/withdrawal-flow
 - OP Stack runtime differences: https://docs.optimism.io/op-stack/protocol/differences
 - ERC-7683 status and semantics: https://eips.ethereum.org/EIPS/eip-7683
-- Cross-chain resource/check analysis (SmartAxe): https://www.usenix.org/conference/usenixsecurity25/presentation/ruaro

@@ -143,4 +143,3 @@ was applied, and what remains unverified.
 - Sourcify match/API semantics: https://docs.sourcify.dev/docs/api/
 - OpenZeppelin upgrade rules: https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable
 - Solana verified builds: https://solana.com/docs/programs/verified-builds
-- Historical storage analysis (CollisionRepair): https://www.usenix.org/conference/usenixsecurity25/presentation/pan-yu
