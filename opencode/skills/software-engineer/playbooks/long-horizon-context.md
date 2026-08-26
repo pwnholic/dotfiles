@@ -41,6 +41,15 @@ Track:
 - blocked checks;
 - unresolved uncertainty.
 
+Also maintain an invalidation map:
+
+```text
+claim/evidence → source revision, config, dependency, environment or artifact
+```
+
+When one binding changes, invalidate dependent evidence without discarding
+unaffected work.
+
 ## Compaction Rule
 
 When context grows:
@@ -67,6 +76,43 @@ milestone
 
 A checkpoint must enable another agent/session to continue without redoing completed investigation.
 
+Checkpoint contents:
+
+```text
+objective/scope/non-goals
+current repository and environment state
+decisions with rationale
+changed files and behavioral ownership
+verified, failed, stale and unverified claims
+active blocker and reopen condition
+exact next discriminator or implementation step
+```
+
+## Progress and Loop Detection
+
+Treat repeated searches, edits, test reruns, or tool failures as a loop when
+they add no new evidence. Before another attempt, state what new information it
+can produce. On a plateau:
+
+1. preserve the current diff and evidence;
+2. identify whether the blocker is strategy, environment, oracle, or context;
+3. change the discriminator or narrow the problem;
+4. restart from a clean reasoning context only when durable state is captured;
+5. inspect, apply, or discard the prior diff explicitly.
+
+Fail-fast/restart strategies are method leads, not universal policy: false
+positives can terminate a trajectory that would succeed.
+
 ## Resume Contract
 
 On resume, re-check current repository state before trusting old working-set details.
+
+Reconcile the checkpoint against current files, dependencies, generated
+artifacts, running processes, and prior verification freshness before writing.
+
+## Current research leads
+
+- FailFast-RestartSmart long-trajectory control (preprint):
+  https://arxiv.org/abs/2608.03222
+- SWE-rebench V2 reproducible environments and task confounders (preprint):
+  https://arxiv.org/abs/2602.23866

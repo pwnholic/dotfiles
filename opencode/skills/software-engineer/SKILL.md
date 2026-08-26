@@ -91,6 +91,24 @@ For affected components, identify relevant contracts:
 
 A feature that violates an existing required contract is incomplete.
 
+## Change Evidence Contract
+
+For a non-trivial change, bind the claim before implementation:
+
+```text
+requested behavior
+existing guarantees and compatibility surface
+current-state evidence
+proposed mechanism
+expected state/output delta
+failure and recovery model
+verification capable of observing each claim
+```
+
+Keep behavioral completeness separate from implementation completeness. Passing
+tests does not prove that a requested migration, dependency transition,
+architectural boundary, cleanup, or rollout actually occurred.
+
 ## Design
 
 For non-trivial work, the design should answer:
@@ -145,6 +163,36 @@ pass → pass   = required existing behavior was preserved
 
 For higher-risk changes, also challenge the test oracle itself using negative controls, mutation testing, property-based testing, metamorphic testing, or independent acceptance checks when appropriate.
 
+Evaluate both outcome and causal process. Inspect the final diff, intermediate
+failures, test selection, environment substitutions, and any unexplained retry
+or workaround. A green result reached through a stale fixture, accidental
+fallback, skipped migration, or unrelated behavior is not sufficient evidence.
+
+## Current External Evidence
+
+When a standard, runtime, dependency, tool, benchmark, or empirical result is
+causal to a decision, re-check it for the current task and record:
+
+```text
+claim and source class
+exact version / commit / artifact
+retrieval date and applicability
+observed project/runtime state
+contradictions and freshness trigger
+```
+
+Separate:
+
+```text
+SEMANTIC FACT    what the exact system or normative standard does
+EMPIRICAL PRIOR what a dataset suggests should be prioritized
+METHOD LEAD     a technique that still needs project-specific evaluation
+```
+
+Prefer executable project behavior and version-pinned primary sources over
+generic guidance. Do not turn benchmark rates or one organization's operational
+practice into universal requirements.
+
 ## Delegation Default
 
 Use a **single behavioral owner by default**.
@@ -158,6 +206,11 @@ Parallelize only when work is genuinely separable, especially:
 - test-oracle construction.
 
 Avoid multiple agents independently changing the same behavioral surface.
+
+Agent-generated or delegated patches receive the same reconstruction, diff
+review, compatibility analysis, and verification as any other change. A
+delegated success report or passing grader is not an independent acceptance
+oracle.
 
 ## Completion
 

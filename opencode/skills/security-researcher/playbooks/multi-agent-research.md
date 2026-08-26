@@ -1,214 +1,145 @@
-# Smart-Contract Multi-Agent Security Research Playbook
+# Multi-Agent Research Playbook
 
-Load when multiple researchers or agents are available for a smart-contract / DeFi engagement.
+Load only when multiple researchers or agents are explicitly active. The root
+researcher owns scope, the shared model, contradiction resolution, and final
+claims.
 
-## Smart-Contract Scope Lock
+## Decompose by security question
 
-This playbook belongs to a **smart-contract / DeFi security research stack**. Apply it to on-chain programs, protocols, token systems, vaults, AMMs, lending, staking/restaking, governance, account abstraction, bridges, rollups/L2s, cross-chain systems, and infrastructure only when that infrastructure is causally necessary to an on-chain security property.
-
-Do **not** expand the default search into generic web/backend/database/desktop/cloud security. An off-chain component belongs here only when compromising or mis-modeling it can change an on-chain authorization decision, state transition, message provenance, price, ordering/finality assumption, upgrade/deployment state, or realizable economic impact.
-
-When a concrete exploit hypothesis exists, hand validation to `exploit-validation.md`.
-
-# 1. Principle
-
-Parallel research is useful only when it increases **independent attack-surface coverage** or accelerates falsification.
+Assign materially different uncertainties rather than duplicate generic
+reviews:
 
 ```text
-independent exploration
-→ structured evidence handoff
-→ centralized on-chain model
-→ cross-path composition
-→ adversarial validation
+accounting/solvency | authority/upgrades | state sequences
+oracle/liquidation | callbacks/hooks | signatures/AA/delegation
+bridge/L2/finality | runtime/compiler | configuration/deployment
+variant/patch analysis | independent falsification
 ```
 
-Do not create several agents to read the same contracts with the same vulnerability checklist.
-
-# 2. Decompose by Security Question
-
-Strong smart-contract assignments are orthogonal, for example:
-
-- asset/accounting conservation;
-- authorization, roles, governance and upgrade paths;
-- state-machine / lifecycle sequences;
-- oracle / pricing / liquidation;
-- AMM/vault/lending economic composition;
-- callbacks, hooks, reentrancy and external calls;
-- signatures, permits, EIP-7702, ERC-4337;
-- bridge/cross-chain/message provenance;
-- L2/sequencer/finality;
-- runtime/compiler/proxy semantics;
-- deployment/configuration variants;
-- SVM account/PDA/CPI branch;
-- historical patch/variant analysis;
-- independent exploit falsification.
-
-# 3. Assignment Contract
-
-Every agent receives:
+Every assignment must include:
 
 ```text
-TARGET REVISION / DEPLOYMENT
-CHAIN / RUNTIME
-SURFACE
-SECURITY PROPERTY
-ATTACKER STARTING CAPABILITY
-EXPLOIT FAMILY
-PRIMARY HYPOTHESIS
-ORTHOGONAL ALTERNATIVE
-STATE / CONFIGURATION BOUNDARY
-DEPENDENCIES TO VERIFY
-REQUIRED EVIDENCE
-NON-GOALS
-STOP / ESCALATION CONDITION
-OUTPUT SCHEMA
+question and property
+target identity and allowed files/deployments
+attacker baseline and forbidden assumptions
+required evidence/output
+known dependencies and blockers
+stop/promotion condition
 ```
 
-Assignments must be narrow enough to avoid duplicate prose but broad enough to follow a chain across contracts when the property crosses them.
+## Parallel execution
 
-# 4. Shared On-Chain Model
+When multiple agents are authorized and assignments have no state dependency,
+run them concurrently across distinct exploit families, attacker positions,
+models, or falsification questions. Sequence work only where one assignment
+requires another's evidence. Parallelism never broadens scope, permissions, or
+target access.
 
-All agents operate against one reconciled model of:
+Reserve capacity for neglected surfaces rather than assigning every agent to
+the currently strongest lead. Reallocate an agent only after recording the
+coverage or evidence its previous assignment produced.
+
+## Shared model, independent search
+
+Share stable facts—target identity, scope, assets, invariants, deployment map,
+and evidence IDs—but do not prime all agents with the same exploit narrative.
+Use blind-ish independent review when correlation risk matters.
+
+Track an assumption dependency graph:
 
 ```text
-asset map
-contract/program deployment map
-proxy/implementation graph
-role and authority graph
-state-machine transitions
-external protocol dependencies
-price/oracle graph
-bridge/message graph
-governance/upgrade graph
-configuration matrix
+claim/hypothesis → semantic/configuration assumptions → evidence owner
 ```
 
-An agent may challenge the model, but must state the evidence that changes it.
+When a shared assumption changes, invalidate only dependent conclusions and
+notify their owners.
 
-# 5. Evidence Objects
+## Evidence objects
 
-Agents hand off structured objects, not conclusions only:
+Agents return structured objects, not confidence prose:
 
 ```text
-OBSERVATION
-HYPOTHESIS
-PROPERTY
-ATTACKER MODEL
-REACHABILITY
-MECHANISM
-DEPENDENCY FACT
-BLOCKER
-NEGATIVE EVIDENCE
-VARIANT LEAD
-REPRODUCTION
-IMPACT DELTA
-RESIDUAL UNKNOWN
+id | property | observation/inference/hypothesis
+exact target state | actor/capability | mechanism
+reproduction/trace | dependencies | evidence level
+counterevidence | blocker/reopen condition | residual unknowns
 ```
 
-Every object should identify source file/line, deployed address/state, trace/test, or authoritative runtime/spec evidence when applicable.
+Failed paths remain in the shared ledger.
 
-# 6. Anti-Convergence
+## Diversity and correlation
 
-Keep materially different exploit families alive until evidence justifies concentration. A high-severity-looking oracle theory should not cause every agent to abandon authorization, upgrade, bridge, or accounting work.
+Maintain a diversity budget across:
 
-Track portfolio coverage explicitly and reserve effort for neglected high-blast-radius surfaces.
+- security question and attacker position;
+- code/state/message/economic view;
+- static, dynamic, differential, historical, and formal method;
+- independent oracle or model;
+- target version/configuration/deployment;
+- discovery vs adversarial falsification.
 
-# 7. Root-Agent Synthesis
+Five agents applying the same checklist or shared weak oracle are one
+correlated pass. Count independent evidence only when assumptions and failure
+modes differ materially.
 
-The root agent owns cross-agent composition. After each meaningful result ask:
+Calibrate agents with small known-positive, near-miss, and negative tasks when
+the engagement is large enough to justify it. Record false-negative and
+false-positive patterns; self-reported confidence is not calibration.
 
-- does this change a global invariant?
-- does it invalidate another agent's assumption?
-- do two weak primitives compose?
-- does one blocker kill several paths?
-- did a dependency/configuration fact reopen a path?
-- is the same root cause present on another deployment?
-- which next experiment has highest information value?
+## Synthesis
 
-Do not resolve contradictions by voting. Design a discriminator.
+The root researcher continuously:
 
-# 8. Duplicate Detection
+1. normalizes target identity and claim schema;
+2. merges exact duplicates by mechanism and violated property;
+3. separates variants that differ in reachability, configuration, or impact;
+4. converts contradictions into a discriminator;
+5. composes cross-domain edges and checks capability provenance;
+6. assigns validation and variant search only after mechanism quality warrants
+   them;
+7. reports residual coverage without agent-vote arithmetic.
 
-Two agents are duplicates when they test the same security property, attacker model, state region, and mechanism even if they inspect different files. Merge them or split along a real dimension such as configuration, chain, implementation, attacker role, or falsification method.
+Resolve contradictions by inspecting evidence or running a discriminating
+test, never by majority vote.
 
-# 9. Cross-Chain and Multi-Deployment Allocation
+Run this synthesis loop after any material evidence update, contradiction,
+durable blocker, target/configuration change, finding promotion, or search
+plateau. At each trigger, invalidate dependent assumptions, reprioritize the
+portfolio, redirect or split assignments, and launch a materially different
+hypothesis against neglected surface when useful.
 
-For protocols deployed across chains, allocate by **semantic differences**, not one agent per chain by default. Separate agents when chains differ in runtime, bridge path, oracle, token implementation, proxy version, governance, L2 finality, or liquidity enough to change security behavior.
+## Independent validator
 
-# 10. Independent Validator
+Every concrete finding must receive an independent adversarial validation
+before promotion to `PRODUCTION_FEASIBLE` or `IMPACT_CONFIRMED` whenever a
+second authorized researcher or agent is available. Give the validator the
+target, claim, reproduction, and raw evidence without the desired verdict.
+Ask it to attack target identity, capability provenance, reachability, harness
+powers, dependency closure, economics, and alternative explanations.
 
-For a candidate finding, the validator's mission is to **break the claim**. They should challenge:
+If no independent validator is available, record that limitation, apply the
+causal witness bundle and stronger negative controls from
+`exploit-validation.md`, and do not imply that independent validation
+occurred. Unavailability alone does not falsify otherwise reproducible
+evidence.
 
-- target/deployment binding;
-- attacker capability provenance;
-- reachable pre-state;
-- dependency behavior;
-- harness cheats/mocks;
-- timing/order/finality;
-- capital/liquidity;
-- counterfactual root cause;
-- impact accounting;
-- affected configuration/version scope.
+## Completion
 
-Do not prime the validator with “confirm this.”
-
-# 11. Shared-State Drift
-
-Invalidate or re-check agent conclusions when any of these change during research:
-
-- source revision;
-- implementation/proxy target;
-- deployed configuration;
-- oracle/bridge dependency;
-- chain fork/runtime assumption;
-- test harness;
-- attacker model.
-
-Stale evidence must not silently survive a target change.
-
-# 12. Tool Diversity
-
-Different agents should preferentially use different evidence paths when practical: manual state modelling, invariant fuzzing, fork replay, differential testing, bytecode/deployment verification, runtime/source inspection, historical patch analysis. Tool diversity is valuable only when it reduces correlated blind spots.
-
-# 13. Research Ledger
-
-Maintain one shared ledger:
+Report:
 
 ```text
-ID
-owner
-property
-attack family
-status: OPEN / ACTIVE / BLOCKED / EXHAUSTED / CONFIRMED / FALSIFIED
-evidence
-blocker
-reopen condition
-coverage delta
-dependencies
-related hypotheses
-next discriminator
+question-to-owner allocation
+shared assumptions and changes
+independent vs correlated evidence
+contradictions and their discriminators
+deduplicated findings/variants
+negative evidence and uncovered questions
 ```
 
-Do not let failed paths disappear.
+Do not close work merely because every assignment returned.
 
-# 14. Completion
+## Research lead
 
-Multi-agent work is complete only when the root synthesis can state which major on-chain properties and exploit families were covered, which findings survived independent challenge, what variants/configurations were checked, which paths are blocked/exhausted, and where residual uncertainty remains.
-
-## 2026 Calibration Anchors
-
-Re-check these before an engagement when their semantics are material:
-
-- Ethereum account delegation: https://eips.ethereum.org/EIPS/eip-7702
-- Transient storage: https://eips.ethereum.org/EIPS/eip-1153
-- Namespaced storage: https://eips.ethereum.org/EIPS/eip-7201
-- Account abstraction: https://docs.erc4337.io/core-standards/erc-4337
-- OpenZeppelin upgrade safety: https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable
-- Foundry invariant testing: https://getfoundry.sh/forge/invariant-testing
-- Medusa/Echidna smart-contract fuzzing: https://secure-contracts.com/program-analysis/medusa/docs/src/testing/overview.html and https://secure-contracts.com/program-analysis/echidna/basic/testing-modes.html
-- L2 sequencer risk: https://docs.chain.link/data-feeds/l2-sequencer-feeds
-- OP Stack withdrawal lifecycle: https://docs.optimism.io/op-stack/bridging/withdrawal-flow
-- Solana program/runtime/deployment semantics: https://solana.com/docs/core/programs and https://solana.com/docs/core/programs/program-deployment
-- Source/build correspondence: https://docs.sourcify.dev/docs/exact-match-vs-match/ and https://solana.com/docs/programs/verified-builds
-
-Calibration sources are evidence about current semantics, not substitutes for target-specific source, deployment, and state verification.
+Use empirical work on the human side of smart-contract fuzzing to design
+division of labor and tooling feedback, but validate transfer to the current
+team and target rather than turning study observations into universal rules.

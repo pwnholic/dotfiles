@@ -48,6 +48,20 @@ Choose proportionately:
 
 Do not mechanically run every layer after every edit.
 
+## Claim-to-Evidence Matrix
+
+For each material claim record:
+
+```text
+claim | risk/blast radius | observing oracle
+environment/fixture | positive case | negative/counterfactual
+compatibility case | evidence state | uncovered dimensions
+```
+
+Cover affected contracts across inputs, outputs, errors, side effects, state,
+ordering, persistence, performance and compatibility. Line coverage is
+telemetry; it does not show that assertions can detect the relevant defect.
+
 ## Test-Oracle Quality
 
 Passing tests are not enough when the test itself may be weak.
@@ -78,6 +92,30 @@ Compare against another implementation/version/oracle when appropriate.
 
 Use an independently derived expected behavior rather than restating the implementation.
 
+## Causal Witnesses
+
+For a bug fix or behavior change, preserve:
+
+1. **before** — the exact old state fails the intended predicate;
+2. **after** — the same state succeeds after the change;
+3. **counterfactual** — removing/weakening the fix makes the predicate fail;
+4. **preservation** — relevant legitimate behavior remains unchanged.
+
+For refactors and migrations, add a separate completeness check that proves the
+old mechanism was actually replaced rather than copied, bypassed, or retained
+behind a fallback.
+
+## Nondeterminism and Agent-Generated Changes
+
+Classify a result as deterministic, flaky, probabilistic, or unreproduced.
+Record seed, repetition, order, parallelism and environment where material.
+Repeated pass/fail counts are evidence; rerunning until green is not.
+
+Do not accept a patch solely because a fixed test suite passes. Inspect whether
+the tests exercise the requirement, whether the diff contains accidental
+shortcuts, and whether the process relied on stale fixtures, hidden grader
+artifacts, broad skips, swallowed errors, or unrelated fallbacks.
+
 ## Evidence Freshness
 
 Record the source/config/environment state for important verification.
@@ -87,3 +125,15 @@ After material changes, invalidate stale evidence and rerun only the affected ch
 ## Completion
 
 Never describe verification more broadly than what actually ran.
+
+Report claims established, environment/state binding, failures, flaky or
+skipped checks, stale evidence, and residual uncertainty.
+
+## Current research leads
+
+- AgentLens lucky-pass analysis (preprint): https://arxiv.org/abs/2605.12925
+- ORACLE-SWE information-signal study (preprint):
+  https://arxiv.org/abs/2604.07789
+- SWE Refactor Bench completeness/behavior separation (preprint):
+  https://arxiv.org/abs/2608.23564
+- Hypothesis property-based testing: https://hypothesis.readthedocs.io/en/latest/
