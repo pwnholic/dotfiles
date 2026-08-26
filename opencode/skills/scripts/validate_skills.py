@@ -6,12 +6,20 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENTS = ROOT.parent / "AGENTS.md"
-SKILLS = ("brainstorming", "software-engineer", "onchain-security-researcher")
+SKILLS = (
+    "agent-result-validator",
+    "brainstorming",
+    "software-engineer",
+    "onchain-security-researcher",
+    "tool-integrator",
+)
+ADAPTER_ROOT = ROOT / "tool-integrator" / "adapters"
 REQUIRED_CASE_FIELDS = {
     "id",
     "prompt",
@@ -22,6 +30,36 @@ REQUIRED_CASE_FIELDS = {
     "forbidden_behaviors",
     "expected_handoff",
 }
+OPTIONAL_CASE_FIELDS = {
+    "expected_tool_adapters",
+    "forbidden_tool_adapters",
+}
+REQUIRED_ADAPTER_FIELDS = {
+    "tool",
+    "kind",
+    "adapter-version",
+    "tested-version",
+    "version-probe",
+    "calibrated",
+    "calibration-level",
+    "canonical-source",
+}
+REQUIRED_ADAPTER_SECTIONS = (
+    "Use When",
+    "Do Not Use As",
+    "Identity and Freshness",
+    "Capability Contract",
+    "State and Prerequisites",
+    "Command Risk Matrix",
+    "Data, Network, Secrets, and Cost",
+    "Evidence Contract",
+    "Blind Spots",
+    "Safe Invocation Patterns",
+    "Post-Action Verification",
+    "Calibration Record",
+    "Routing",
+    "Reopen Triggers",
+)
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 
 
@@ -86,6 +124,50 @@ def validate_links(errors: list[str]) -> None:
                 error(errors, f"{path}: broken relative link {target!r}")
 
 
+def validate_adapters(errors: list[str]) -> None:
+    adapters = sorted(ADAPTER_ROOT.glob("*.md"))
+    if not adapters:
+        error(errors, f"missing tool adapters under {ADAPTER_ROOT}")
+        return
+    for path in adapters:
+        frontmatter = parse_frontmatter(path, errors)
+        missing = REQUIRED_ADAPTER_FIELDS - frontmatter.keys()
+        if missing:
+            error(errors, f"{path}: missing adapter fields {sorted(missing)}")
+        tool = frontmatter.get("tool")
+        if tool != path.stem:
+            error(errors, f"{path}: tool must match filename stem {path.stem!r}")
+        if frontmatter.get("kind") not in {"cli", "mcp", "cli-mcp"}:
+            error(errors, f"{path}: invalid adapter kind {frontmatter.get('kind')!r}")
+        if frontmatter.get("adapter-version") != "1":
+            error(errors, f"{path}: unsupported adapter-version {frontmatter.get('adapter-version')!r}")
+        tested = frontmatter.get("tested-version", "")
+        if not tested or tested.lower() in {"latest", "unknown", "*"}:
+            error(errors, f"{path}: tested-version must bind an exact version")
+        if not frontmatter.get("version-probe"):
+            error(errors, f"{path}: version-probe is required")
+        calibrated = frontmatter.get("calibrated", "")
+        try:
+            date.fromisoformat(calibrated)
+        except ValueError:
+            error(errors, f"{path}: calibrated must use YYYY-MM-DD")
+        if frontmatter.get("calibration-level") not in {
+            "documented",
+            "source-bound",
+            "observed-partial",
+            "observed",
+        }:
+            error(errors, f"{path}: invalid calibration-level {frontmatter.get('calibration-level')!r}")
+        if not frontmatter.get("canonical-source", "").startswith("https://"):
+            error(errors, f"{path}: canonical-source must be an https URL")
+        text = path.read_text(encoding="utf-8")
+        if f"# Tool Adapter: {path.stem}" not in text:
+            error(errors, f"{path}: missing matching adapter title")
+        for section in REQUIRED_ADAPTER_SECTIONS:
+            if f"## {section}" not in text:
+                error(errors, f"{path}: missing adapter section {section!r}")
+
+
 def validate_router(errors: list[str]) -> None:
     text = AGENTS.read_text(encoding="utf-8")
     for name in SKILLS:
@@ -117,7 +199,7 @@ def validate_eval_cases(errors: list[str]) -> None:
             error(errors, f"{path}:{number}: invalid JSON: {exc}")
             continue
         missing = REQUIRED_CASE_FIELDS - case.keys()
-        extra = case.keys() - REQUIRED_CASE_FIELDS
+        extra = case.keys() - REQUIRED_CASE_FIELDS - OPTIONAL_CASE_FIELDS
         if missing:
             error(errors, f"{path}:{number}: missing fields {sorted(missing)}")
         if extra:
@@ -132,8 +214,16 @@ def validate_eval_cases(errors: list[str]) -> None:
         primary = case.get("expected_primary_skill")
         if primary is not None and primary not in SKILLS:
             error(errors, f"{path}:{number}: invalid expected primary {primary!r}")
-        for field in ("expected_playbooks", "forbidden_primary_skills", "required_behaviors", "forbidden_behaviors"):
+        for field in (
+            "expected_playbooks",
+            "forbidden_primary_skills",
+            "required_behaviors",
+            "forbidden_behaviors",
+        ):
             if not isinstance(case.get(field), list):
+                error(errors, f"{path}:{number}: {field} must be a list")
+        for field in OPTIONAL_CASE_FIELDS:
+            if field in case and not isinstance(case.get(field), list):
                 error(errors, f"{path}:{number}: {field} must be a list")
         for playbook in case.get("expected_playbooks", []):
             if not isinstance(playbook, str) or not (ROOT / playbook).is_file():
@@ -143,9 +233,24 @@ def validate_eval_cases(errors: list[str]) -> None:
         for forbidden in case.get("forbidden_primary_skills", []):
             if forbidden not in SKILLS:
                 error(errors, f"{path}:{number}: invalid forbidden primary {forbidden!r}")
+        expected_adapters = case.get("expected_tool_adapters", [])
+        forbidden_adapters = case.get("forbidden_tool_adapters", [])
+        for field, adapters in (
+            ("expected_tool_adapters", expected_adapters),
+            ("forbidden_tool_adapters", forbidden_adapters),
+        ):
+            for adapter in adapters:
+                adapter_path = ROOT / adapter if isinstance(adapter, str) else None
+                if adapter_path is None or not adapter_path.is_file():
+                    error(errors, f"{path}:{number}: missing {field} entry {adapter!r}")
+                elif not adapter.startswith("tool-integrator/adapters/"):
+                    error(errors, f"{path}:{number}: adapter path outside registry {adapter!r}")
+        overlap = set(expected_adapters) & set(forbidden_adapters)
+        if overlap:
+            error(errors, f"{path}:{number}: adapters both expected and forbidden {sorted(overlap)}")
         cases.append(case)
-    if not 20 <= len(cases) <= 50:
-        error(errors, f"{path}: expected an initial 20-50 cases, found {len(cases)}")
+    if not 20 <= len(cases) <= 80:
+        error(errors, f"{path}: expected 20-80 cases, found {len(cases)}")
     for name in SKILLS:
         if not any(case.get("expected_primary_skill") == name for case in cases):
             error(errors, f"{path}: no positive routing case for {name}")
@@ -159,6 +264,7 @@ def main() -> int:
     errors: list[str] = []
     validate_skills(errors)
     validate_links(errors)
+    validate_adapters(errors)
     validate_router(errors)
     validate_eval_cases(errors)
     if errors:
@@ -166,7 +272,10 @@ def main() -> int:
             print(f"ERROR: {message}", file=sys.stderr)
         print(f"Validation failed with {len(errors)} error(s).", file=sys.stderr)
         return 1
-    print("Validated 3 skills, local links, router invariants, and behavioral eval schema.")
+    print(
+        f"Validated {len(SKILLS)} skills, {len(list(ADAPTER_ROOT.glob('*.md')))} tool adapters, "
+        "local links, router invariants, and behavioral eval schema."
+    )
     return 0
 
 

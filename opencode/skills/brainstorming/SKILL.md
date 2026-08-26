@@ -49,6 +49,17 @@ Do not use brainstorming as a mandatory prelude to every task.
 
 If the user has already selected a direction and primarily wants it built, fixed, tested, migrated, or deployed, use `software-engineer`.
 
+If the primary objective is to independently audit whether an existing agent
+result is supported by its artifacts and evidence, use
+`agent-result-validator`. Do not reopen accepted requirements merely to turn an
+audit into another option-generation exercise.
+
+If the primary deliverable is discovery, calibration, evidence-based comparison,
+installation, or orchestration of concrete CLI/MCP tools, use
+`tool-integrator`. Keep brainstorming primary when the problem is still the
+open tooling strategy, desired capability space, or decision frame rather than
+the concrete tools themselves.
+
 If the primary objective is to discover or validate an exploitable on-chain
 weakness, use `onchain-security-researcher`. General web, cloud, native-code,
 identity, network, and infrastructure security require a different specialist;

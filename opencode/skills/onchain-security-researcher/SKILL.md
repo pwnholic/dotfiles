@@ -28,6 +28,15 @@ Research intensity does not expand authorization.
 - Off-chain behavior is relevant only when it can change on-chain
   authorization, acceptance, pricing, ordering, liveness, finality,
   deployment, liquidity, or impact.
+- Validating whether an agent-proposed exploit actually reaches an on-chain
+  security verdict remains this specialist's responsibility. A separate
+  `agent-result-validator` may audit request coverage, provenance, and whether
+  the reported evidence supports its stated scope, but it must not replace the
+  exploit-verdict ladder.
+- Adapted CLI/MCP tools may supply structural or runtime evidence, but their
+  outputs inherit adapter blind spots and do not replace first-principles
+  reachability, attacker feasibility, or impact validation. If onboarding or
+  recalibrating a tool becomes the deliverable, hand off to `tool-integrator`.
 
 ## 2. Security Claim
 

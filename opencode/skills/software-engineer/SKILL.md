@@ -120,10 +120,17 @@ verification owns behavior and compatibility claims
 migrations owns persistent-state transition completeness
 production rollout owns deployed-state and rollback claims
 security remediation owns the property-repair implementation handoff
+agent-result-validator owns independent acceptance of an already-produced result
 ```
 
 The primary engineer integrates these claims, resolves contradictions, and owns
 the final bounded conclusion.
+
+An adapted CLI/MCP tool can contribute reconstruction or verification evidence
+without becoming a second primary specialist. Confirm adapter identity,
+freshness, non-capabilities, and state before reliance. If installing,
+calibrating, exposing, or updating the tool becomes the primary deliverable,
+hand off to `tool-integrator`.
 
 ## Design
 
@@ -180,6 +187,11 @@ pass → pass   = required existing behavior was preserved
 For higher-risk changes, challenge the oracle and causal process. Load
 [verification.md](playbooks/verification.md) for the claim-to-evidence matrix, negative controls,
 mutation/property/metamorphic techniques, and completeness witnesses.
+
+This remains producer-side engineering verification. When the requested
+deliverable is an independent verdict on an already-produced agent result, hand
+off to `agent-result-validator` rather than treating a second implementation
+review as independent acceptance.
 
 ## Current External Evidence
 
