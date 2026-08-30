@@ -220,6 +220,8 @@ bind(mainMod .. " + Z", hl.dsp.exec_cmd(noctCall .. "settings-toggle"))
 bind(mainMod .. " + X", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
 bind(mainMod .. " + Space", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
 bind(mainMod .. " + period", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher /emo"))
+-- Copilot/Assistant key — launcher cepat
+bind(mainMod .. " + SHIFT + code:201", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
 -- Lock screen on SUPER+SHIFT+Escape; plain SUPER+L is vim-style focus right
 -- and SUPER+ALT+L is monitor-focus (grammar). The original SUPER+ALT+L lock
 -- chord collided with monitor focus and silently disabled it.
