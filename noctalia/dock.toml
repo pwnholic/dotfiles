@@ -1,6 +1,6 @@
 [dock]
 enabled = true
-position = "bottom"
+position = "right"
 active_monitor_only = false
 monitors = []
 
@@ -31,4 +31,4 @@ show_dots = false
 launcher_icon = ""
 launcher_position = "none"
 
-pinned = ["firefox", "kitty", "zed", "obsidian", "discord", "spotify"]
+pinned = ["firefox", "kitty", "dev.zed.Zed", "obsidian", "discord", "spotify"]
