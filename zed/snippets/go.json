@@ -1,0 +1,47 @@
+{
+    "Test function": {
+        "prefix": "tfn",
+        "body": ["func Test${1:Name}(t *testing.T) {", "\t${2:t.Parallel()}", "", "\t$0", "}"],
+        "description": "Go test function"
+    },
+    "Table-driven test": {
+        "prefix": "ttf",
+        "body": [
+            "func Test${1:Name}(t *testing.T) {",
+            "\tt.Parallel()",
+            "",
+            "\ttests := []struct {",
+            "\t\tname string",
+            "\t\t${2:field} ${3:type}",
+            "\t\twant ${4:type}",
+            "\t}{",
+            "\t\t{name: \"${5:case}\", $6},",
+            "\t}",
+            "",
+            "\tfor _, tt := range tests {",
+            "\t\tt.Run(tt.name, func(t *testing.T) {",
+            "\t\t\tt.Parallel()",
+            "",
+            "\t\t\t$0",
+            "\t\t})",
+            "\t}",
+            "}"
+        ],
+        "description": "Go table-driven test"
+    },
+    "Error check": {
+        "prefix": "err",
+        "body": ["if err != nil {", "\t$0", "}"],
+        "description": "if err != nil"
+    },
+    "Error wrap and return": {
+        "prefix": "errf",
+        "body": ["if err != nil {", "\treturn fmt.Errorf(\"${1:context}: %w\", err)", "}"],
+        "description": "Wrap error with %w and return"
+    },
+    "Main function": {
+        "prefix": "main",
+        "body": ["func main() {", "\t$0", "}"],
+        "description": "Program entry point"
+    }
+}

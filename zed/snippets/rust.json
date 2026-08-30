@@ -1,0 +1,86 @@
+{
+    "Test function": {
+        "prefix": "tfn",
+        "body": [
+            "#[test]",
+            "fn ${1:name}() {",
+            "    $0",
+            "}"
+        ],
+        "description": "Rust test function"
+    },
+    "Tokio async test": {
+        "prefix": "tat",
+        "body": [
+            "#[tokio::test]",
+            "async fn ${1:name}() {",
+            "    $0",
+            "}"
+        ],
+        "description": "Tokio async test function"
+    },
+    "Test module": {
+        "prefix": "tmod",
+        "body": [
+            "#[cfg(test)]",
+            "mod tests {",
+            "    use super::*;",
+            "",
+            "    #[test]",
+            "    fn ${1:name}() {",
+            "        $0",
+            "    }",
+            "}"
+        ],
+        "description": "Rust test module"
+    },
+    "Derive": {
+        "prefix": "der",
+        "body": [
+            "#[derive(Debug, ${1:Clone})]"
+        ],
+        "description": "Derive macros"
+    },
+    "dbg!": {
+        "prefix": "dbg",
+        "body": [
+            "dbg!($0);"
+        ],
+        "description": "Debug print with file/line"
+    },
+    "Arc::new": {
+        "prefix": "arc",
+        "body": [
+            "Arc::new(${0})"
+        ],
+        "description": "Arc::new (requires std::sync::Arc)"
+    },
+    "unwrap_or_default match": {
+        "prefix": "mat",
+        "body": [
+            "match ${1:expr} {",
+            "    ${2:Pat} => ${3:{}},",
+            "    ${4:_} => ${5:unimplemented!()},",
+            "}"
+        ],
+        "description": "match expression"
+    },
+    "Thread spawn": {
+        "prefix": "tspawn",
+        "body": [
+            "std::thread::spawn(move || {",
+            "    $0",
+            "});"
+        ],
+        "description": "Spawn an OS thread (full path, no import needed)"
+    },
+    "Tokio spawn": {
+        "prefix": "tspawn",
+        "body": [
+            "tokio::spawn(async move {",
+            "    $0",
+            "});"
+        ],
+        "description": "Spawn a tokio task (full path, no import needed)"
+    }
+}

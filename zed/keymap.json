@@ -1,0 +1,55 @@
+// Zed keymap — vim mode enhancements (docs: zed.dev/docs/vim.md#optional-key-bindings)
+[
+    // Subword motion: navigate camelCase / snake_case parts (docs: vim.md#optional-key-bindings)
+    // NOTE: this changes default w/b/e semantics. Delete this block if you prefer vanilla vim words.
+    {
+        "context": "VimControl && !menu && vim_mode != operator",
+        "bindings": {
+            "w": "vim::NextSubwordStart",
+            "b": "vim::PreviousSubwordStart",
+            "e": "vim::NextSubwordEnd",
+            "g e": "vim::PreviousSubwordEnd"
+        }
+    },
+    // Bracket/quote text objects: traditional vim (q/b) + mini.ai style (Q/B)
+    {
+        "context": "vim_operator == a || vim_operator == i || vim_operator == cs",
+        "bindings": {
+            "q": "vim::AnyQuotes",
+            "b": "vim::AnyBrackets",
+            "Q": "vim::MiniQuotes",
+            "B": "vim::MiniBrackets"
+        }
+    },
+    // shift-s in visual mode: add surrounds to selection (instead of substitute)
+    {
+        "context": "vim_mode == visual",
+        "bindings": {
+            "shift-s": "vim::PushAddSurrounds"
+        }
+    },
+    // Tasks & panels
+    {
+        "context": "Workspace",
+        "bindings": {
+            "alt-g": ["task::Spawn", { "task_name": "start lazygit", "reveal_target": "center" }]
+        }
+    },
+    // rust-analyzer: Expand/Shrink Selection by syntax node (book: assists.html / features.html)
+    // Scoped to insert mode so it never conflicts with vim visual/normal motions.
+    {
+        "context": "Editor && vim_mode == insert",
+        "bindings": {
+            "alt-shift-right": "editor::SelectLargerSyntaxNode",
+            "alt-shift-left": "editor::SelectSmallerSyntaxNode"
+        }
+    },
+    // terminal: alt-j/k switch terminal tabs? keep defaults; forward ctrl-n safely is not needed on linux desktop
+    {
+        "context": "Terminal",
+        "bindings": {
+            "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
+            "ctrl-d": ["terminal::SendKeystroke", "ctrl-d"]
+        }
+    }
+]

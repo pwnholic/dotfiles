@@ -1,0 +1,27 @@
+{
+    "Interface": {
+        "prefix": "int",
+        "body": ["interface ${1:Name} {", "  $0", "}"],
+        "description": "TypeScript interface"
+    },
+    "Type alias": {
+        "prefix": "typ",
+        "body": ["type ${1:Name} = ${2:string};"],
+        "description": "Type alias"
+    },
+    "Async arrow function": {
+        "prefix": "afn",
+        "body": ["const ${1:name} = async (${2:params}): Promise<${3:void}> => {", "  $0", "};"],
+        "description": "Async arrow function"
+    },
+    "Try catch": {
+        "prefix": "trc",
+        "body": ["try {", "  $1", "} catch (err) {", "  console.error(err);", "}"],
+        "description": "Try/catch block"
+    },
+    "Named function": {
+        "prefix": "fn",
+        "body": ["function ${1:name}(${2:params}): ${3:void} {", "  $0", "}"],
+        "description": "Named function"
+    }
+}

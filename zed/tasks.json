@@ -1,0 +1,107 @@
+[
+    {
+        "label": "cargo build",
+        "command": "cargo",
+        "args": ["build"],
+        "cwd": "$ZED_WORKTREE_ROOT"
+    },
+    {
+        "label": "cargo test: $ZED_CUSTOM_RUST_PACKAGE",
+        "command": "cargo",
+        "args": ["test", "-p", "$ZED_CUSTOM_RUST_PACKAGE"],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "tags": ["rust-test"],
+        "save": "all"
+    },
+    {
+        "label": "cargo clippy (workspace)",
+        "command": "cargo",
+        "args": ["clippy", "--workspace", "--all-targets"],
+        "cwd": "$ZED_WORKTREE_ROOT"
+    },
+    {
+        "label": "go build ./...",
+        "command": "go",
+        "args": ["build", "./..."],
+        "cwd": "$ZED_WORKTREE_ROOT"
+    },
+    {
+        "label": "go test (package of current file)",
+        "command": "go",
+        "args": ["test", "-v", "$ZED_DIRNAME"],
+        "save": "all"
+    },
+    {
+        "label": "go test (worktree, race)",
+        "command": "go",
+        "args": ["test", "-race", "./..."],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "save": "all"
+    },
+    {
+        "label": "pytest (current file)",
+        "command": "uv",
+        "args": ["run", "pytest", "-x", "-q", "$ZED_FILE"],
+        "save": "all"
+    },
+    {
+        "label": "pytest (fallback: python -m pytest)",
+        "command": "python3",
+        "args": ["-m", "pytest", "-x", "-q", "$ZED_FILE"],
+        "save": "all"
+    },
+    {
+        "label": "pytest (watch current file)",
+        "command": "uv",
+        "args": ["run", "ptw", "$ZED_FILE"],
+        "save": "all"
+    },
+    {
+        "label": "run current python file",
+        "command": "uv",
+        "args": ["run", "python", "$ZED_FILE"]
+    },
+    {
+        "label": "npm test",
+        "command": "npm",
+        "args": ["test"],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "save": "all"
+    },
+    {
+        "label": "npm run dev",
+        "command": "npm",
+        "args": ["run", "dev"],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "allow_concurrent_runs": true,
+        "use_new_terminal": true
+    },
+    {
+        "label": "tsc --noEmit (typecheck)",
+        "command": "npx",
+        "args": ["tsc", "--noEmit"],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "save": "all"
+    },
+    {
+        "label": "start lazygit",
+        "command": "lazygit",
+        "args": ["-p", "$ZED_WORKTREE_ROOT"],
+        "use_new_terminal": true,
+        "allow_concurrent_runs": false
+    },
+    {
+        "label": "branches containing commit: $ZED_GIT_SHA_SHORT",
+        "command": "git",
+        "args": ["branch", "-a", "--contains", "$ZED_GIT_SHA"],
+        "tags": ["git-command"]
+    },
+    {
+        "label": "copy .env into new worktree",
+        "command": "cp",
+        "args": ["$ZED_MAIN_GIT_WORKTREE/.env", "$ZED_WORKTREE_ROOT/.env"],
+        "hooks": ["create_worktree"],
+        "reveal": "no_focus",
+        "hide": "on_success"
+    }
+]

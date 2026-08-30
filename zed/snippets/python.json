@@ -1,0 +1,32 @@
+{
+    "Main guard": {
+        "prefix": "main",
+        "body": ["def main() -> None:", "    $0", "", "", "if __name__ == \"__main__\":", "    main()"],
+        "description": "Python main guard"
+    },
+    "Pytest function": {
+        "prefix": "tst",
+        "body": ["def test_${1:name}() -> None:", "    $0"],
+        "description": "Pytest test function"
+    },
+    "Pytest fixture": {
+        "prefix": "fxtr",
+        "body": ["@pytest.fixture", "def ${1:name}():", "    $0"],
+        "description": "Pytest fixture"
+    },
+    "Dataclass": {
+        "prefix": "dcl",
+        "body": ["@dataclass", "class ${1:Name}:", "    ${2:field}: ${3:str}"],
+        "description": "Dataclass"
+    },
+    "Pydantic model": {
+        "prefix": "pdm",
+        "body": ["class ${1:Name}(BaseModel):", "    ${2:field}: ${3:str}"],
+        "description": "Pydantic BaseModel"
+    },
+    "Async function": {
+        "prefix": "afn",
+        "body": ["async def ${1:name}(${2}) -> ${3,None}:", "    $0"],
+        "description": "Async function"
+    }
+}
