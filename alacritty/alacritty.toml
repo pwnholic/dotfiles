@@ -1,5 +1,4 @@
 [general]
-import = ["~/.config/alacritty/themes/noctalia.toml"]
 working_directory = "None"
 live_config_reload = true
 

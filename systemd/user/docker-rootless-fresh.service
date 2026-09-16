@@ -1,0 +1,26 @@
+[Unit]
+Description=Docker Rootless (fresh isolated storage)
+Requires=dbus.socket
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=DOCKERD_ROOTLESS_ROOTLESSKIT_NET=slirp4netns
+Environment=DOCKERD_ROOTLESS_ROOTLESSKIT_STATE_DIR=%t/docker-rootless-fresh
+ExecStart=%h/.local/lib/docker-rootless-fresh/dockerd-rootless.sh --config-file=%h/.config/docker-rootless-fresh/daemon.json --host=unix://%t/docker-rootless-fresh.sock --data-root=%h/.local/share/docker-rootless-fresh
+ExecReload=/usr/bin/kill -s HUP $MAINPID
+TimeoutStartSec=90
+TimeoutStopSec=90
+Restart=on-failure
+RestartSec=2
+LimitNOFILE=infinity
+LimitNPROC=infinity
+TasksMax=infinity
+Delegate=yes
+Type=notify
+NotifyAccess=all
+KillMode=mixed
+
+[Install]
+WantedBy=default.target

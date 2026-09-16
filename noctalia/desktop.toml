@@ -1,3 +1,6 @@
+[desktop_widgets]
+schema_version = 2
+widget_order = [ "fancy_audio_visualizer_eDP-1" ,"fancy_audio_visualizer_HDMI-A-1"]
 
 [desktop_widgets.grid]
 cell_size = 16
@@ -13,7 +16,6 @@ output = "eDP-1"
 rotation = 0.0
 type = "fancy_audio_visualizer"
 
-
 [desktop_widgets.widget.fancy_audio_visualizer_eDP-1.settings]
 background = false
 bar_width = 0.5
@@ -25,7 +27,6 @@ sensitivity = 1.2
 visualization_mode = "all"
 wave_thickness = 0.6
 
-
 [desktop_widgets.widget.fancy_audio_visualizer_HDMI-A-1]
 box_height = 528.0
 box_width = 592.0
@@ -34,7 +35,6 @@ cy = 540.0
 output = "HDMI-A-1"
 rotation = 0.0
 type = "fancy_audio_visualizer"
-
 
 [desktop_widgets.widget.fancy_audio_visualizer_HDMI-A-1.settings]
 background = false
@@ -47,6 +47,14 @@ sensitivity = 1.2
 visualization_mode = "all"
 wave_thickness = 0.6
 
+[hot_corners.bottom_left]
+action = "none"
+
+[hot_corners.bottom_right]
+action = "none"
+
+[hot_corners.top_right]
+action = "none"
 
 [wallpaper]
 enabled = true

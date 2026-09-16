@@ -24,8 +24,10 @@ type = "power_profile"
 [[control_center.shortcuts]]
 type = "session"
 
-[control_center.calendar]
-show_events_card = false
-show_week_numbers = false
+[calendar]
 event_date_format = "%A %e %B"
 event_time_format = "%H:%M"
+
+[control_center.calendar]
+show_events_card = true
+show_week_numbers = false

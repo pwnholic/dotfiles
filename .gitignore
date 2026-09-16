@@ -7,7 +7,6 @@ obs-studio/profiler_data/
 obs-studio/user.ini
 obs-studio/global.ini
 
-noctalia/plugins.toml
 
 BraveSoftware/
 VSCodium/
@@ -39,3 +38,29 @@ Crashpad/
 
 go/
 pgcli/
+
+# Local application state, caches, installed binaries, and session data.
+# Keep these out of the dotfiles repository, including newly-created files.
+.foundry/
+Code/*
+!Code/User/
+Code/User/*
+!Code/User/settings.json
+!Code/User/mcp.json
+discord/
+ZenNotes/
+herdr/
+MelkaJ/
+QtProject.conf
+tabularis/
+pdtm/cache.json
+pdtm/release-notes.json
+go/telemetry/local/
+
+# Credential stores/private key material. The safe commit script keeps the
+# local files untouched, but these paths should not be tracked by default.
+gh/hosts.yml
+solana/id.json
+ghc/ghci_history
+pdf-metadata-editor/log.txt
+systemd/user/default.target.wants/

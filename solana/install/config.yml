@@ -1,0 +1,5 @@
+---
+update_poll_secs: 3600
+explicit_release: !Semver 4.3.0-beta.2
+releases_dir: /home/pwnholic/.local/share/solana/install/releases
+active_release_dir: /home/pwnholic/.local/share/solana/install/active_release

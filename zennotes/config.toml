@@ -1,0 +1,259 @@
+# ZenNotes configuration
+# Docs: https://github.com/ZenNotes/zennotes
+#
+# Holds your portable preferences (theme, editor, vim, keymaps, …) so you can
+# sync them across machines with git, stow, chezmoi, and friends. Managed by
+# ZenNotes but safe to hand-edit — changes apply live, no restart needed.
+#
+# Every available option is listed below with its current value; the inline
+# comment shows the allowed values. Edit a value to customize it — ZenNotes
+# keeps this list complete, so a removed option reappears with its default.
+# Note: comments you add yourself may be dropped when the app rewrites the file.
+
+config_version = 1
+
+[vim]
+enabled = true  # true | false — CodeMirror Vim bindings
+insert_escape = ""  # key sequence to leave insert mode, e.g. "jk"; empty disables
+yank_to_clipboard = false  # sync the system clipboard with Vim yank/delete/change and p/P paste
+block_ime_in_normal_mode = true  # keep the OS input method (a CJK IME) from composing in normal and visual mode, so hjkl stay motions
+wrapped_line_motions = "display"  # display | logical — how $, I, A and dependent operators treat soft-wrapped lines
+which_key_hints = true  # show the leader-key hint overlay (Vim only)
+which_key_hint_mode = "timed"  # timed | sticky
+which_key_hint_timeout_ms = 900  # how long timed hints stay visible (ms)
+
+[search]
+backend = "auto"  # auto | builtin | ripgrep | fzf
+ripgrep_path = "/usr/bin/rg"  # absolute path to ripgrep; empty = look on $PATH
+fzf_path = "/usr/bin/fzf"  # absolute path to fzf; empty = look on $PATH
+
+[editor]
+live_preview = true  # hide markdown syntax on inactive lines
+show_heading_level_labels = false  # show H1 through H6 badges before headings
+render_tables = true  # render tables as widgets in live preview; off keeps them as plain text
+sync_title_heading_on_rename = true  # renaming a note rewrites its leading '# heading' to match
+markdown_snippets = true  # auto-close markdown delimiters while typing
+text_replacements_enabled = true  # expand configured text triggers while typing
+auto_pairs = true  # auto-insert matching [] () and {} while typing
+auto_pair_quotes_in_prose = false  # also auto-insert matching quotes outside Markdown code
+hide_builtin_templates = false  # hide the shipped templates from the pickers
+tabs_enabled = true  # enable tab-based editing
+wrap_tabs = false  # wrap the tab strip instead of scrolling it
+font_size = 16  # editor + preview font size (px)
+math_font_scale = 100  # math size as a percentage (50-200); scales $…$ and $$…$$ in editor and preview
+line_height = 1.85  # line-height multiplier
+tab_size = 4  # tab width in columns, from 1 through 8
+list_indent_guides = true  # vertical guide lines at each nested list level
+scroll_off = 0  # vim scrolloff — lines kept above/below the cursor (0 = off)
+time_format = "12h"  # clock format for the @time macro (12h or 24h)
+preview_max_width = 920  # max reading width for the preview (px)
+editor_max_width = 920  # max width of the editor column (px)
+completed_task_style = "none"  # none | strikethrough | gray | gray-strikethrough — style checked-task text
+math_renderer = "katex"  # katex | typst: typesetter for $…$ / $$…$$ math
+typst_tag_preambles = false  # true | false — prepend Typst definitions from notes in a `typst` folder, chosen by a note's tags
+harper_enabled = false  # true | false: grammar and spelling with Harper, checked on this device
+harper_dialect = "american"  # american | british | australian | canadian | indian
+loose_math_delimiters = false  # render $$…$$ display math even with text before/after the fences
+default_view_mode = "edit"  # edit | split | preview — the mode a note opens in before it has a remembered one
+line_number_mode = "off"  # off | absolute | relative
+line_number_position = "text"  # text | edge
+word_wrap = true  # wrap long lines vs. scroll horizontally
+preview_smooth_scroll = true  # animate half-page scroll in the preview
+pdf_embed_in_edit_mode = "compact"  # compact | full
+external_application_schemes = []  # application links enabled for opening, e.g. ["zotero", "obsidian", "vscode"]
+ignored_keys = []  # keys the app ignores entirely, by DOM key or code, e.g. ["KanaMode"] for the no-op a Kanata/QMK tap-hold layer sends with every keystroke
+
+[appearance]
+pdf_export_use_theme = false  # true | false — export PDFs using the current theme instead of a clean light print theme
+theme_family = "rose-pine"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
+theme_mode = "dark"  # light | dark | auto
+theme_id = "rose-pine-main"  # resolved theme id; normally set automatically from family + mode
+dark_sidebar = true  # tint the sidebar darker than the canvas
+show_window_title_bar = true  # show the main window title bar and window controls
+show_sidebar_chevrons = true  # show disclosure arrows in the sidebar
+content_align = "center"  # center | left
+unified_sidebar = true  # merge the note list into the sidebar tree
+
+[typography]
+interface_font = "Iosevka Nerd Font"  # app chrome font; empty = system default
+text_font = "Iosevka Nerd Font Mono"  # editor + preview font; empty = system default
+mono_font = "IosevkaTermSlab Nerd Font"  # code / monospace font; empty = system default
+
+[view]
+atlas_enabled = true  # the Atlas map view of the vault (sidebar row, command, Space g); on by default
+workflows_enabled = false  # opt in to the Workflows view, its sidebar row, command, and leader shortcut (off by default)
+asset_sort_order = "name-asc"  # Assets view sort: name | used | type | size | modified, each -asc or -desc
+note_sort_order = "none"  # none | manual | updated-desc | updated-asc | created-desc | created-asc | name-asc | name-desc
+group_by_kind = true  # group notes by kind in the list
+nested_tags = true  # show /-separated tags as a collapsible tree (sidebar + Tags view)
+view_settings_scope = "global"  # apply note/list view settings globally or per vault (global | vault)
+auto_reveal = false  # auto-expand the sidebar to the active note
+quick_note_date_title = false  # title quick notes by date instead of a timestamp
+quick_note_title_prefix = "Quick Note"  # prefix for new quick-note titles; empty = bare timestamp
+auto_calendar_panel = true  # auto-show the calendar for daily / weekly notes
+calendar_week_start = "monday"  # monday | sunday | locale
+calendar_show_week_numbers = true  # show ISO week numbers in the calendar
+tasks_view_mode = "kanban"  # list | calendar | kanban
+show_archived_tasks = false  # keep tasks from archived notes in the Tasks views
+kanban_group_by = "status"  # status | priority | folder (each note's own folder; see kanban_folder_root) | field:<key>
+kanban_folder_root = ""  # folder board: group by the children of this folder, e.g. "Projects" (deeper notes roll up, notes outside it share one column); "" = each note's own folder
+kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlog", "in_progress", "review", "done"]
+hidden_workflow_presets = []  # built-in workflow recipes hidden from the gallery, by id — e.g. ["reading-log"]
+
+# Keymap overrides. Add or uncomment "<action.id>" = "<binding>" lines.
+# Binding syntax: "Mod+P" = Cmd/Ctrl+P, "Shift+Mod+K", "Ctrl+W", "Space",
+# or a two-key sequence like "g g". Uncomment a reference line to remap it.
+# An empty binding ("") removes the key entirely: nothing triggers that
+# action until you give it a key again or delete the line.
+[keymaps]
+
+# --- All actions (defaults shown; uncomment + edit to override) ---
+# Global
+# "global.searchNotes" = "Mod+P"  # Search notes
+# "global.searchNotesNonVim" = "Mod+F"  # Search notes in non-Vim mode
+# "global.commandPalette" = "Shift+Mod+P"  # Open command palette
+# "global.newQuickNote" = "Shift+Mod+N"  # New quick note
+# "global.newNoteHere" = "Mod+N"  # New note in current folder
+# "global.openSettings" = "Mod+,"  # Open settings
+# "global.openFile" = "Mod+O"  # Open file
+# "global.toggleSidebar" = "Mod+1"  # Toggle sidebar
+# "global.toggleConnections" = "Mod+2"  # Toggle connections panel
+# "global.toggleOutlinePanel" = "Mod+3"  # Toggle outline panel
+# "global.toggleCommentsPanel" = "Shift+Mod+C"  # Toggle comments panel
+# "global.addComment" = "Alt+Mod+M"  # Add comment to selection
+# "global.focusPaneLeft" = "Alt+H"  # Focus pane left
+# "global.focusPaneDown" = "Alt+J"  # Focus pane down
+# "global.focusPaneUp" = "Alt+K"  # Focus pane up
+# "global.focusPaneRight" = "Alt+L"  # Focus pane right
+# "global.modeEdit" = "Mod+4"  # Switch to editor mode
+# "global.modeSplit" = "Mod+5"  # Switch to split mode
+# "global.modePreview" = "Mod+6"  # Switch to preview mode
+# "global.toggleZenMode" = "Mod+."  # Toggle Zen mode
+# "global.closeActiveTab" = "Mod+W"  # Close active tab
+# "global.reopenClosedTab" = "Shift+Mod+T"  # Reopen closed tab
+# "global.toggleWordWrap" = "Alt+Z"  # Toggle word wrap
+# "global.exportNotePdf" = "Shift+Mod+E"  # Export note as PDF
+# "global.zoomIn" = "Mod+="  # Zoom in
+# "global.zoomOut" = "Mod+-"  # Zoom out
+# "global.zoomReset" = "Mod+0"  # Reset zoom
+# "global.historyBack" = "Alt+ArrowLeft"  # Go back in note history
+# "global.historyForward" = "Alt+ArrowRight"  # Go forward in note history
+# "global.toggleRecentNote" = "Mod+Tab"  # Switch to previous note
+# "tabs.select1" = "Alt+1"  # Go to tab 1
+# "tabs.select2" = "Alt+2"  # Go to tab 2
+# "tabs.select3" = "Alt+3"  # Go to tab 3
+# "tabs.select4" = "Alt+4"  # Go to tab 4
+# "tabs.select5" = "Alt+5"  # Go to tab 5
+# "tabs.select6" = "Alt+6"  # Go to tab 6
+# "tabs.select7" = "Alt+7"  # Go to tab 7
+# "tabs.select8" = "Alt+8"  # Go to tab 8
+# "tabs.select9" = "Alt+9"  # Go to tab 9
+# Vim
+# "vim.leaderPrefix" = "Space"  # Leader key
+# "vim.leaderOpenBuffers" = "o"  # Leader: open buffers
+# "vim.leaderCloudConflicts" = "r"  # Leader: review Cloud conflicts
+# "vim.leaderWorkflows" = "a"  # Leader: open workflows
+# "vim.leaderAtlas" = "g"  # Leader: open atlas
+# "vim.leaderSearchNotes" = "f"  # Leader: search notes
+# "vim.leaderSearchGroup" = "s"  # Leader: search…
+# "vim.leaderSearchVaultText" = "t"  # Leader search: vault text
+# "vim.leaderToggleSidebar" = "e"  # Leader: toggle sidebar
+# "vim.leaderNoteOutline" = "p"  # Leader: note outline
+# "vim.leaderSwitchVault" = "v"  # Leader: switch vault
+# "vim.leaderNoteActions" = "l"  # Leader: note actions
+# "vim.leaderFormatNote" = "f"  # Leader note action: format note
+# "vim.leaderCopyMarkdown" = "y"  # Leader note action: copy note as Markdown
+# "vim.leaderToggleFavorite" = "s"  # Leader note action: toggle favorite
+# "vim.leaderQuickCapture" = "q"  # Leader: open quick capture
+# "vim.leaderTemplatePicker" = "t"  # Leader: new from template
+# "vim.leaderInsertTemplate" = "i"  # Leader: insert template into note
+# "vim.leaderDailyNote" = "d"  # Leader: today's daily note
+# "vim.leaderWeeklyNote" = "w"  # Leader: this week's note
+# "vim.leaderMonthlyNote" = "m"  # Leader: this month's note
+# "vim.leaderCalendar" = "c"  # Leader: toggle calendar
+# "vim.panePrefix" = "Ctrl+W"  # Pane command prefix
+# "vim.paneFocusLeft" = "h"  # Pane: focus left
+# "vim.paneFocusDown" = "j"  # Pane: focus down
+# "vim.paneFocusUp" = "k"  # Pane: focus up
+# "vim.paneFocusRight" = "l"  # Pane: focus right
+# "vim.paneSplitRight" = "v"  # Pane: split right
+# "vim.paneSplitDown" = "s"  # Pane: split down
+# "vim.historyBack" = "Ctrl+O"  # Go back in note history
+# "vim.historyForward" = "Ctrl+I"  # Go forward in note history
+# "vim.bufferPrevious" = "[ b"  # Previous buffer
+# "vim.bufferNext" = "] b"  # Next buffer
+# "vim.tabPrevious" = "g T"  # Previous tab
+# "vim.tabNext" = "g t"  # Next tab
+# "vim.hintMode" = "h"  # Leader: hint mode
+# "vim.goToDefinition" = "g d"  # Follow link at cursor
+# "vim.createNoteFromLink" = "g D"  # Create note for link at cursor
+# "vim.foldCurrent" = "z c"  # Fold heading at cursor
+# "vim.unfoldCurrent" = "z o"  # Unfold heading at cursor
+# "vim.foldAll" = "z M"  # Fold all headings
+# "vim.unfoldAll" = "z R"  # Unfold all headings
+# "vim.harperNext" = "] s"  # Next Harper suggestion
+# "vim.harperPrevious" = "[ s"  # Previous Harper suggestion
+# "vim.harperSuggest" = "z ="  # Harper suggestions at cursor
+# "vim.harperAddWord" = "z g"  # Add word to Harper dictionary
+# "vim.harperIgnore" = "z G"  # Ignore Harper suggestion
+# Navigation
+# "nav.moveDown" = "j"  # Move selection down
+# "nav.moveUp" = "k"  # Move selection up
+# "nav.moveLeft" = "h"  # Move selection left
+# "nav.moveRight" = "l"  # Move selection right
+# "nav.jumpTop" = "g g"  # Jump to top
+# "nav.jumpBottom" = "G"  # Jump to bottom
+# "nav.openSideItem" = "l"  # Open sidebar or note-list item
+# "nav.openResult" = "o"  # Open result
+# "nav.back" = "h"  # Back out
+# "nav.toggleFolder" = "o"  # Toggle folder
+# "nav.filter" = "/"  # Focus filter or search
+# View actions
+# "nav.halfPageDown" = "Ctrl+D"  # Half-page down
+# "nav.halfPageUp" = "Ctrl+U"  # Half-page up
+# "nav.contextMenu" = "m"  # Open context menu
+# "nav.peekPreview" = "p"  # Peek preview
+# "nav.restore" = "r"  # Restore trashed note
+# "nav.delete" = "x"  # Delete selected result
+# "nav.toggleTask" = "x"  # Toggle task
+# "tasks.moveTaskUp" = "K"  # Move task up
+# "tasks.moveTaskDown" = "J"  # Move task down
+# "tasks.savedFilters" = "F"  # Pick a saved Tasks filter
+# "editor.hopMarkerForward" = "Alt+]"  # Hop past next marker
+# "editor.hopMarkerBackward" = "Alt+["  # Hop before previous marker
+# "editor.foldHeading" = "Alt+Mod+F"  # Fold heading
+# "editor.unfoldHeading" = "Alt+Mod+U"  # Unfold heading
+# "editor.moveLineUp" = "Alt+ArrowUp"  # Move line up
+# "editor.moveLineDown" = "Alt+ArrowDown"  # Move line down
+# "editor.toggleCheckbox" = "Mod+L"  # Toggle checkbox
+# "editor.reflowParagraph" = "Alt+Q"  # Reflow paragraph
+# "nav.localEx" = ":"  # Open local ex prompt
+# "nav.newQuickNote" = "n"  # New quick note from Quick Notes view
+# "nav.unarchive" = "u"  # Unarchive selected note
+
+# Display-name overrides for the built-in folders (inbox, quick, archive, trash).
+# Example: inbox = "Notes"
+[folder_labels]
+
+# Kanban column title overrides, keyed by "<groupBy>:<columnId>".
+# Example: "status:todo" = "To Do"
+[kanban_column_titles]
+
+# Enabled CSS overrides — list the filenames you want active.
+# Example: "focus.css" = "on"
+[overrides]
+
+# Visual color tweaks from Settings → Appearance (token slug = color).
+# Example: "accent" = "#ff3b30"
+[tweaks]
+
+# Text replacements expanded while typing, keyed by trigger.
+# Example: "->" = "→"
+[text_replacements]
+"->" = "→"
+
+# Saved Tasks filters: a name you pick = the filter query it stands for.
+# Recall one from the chips above the task list, the command palette,
+# or `:filter <name>` in the Tasks view; `:savefilter <name>` adds one.
+# Example: "Project alpha" = "@project:alpha"
+[saved_filters]

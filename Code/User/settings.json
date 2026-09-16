@@ -1,0 +1,7 @@
+{
+    "workbench.iconTheme": "ayu",
+    "workbench.colorTheme": "Ayu Dark Bordered",
+    "git.blame.statusBarItem.enabled": false,
+    "vim.useSystemClipboard": true,
+    "editor.fontFamily": "Iosevka Nerd Font"
+}

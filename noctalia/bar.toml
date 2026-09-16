@@ -142,10 +142,10 @@ pinned = []
 capsule_border = "secondary"
 show_active_indicator = true
 active_indicator_color = "primary"
-only_active_workspace = true
-workspace_group_capsule = false
 color = "secondary"
 icon_color = "secondary"
+only_active_workspace = true
+workspace_group_capsule = false
 
 [widget.clock]
 format = "{:%A, %d %B • %H:%M}"
@@ -219,8 +219,8 @@ icon_color = "primary"
 
 [widget.volume.actions]
 middle = "volume-mute"
-scroll_up = "volume-up 10%"
-scroll_down = "volume-down 10%"
+scroll_down = "volume-down 2%"
+scroll_up = "volume-up 2%"
 
 [widget.mic]
 type = "volume"

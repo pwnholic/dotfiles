@@ -1,345 +1,237 @@
--- Keybinds — a vim grammar for the window manager, designed for a hardcore
--- Neovim user switching between two keyboards:
---   1. Internal laptop keyboard (full layout, has arrow keys)
---   2. 60% external keyboard (no arrows / nav cluster; Fn layer sends XF86 media keys)
---
--- THE GRAMMAR (operator + motion, like vim):
---   SUPER             + H/J/K/L   -> focus window (motion)
---   SUPER + SHIFT     + H/J/K/L   -> move window (SHIFT = "stronger" motion)
---   SUPER + CTRL      + H/L, N    -> workspace motion (:bprev/:bnext, :buffer N)
---   SUPER + ALT       + H/L       -> monitor motion (relative, works docked or not)
---   SUPER + SHIFT     + ALT + dir -> preselect split for the NEXT window
---   SUPER + ALT       + Left/Right-> move window to monitor (hjkl form is taken
---                                      by preselect; arrows + ALT+wheel cover it)
---   SUPER + R                     -> modal resize mode (hjkl resize, ESC exits)
---   ESC always exits a mode; SUPER+ESC force-kills a window (":q!");
---   SUPER+SHIFT+ESC locks the session.
--- Arrow keys mirror every hjkl motion, so the internal keyboard feels identical.
--- Mouse wheel convention (unified): wheel UP = next, wheel DOWN = previous.
--- Media/volume/brightness need no extra binds: the 60% Fn layer emits XF86* keys.
--- Bind flags used in this file:
---   locked           = works even when input is grabbed (hardware keys)
---   repeating        = fires repeatedly while held (resize, zoom, volume, brightness)
---   non_consuming    = key event also reaches the focused app (Alt+Tab, Super+Tab)
---   allow_input_capture = fires even when app has captured the key (group Ctrl+Tab)
--- Full reference: https://wiki.hypr.land/Configuring/Basics/Binds/
+-- Keybinds for the vim-style Hyprland setup.
 
 local S = require("config.settings")
 
-local mainMod = "SUPER"
-local noctCall = "noctalia msg "
-local launchPrefix = "uwsm app -- " -- if you are not using UWSM, make this empty (e.g. "")
+local main_mod = "SUPER"
+local noctalia_cmd = "noctalia msg "
+local launch_prefix = "uwsm app -- "
 
---------------------------------------------------------------------
--- Bind registry: guards against accidental duplicate chords.
--- Hyprland silently lets the LAST bind win, so a collision means one feature
--- quietly stops working. Surface it as a notification instead.
---------------------------------------------------------------------
-local submap_ctx = "" -- "" = global scope, otherwise the submap name
+local submap_context = ""
 local seen_binds = {}
+local modifiers = {
+    ALT = true,
+    CONTROL = true,
+    CTRL = true,
+    SHIFT = true,
+    SUPER = true,
+}
 
--- Canonical chord form: modifiers sorted alphabetically + key last, so
--- "SUPER + SHIFT + ALT + H" and "SUPER + ALT + SHIFT + H" compare equal
--- (they are the same chord to Hyprland).
 local function canonical(keys)
-    local mods, key = {}, nil
+    local mods = {}
+    local key
     for token in keys:gmatch("[^+]+") do
-        local t = token:gsub("^%s+", ""):gsub("%s+$", "")
-        if key == nil and not t:match("^SUPER$|^SHIFT$|^ALT$|^CONTROL$|^CTRL$") then
-            key = t -- first non-modifier token is the key
-        else
-            table.insert(mods, t)
+        local value = token:gsub("^%s+", ""):gsub("%s+$", "")
+        if modifiers[value] then
+            mods[#mods + 1] = value
+        elseif key == nil then
+            key = value
         end
     end
+
     table.sort(mods)
     return table.concat(mods, "+") .. "|" .. (key or "")
 end
 
-local function bind(keys, dispatcher, opts)
-    local id = submap_ctx .. "|" .. canonical(keys)
+local function bind(keys, dispatcher, flags)
+    if flags ~= nil and type(flags) ~= "table" then
+        error(("bind flags for '%s' must be a table"):format(keys), 2)
+    end
+
+    local id = submap_context .. "|" .. canonical(keys)
     if seen_binds[id] then
-        local where = (submap_ctx ~= "") and ("submap '" .. submap_ctx .. "'") or "global scope"
-        S.notify(("duplicate bind '%s' in %s — last one wins"):format(keys, where))
+        local scope = submap_context ~= "" and ("submap '" .. submap_context .. "'") or "global scope"
+        S.notify(("duplicate bind '%s' in %s — last one wins"):format(keys, scope))
     end
     seen_binds[id] = true
-    return hl.bind(keys, dispatcher, opts)
+    if flags == nil then
+        return hl.bind(keys, dispatcher)
+    end
+    return hl.bind(keys, dispatcher, flags)
 end
 
--- define_submap wrapper that also scopes the duplicate detection
 local function submap(name, body)
-    submap_ctx = name
+    submap_context = name
     local ok, err = pcall(hl.define_submap, name, body)
-    submap_ctx = ""
+    submap_context = ""
     if not ok then
         S.notify(("failed to define submap '%s'"):format(name))
         error(err)
     end
 end
 
---------------------------------------------------------------------
--- Motion tables (single source of truth for hjkl <-> arrows/directions)
---------------------------------------------------------------------
--- focus: Hyprland focus direction names; move: dwindle move codes
-local MOTIONS = {
-    { key = "H", lower = "h", arrow = "Left",  arrow_lower = "left",  focus = "left",  move = "l", rx = -20, ry = 0 },
-    { key = "J", lower = "j", arrow = "Down",  arrow_lower = "down",  focus = "down",  move = "d", rx = 0,   ry = 20 },
-    { key = "K", lower = "k", arrow = "Up",    arrow_lower = "up",    focus = "up",    move = "u", rx = 0,   ry = -20 },
-    { key = "L", lower = "l", arrow = "Right", arrow_lower = "right", focus = "right", move = "r", rx = 20,  ry = 0 },
+local motions = {
+    { key = "H", lower = "h", arrow = "Left",  arrow_lower = "left",  focus = "left",  move = "l", x = -20, y = 0 },
+    { key = "J", lower = "j", arrow = "Down",  arrow_lower = "down",  focus = "down",  move = "d", x = 0,   y = 20 },
+    { key = "K", lower = "k", arrow = "Up",    arrow_lower = "up",    focus = "up",    move = "u", x = 0,   y = -20 },
+    { key = "L", lower = "l", arrow = "Right", arrow_lower = "right", focus = "right", move = "r", x = 20,  y = 0 },
 }
 
----------------------------
----- WINDOW MANAGEMENT ----
----------------------------
+-- Window management
+bind(main_mod .. " + Q", hl.dsp.window.close())
+bind(main_mod .. " + Escape", hl.dsp.window.kill())
+bind(main_mod .. " + SHIFT + Space", hl.dsp.window.float({ action = "toggle" }))
+bind(main_mod .. " + F", hl.dsp.window.fullscreen())
+bind(main_mod .. " + D", hl.dsp.window.fullscreen({ mode = "maximized" }))
 
--- Close / kill (":q" vs ":q!")
-bind(mainMod .. " + Q", hl.dsp.window.close())
-bind(mainMod .. " + Escape", hl.dsp.window.kill())
-
--- Window state toggles
-bind(mainMod .. " + SHIFT + Space", hl.dsp.window.float({ action = "toggle" }))
-bind(mainMod .. " + F", hl.dsp.window.fullscreen())                       -- real fullscreen (covers everything)
-bind(mainMod .. " + D", hl.dsp.window.fullscreen({ mode = "maximized" })) -- maximized (keeps gaps/bar)
-
----------------------------------
----- FOCUS (window motion) ----
----------------------------------
-
-for _, d in ipairs(MOTIONS) do
-    -- Vim home row (primary form, identical on both keyboards)
-    bind(mainMod .. " + " .. d.key, hl.dsp.focus({ direction = d.focus }))
-    -- Arrow mirrors (internal keyboard)
-    bind(mainMod .. " + " .. d.arrow, hl.dsp.focus({ direction = d.focus }))
+-- Focus and movement
+for _, motion in ipairs(motions) do
+    bind(main_mod .. " + " .. motion.key, hl.dsp.focus({ direction = motion.focus }))
+    bind(main_mod .. " + " .. motion.arrow, hl.dsp.focus({ direction = motion.focus }))
+    bind(main_mod .. " + SHIFT + " .. motion.key, hl.dsp.window.move({ direction = motion.move }))
+    bind(main_mod .. " + SHIFT + " .. motion.arrow, hl.dsp.window.move({ direction = motion.move }))
 end
 
--- Cycle windows (:bnext / :bprev)
--- non_consuming: the key also reaches the focused app (many apps use Alt+Tab themselves)
 bind("ALT + Tab", hl.dsp.window.cycle_next(), { non_consuming = true })
 bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }), { non_consuming = true })
-bind(mainMod .. " + Tab", hl.dsp.exec_cmd(noctCall .. "window-switcher"), { non_consuming = false })
--- Jumplist back: jump to the urgent or last-focused window (CTRL+O in Neovim)
-bind(mainMod .. " + O", hl.dsp.focus({ urgent_or_last = true }))
+bind(main_mod .. " + Tab", hl.dsp.exec_cmd(noctalia_cmd .. "window-switcher"), { non_consuming = false })
+bind(main_mod .. " + O", hl.dsp.focus({ urgent_or_last = true }))
+bind(main_mod .. " + ALT + P", hl.dsp.window.pin())
 
-------------------------------------------
----- MOVE WINDOW (SHIFT = stronger) ----
-------------------------------------------
-
-for _, d in ipairs(MOTIONS) do
-    bind(mainMod .. " + SHIFT + " .. d.key, hl.dsp.window.move({ direction = d.move }))
-    bind(mainMod .. " + SHIFT + " .. d.arrow, hl.dsp.window.move({ direction = d.move }))
-end
-
--- Pin window: always on top, visible on all workspaces (PiP style)
-bind(mainMod .. " + ALT + P", hl.dsp.window.pin())
-
----------------------------------
----- GROUPS (tabbed windows) ----
----------------------------------
-
-bind(mainMod .. " + G", hl.dsp.group.toggle())                               -- group / ungroup active window
-bind(mainMod .. " + SHIFT + G", hl.dsp.window.move({ out_of_group = true })) -- pull window out of its group
--- allow_input_capture: also fire even when the focused app has captured Ctrl+Tab
--- (e.g. browsers, terminals with their own tab switching)
+-- Groups
+bind(main_mod .. " + G", hl.dsp.group.toggle())
+bind(main_mod .. " + SHIFT + G", hl.dsp.window.move({ out_of_group = true }))
 bind("CONTROL + Tab", hl.dsp.group.next(), { allow_input_capture = true })
 bind("CONTROL + SHIFT + Tab", hl.dsp.group.prev(), { allow_input_capture = true })
-bind(mainMod .. " + ALT + G", hl.dsp.group.lock_active()) -- lock group against accidental tab switches
+bind(main_mod .. " + ALT + G", hl.dsp.group.lock_active())
 
----------------------------------
----- RESIZE (modal, SUPER+R) ----
----------------------------------
-
--- SUPER+R enters resize mode, then H/L change width and J/K change height
--- (repeat while held). ESC / Enter / Q — or any unknown key — exits the mode.
-bind(mainMod .. " + R", hl.dsp.submap("resize"))
+-- Resize submap
+bind(main_mod .. " + R", hl.dsp.submap("resize"))
 submap("resize", function()
-    for _, d in ipairs(MOTIONS) do
-        bind(d.lower, hl.dsp.window.resize({ x = d.rx, y = d.ry, relative = true }), { repeating = true })
-        bind(d.arrow_lower, hl.dsp.window.resize({ x = d.rx, y = d.ry, relative = true }), { repeating = true })
+    for _, motion in ipairs(motions) do
+        local resize_flags = { repeating = true }
+        bind(motion.lower, hl.dsp.window.resize({ x = motion.x, y = motion.y, relative = true }), resize_flags)
+        bind(motion.arrow_lower, hl.dsp.window.resize({ x = motion.x, y = motion.y, relative = true }), resize_flags)
     end
-    -- Exit the mode (like ESC in vim). catchall also exits on any unknown key,
-    -- so no keystrokes leak into the focused app while resizing (docs pattern).
-    for _, k in ipairs({ "escape", "return", "q", "catchall" }) do
-        bind(k, hl.dsp.submap("reset"))
+    for _, key in ipairs({ "escape", "return", "q", "catchall" }) do
+        bind(key, hl.dsp.submap("reset"))
     end
 end)
 
--- Move & resize with the mouse
-bind(mainMod .. " + mouse:272", hl.dsp.window.drag())
-bind(mainMod .. " + mouse:273", hl.dsp.window.resize())
+bind(main_mod .. " + mouse:272", hl.dsp.window.drag())
+bind(main_mod .. " + mouse:273", hl.dsp.window.resize())
 
-----------------------------------
----- DWINDLE LAYOUT MESSAGES ----
-----------------------------------
-
--- Split control (requires dwindle.preserve_split = true, set in decorations.lua)
-bind(mainMod .. " + CONTROL + S", hl.dsp.layout("togglesplit"))     -- toggle split orientation (h/v)
-bind(mainMod .. " + ALT + S", hl.dsp.layout("swapsplit"))           -- swap the two halves of the split
-bind(mainMod .. " + ALT + R", hl.dsp.layout("rotatesplit"))         -- rotate split 90 degrees clockwise
-bind(mainMod .. " + SHIFT + M", hl.dsp.layout("movetoroot active")) -- maximize within its subtree
--- Preselect the split direction for the NEXT window to open (one-shot override,
--- like setting a split before :new)
-for _, d in ipairs(MOTIONS) do
-    bind(mainMod .. " + SHIFT + ALT + " .. d.key, hl.dsp.layout("preselect " .. d.move))
+-- Dwindle layout
+bind(main_mod .. " + CONTROL + S", hl.dsp.layout("togglesplit"))
+bind(main_mod .. " + ALT + S", hl.dsp.layout("swapsplit"))
+bind(main_mod .. " + ALT + R", hl.dsp.layout("rotatesplit"))
+bind(main_mod .. " + SHIFT + M", hl.dsp.layout("movetoroot active"))
+for _, motion in ipairs(motions) do
+    bind(main_mod .. " + SHIFT + ALT + " .. motion.key, hl.dsp.layout("preselect " .. motion.move))
 end
--- Pseudo tiling: tile the window but keep its floating size
-bind(mainMod .. " + ALT + D", hl.dsp.window.pseudo())
+bind(main_mod .. " + ALT + D", hl.dsp.window.pseudo())
 
--- Zoom (cursor magnifier), clamped to [1.0, 3.0]
+-- Cursor zoom
 local function zoom(delta)
     local current, err = hl.get_config("cursor:zoom_factor")
     if err ~= nil or type(current) ~= "number" then
-        -- Config read failed (e.g. key renamed upstream): reset to neutral.
         current = 1.0
     end
-    local clamped = math.max(1.0, math.min(3.0, current + delta))
-    hl.config({ cursor = { zoom_factor = clamped } })
+    local value = math.max(1.0, math.min(3.0, current + delta))
+    hl.config({ cursor = { zoom_factor = value } })
 end
 
-local ZOOM_KEYS = {
-    { keys = { "Minus", "code:82" }, delta = -0.3 }, -- minus / numpad minus
-    { keys = { "Plus", "code:86" },  delta = 0.3 },  -- plus / numpad plus (internal keyboard)
-}
-for _, z in ipairs(ZOOM_KEYS) do
-    for _, key in ipairs(z.keys) do
-        bind(mainMod .. " + " .. key, function()
-            zoom(z.delta)
+for _, zoom_bind in ipairs({
+    { keys = { "Minus", "code:82" }, delta = -0.3 },
+    { keys = { "Plus", "code:86" },  delta = 0.3 },
+}) do
+    for _, key in ipairs(zoom_bind.keys) do
+        bind(main_mod .. " + " .. key, function()
+            zoom(zoom_bind.delta)
         end, { repeating = true })
     end
 end
 
-------------------
----- LAUNCHER ----
-------------------
+-- Launchers
+bind(main_mod .. " + Return", hl.dsp.exec_cmd(launch_prefix .. S.apps.terminal))
+bind(main_mod .. " + E", hl.dsp.exec_cmd(launch_prefix .. S.apps.file_manager))
+bind(main_mod .. " + T", hl.dsp.exec_cmd(launch_prefix .. S.apps.editor))
+bind(main_mod .. " + C", hl.dsp.exec_cmd(launch_prefix .. S.apps.calculator))
+bind("XF86Calculator", hl.dsp.exec_cmd(launch_prefix .. S.apps.calculator))
+bind(main_mod .. " + W", hl.dsp.exec_cmd(launch_prefix .. S.apps.browser))
+bind(main_mod .. " + Z", hl.dsp.exec_cmd(noctalia_cmd .. "settings-toggle"))
+bind(main_mod .. " + X", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle control-center"))
+bind(main_mod .. " + Space", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle launcher"))
+bind(main_mod .. " + period", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle launcher /emo"))
+bind(main_mod .. " + SHIFT + code:201", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle launcher"))
+bind(main_mod .. " + SHIFT + Escape", hl.dsp.exec_cmd(noctalia_cmd .. "session lock"))
+bind(main_mod .. " + SHIFT + E", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle session"))
 
-bind(mainMod .. " + Return", hl.dsp.exec_cmd(launchPrefix .. S.apps.terminal))
-bind(mainMod .. " + E", hl.dsp.exec_cmd(launchPrefix .. S.apps.file_manager))
-bind(mainMod .. " + T", hl.dsp.exec_cmd(launchPrefix .. S.apps.editor))
-bind(mainMod .. " + C", hl.dsp.exec_cmd(launchPrefix .. S.apps.calculator))
-bind("XF86Calculator", hl.dsp.exec_cmd(launchPrefix .. S.apps.calculator))
-bind(mainMod .. " + W", hl.dsp.exec_cmd(launchPrefix .. S.apps.browser))
-bind(mainMod .. " + Z", hl.dsp.exec_cmd(noctCall .. "settings-toggle"))
-bind(mainMod .. " + X", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
-bind(mainMod .. " + Space", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
-bind(mainMod .. " + period", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher /emo"))
--- Copilot/Assistant key — launcher cepat
-bind(mainMod .. " + SHIFT + code:201", hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher"))
--- Lock screen on SUPER+SHIFT+Escape; plain SUPER+L is vim-style focus right
--- and SUPER+ALT+L is monitor-focus (grammar). The original SUPER+ALT+L lock
--- chord collided with monitor focus and silently disabled it.
-bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd(noctCall .. "session lock"))
-bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd(noctCall .. "panel-toggle session"))
-
----------------------------
----- HARDWARE CONTROLS ----
----------------------------
-
--- Audio & media (work from the 60% Fn layer too: it emits real XF86* keys)
-local HARDWARE_KEYS = {
-    { key = "XF86AudioRaiseVolume",  cmd = "volume-up",       repeat_key = true },
-    { key = "XF86AudioLowerVolume",  cmd = "volume-down",     repeat_key = true },
-    { key = "XF86AudioMute",         cmd = "volume-mute" },
-    { key = "XF86AudioMicMute",      cmd = "mic-mute" },
-    { key = "XF86AudioPlay",         cmd = "media toggle" },
-    { key = "XF86AudioPause",        cmd = "media toggle" },
-    { key = "XF86AudioNext",         cmd = "media next" },
-    { key = "XF86AudioPrev",         cmd = "media previous" },
-    { key = "XF86Bluetooth",         cmd = "bluetooth-toggle" },
-    { key = "XF86MonBrightnessUp",   cmd = "brightness-up",   repeat_key = true },
-    { key = "XF86MonBrightnessDown", cmd = "brightness-down", repeat_key = true },
+-- Hardware controls. Each flags value is a table accepted by hl.bind.
+local hardware_binds = {
+    { key = "XF86AudioRaiseVolume",  cmd = "volume-up",        flags = { locked = true, repeating = true } },
+    { key = "XF86AudioLowerVolume",  cmd = "volume-down",      flags = { locked = true, repeating = true } },
+    { key = "XF86AudioMute",         cmd = "volume-mute",      flags = { locked = true } },
+    { key = "XF86AudioMicMute",      cmd = "mic-mute",         flags = { locked = true } },
+    { key = "XF86AudioPlay",         cmd = "media toggle",     flags = { locked = true } },
+    { key = "XF86AudioPause",        cmd = "media toggle",     flags = { locked = true } },
+    { key = "XF86AudioNext",         cmd = "media next",       flags = { locked = true } },
+    { key = "XF86AudioPrev",         cmd = "media previous",   flags = { locked = true } },
+    { key = "XF86Bluetooth",         cmd = "bluetooth-toggle", flags = { locked = true } },
+    { key = "XF86MonBrightnessUp",   cmd = "brightness-up",    flags = { locked = true, repeating = true } },
+    { key = "XF86MonBrightnessDown", cmd = "brightness-down",  flags = { locked = true, repeating = true } },
 }
-for _, h in ipairs(HARDWARE_KEYS) do
-    local opts = { locked = true }
-    if h.repeat_key then
-        opts.repeating = true
-    end
-    bind(h.key, hl.dsp.exec_cmd(noctCall .. h.cmd), opts)
+for _, hardware in ipairs(hardware_binds) do
+    bind(hardware.key, hl.dsp.exec_cmd(noctalia_cmd .. hardware.cmd), hardware.flags)
 end
 
--------------------
----- UTILITIES ----
--------------------
+-- Utility binds
+bind(main_mod .. " + P", hl.dsp.exec_cmd("hyprpicker -a -n"))
+bind("Print", hl.dsp.exec_cmd(noctalia_cmd .. "screenshot-region"))
+bind(main_mod .. " + Print", hl.dsp.exec_cmd(noctalia_cmd .. "screenshot-fullscreen"))
+bind(main_mod .. " + SHIFT + W", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle wallpaper"))
+bind(main_mod .. " + V", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle clipboard"))
+bind(main_mod .. " + A", hl.dsp.exec_cmd(noctalia_cmd .. "panel-toggle control-center notifications"))
 
--- Screen capture
-bind(mainMod .. " + P", hl.dsp.exec_cmd("hyprpicker -a -n"))
-bind("Print", hl.dsp.exec_cmd(noctCall .. "screenshot-region"))
-bind(mainMod .. " + Print", hl.dsp.exec_cmd(noctCall .. "screenshot-fullscreen"))
-
--- Theming / wallpaper / clipboard / notifications
-bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(noctCall .. "panel-toggle wallpaper"))
-bind(mainMod .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle clipboard"))
-bind(mainMod .. " + A", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center notifications"))
-------------------------------------------
----- NOCTALIA SHELL INTEGRATION (extra) ----
-------------------------------------------
--- Quality-of-life shell controls that have no hardware key on the 60% board.
-local NOCTALIA_BINDS = {
-    -- Radios
-    { keys = mainMod .. " + B",         cmd = "bluetooth-toggle" },
-    -- Focus modes
-    { keys = mainMod .. " + SHIFT + A", cmd = "notification-dnd-toggle" }, -- A = notifications panel, SHIFT = stronger
-    { keys = mainMod .. " + ALT + N",   cmd = "nightlight-toggle" },
-    { keys = mainMod .. " + ALT + K",   cmd = "caffeine-toggle" },         -- "keep awake"
-    -- Looks
-    { keys = mainMod .. " + ALT + W",   cmd = "wallpaper-next" },
-    { keys = mainMod .. " + ALT + T",   cmd = "theme-mode-toggle" }, -- T = editor; ALT+T = theme toggle
-    -- Power profile cycle (performance/balanced/power-saver)
-    { keys = mainMod .. " + ALT + M",   cmd = "power-cycle" },
+-- Noctalia shell controls without dedicated hardware keys
+local noctalia_binds = {
+    { keys = main_mod .. " + B",         cmd = "bluetooth-toggle" },
+    { keys = main_mod .. " + SHIFT + A", cmd = "notification-dnd-toggle" },
+    { keys = main_mod .. " + ALT + N",   cmd = "nightlight-toggle" },
+    { keys = main_mod .. " + ALT + K",   cmd = "caffeine-toggle" },
+    { keys = main_mod .. " + ALT + W",   cmd = "wallpaper-next" },
+    { keys = main_mod .. " + ALT + T",   cmd = "theme-mode-toggle" },
+    { keys = main_mod .. " + ALT + M",   cmd = "power-cycle" },
 }
-for _, n in ipairs(NOCTALIA_BINDS) do
-    bind(n.keys, hl.dsp.exec_cmd(noctCall .. n.cmd))
+for _, item in ipairs(noctalia_binds) do
+    bind(item.keys, hl.dsp.exec_cmd(noctalia_cmd .. item.cmd))
 end
 
--------------------------------
----- WORKSPACES & MONITORS ----
--------------------------------
-
--- Workspace N, like :buffer N (absolute numbering); SHIFT+N moves the window
--- there; CTRL+N is workspace N on the CURRENT monitor (relative: m~N).
-for i = 1, S.workspaces.num_per_monitor do
+-- Workspaces
+for i = 1, S.workspaces.count do
     local key = tostring(i % 10)
-    bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
-    bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
-    bind(mainMod .. " + CONTROL + " .. key, hl.dsp.focus({ workspace = "m~" .. i }))
+    bind(main_mod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+    bind(main_mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+    bind(main_mod .. " + CONTROL + " .. key, hl.dsp.focus({ workspace = "m~" .. i }))
 end
 
--- Previous / next workspace, like :bprev / :bnext
-local WS_PREV_NEXT = { H = "m-1", L = "m+1", Left = "m-1", Right = "m+1" }
-for key, target in pairs(WS_PREV_NEXT) do
-    bind(mainMod .. " + CONTROL + " .. key, hl.dsp.focus({ workspace = target }))
+for key, target in pairs({ H = "m-1", L = "m+1", Left = "m-1", Right = "m+1" }) do
+    bind(main_mod .. " + CONTROL + " .. key, hl.dsp.focus({ workspace = target }))
 end
--- First empty workspace on this monitor, like :enew
-bind(mainMod .. " + CONTROL + J", hl.dsp.focus({ workspace = "emptym" }))
-bind(mainMod .. " + CONTROL + Down", hl.dsp.focus({ workspace = "emptym" }))
--- Alternate workspace (vim C-^: jump to the workspace you just came from)
-bind(mainMod .. " + grave", hl.dsp.focus({ workspace = "previous_per_monitor" }))
-bind(mainMod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "previous_per_monitor", follow = true }))
+bind(main_mod .. " + CONTROL + J", hl.dsp.focus({ workspace = "emptym" }))
+bind(main_mod .. " + CONTROL + Down", hl.dsp.focus({ workspace = "emptym" }))
+bind(main_mod .. " + grave", hl.dsp.focus({ workspace = "previous_per_monitor" }))
+bind(main_mod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "previous_per_monitor", follow = true }))
 
--- Move window to prev/next workspace (SHIFT = stronger motion)
 for _, key in ipairs({ "H", "L", "Left", "Right" }) do
     local target = (key == "H" or key == "Left") and "m-1" or "m+1"
-    bind(mainMod .. " + SHIFT + CONTROL + " .. key, hl.dsp.window.move({ workspace = target }))
+    bind(main_mod .. " + SHIFT + CONTROL + " .. key, hl.dsp.window.move({ workspace = target }))
 end
--- ...and via the wheel (unified: UP = next, DOWN = previous)
-bind(mainMod .. " + SHIFT + CONTROL + mouse_up", hl.dsp.window.move({ workspace = "m+1" }))
-bind(mainMod .. " + SHIFT + CONTROL + mouse_down", hl.dsp.window.move({ workspace = "m-1" }))
 
--- Scroll through workspaces with the mouse wheel (unified direction)
-bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "m+1" }))
-bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "m-1" }))
-bind(mainMod .. " + CONTROL + mouse_up", hl.dsp.focus({ workspace = "m+1" }))
-bind(mainMod .. " + CONTROL + mouse_down", hl.dsp.focus({ workspace = "m-1" }))
+bind(main_mod .. " + SHIFT + CONTROL + mouse_up", hl.dsp.window.move({ workspace = "m+1" }))
+bind(main_mod .. " + SHIFT + CONTROL + mouse_down", hl.dsp.window.move({ workspace = "m-1" }))
+bind(main_mod .. " + mouse_up", hl.dsp.focus({ workspace = "m+1" }))
+bind(main_mod .. " + mouse_down", hl.dsp.focus({ workspace = "m-1" }))
+bind(main_mod .. " + CONTROL + mouse_up", hl.dsp.focus({ workspace = "m+1" }))
+bind(main_mod .. " + CONTROL + mouse_down", hl.dsp.focus({ workspace = "m-1" }))
 
--- Monitors, RELATIVE left/right (works identically docked or standalone,
--- no hardcoded monitor names or indices)
-bind(mainMod .. " + ALT + H", hl.dsp.focus({ monitor = "-1" }))
-bind(mainMod .. " + ALT + L", hl.dsp.focus({ monitor = "+1" }))
--- Move window to prev/next monitor. NOTE: the hjkl form (SUPER+ALT+SHIFT+H/L)
--- is intentionally NOT used here — it belongs to preselect (see grammar above);
--- a duplicate chord would silently disable one of the two features.
-bind(mainMod .. " + ALT + Left", hl.dsp.window.move({ monitor = "-1" }))
-bind(mainMod .. " + ALT + Right", hl.dsp.window.move({ monitor = "+1" }))
-bind(mainMod .. " + ALT + mouse_up", hl.dsp.window.move({ monitor = "+1" }))
-bind(mainMod .. " + ALT + mouse_down", hl.dsp.window.move({ monitor = "-1" }))
+-- Monitors
+bind(main_mod .. " + ALT + H", hl.dsp.focus({ monitor = "-1" }))
+bind(main_mod .. " + ALT + L", hl.dsp.focus({ monitor = "+1" }))
+bind(main_mod .. " + ALT + Left", hl.dsp.window.move({ monitor = "-1" }))
+bind(main_mod .. " + ALT + Right", hl.dsp.window.move({ monitor = "+1" }))
+bind(main_mod .. " + ALT + mouse_up", hl.dsp.window.move({ monitor = "+1" }))
+bind(main_mod .. " + ALT + mouse_down", hl.dsp.window.move({ monitor = "-1" }))
 
--- Special workspace (scratchpad) — a toggleable dropdown, like a terminal toggle
-bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special" }))
-bind(mainMod .. " + S", hl.dsp.workspace.toggle_special())
+-- Special workspace
+bind(main_mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special" }))
+bind(main_mod .. " + S", hl.dsp.workspace.toggle_special())

@@ -1,956 +1,929 @@
 {
-  "$schema": "zed://schemas/settings",
-  "auto_install_extensions": {
-    "biome": true
-  },
-  "agent_servers": {
-    "codex-acp": {
-      "default_config_options": {
-        "mode": "agent"
-      },
-      "type": "registry"
-    }
-  },
-  "outline_panel": {
-    "dock": "left"
-  },
-  "agent": {
-    "sidebar_side": "right",
-    "dock": "right",
-    "favorite_models": [],
-    "model_parameters": [],
-    "auto_compact": {
-      "enabled": true,
-      "threshold": "90%"
+    "$schema": "zed://schemas/settings",
+    "auto_install_extensions": {
+        "biome": true,
     },
-    "tool_permissions": {
-      "default": "confirm",
-      "tools": {
-        "terminal": {
-          "default": "confirm",
-          "always_allow": [],
-          "always_deny": [
-            { "pattern": "rm\\s+-[^ ]*r[^ ]*f\\s+(/|~|\\$HOME)" },
-            { "pattern": "sudo\\s+rm" },
-            { "pattern": "(?:>|\\bof=)\\s*/dev/(?:sd|nvme|vd|mapper/)" },
-            { "pattern": "mkfs" },
-            { "pattern": "\\bdd\\b" }
-          ],
-          "always_confirm": [
-            { "pattern": "sudo\\s" },
-            { "pattern": "git\\s+push" },
-            { "pattern": "git\\s+reset\\s+--hard" },
-            { "pattern": "git\\s+clean" },
-            { "pattern": "docker\\s+(system\\s+prune|volume\\s+rm)" },
-            { "pattern": "(?:npm|pnpm|yarn)\\s+(?:install|add|remove|update)" },
-            { "pattern": "(?:cargo|go)\\s+(?:build|test|install)" }
-          ]
+    "agent_servers": {
+        "pi-acp": {
+            "default_config_options": {
+                "thought_level": "high",
+            },
+            "type": "registry",
         },
-        "edit_file": {
-          "default": "allow",
-          "always_deny": [
-            { "pattern": "\\.env" },
-            { "pattern": "\\.(pem|key)$" },
-            { "pattern": "secrets?/" }
-          ]
+        "codex-acp": {
+            "default_config_options": {
+                "reasoning_effort": "high",
+                "model": "gpt-6-astra",
+                "mode": "agent-full-access",
+            },
+            "type": "registry",
         },
-        "delete_path": {
-          "default": "confirm",
-          "always_deny": [
-            { "pattern": "\\.git/?$" },
-            { "pattern": "node_modules/?$" }
-          ]
-        }
-      }
     },
-    "commit_message_instructions": "Use the Conventional Commits format: <type>(<scope>): <description>. Types: feat, fix, refactor, perf, test, docs, chore, ci. Write the description in lowercase, imperative mood, no trailing period. Add a body paragraph when the why is not obvious from the diff.",
-    "profiles": {
-      "review": {
-        "name": "Review",
-        "tools": {
-          "read_file": true,
-          "grep": true,
-          "terminal": false,
-          "edit_file": false
+    "outline_panel": {
+        "dock": "left",
+    },
+    "agent": {
+        "sidebar_side": "right",
+        "dock": "right",
+        "favorite_models": [],
+        "model_parameters": [],
+        "auto_compact": {
+            "enabled": true,
+            "threshold": "90%",
         },
-        "enable_all_context_servers": false,
-        "context_servers": {}
-      }
-    }
-  },
-  "icon_theme": "Base Charmed Icons",
-  "session": {
-    "trust_all_worktrees": false
-  },
-  "cli_default_open_behavior": "existing_window",
-  "theme": {
-    "mode": "dark",
-    "light": "One Light",
-    "dark": "Base16 Tokyodark Terminal"
-  },
-  "ui_font_family": "Iosevka Nerd Font",
-  "ui_font_size": 15,
-  "ui_font_weight": 500,
-  "buffer_font_family": "Iosevka Nerd Font",
-  "buffer_font_size": 15,
-  "buffer_font_weight": 450,
-  "buffer_line_height": {
-    "custom": 2
-  },
-  "cursor_shape": "block",
-  "cursor_blink": true,
-  "hide_mouse": "on_typing_and_action",
-  "current_line_highlight": "all",
-  "indent_guides": {
-    "enabled": true,
-    "coloring": "indent_aware",
-    "background_coloring": "disabled"
-  },
-  "colorize_brackets": true,
-  "command_aliases": {
-    "W": "w",
-    "Wq": "wq",
-    "Q": "q"
-  },
-  "vim_mode": true,
-  "vim": {
-    "highlight_on_yank_duration": 150,
-    "toggle_relative_line_numbers": true,
-    "use_smartcase_find": true,
-    "use_system_clipboard": "always",
-    "use_regex_search": true
-  },
-  "relative_line_numbers": "enabled",
-  "tab_size": 4,
-  "autosave": "on_window_change",
-  "format_on_save": "modifications_if_available",
-  "ensure_final_newline_on_save": true,
-  "remove_trailing_whitespace_on_save": true,
-  "code_lens": "menu",
-  "document_symbols": "on",
-  "semantic_tokens": "combined",
-  "show_completion_documentation": true,
-  "show_completions_on_input": true,
-  "completions": {
-    "lsp": true,
-    "lsp_fetch_timeout_ms": 300,
-    "lsp_insert_mode": "replace_suffix",
-    "words": "fallback",
-    "words_min_length": 3
-  },
-  "show_edit_predictions": false,
-  "auto_signature_help": true,
-  "scroll_beyond_last_line": "off",
-  "vertical_scroll_margin": 14,
-  "active_pane_modifiers": {
-    "border_size": 2,
-    "inactive_opacity": 1
-  },
-  "project_panel": {
-    "dock": "left",
-    "hide_root": true,
-    "bold_folder_labels": true,
-    "diagnostic_badges": true,
-    "git_status": true,
-    "git_status_indicator": true
-  },
-  "git_panel": {
-    "dock": "left",
-    "show_count_badge": true,
-    "file_icons": true,
-    "tree_view": true
-  },
-  "collaboration_panel": {
-    "dock": "left"
-  },
-  "debugger": {
-    "dock": "right",
-    "timeout": 5000,
-    "stepping_granularity": "line",
-    "save_breakpoints": true,
-    "button": true
-  },
-  "bottom_dock_layout": "full",
-  "toolbar": {
-    "breadcrumbs": true,
-    "quick_actions": false,
-    "selections_menu": true,
-    "code_actions": true
-  },
-  "status_bar": {
-    "experimental.show": true,
-    "line_endings_button": true,
-    "show_active_file": true
-  },
-  "tab_bar": {
-    "show": true,
-    "show_pinned_tabs_in_separate_row": true
-  },
-  "tabs": {
-    "file_icons": true,
-    "git_status": true,
-    "show_close_button": "hover",
-    "show_diagnostics": "all"
-  },
-  "preview_tabs": {
-    "enable_preview_from_file_finder": true
-  },
-  "git": {
-    "worktree_directory": ".git/zed-worktrees",
-    "branch_picker": {
-      "show_author_name": true
+        "tool_permissions": {
+            "default": "confirm",
+            "tools": {
+                "terminal": {
+                    "default": "confirm",
+                    "always_allow": [],
+                    "always_deny": [
+                        { "pattern": "rm\\s+-[^ ]*r[^ ]*f\\s+(/|~|\\$HOME)" },
+                        { "pattern": "sudo\\s+rm" },
+                        {
+                            "pattern": "(?:>|\\bof=)\\s*/dev/(?:sd|nvme|vd|mapper/)",
+                        },
+                        { "pattern": "mkfs" },
+                        { "pattern": "\\bdd\\b" },
+                    ],
+                    "always_confirm": [
+                        { "pattern": "sudo\\s" },
+                        { "pattern": "git\\s+push" },
+                        { "pattern": "git\\s+reset\\s+--hard" },
+                        { "pattern": "git\\s+clean" },
+                        {
+                            "pattern": "docker\\s+(system\\s+prune|volume\\s+rm)",
+                        },
+                        {
+                            "pattern": "(?:npm|pnpm|yarn)\\s+(?:install|add|remove|update)",
+                        },
+                        { "pattern": "(?:cargo|go)\\s+(?:build|test|install)" },
+                    ],
+                },
+                "edit_file": {
+                    "default": "allow",
+                    "always_deny": [
+                        { "pattern": "\\.env" },
+                        { "pattern": "\\.(pem|key)$" },
+                        { "pattern": "secrets?/" },
+                    ],
+                },
+                "delete_path": {
+                    "default": "confirm",
+                    "always_deny": [
+                        { "pattern": "\\.git/?$" },
+                        { "pattern": "node_modules/?$" },
+                    ],
+                },
+            },
+        },
+        "commit_message_instructions": "Use the Conventional Commits format: <type>(<scope>): <description>. Types: feat, fix, refactor, perf, test, docs, chore, ci. Write the description in lowercase, imperative mood, no trailing period. Add a body paragraph when the why is not obvious from the diff.",
+        "profiles": {
+            "review": {
+                "name": "Review",
+                "tools": {
+                    "read_file": true,
+                    "grep": true,
+                    "terminal": false,
+                    "edit_file": false,
+                },
+                "enable_all_context_servers": false,
+                "context_servers": {},
+            },
+        },
     },
-    "inline_blame": {
-      "enabled": true,
-      "delay_ms": 300,
-      "location": "inline",
-      "padding": 4,
-      "show_commit_summary": true
-    }
-  },
-  "use_smartcase_search": true,
-  "search": {
-    "button": true,
-    "case_sensitive": false,
-    "center_on_match": false,
-    "include_ignored": false,
-    "regex": false,
-    "whole_word": false
-  },
-  "diagnostics": {
-    "inline": {
-      "enabled": true,
-      "max_severity": "all",
-      "padding": 4,
-      "update_debounce_ms": 150
+    "icon_theme": "Soft Charmed Icons",
+    "session": {
+        "trust_all_worktrees": false,
     },
-    "lsp_pull_diagnostics": {
-      "enabled": true,
-      "debounce_ms": 150
-    }
-  },
-  "gutter": {
-    "folds": true,
-    "line_numbers": true,
-    "min_line_number_digits": 4,
-    "runnables": true
-  },
-  "scrollbar": {
-    "diagnostics": "all"
-  },
-  "inlay_hints": {
-    "enabled": true,
-    "show_value_hints": true,
-    "show_background": true,
-    "show_other_hints": true,
-    "show_parameter_hints": true,
-    "show_type_hints": true,
-    "edit_debounce_ms": 700,
-    "scroll_debounce_ms": 50,
-    "toggle_on_modifiers_press": {
-      "alt": true
-    }
-  },
-  "terminal": {
-    "dock": "bottom",
-    "font_family": "IosevkaTermSlab Nerd Font Mono",
-    "font_size": 15,
-    "line_height": {
-      "custom": 2
+    "cli_default_open_behavior": "existing_window",
+    "theme": {
+        "mode": "dark",
+        "light": "One Light",
+        "dark": "Base16 Ayu Dark",
     },
-    "working_directory": "current_project_directory",
-    "copy_on_select": true,
-    "keep_selection_on_copy": true,
+    "ui_font_family": "Iosevka Nerd Font",
+    "ui_font_size": 15,
+    "ui_font_weight": 500,
+    "buffer_font_family": "Iosevka Nerd Font",
+    "buffer_font_size": 15,
+    "buffer_font_weight": 450,
+    "buffer_line_height": {
+        "custom": 2,
+    },
     "cursor_shape": "block",
-    "blinking": "terminal_controlled",
-    "alternate_scroll": "on",
-    "detect_venv": {
-      "on": {
-        "directories": [".venv", "venv"],
-        "activate_script": "default"
-      }
+    "cursor_blink": true,
+    "hide_mouse": "on_typing_and_action",
+    "current_line_highlight": "all",
+    "indent_guides": {
+        "enabled": true,
+        "coloring": "indent_aware",
+        "background_coloring": "disabled",
     },
-    "env": {
-      "EDITOR": "zed --wait"
-    }
-  },
-  "private_files": [
-    "**/.env*",
-    "**/*.pem",
-    "**/*.key",
-    "**/*.cert",
-    "**/*.crt",
-    "**/secrets.yml"
-  ],
-  "redact_private_values": true,
-  "edit_predictions": {
-    "provider": "none",
-    "disabled_globs": [
-      "**/.env*",
-      "**/*.pem",
-      "**/*.key",
-      "**/*.cert",
-      "**/*.crt",
-      "**/.dev.vars",
-      "**/secrets.yml"
-    ]
-  },
-  "telemetry": {
-    "diagnostics": false,
-    "metrics": false
-  },
-  "languages": {
-    "Rust": {
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "rust-analyzer"
-        }
-      },
-      "tab_size": 4,
-      "use_on_type_format": true
+    "colorize_brackets": true,
+    "command_aliases": {
+        "W": "w",
+        "Wq": "wq",
+        "Q": "q",
     },
-    "Python": {
-      "language_servers": ["basedpyright", "ruff", "!pylsp", "!pyright", "!ty"],
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "ruff"
-        }
-      },
-      "code_actions_on_format": {
-        "source.organizeImports.ruff": true,
-        "source.fixAll.ruff": true
-      },
-      "tab_size": 4
+    "vim_mode": true,
+    "vim": {
+        "highlight_on_yank_duration": 150,
+        "toggle_relative_line_numbers": true,
+        "use_smartcase_find": true,
+        "use_system_clipboard": "always",
+        "use_regex_search": true,
     },
-    "Go": {
-      "language_servers": ["gopls"],
-      "tab_size": 4,
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "gopls"
-        }
-      },
-      "semantic_tokens": "combined"
+    "relative_line_numbers": "enabled",
+    "tab_size": 4,
+    "autosave": "on_window_change",
+    "format_on_save": "modifications_if_available",
+    "ensure_final_newline_on_save": true,
+    "remove_trailing_whitespace_on_save": true,
+    "code_lens": "on",
+    "document_symbols": "on",
+    "semantic_tokens": "combined",
+    "show_completion_documentation": true,
+    "show_completions_on_input": true,
+    "completions": {
+        "lsp": true,
+        "lsp_fetch_timeout_ms": 300,
+        "lsp_insert_mode": "replace_suffix",
+        "words": "fallback",
+        "words_min_length": 3,
     },
-    "TypeScript": {
-      "language_servers": [
-        "vtsls",
-        "biome",
-        "!eslint",
-        "!typescript-language-server",
-        "!tailwindcss-language-server",
-        "..."
-      ],
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
-      "code_actions_on_format": {
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      },
-      "tab_size": 4
+    "show_edit_predictions": false,
+    "auto_signature_help": true,
+    "scroll_beyond_last_line": "off",
+    "vertical_scroll_margin": 14,
+    "active_pane_modifiers": {
+        "border_size": 2,
+        "inactive_opacity": 1,
     },
-    "TSX": {
-      "language_servers": [
-        "vtsls",
-        "biome",
-        "!eslint",
-        "!typescript-language-server",
-        "!tailwindcss-language-server",
-        "..."
-      ],
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
-      "code_actions_on_format": {
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      },
-      "tab_size": 4
+    "project_panel": {
+        "dock": "left",
+        "hide_root": true,
+        "bold_folder_labels": true,
+        "diagnostic_badges": true,
+        "git_status": true,
+        "git_status_indicator": true,
     },
-    "JavaScript": {
-      "language_servers": [
-        "vtsls",
-        "biome",
-        "!eslint",
-        "!typescript-language-server",
-        "!tailwindcss-language-server",
-        "..."
-      ],
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
-      "code_actions_on_format": {
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      },
-      "tab_size": 4
+    "git_panel": {
+        "dock": "left",
+        "show_count_badge": true,
+        "file_icons": true,
+        "tree_view": true,
     },
-    "JSX": {
-      "language_servers": [
-        "vtsls",
-        "biome",
-        "!eslint",
-        "!typescript-language-server",
-        "!tailwindcss-language-server",
-        "..."
-      ],
-      "format_on_save": "modifications_if_available",
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
-      "code_actions_on_format": {
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      },
-      "tab_size": 4
+    "collaboration_panel": {
+        "dock": "left",
     },
-    "JSON": {
-      "formatter": "language_server",
-      "tab_size": 2
+    "debugger": {
+        "dock": "right",
+        "timeout": 5000,
+        "stepping_granularity": "line",
+        "save_breakpoints": true,
+        "button": true,
     },
-    "JSONC": {
-      "format_on_save": "off",
-      "tab_size": 2
+    "bottom_dock_layout": "full",
+    "toolbar": {
+        "breadcrumbs": true,
+        "quick_actions": false,
+        "selections_menu": true,
+        "code_actions": true,
     },
-    "YAML": {
-      "tab_size": 2,
-      "formatter": "prettier"
+    "status_bar": {
+        "experimental.show": true,
+        "line_endings_button": true,
+        "show_active_file": true,
     },
-    "TOML": {
-      "formatter": {
-        "external": {
-          "command": "taplo",
-          "arguments": ["fmt", "--stdin-filepath", "{buffer_path}", "-"]
-        }
-      }
+    "tab_bar": {
+        "show": true,
+        "show_pinned_tabs_in_separate_row": true,
     },
-    "Markdown": {
-      "format_on_save": "off"
+    "tabs": {
+        "file_icons": true,
+        "git_status": true,
+        "show_close_button": "hover",
+        "show_diagnostics": "all",
     },
-    "Shell Script": {
-      "formatter": {
-        "external": {
-          "command": "shfmt",
-          "arguments": [
-            "--filename",
-            "{buffer_path}",
-            "--indent",
-            "4",
-            "--case-indent"
-          ]
-        }
-      },
-      "tab_size": 4
-    }
-  },
-  "lsp": {
-    "gopls": {
-      "initialization_options": {
-        "semanticTokens": true,
-        "renameMovesSubpackages": true,
-        "staticcheck": true,
-        "usePlaceholders": false,
-        "analyses": {
-          "nilness": true,
-          "unusedparams": true,
-          "unusedwrite": true
+    "preview_tabs": {
+        "enable_preview_from_file_finder": true,
+    },
+    "git": {
+        "worktree_directory": ".git/zed-worktrees",
+        "branch_picker": {
+            "show_author_name": true,
         },
-        "codelenses": {
-          "test": true,
-          "generate": true,
-          "regenerate_cgo": true,
-          "tidy": true,
-          "upgrade_dependency": true,
-          "vendor": true,
-          "run_govulncheck": true
+        "inline_blame": {
+            "enabled": true,
+            "delay_ms": 300,
+            "location": "inline",
+            "padding": 4,
+            "show_commit_summary": true,
         },
-        "gofumpt": true,
-        "directoryFilters": [
-          "-.git",
-          "-.vscode",
-          "-.idea",
-          "-.vscode-test",
-          "-node_modules"
+    },
+    "use_smartcase_search": true,
+    "search": {
+        "button": true,
+        "case_sensitive": false,
+        "center_on_match": false,
+        "include_ignored": false,
+        "regex": false,
+        "whole_word": false,
+    },
+    "diagnostics": {
+        "inline": {
+            "enabled": true,
+            "max_severity": "all",
+            "padding": 4,
+            "update_debounce_ms": 150,
+        },
+        "lsp_pull_diagnostics": {
+            "enabled": true,
+            "debounce_ms": 150,
+        },
+    },
+    "gutter": {
+        "folds": true,
+        "line_numbers": true,
+        "min_line_number_digits": 4,
+        "runnables": true,
+    },
+    "scrollbar": {
+        "diagnostics": "all",
+    },
+    "inlay_hints": {
+        "enabled": false,
+        "show_value_hints": true,
+        "show_background": true,
+        "show_other_hints": true,
+        "show_parameter_hints": true,
+        "show_type_hints": true,
+        "edit_debounce_ms": 700,
+        "scroll_debounce_ms": 50,
+        "toggle_on_modifiers_press": {
+            "alt": true,
+        },
+    },
+    "terminal": {
+        "dock": "bottom",
+        "font_family": "IosevkaTermSlab Nerd Font Mono",
+        "font_size": 15,
+        "line_height": {
+            "custom": 2,
+        },
+        "working_directory": "current_project_directory",
+        "copy_on_select": true,
+        "keep_selection_on_copy": true,
+        "cursor_shape": "block",
+        "blinking": "terminal_controlled",
+        "alternate_scroll": "on",
+        "detect_venv": {
+            "on": {
+                "directories": [".venv", "venv"],
+                "activate_script": "default",
+            },
+        },
+        "env": {
+            "EDITOR": "zed --wait",
+        },
+    },
+    "private_files": [
+        "**/.env*",
+        "**/*.pem",
+        "**/*.key",
+        "**/*.cert",
+        "**/*.crt",
+        "**/secrets.yml",
+    ],
+    "redact_private_values": true,
+    "edit_predictions": {
+        "provider": "none",
+        "disabled_globs": [
+            "**/.env*",
+            "**/*.pem",
+            "**/*.key",
+            "**/*.cert",
+            "**/*.crt",
+            "**/.dev.vars",
+            "**/secrets.yml",
         ],
-        "hints": {
-          "assignVariableTypes": true,
-          "compositeLiteralFields": true,
-          "compositeLiteralTypes": true,
-          "constantValues": true,
-          "functionTypeParameters": true,
-          "parameterNames": true,
-          "rangeVariableTypes": true,
-          "ignoredError": true
-        },
-        "vulncheck": "Imports"
-      }
     },
-    "rust-analyzer": {
-      "binary": {
-        "ignore_system_version": true
-      },
-      "initialization_options": {
-        "cargo": {
-          "allTargets": false,
-          "features": [],
-          "autoreload": true,
-          "buildScripts": {
-            "enable": true
-          }
-        },
-        "rust": {
-          "analyzerTargetDir": true
-        },
-        "checkOnSave": true,
-        "check": {
-          "command": "clippy",
-          "allTargets": false,
-          "features": [],
-          "workspace": false
-        },
-        "procMacro": {
-          "enable": true,
-          "attributes": {
-            "enable": true
-          }
-        },
-        "diagnostics": {
-          "enable": true,
-          "experimental": {
-            "enable": true
-          },
-          "styleLints": {
-            "enable": true
-          }
-        },
-        "assist": {
-          "emitMustUse": true,
-          "preferSelf": true,
-          "expressionFillDefault": "todo"
-        },
-        "completion": {
-          "autoimport": {
-            "enable": true
-          },
-          "autoAwait": {
-            "enable": true
-          },
-          "autoIter": {
-            "enable": true
-          },
-          "autoself": {
-            "enable": true
-          },
-          "addColonsToModule": true,
-          "addSemicolonToUnit": true,
-          "callable": {
-            "snippets": "fill_arguments"
-          },
-          "fullFunctionSignatures": {
-            "enable": true
-          },
-          "postfix": {
-            "enable": true
-          },
-          "termSearch": {
-            "enable": true,
-            "fuel": 2000
-          },
-          "snippets": {
-            "custom": {
-              "Ok": {
-                "postfix": "ok",
-                "body": ["Ok(${receiver})"],
-                "description": "Wrap the expression in a `Result::Ok`",
-                "scope": "expr"
-              },
-              "Err": {
-                "postfix": "err",
-                "body": ["Err(${receiver})"],
-                "description": "Wrap the expression in a `Result::Err`",
-                "scope": "expr"
-              },
-              "Some": {
-                "postfix": "some",
-                "body": ["Some(${receiver})"],
-                "description": "Wrap the expression in an `Option::Some`",
-                "scope": "expr"
-              },
-              "Arc::new": {
-                "postfix": "arc",
-                "body": ["Arc::new(${receiver})"],
-                "requires": "std::sync::Arc",
-                "description": "Put the expression into an `Arc`",
-                "scope": "expr"
-              },
-              "Rc::new": {
-                "postfix": "rc",
-                "body": ["Rc::new(${receiver})"],
-                "requires": "std::rc::Rc",
-                "description": "Put the expression into an `Rc`",
-                "scope": "expr"
-              },
-              "Box::pin": {
-                "postfix": "pinbox",
-                "body": ["Box::pin(${receiver})"],
-                "requires": "std::boxed::Box",
-                "description": "Put the expression into a pinned `Box`",
-                "scope": "expr"
-              },
-              "Mutex::new": {
-                "postfix": "mutex",
-                "body": ["Mutex::new(${receiver})"],
-                "requires": "std::sync::Mutex",
-                "description": "Put the expression into a `Mutex`",
-                "scope": "expr"
-              },
-              "RwLock::new": {
-                "postfix": "rwlock",
-                "body": ["RwLock::new(${receiver})"],
-                "requires": "std::sync::RwLock",
-                "description": "Put the expression into an `RwLock`",
-                "scope": "expr"
-              }
-            }
-          }
-        },
-        "hover": {
-          "actions": {
-            "enable": true,
-            "references": {
-              "enable": true
-            },
-            "run": {
-              "enable": true
-            },
-            "debug": {
-              "enable": true
-            },
-            "implementations": {
-              "enable": true
-            },
-            "gotoTypeDef": {
-              "enable": true
-            },
-            "updateTest": {
-              "enable": true
-            }
-          },
-          "memoryLayout": {
-            "enable": true,
-            "niches": true
-          },
-          "documentation": {
-            "enable": true,
-            "keywords": {
-              "enable": true
-            }
-          },
-          "dropGlue": {
-            "enable": true
-          },
-          "links": {
-            "enable": true
-          }
-        },
-        "imports": {
-          "granularity": {
-            "group": "module",
-            "enforce": true
-          },
-          "group": {
-            "enable": true
-          },
-          "merge": {
-            "glob": true
-          },
-          "preferPrelude": true,
-          "prefix": "crate"
-        },
-        "inlayHints": {
-          "maxLength": null,
-          "chainingHints": {
-            "enable": true
-          },
-          "bindingModeHints": {
-            "enable": true
-          },
-          "closingBraceHints": {
-            "enable": true,
-            "minLines": 10
-          },
-          "closureCaptureHints": {
-            "enable": true
-          },
-          "closureReturnTypeHints": {
-            "enable": "always"
-          },
-          "closureStyle": "impl_fn",
-          "discriminantHints": {
-            "enable": "always"
-          },
-          "expressionAdjustmentHints": {
-            "enable": "always",
-            "mode": "prefix"
-          },
-          "implicitDrops": {
-            "enable": true
-          },
-          "implicitSizedBoundHints": {
-            "enable": true
-          },
-          "lifetimeElisionHints": {
-            "enable": "always",
-            "useParameterNames": true
-          },
-          "parameterHints": {
-            "enable": true,
-            "missingArguments": {
-              "enable": true
-            }
-          },
-          "rangeExclusiveHints": {
-            "enable": true
-          },
-          "typeHints": {
-            "enable": true
-          }
-        },
-        "interpret": {
-          "tests": true
-        },
-        "lens": {
-          "enable": true,
-          "run": {
-            "enable": true
-          },
-          "debug": {
-            "enable": true
-          },
-          "implementations": {
-            "enable": true
-          },
-          "updateTest": {
-            "enable": true
-          },
-          "references": {
-            "adt": {
-              "enable": true
-            },
-            "enumVariant": {
-              "enable": true
-            },
-            "method": {
-              "enable": true
-            },
-            "trait": {
-              "enable": true
-            }
-          }
-        },
-        "semanticHighlighting": {
-          "operator": {
-            "enable": true,
-            "specialization": {
-              "enable": true
-            }
-          },
-          "punctuation": {
-            "enable": true,
-            "specialization": {
-              "enable": true
-            },
-            "separate": {
-              "macro": {
-                "bang": true
-              }
-            }
-          },
-          "strings": {
-            "enable": true
-          }
-        },
-        "signatureInfo": {
-          "detail": "full",
-          "documentation": {
-            "enable": true
-          }
-        },
-        "workspace": {
-          "symbol": {
-            "search": {
-              "limit": 256
-            }
-          }
-        }
-      }
+    "telemetry": {
+        "diagnostics": false,
+        "metrics": false,
     },
-    "basedpyright": {
-      "settings": {
-        "basedpyright.disableOrganizeImports": true,
-        "basedpyright.analysis": {
-          "typeCheckingMode": "recommended",
-          "diagnosticMode": "openFilesOnly",
-          "autoImportCompletions": true,
-          "autoSearchPaths": true,
-          "autoFormatStrings": true,
-          "useTypingExtensions": true,
-          "baselineMode": "discard",
-          "inlayHints": {
-            "variableTypes": true,
-            "functionReturnTypes": true,
-            "genericTypes": true,
-            "callArgumentNames": false,
-            "callArgumentNamesMatching": false
-          }
-        }
-      }
-    },
-    "ruff": {
-      "initialization_options": {
-        "settings": {
-          "logLevel": "warn",
-          "configurationPreference": "filesystemFirst",
-          "codeAction": {
-            "disableRuleComment": {
-              "enable": true
+    "languages": {
+        "Rust": {
+            "format_on_save": "modifications_if_available",
+            "formatter": {
+                "language_server": {
+                    "name": "rust-analyzer",
+                },
             },
-            "fixViolation": {
-              "enable": true
-            }
-          }
-        }
-      }
-    },
-    "vtsls": {
-      "settings": {
-        "typescript": {
-          "tsserver": {
-            "maxTsServerMemory": 12288
-          },
-          "inlayHints": {
-            "parameterNames": {
-              "enabled": "all",
-              "suppressWhenArgumentMatchesName": false
-            },
-            "parameterTypes": {
-              "enabled": true
-            },
-            "variableTypes": {
-              "enabled": true,
-              "suppressWhenTypeMatchesName": true
-            },
-            "propertyDeclarationTypes": {
-              "enabled": true
-            },
-            "functionLikeReturnTypes": {
-              "enabled": true
-            },
-            "enumMemberValues": {
-              "enabled": true
-            }
-          },
-          "implementationsCodeLens": {
-            "enabled": true,
-            "showOnAllClassMethods": true,
-            "showOnInterfaceMethods": true
-          },
-          "referencesCodeLens": {
-            "enabled": true,
-            "showOnAllFunctions": true
-          },
-          "suggest": {
-            "completeFunctionCalls": true,
-            "includeCompletionsForImportStatements": true
-          },
-          "preferences": {
-            "importModuleSpecifier": "non-relative",
-            "preferTypeOnlyAutoImports": true
-          },
-          "updateImportsOnFileMove": {
-            "enabled": "always"
-          }
+            "tab_size": 4,
+            "use_on_type_format": true,
         },
-        "javascript": {
-          "inlayHints": {
-            "parameterNames": {
-              "enabled": "all",
-              "suppressWhenArgumentMatchesName": false
+        "Python": {
+            "language_servers": [
+                "basedpyright",
+                "ruff",
+                "!pylsp",
+                "!pyright",
+                "!ty",
+            ],
+            "format_on_save": "modifications_if_available",
+            "formatter": {
+                "language_server": {
+                    "name": "ruff",
+                },
             },
-            "parameterTypes": {
-              "enabled": true
+            "code_actions_on_format": {
+                "source.organizeImports.ruff": true,
+                "source.fixAll.ruff": true,
             },
-            "variableTypes": {
-              "enabled": true,
-              "suppressWhenTypeMatchesName": true
+            "tab_size": 4,
+        },
+        "Go": {
+            "language_servers": ["gopls"],
+            "tab_size": 4,
+            "format_on_save": "modifications_if_available",
+            "formatter": {
+                "language_server": {
+                    "name": "gopls",
+                },
             },
-            "propertyDeclarationTypes": {
-              "enabled": true
+            "semantic_tokens": "combined",
+        },
+        "TypeScript": {
+            "language_servers": [
+                "vtsls",
+                "biome",
+                "!eslint",
+                "!typescript-language-server",
+                "!tailwindcss-language-server",
+                "...",
+            ],
+            "format_on_save": "modifications_if_available",
+            "formatter": {
+                "language_server": {
+                    "name": "biome",
+                },
             },
-            "functionLikeReturnTypes": {
-              "enabled": true
+            "code_actions_on_format": {
+                "source.fixAll.biome": true,
+                "source.organizeImports.biome": true,
             },
-            "enumMemberValues": {
-              "enabled": true
-            }
-          },
-          "implementationsCodeLens": {
-            "enabled": true,
-            "showOnAllClassMethods": true,
-            "showOnInterfaceMethods": true
-          },
-          "referencesCodeLens": {
-            "enabled": true,
-            "showOnAllFunctions": true
-          },
-          "suggest": {
-            "completeFunctionCalls": true,
-            "includeCompletionsForImportStatements": true
-          },
-          "updateImportsOnFileMove": {
-            "enabled": "always"
-          },
-          "tsserver": {
-            "maxTsServerMemory": 12288
-          }
+            "tab_size": 4,
+        },
+        "JavaScript": {
+            "language_servers": [
+                "vtsls",
+                "biome",
+                "!eslint",
+                "!typescript-language-server",
+                "!tailwindcss-language-server",
+                "...",
+            ],
+            "format_on_save": "modifications_if_available",
+            "formatter": {
+                "language_server": {
+                    "name": "biome",
+                },
+            },
+            "code_actions_on_format": {
+                "source.fixAll.biome": true,
+                "source.organizeImports.biome": true,
+            },
+            "tab_size": 4,
+        },
+        "JSON": {
+            "formatter": "prettier",
+            "tab_size": 4,
+        },
+        "YAML": {
+            "tab_size": 2,
+            "formatter": "prettier",
+        },
+        "TOML": {
+            "formatter": {
+                "external": {
+                    "command": "taplo",
+                    "arguments": [
+                        "fmt",
+                        "--stdin-filepath",
+                        "{buffer_path}",
+                        "-",
+                    ],
+                },
+            },
+        },
+        "Markdown": {
+            "format_on_save": "on",
+            "formatter": "prettier",
+        },
+        "Shell Script": {
+            "formatter": {
+                "external": {
+                    "command": "shfmt",
+                    "arguments": [
+                        "--filename",
+                        "{buffer_path}",
+                        "--indent",
+                        "4",
+                        "--case-indent",
+                    ],
+                },
+            },
+            "tab_size": 4,
+        },
+    },
+    "lsp": {
+        "gopls": {
+            "initialization_options": {
+                "semanticTokens": true,
+                "renameMovesSubpackages": true,
+                "staticcheck": true,
+                "usePlaceholders": false,
+                "analyses": {
+                    "nilness": true,
+                    "unusedparams": true,
+                    "unusedwrite": true,
+                },
+                "codelenses": {
+                    "test": true,
+                    "generate": true,
+                    "regenerate_cgo": true,
+                    "tidy": true,
+                    "upgrade_dependency": true,
+                    "vendor": true,
+                    "run_govulncheck": true,
+                },
+                "gofumpt": true,
+                "directoryFilters": [
+                    "-.git",
+                    "-.vscode",
+                    "-.idea",
+                    "-.vscode-test",
+                    "-node_modules",
+                ],
+                "hints": {
+                    "assignVariableTypes": true,
+                    "compositeLiteralFields": true,
+                    "compositeLiteralTypes": true,
+                    "constantValues": true,
+                    "functionTypeParameters": true,
+                    "parameterNames": true,
+                    "rangeVariableTypes": true,
+                    "ignoredError": true,
+                },
+                "vulncheck": "Imports",
+            },
+        },
+        "rust-analyzer": {
+            "binary": {
+                "ignore_system_version": true,
+            },
+            "initialization_options": {
+                "cargo": {
+                    "allTargets": false,
+                    "features": [],
+                    "autoreload": true,
+                    "buildScripts": {
+                        "enable": true,
+                    },
+                },
+                "rust": {
+                    "analyzerTargetDir": true,
+                },
+                "checkOnSave": true,
+                "check": {
+                    "command": "clippy",
+                    "allTargets": false,
+                    "features": [],
+                    "workspace": false,
+                },
+                "procMacro": {
+                    "enable": true,
+                    "attributes": {
+                        "enable": true,
+                    },
+                },
+                "diagnostics": {
+                    "enable": true,
+                    "experimental": {
+                        "enable": true,
+                    },
+                    "styleLints": {
+                        "enable": true,
+                    },
+                },
+                "assist": {
+                    "emitMustUse": true,
+                    "preferSelf": true,
+                    "expressionFillDefault": "todo",
+                },
+                "completion": {
+                    "autoimport": {
+                        "enable": true,
+                    },
+                    "autoAwait": {
+                        "enable": true,
+                    },
+                    "autoIter": {
+                        "enable": true,
+                    },
+                    "autoself": {
+                        "enable": true,
+                    },
+                    "addColonsToModule": true,
+                    "addSemicolonToUnit": true,
+                    "callable": {
+                        "snippets": "fill_arguments",
+                    },
+                    "fullFunctionSignatures": {
+                        "enable": true,
+                    },
+                    "postfix": {
+                        "enable": true,
+                    },
+                    "termSearch": {
+                        "enable": true,
+                        "fuel": 2000,
+                    },
+                    "snippets": {
+                        "custom": {
+                            "Ok": {
+                                "postfix": "ok",
+                                "body": ["Ok(${receiver})"],
+                                "description": "Wrap the expression in a `Result::Ok`",
+                                "scope": "expr",
+                            },
+                            "Err": {
+                                "postfix": "err",
+                                "body": ["Err(${receiver})"],
+                                "description": "Wrap the expression in a `Result::Err`",
+                                "scope": "expr",
+                            },
+                            "Some": {
+                                "postfix": "some",
+                                "body": ["Some(${receiver})"],
+                                "description": "Wrap the expression in an `Option::Some`",
+                                "scope": "expr",
+                            },
+                            "Arc::new": {
+                                "postfix": "arc",
+                                "body": ["Arc::new(${receiver})"],
+                                "requires": "std::sync::Arc",
+                                "description": "Put the expression into an `Arc`",
+                                "scope": "expr",
+                            },
+                            "Rc::new": {
+                                "postfix": "rc",
+                                "body": ["Rc::new(${receiver})"],
+                                "requires": "std::rc::Rc",
+                                "description": "Put the expression into an `Rc`",
+                                "scope": "expr",
+                            },
+                            "Box::pin": {
+                                "postfix": "pinbox",
+                                "body": ["Box::pin(${receiver})"],
+                                "requires": "std::boxed::Box",
+                                "description": "Put the expression into a pinned `Box`",
+                                "scope": "expr",
+                            },
+                            "Mutex::new": {
+                                "postfix": "mutex",
+                                "body": ["Mutex::new(${receiver})"],
+                                "requires": "std::sync::Mutex",
+                                "description": "Put the expression into a `Mutex`",
+                                "scope": "expr",
+                            },
+                            "RwLock::new": {
+                                "postfix": "rwlock",
+                                "body": ["RwLock::new(${receiver})"],
+                                "requires": "std::sync::RwLock",
+                                "description": "Put the expression into an `RwLock`",
+                                "scope": "expr",
+                            },
+                        },
+                    },
+                },
+                "hover": {
+                    "actions": {
+                        "enable": true,
+                        "references": {
+                            "enable": true,
+                        },
+                        "run": {
+                            "enable": true,
+                        },
+                        "debug": {
+                            "enable": true,
+                        },
+                        "implementations": {
+                            "enable": true,
+                        },
+                        "gotoTypeDef": {
+                            "enable": true,
+                        },
+                        "updateTest": {
+                            "enable": true,
+                        },
+                    },
+                    "memoryLayout": {
+                        "enable": true,
+                        "niches": true,
+                    },
+                    "documentation": {
+                        "enable": true,
+                        "keywords": {
+                            "enable": true,
+                        },
+                    },
+                    "dropGlue": {
+                        "enable": true,
+                    },
+                    "links": {
+                        "enable": true,
+                    },
+                },
+                "imports": {
+                    "granularity": {
+                        "group": "module",
+                        "enforce": true,
+                    },
+                    "group": {
+                        "enable": true,
+                    },
+                    "merge": {
+                        "glob": true,
+                    },
+                    "preferPrelude": true,
+                    "prefix": "crate",
+                },
+                "inlayHints": {
+                    "maxLength": null,
+                    "chainingHints": {
+                        "enable": true,
+                    },
+                    "bindingModeHints": {
+                        "enable": true,
+                    },
+                    "closingBraceHints": {
+                        "enable": true,
+                        "minLines": 10,
+                    },
+                    "closureCaptureHints": {
+                        "enable": true,
+                    },
+                    "closureReturnTypeHints": {
+                        "enable": "always",
+                    },
+                    "closureStyle": "impl_fn",
+                    "discriminantHints": {
+                        "enable": "always",
+                    },
+                    "expressionAdjustmentHints": {
+                        "enable": "always",
+                        "mode": "prefix",
+                    },
+                    "implicitDrops": {
+                        "enable": true,
+                    },
+                    "implicitSizedBoundHints": {
+                        "enable": true,
+                    },
+                    "lifetimeElisionHints": {
+                        "enable": "always",
+                        "useParameterNames": true,
+                    },
+                    "parameterHints": {
+                        "enable": true,
+                        "missingArguments": {
+                            "enable": true,
+                        },
+                    },
+                    "rangeExclusiveHints": {
+                        "enable": true,
+                    },
+                    "typeHints": {
+                        "enable": true,
+                    },
+                },
+                "interpret": {
+                    "tests": true,
+                },
+                "lens": {
+                    "enable": true,
+                    "run": {
+                        "enable": true,
+                    },
+                    "debug": {
+                        "enable": true,
+                    },
+                    "implementations": {
+                        "enable": true,
+                    },
+                    "updateTest": {
+                        "enable": true,
+                    },
+                    "references": {
+                        "adt": {
+                            "enable": true,
+                        },
+                        "enumVariant": {
+                            "enable": true,
+                        },
+                        "method": {
+                            "enable": true,
+                        },
+                        "trait": {
+                            "enable": true,
+                        },
+                    },
+                },
+                "semanticHighlighting": {
+                    "operator": {
+                        "enable": true,
+                        "specialization": {
+                            "enable": true,
+                        },
+                    },
+                    "punctuation": {
+                        "enable": true,
+                        "specialization": {
+                            "enable": true,
+                        },
+                        "separate": {
+                            "macro": {
+                                "bang": true,
+                            },
+                        },
+                    },
+                    "strings": {
+                        "enable": true,
+                    },
+                },
+                "signatureInfo": {
+                    "detail": "full",
+                    "documentation": {
+                        "enable": true,
+                    },
+                },
+                "workspace": {
+                    "symbol": {
+                        "search": {
+                            "limit": 256,
+                        },
+                    },
+                },
+            },
+        },
+        "basedpyright": {
+            "settings": {
+                "basedpyright": {
+                    "disableOrganizeImports": true,
+                    "analysis": {
+                        "diagnosticMode": "workspace",
+                        "autoImportCompletions": true,
+                        "autoSearchPaths": true,
+                        "autoFormatStrings": true,
+                        "inlayHints": {
+                            "variableTypes": true,
+                            "functionReturnTypes": true,
+                            "genericTypes": true,
+                            "callArgumentNames": true,
+                            "callArgumentNamesMatching": false,
+                        },
+                    },
+                },
+            },
+        },
+        "ruff": {
+            "initialization_options": {
+                "settings": {
+                    "logLevel": "warn",
+                    "configurationPreference": "filesystemFirst",
+                    "lineLength": 100,
+                    "exclude": ["**/tests/**"],
+                    "format": {
+                        "backend": "uv",
+                    },
+                },
+            },
         },
         "vtsls": {
-          "autoUseWorkspaceTsdk": true,
-          "enableMoveToFileCodeAction": true,
-          "experimental": {
-            "completion": {
-              "enableServerSideFuzzyMatch": true,
-              "entriesLimit": 300
-            }
-          }
-        }
-      }
+            "settings": {
+                "typescript": {
+                    "tsserver": {
+                        "maxTsServerMemory": 12288,
+                    },
+                    "inlayHints": {
+                        "parameterNames": {
+                            "enabled": "all",
+                            "suppressWhenArgumentMatchesName": false,
+                        },
+                        "parameterTypes": {
+                            "enabled": true,
+                        },
+                        "variableTypes": {
+                            "enabled": true,
+                            "suppressWhenTypeMatchesName": true,
+                        },
+                        "propertyDeclarationTypes": {
+                            "enabled": true,
+                        },
+                        "functionLikeReturnTypes": {
+                            "enabled": true,
+                        },
+                        "enumMemberValues": {
+                            "enabled": true,
+                        },
+                    },
+                    "implementationsCodeLens": {
+                        "enabled": true,
+                        "showOnAllClassMethods": true,
+                        "showOnInterfaceMethods": true,
+                    },
+                    "referencesCodeLens": {
+                        "enabled": true,
+                        "showOnAllFunctions": true,
+                    },
+                    "suggest": {
+                        "completeFunctionCalls": true,
+                        "includeCompletionsForImportStatements": true,
+                    },
+                    "preferences": {
+                        "importModuleSpecifier": "non-relative",
+                        "preferTypeOnlyAutoImports": true,
+                    },
+                    "updateImportsOnFileMove": {
+                        "enabled": "always",
+                    },
+                },
+                "javascript": {
+                    "inlayHints": {
+                        "parameterNames": {
+                            "enabled": "all",
+                            "suppressWhenArgumentMatchesName": false,
+                        },
+                        "parameterTypes": {
+                            "enabled": true,
+                        },
+                        "variableTypes": {
+                            "enabled": true,
+                            "suppressWhenTypeMatchesName": true,
+                        },
+                        "propertyDeclarationTypes": {
+                            "enabled": true,
+                        },
+                        "functionLikeReturnTypes": {
+                            "enabled": true,
+                        },
+                        "enumMemberValues": {
+                            "enabled": true,
+                        },
+                    },
+                    "implementationsCodeLens": {
+                        "enabled": true,
+                        "showOnAllClassMethods": true,
+                        "showOnInterfaceMethods": true,
+                    },
+                    "referencesCodeLens": {
+                        "enabled": true,
+                        "showOnAllFunctions": true,
+                    },
+                    "suggest": {
+                        "completeFunctionCalls": true,
+                        "includeCompletionsForImportStatements": true,
+                    },
+                    "updateImportsOnFileMove": {
+                        "enabled": "always",
+                    },
+                    "tsserver": {
+                        "maxTsServerMemory": 12288,
+                    },
+                },
+                "vtsls": {
+                    "autoUseWorkspaceTsdk": true,
+                    "enableMoveToFileCodeAction": true,
+                    "experimental": {
+                        "completion": {
+                            "enableServerSideFuzzyMatch": true,
+                            "entriesLimit": 300,
+                        },
+                    },
+                },
+            },
+        },
+        "biome": {
+            "settings": {
+                "require_config_file": false,
+            },
+        },
     },
-    "biome": {
-      "settings": {
-        "require_config_file": false
-      }
-    }
-  },
-  "context_servers": {
-    "codebase-memory-mcp": {
-      "command": "/home/pwnholic/.local/bin/codebase-memory-mcp",
-      "args": []
-    }
-  }
+    "context_servers": {
+        "codebase-memory-mcp": {"command":"/home/pwnholic/.local/bin/codebase-memory-mcp","args":[]},
+    },
 }

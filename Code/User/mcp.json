@@ -1,0 +1,5 @@
+{
+  "servers": {
+    "codebase-memory-mcp": {"command":"/home/pwnholic/.local/bin/codebase-memory-mcp","args":[],"type":"stdio"}
+  }
+}

@@ -1,62 +1,5 @@
 {
     "name": "Untitled",
-    "AuxAudioDevice1": {
-        "prev_ver": 537001985,
-        "name": "Mic/Aux",
-        "uuid": "7fa21e89-0203-4d37-91fe-dee17ff814f9",
-        "id": "pulse_input_capture",
-        "versioned_id": "pulse_input_capture",
-        "settings": {
-            "device_id": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Mic2__source"
-        },
-        "mixers": 255,
-        "sync": 0,
-        "flags": 0,
-        "volume": 1.0,
-        "balance": 0.5,
-        "enabled": true,
-        "muted": false,
-        "push-to-mute": false,
-        "push-to-mute-delay": 0,
-        "push-to-talk": false,
-        "push-to-talk-delay": 0,
-        "hotkeys": {
-            "libobs.mute": [],
-            "libobs.unmute": [],
-            "libobs.push-to-mute": [],
-            "libobs.push-to-talk": []
-        },
-        "deinterlace_mode": 0,
-        "deinterlace_field_order": 0,
-        "monitoring_type": 0,
-        "private_settings": {},
-        "filters": [
-            {
-                "prev_ver": 537001985,
-                "name": "Noise Suppression",
-                "uuid": "c728d457-d8b5-4182-b8f2-41288daa58d6",
-                "id": "noise_suppress_filter",
-                "versioned_id": "noise_suppress_filter_v2",
-                "settings": {},
-                "mixers": 255,
-                "sync": 0,
-                "flags": 0,
-                "volume": 1.0,
-                "balance": 0.5,
-                "enabled": true,
-                "muted": false,
-                "push-to-mute": false,
-                "push-to-mute-delay": 0,
-                "push-to-talk": false,
-                "push-to-talk-delay": 0,
-                "hotkeys": {},
-                "deinterlace_mode": 0,
-                "deinterlace_field_order": 0,
-                "monitoring_type": 0,
-                "private_settings": {}
-            }
-        ]
-    },
     "sources": [
         {
             "prev_ver": 537001985,
@@ -65,7 +8,7 @@
             "id": "pipewire-screen-capture-source",
             "versioned_id": "pipewire-screen-capture-source",
             "settings": {
-                "RestoreToken": "XUChk2JCC28ntzYFNf1ykg"
+                "RestoreToken": "REDACTED"
             },
             "mixers": 0,
             "sync": 0,
@@ -115,12 +58,69 @@
         },
         {
             "prev_ver": 537001985,
+            "name": "Audio Input Capture (PulseAudio)",
+            "uuid": "48c547eb-d836-4cb2-a882-016abb37f9c8",
+            "id": "pulse_input_capture",
+            "versioned_id": "pulse_input_capture",
+            "settings": {
+                "device_id": "alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Mic2__source"
+            },
+            "mixers": 255,
+            "sync": 0,
+            "flags": 0,
+            "volume": 1.0,
+            "balance": 0.5,
+            "enabled": true,
+            "muted": false,
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "hotkeys": {
+                "libobs.mute": [],
+                "libobs.unmute": [],
+                "libobs.push-to-mute": [],
+                "libobs.push-to-talk": []
+            },
+            "deinterlace_mode": 0,
+            "deinterlace_field_order": 0,
+            "monitoring_type": 0,
+            "private_settings": {},
+            "filters": [
+                {
+                    "prev_ver": 537001985,
+                    "name": "Noise Suppression",
+                    "uuid": "bd2aba79-3533-40e3-a11e-bb4c0cabac95",
+                    "id": "noise_suppress_filter",
+                    "versioned_id": "noise_suppress_filter_v2",
+                    "settings": {},
+                    "mixers": 255,
+                    "sync": 0,
+                    "flags": 0,
+                    "volume": 1.0,
+                    "balance": 0.5,
+                    "enabled": true,
+                    "muted": false,
+                    "push-to-mute": false,
+                    "push-to-mute-delay": 0,
+                    "push-to-talk": false,
+                    "push-to-talk-delay": 0,
+                    "hotkeys": {},
+                    "deinterlace_mode": 0,
+                    "deinterlace_field_order": 0,
+                    "monitoring_type": 0,
+                    "private_settings": {}
+                }
+            ]
+        },
+        {
+            "prev_ver": 537001985,
             "name": "Scene",
             "uuid": "4042cbbf-7525-4cdd-aefe-699f6e89b977",
             "id": "scene",
             "versioned_id": "scene",
             "settings": {
-                "id_counter": 8,
+                "id_counter": 12,
                 "custom_size": false,
                 "items": [
                     {
@@ -144,7 +144,7 @@
                         "id": 4,
                         "group_item_backup": false,
                         "pos": {
-                            "x": 0.0,
+                            "x": 96.0,
                             "y": 0.0
                         },
                         "pos_rel": {
@@ -152,8 +152,8 @@
                             "y": -1.0
                         },
                         "scale": {
-                            "x": 1.0,
-                            "y": 1.0
+                            "x": 0.8999999761581421,
+                            "y": 0.8999999761581421
                         },
                         "scale_rel": {
                             "x": 1.0,
@@ -182,14 +182,14 @@
                         "name": "Video Capture Device (PipeWire) (BETA)",
                         "source_uuid": "5f0b730b-c3c6-49ff-b036-eee5d072197c",
                         "visible": true,
-                        "locked": true,
+                        "locked": false,
                         "rot": 0.0,
                         "scale_ref": {
                             "x": 1920.0,
                             "y": 1200.0
                         },
                         "align": 5,
-                        "bounds_type": 0,
+                        "bounds_type": 2,
                         "bounds_align": 0,
                         "bounds_crop": false,
                         "crop_left": 0,
@@ -199,28 +199,28 @@
                         "id": 5,
                         "group_item_backup": false,
                         "pos": {
-                            "x": 1444.0,
-                            "y": 932.0
+                            "x": 1393.0,
+                            "y": 795.0
                         },
                         "pos_rel": {
-                            "x": 0.8066666722297668,
-                            "y": 0.5533332824707031
+                            "x": 0.8018518686294556,
+                            "y": 0.4722222089767456
                         },
                         "scale": {
-                            "x": 0.24791666865348816,
-                            "y": 0.2481481432914734
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "scale_rel": {
-                            "x": 0.24791666865348816,
-                            "y": 0.2481481432914734
+                            "x": 1.1111111640930176,
+                            "y": 1.1111111640930176
                         },
                         "bounds": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 438.0,
+                            "y": 285.0
                         },
                         "bounds_rel": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 0.8111110925674438,
+                            "y": 0.5277777910232544
                         },
                         "scale_filter": "disable",
                         "blend_method": "default",
@@ -234,8 +234,8 @@
                         "private_settings": {}
                     },
                     {
-                        "name": "Mic/Aux",
-                        "source_uuid": "7fa21e89-0203-4d37-91fe-dee17ff814f9",
+                        "name": "Audio Input Capture (PulseAudio)",
+                        "source_uuid": "48c547eb-d836-4cb2-a882-016abb37f9c8",
                         "visible": true,
                         "locked": true,
                         "rot": 0.0,
@@ -251,10 +251,10 @@
                         "crop_top": 0,
                         "crop_right": 0,
                         "crop_bottom": 0,
-                        "id": 8,
+                        "id": 12,
                         "group_item_backup": false,
                         "pos": {
-                            "x": 0.0,
+                            "x": 96.0,
                             "y": 0.0
                         },
                         "pos_rel": {
@@ -262,8 +262,8 @@
                             "y": -1.0
                         },
                         "scale": {
-                            "x": 1.0,
-                            "y": 1.0
+                            "x": 0.8999999761581421,
+                            "y": 0.8999999761581421
                         },
                         "scale_rel": {
                             "x": 1.0,
@@ -307,8 +307,8 @@
                 "libobs.hide_scene_item.4": [],
                 "libobs.show_scene_item.5": [],
                 "libobs.hide_scene_item.5": [],
-                "libobs.show_scene_item.8": [],
-                "libobs.hide_scene_item.8": []
+                "libobs.show_scene_item.12": [],
+                "libobs.hide_scene_item.12": []
             },
             "deinterlace_mode": 0,
             "deinterlace_field_order": 0,
@@ -355,7 +355,7 @@
     "saved_projectors": [],
     "preview_locked": false,
     "scaling_enabled": false,
-    "scaling_level": -10,
+    "scaling_level": -6,
     "scaling_off_x": 0.0,
     "scaling_off_y": 0.0,
     "virtual-camera": {
@@ -377,7 +377,7 @@
     },
     "resolution": {
         "x": 1920,
-        "y": 1200
+        "y": 1080
     },
     "version": 2
 }
