@@ -162,7 +162,7 @@ hide_when_no_media = true
 capsule_border = "secondary"
 color = "secondary"
 icon_color = "secondary"
-title_scroll = "always"
+title_scroll = "on_hover"
 
 [widget.media.actions]
 back = "media previous"

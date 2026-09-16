@@ -15,7 +15,7 @@ config_version = 1
 [vim]
 enabled = true  # true | false — CodeMirror Vim bindings
 insert_escape = ""  # key sequence to leave insert mode, e.g. "jk"; empty disables
-yank_to_clipboard = false  # sync the system clipboard with Vim yank/delete/change and p/P paste
+yank_to_clipboard = true  # sync the system clipboard with Vim yank/delete/change and p/P paste
 block_ime_in_normal_mode = true  # keep the OS input method (a CJK IME) from composing in normal and visual mode, so hjkl stay motions
 wrapped_line_motions = "display"  # display | logical — how $, I, A and dependent operators treat soft-wrapped lines
 which_key_hints = true  # show the leader-key hint overlay (Vim only)
@@ -41,7 +41,7 @@ tabs_enabled = true  # enable tab-based editing
 wrap_tabs = false  # wrap the tab strip instead of scrolling it
 font_size = 16  # editor + preview font size (px)
 math_font_scale = 100  # math size as a percentage (50-200); scales $…$ and $$…$$ in editor and preview
-line_height = 1.85  # line-height multiplier
+line_height = 1.8  # line-height multiplier
 tab_size = 4  # tab width in columns, from 1 through 8
 list_indent_guides = true  # vertical guide lines at each nested list level
 scroll_off = 0  # vim scrolloff — lines kept above/below the cursor (0 = off)
@@ -65,11 +65,11 @@ ignored_keys = []  # keys the app ignores entirely, by DOM key or code, e.g. ["K
 
 [appearance]
 pdf_export_use_theme = false  # true | false — export PDFs using the current theme instead of a clean light print theme
-theme_family = "rose-pine"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
+theme_family = "github"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
 theme_mode = "dark"  # light | dark | auto
-theme_id = "rose-pine-main"  # resolved theme id; normally set automatically from family + mode
+theme_id = "github-dark"  # resolved theme id; normally set automatically from family + mode
 dark_sidebar = true  # tint the sidebar darker than the canvas
-show_window_title_bar = true  # show the main window title bar and window controls
+show_window_title_bar = false  # show the main window title bar and window controls
 show_sidebar_chevrons = true  # show disclosure arrows in the sidebar
 content_align = "center"  # center | left
 unified_sidebar = true  # merge the note list into the sidebar tree
@@ -246,6 +246,8 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # Visual color tweaks from Settings → Appearance (token slug = color).
 # Example: "accent" = "#ff3b30"
 [tweaks]
+density = "comfortable"
+cornerRadius = "square"
 
 # Text replacements expanded while typing, keyed by trigger.
 # Example: "->" = "→"

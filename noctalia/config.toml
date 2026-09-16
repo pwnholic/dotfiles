@@ -1,0 +1,12 @@
+[include]
+files = [
+  "./configs/bar.toml",
+  "./configs/control-center.toml",
+  "./configs/desktop.toml",
+  "./configs/dock.toml",
+  "./configs/plugins.toml",
+  "./configs/security.toml",
+  "./configs/services.toml",
+  "./configs/shell.toml",
+  "./configs/theme.toml",
+]
