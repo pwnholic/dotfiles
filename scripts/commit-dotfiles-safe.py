@@ -17,8 +17,8 @@ import re
 import subprocess
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
-
 
 REDACTED = "REDACTED"
 
@@ -212,7 +212,9 @@ def main() -> int:
         print("Abort: HEAD detached; branch diperlukan untuk push.", file=sys.stderr)
         return 2
 
-    message = " ".join(sys.argv[1:]).strip() or "Update dotfiles safely"
+    base_message = " ".join(sys.argv[1:]).strip() or "Update dotfiles safely"
+    timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
+    message = f"{base_message} ({timestamp})"
     with tempfile.TemporaryDirectory(prefix="dotfiles-safe-") as temp_dir:
         temp_index = str(Path(temp_dir) / "index")
         index_env = os.environ.copy()
