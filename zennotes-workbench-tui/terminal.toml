@@ -1,0 +1,6 @@
+# Terminal-only preferences. zn-workbench merges these with the shared config.
+[terminal]
+mouse = true
+preview_style = "auto"
+images = "auto"
+theme = ""

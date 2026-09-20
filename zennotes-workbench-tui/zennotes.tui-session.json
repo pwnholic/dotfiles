@@ -1,0 +1,21 @@
+{
+  "vaults": {
+    "/home/pwnholic/Workbench": {
+      "tabs": null,
+      "active": 0,
+      "collapsed": {
+        "folder:archive:": true,
+        "section:tags": true
+      },
+      "sidebarOpen": true,
+      "sidebarWidth": 32,
+      "recent": [
+        "90 System/Templates/Daily Note.md"
+      ],
+      "noteModes": {
+        "90 System/Templates/Daily Note.md": "edit"
+      },
+      "savedAt": 1789821836410
+    }
+  }
+}

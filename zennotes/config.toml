@@ -14,13 +14,13 @@ config_version = 1
 
 [vim]
 enabled = true  # true | false — CodeMirror Vim bindings
-insert_escape = ""  # key sequence to leave insert mode, e.g. "jk"; empty disables
+insert_escape = "jk"  # key sequence to leave insert mode, e.g. "jk"; empty disables
 yank_to_clipboard = true  # sync the system clipboard with Vim yank/delete/change and p/P paste
 block_ime_in_normal_mode = true  # keep the OS input method (a CJK IME) from composing in normal and visual mode, so hjkl stay motions
-wrapped_line_motions = "display"  # display | logical — how $, I, A and dependent operators treat soft-wrapped lines
+wrapped_line_motions = "logical"  # display | logical — how $, I, A and dependent operators treat soft-wrapped lines
 which_key_hints = true  # show the leader-key hint overlay (Vim only)
-which_key_hint_mode = "timed"  # timed | sticky
-which_key_hint_timeout_ms = 900  # how long timed hints stay visible (ms)
+which_key_hint_mode = "sticky"  # timed | sticky
+which_key_hint_timeout_ms = 2000  # how long timed hints stay visible (ms)
 
 [search]
 backend = "auto"  # auto | builtin | ripgrep | fzf
@@ -28,15 +28,15 @@ ripgrep_path = "/usr/bin/rg"  # absolute path to ripgrep; empty = look on $PATH
 fzf_path = "/usr/bin/fzf"  # absolute path to fzf; empty = look on $PATH
 
 [editor]
-live_preview = true  # hide markdown syntax on inactive lines
+live_preview = false  # hide markdown syntax on inactive lines
 show_heading_level_labels = false  # show H1 through H6 badges before headings
-render_tables = true  # render tables as widgets in live preview; off keeps them as plain text
+render_tables = false  # render tables as widgets in live preview; off keeps them as plain text
 sync_title_heading_on_rename = true  # renaming a note rewrites its leading '# heading' to match
 markdown_snippets = true  # auto-close markdown delimiters while typing
-text_replacements_enabled = true  # expand configured text triggers while typing
+text_replacements_enabled = false  # expand configured text triggers while typing
 auto_pairs = true  # auto-insert matching [] () and {} while typing
 auto_pair_quotes_in_prose = false  # also auto-insert matching quotes outside Markdown code
-hide_builtin_templates = false  # hide the shipped templates from the pickers
+hide_builtin_templates = true  # hide the shipped templates from the pickers
 tabs_enabled = true  # enable tab-based editing
 wrap_tabs = false  # wrap the tab strip instead of scrolling it
 font_size = 16  # editor + preview font size (px)
@@ -44,18 +44,20 @@ math_font_scale = 100  # math size as a percentage (50-200); scales $…$ and $$
 line_height = 1.8  # line-height multiplier
 tab_size = 4  # tab width in columns, from 1 through 8
 list_indent_guides = true  # vertical guide lines at each nested list level
-scroll_off = 0  # vim scrolloff — lines kept above/below the cursor (0 = off)
-time_format = "12h"  # clock format for the @time macro (12h or 24h)
+scroll_off = 8  # vim scrolloff — lines kept above/below the cursor (0 = off)
+time_format = "24h"  # clock format for the @time macro (12h or 24h)
 preview_max_width = 920  # max reading width for the preview (px)
 editor_max_width = 920  # max width of the editor column (px)
-completed_task_style = "none"  # none | strikethrough | gray | gray-strikethrough — style checked-task text
+completed_task_style = "gray-strikethrough"  # none | strikethrough | gray | gray-strikethrough — style checked-task text
 math_renderer = "katex"  # katex | typst: typesetter for $…$ / $$…$$ math
 typst_tag_preambles = false  # true | false — prepend Typst definitions from notes in a `typst` folder, chosen by a note's tags
-harper_enabled = false  # true | false: grammar and spelling with Harper, checked on this device
+harper_enabled = true  # true | false: grammar and spelling with Harper, checked on this device
 harper_dialect = "american"  # american | british | australian | canadian | indian
 loose_math_delimiters = false  # render $$…$$ display math even with text before/after the fences
-default_view_mode = "edit"  # edit | split | preview — the mode a note opens in before it has a remembered one
-line_number_mode = "off"  # off | absolute | relative
+default_view_mode = "preview"  # edit | split | preview — the mode a note opens in before it has a remembered one
+keep_view_mode_across_notes = true  # true = stay in the current Edit / Split / Preview mode when opening another note; false = each note reopens in its own last mode
+persist_undo_history = true  # true = keep each note's undo history between launches, like Vim's undofile (stored with the app, never in the vault; holds deleted text; desktop only)
+line_number_mode = "relative"  # off | absolute | relative
 line_number_position = "text"  # text | edge
 word_wrap = true  # wrap long lines vs. scroll horizontally
 preview_smooth_scroll = true  # animate half-page scroll in the preview
@@ -81,19 +83,20 @@ mono_font = "IosevkaTermSlab Nerd Font"  # code / monospace font; empty = system
 
 [view]
 atlas_enabled = true  # the Atlas map view of the vault (sidebar row, command, Space g); on by default
-workflows_enabled = false  # opt in to the Workflows view, its sidebar row, command, and leader shortcut (off by default)
+workflows_enabled = true  # opt in to the Workflows view, its sidebar row, command, and leader shortcut (off by default)
 asset_sort_order = "name-asc"  # Assets view sort: name | used | type | size | modified, each -asc or -desc
-note_sort_order = "none"  # none | manual | updated-desc | updated-asc | created-desc | created-asc | name-asc | name-desc
+note_sort_order = "name-asc"  # none | manual | updated-desc | updated-asc | created-desc | created-asc | name-asc | name-desc
 group_by_kind = true  # group notes by kind in the list
 nested_tags = true  # show /-separated tags as a collapsible tree (sidebar + Tags view)
 view_settings_scope = "global"  # apply note/list view settings globally or per vault (global | vault)
-auto_reveal = false  # auto-expand the sidebar to the active note
-quick_note_date_title = false  # title quick notes by date instead of a timestamp
+auto_reveal = true  # auto-expand the sidebar to the active note
+quick_note_date_title = true  # title quick notes by date instead of a timestamp
 quick_note_title_prefix = "Quick Note"  # prefix for new quick-note titles; empty = bare timestamp
 auto_calendar_panel = true  # auto-show the calendar for daily / weekly notes
+keep_panels_across_notes = true  # true = Connections / Outline / Comments / Calendar stay as set while you switch notes; false = each note remembers its own panels (saved with the workspace, so they survive a restart)
 calendar_week_start = "monday"  # monday | sunday | locale
 calendar_show_week_numbers = true  # show ISO week numbers in the calendar
-tasks_view_mode = "kanban"  # list | calendar | kanban
+tasks_view_mode = "calendar"  # list | calendar | kanban
 show_archived_tasks = false  # keep tasks from archived notes in the Tasks views
 kanban_group_by = "status"  # status | priority | folder (each note's own folder; see kanban_folder_root) | field:<key>
 kanban_folder_root = ""  # folder board: group by the children of this folder, e.g. "Projects" (deeper notes roll up, notes outside it share one column); "" = each note's own folder
@@ -234,6 +237,10 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # Display-name overrides for the built-in folders (inbox, quick, archive, trash).
 # Example: inbox = "Notes"
 [folder_labels]
+inbox = "Notes"
+quick = "Inbox"
+archive = "Archive"
+trash = "Trash"
 
 # Kanban column title overrides, keyed by "<groupBy>:<columnId>".
 # Example: "status:todo" = "To Do"

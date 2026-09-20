@@ -1,0 +1,5 @@
+Close extra terminal windows first. Restore the original config files:
+cp -a /home/pwnholic/.config/terminal-backups/20260916-195945/fish/config.fish ~/.config/fish/config.fish
+cp -a /home/pwnholic/.config/terminal-backups/20260916-195945/kitty/kitty.conf ~/.config/kitty/kitty.conf
+Remove the newly added ~/.config/fish/functions/fish_user_key_bindings.fish and ~/.config/kitty/themes/mocha.conf.
+Open a new Kitty window. The backup also contains the original fish_variables; it was not edited by this setup.
