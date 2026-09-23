@@ -1,0 +1,1 @@
+[{"description":"treehash per file","signed_content":{"payload":"REDACTED","signatures":[{"header":{"kid":"publisher"},"protected":"eyJhbGciOiJSUzI1NiJ9","signature":"REDACTED"},{"header":{"kid":"webstore"},"protected":"eyJhbGciOiJSUzI1NiJ9","signature":"REDACTED"}]}}]

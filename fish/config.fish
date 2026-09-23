@@ -17,6 +17,9 @@ set -gx SUDO_EDITOR nvim
 set -gx GOPATH $HOME/.local/share/go
 set -gx CRG_EMBEDDING_MODEL Qwen/Qwen3-Embedding-0.6B
 set -gx TYPESAFE_API_KEY apikey_20d05901a452874a62ac10adb83d5e1a6c_ac51dff896147d9022ba4d50a2ebc4cc2bac8920559de8be6930b1062ac79e04
+set -gx SYSTEM_ONE_BASE_URL https://api.typesafe.ai
+set -gx SYSTEM_ONE_API_KEY $TYPESAFE_API_KEY
+set -gx SYSTEM_ONE_MODEL jev-latest
 
 
 if test -f "$HOME/.cargo/env.fish"

@@ -43,14 +43,14 @@
 "harper_enabled" = true
 "harper_dialect" = "american"
 "loose_math_delimiters" = false
-"default_view_mode" = "edit"
+"default_view_mode" = "preview"
 "keep_view_mode_across_notes" = true
 "persist_undo_history" = true
 "line_number_mode" = "relative"
 "line_number_position" = "text"
 "word_wrap" = true
 "preview_smooth_scroll" = true
-"pdf_embed_in_edit_mode" = "full"
+"pdf_embed_in_edit_mode" = "compact"
 "external_application_schemes" = []
 "ignored_keys" = []
 
@@ -79,7 +79,7 @@
 "nested_tags" = true
 "view_settings_scope" = "global"
 "auto_reveal" = true
-"quick_note_date_title" = false
+"quick_note_date_title" = true
 "quick_note_title_prefix" = "Quick Note"
 "auto_calendar_panel" = true
 "keep_panels_across_notes" = true

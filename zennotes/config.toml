@@ -96,7 +96,7 @@ auto_calendar_panel = true  # auto-show the calendar for daily / weekly notes
 keep_panels_across_notes = true  # true = Connections / Outline / Comments / Calendar stay as set while you switch notes; false = each note remembers its own panels (saved with the workspace, so they survive a restart)
 calendar_week_start = "monday"  # monday | sunday | locale
 calendar_show_week_numbers = true  # show ISO week numbers in the calendar
-tasks_view_mode = "calendar"  # list | calendar | kanban
+tasks_view_mode = "kanban"  # list | calendar | kanban
 show_archived_tasks = false  # keep tasks from archived notes in the Tasks views
 kanban_group_by = "status"  # status | priority | folder (each note's own folder; see kanban_folder_root) | field:<key>
 kanban_folder_root = ""  # folder board: group by the children of this folder, e.g. "Projects" (deeper notes roll up, notes outside it share one column); "" = each note's own folder
