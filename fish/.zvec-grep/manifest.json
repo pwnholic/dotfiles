@@ -1,0 +1,25 @@
+{
+  "manifestVersion": 1,
+  "id": "419cab2b-ddaf-4c19-a39b-20bf8a7b93b2",
+  "name": "fish",
+  "path": "/home/pwnholic/.config/fish/.zvec-grep",
+  "rootPaths": [
+    {
+      "absolutePath": "/home/pwnholic/.config/fish",
+      "recursive": true
+    }
+  ],
+  "indexPolicy": "enabled",
+  "embedding": {
+    "provider": "local",
+    "model": "potion-code-16m-v2",
+    "dimension": 256,
+    "metric": "cosine"
+  },
+  "indexVersion": 1,
+  "createdTime": 1790347457626,
+  "updatedTime": 1790347598068,
+  "embeddingRuntime": {
+    "device": "auto"
+  }
+}

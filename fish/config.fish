@@ -21,6 +21,30 @@ set -gx SYSTEM_ONE_BASE_URL https://api.typesafe.ai
 set -gx SYSTEM_ONE_API_KEY $TYPESAFE_API_KEY
 set -gx SYSTEM_ONE_MODEL jev-latest
 
+set -gx DEEPTUTOR_HOME $HOME/.local/share/deeptutor
+
+
+# zvec-grep (zg) — hybrid workspace search for agents
+# Docs: `zg help environment` | https://github.com/zvec-ai/zvec-grep
+# Local state and workspace indexes live under ~/.zvec-grep.
+# Indexing concurrency; llama.cpp/Transformers.js cap this at 8.
+set -gx ZVEC_GREP_INDEX_EMBEDDING_CONCURRENCY 8
+
+# Intentionally left at defaults (uncomment only when the use case applies):
+#   ZVEC_GREP_MODE=server|auto   # clients/daemon transport; needs `zg server on`
+#   ZVEC_GREP_MCP_TOOLSET=agent  # server MCP surface (agent|full)
+#   ZVEC_GREP_SERVER_URL=http://127.0.0.1:7999/mcp
+#   ZVEC_GREP_WATCHER_IDLE_TIMEOUT_SECONDS=7200
+#   ZVEC_GREP_DEVICE=auto        # GGUF auto-selects the GPU; ONNX here is CPU-only,
+#                                # so force `cuda` only for llama.cpp GGUF models
+#   ZVEC_GREP_EMBEDDING=local/qwen3-embedding-0.6b   # default: local/potion-code-16m-v2
+#   ZVEC_GREP_HOME / ZVEC_GREP_MODEL_CACHE / ZVEC_GREP_ENDPOINT
+# Secrets stay out of this file: ZVEC_GREP_API_KEY, ZVEC_GREP_SERVER_TOKEN(_FILE)
+
+
+set -gx TWITTER_AUTH_TOKEN de374c48067f9cbb87ccb97565cfe1c2608c1541
+set -gx TWITTER_CT0 d8fc0c7abf8129c55d996958a35234ad8f1eec65b19b9dacafc401c70366db3033807005b2367c59f19f957474154bb9a27840fc7cf10426d3bd92fe3961e47df9ec140f891c62590c0da472f27a53c2
+set -gx TWITTER_BROWSER firefox
 
 if test -f "$HOME/.cargo/env.fish"
     source "$HOME/.cargo/env.fish"
@@ -33,6 +57,7 @@ fish_add_path --global $HOME/.config/.foundry/bin
 fish_add_path --global $HOME/.local/share/solana/install/active_release/bin
 fish_add_path --global $HOME/.avm/bin
 fish_add_path --global $HOME/.pdtm/go/bin
+fish_add_path --global $HOME/.elan/bin
 
 if status is-interactive
     set -g fish_greeting

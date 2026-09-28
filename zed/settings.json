@@ -4,10 +4,18 @@
         "biome": true,
     },
     "agent_servers": {
+        "cline": {
+            "default_config_options": {
+                "provider": "cline-pass",
+                "auto_approve": true,
+                "model": "stealth/space-bunny-alpha"
+            },
+            "type": "registry"
+        },
         "pi-acp": {
             "default_config_options": {
                 "model": "cline/cline-pass/deepseek-v4.1-flash",
-                "thought_level": "high",
+                "thought_level": "xhigh",
             },
             "type": "registry",
         },

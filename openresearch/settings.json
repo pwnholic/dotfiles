@@ -1,0 +1,23 @@
+{
+  "ssh": {
+    "defaultHost": null,
+    "hosts": {}
+  },
+  "installId": "218c1c52-2a93-466e-83b3-903fdfed84f5",
+  "telemetryDisabled": null,
+  "dataDir": null,
+  "cacheDir": null,
+  "orxBinaryPath": null,
+  "defaultBackend": null,
+  "defaultFlavor": null,
+  "researchAreas": [],
+  "otherArea": null,
+  "background": null,
+  "linkedPapers": [],
+  "githubForNewProjects": null,
+  "githubDefaultPromptSeen": null,
+  "disabledLitSources": [],
+  "autoUpdate": null,
+  "firstActionReported": [],
+  "harnessSnapshot": null
+}
