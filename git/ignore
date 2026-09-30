@@ -14,8 +14,8 @@ $RECYCLE.BIN/
 ._*
 
 # --- Go ---
-bin/
-**/bin/
+# bin/
+# **/bin/
 coverage.out
 **/coverage.out
 coverage.html

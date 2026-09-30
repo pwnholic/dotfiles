@@ -15,7 +15,7 @@ M.apps = {
 -- The external is currently connected via HDMI as "HDMI-A-1";
 -- use "DP-1" when it is plugged into the DisplayPort connector.
 M.monitors = {
-	external = { name = "HDMI-A-1", position = "left" },
+	external = { name = "DP-1", position = "left" },
 	internal = { name = "eDP-1", position = "1920x0" },
 	primary = "eDP-1",
 }

@@ -73,6 +73,7 @@
 ["view"]
 "atlas_enabled" = true
 "workflows_enabled" = true
+"workflow_event_triggers" = true
 "asset_sort_order" = "name-asc"
 "note_sort_order" = "name-asc"
 "group_by_kind" = true
@@ -105,7 +106,6 @@
 ["overrides"]
 
 ["tweaks"]
-"density" = "comfortable"
 "cornerRadius" = "square"
 
 ["text_replacements"]

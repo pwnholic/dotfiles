@@ -1,0 +1,15 @@
+{
+  "mcp": {
+    "zennotes": {
+      "type": "local",
+      "command": [
+        "/opt/zennotes-bin/ZenNotes",
+        "/opt/zennotes-bin/resources/app.asar/out/main/mcp.js"
+      ],
+      "environment": {
+        "ELECTRON_RUN_AS_NODE": "1"
+      },
+      "enabled": true
+    }
+  }
+}

@@ -14,7 +14,7 @@
         },
         "pi-acp": {
             "default_config_options": {
-                "model": "cline/cline-pass/deepseek-v4.1-flash",
+                "model": "cline/fireworks/ember-1",
                 "thought_level": "xhigh",
             },
             "type": "registry",
