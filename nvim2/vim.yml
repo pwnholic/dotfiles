@@ -1,0 +1,13 @@
+---
+# Minimal Neovim standard library for selene.
+#
+# Selene ships no `vim` std, so this file declares the globals used by this
+# configuration. `property: new-fields` keeps `vim.*` field access unchecked on
+# purpose: the configuration uses several version-specific Neovim APIs, and the
+# authoritative check for those is the runtime + the test suite, not a static
+# list that would go stale.
+globals:
+  vim:
+    property: new-fields
+  jit:
+    property: new-fields

@@ -1,0 +1,53 @@
+{
+  "plugins": {
+    "blink.cmp": {
+      "rev": "REDACTED",
+      "src": "https://github.com/Saghen/blink.cmp",
+      "version": "'main'"
+    },
+    "blink.indent": {
+      "rev": "REDACTED",
+      "src": "https://github.com/Saghen/blink.indent"
+    },
+    "blink.lib": {
+      "rev": "REDACTED",
+      "src": "https://github.com/Saghen/blink.lib"
+    },
+    "blink.pairs": {
+      "rev": "REDACTED",
+      "src": "https://github.com/Saghen/blink.pairs"
+    },
+    "conform.nvim": {
+      "rev": "REDACTED",
+      "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "fzf-lua": {
+      "rev": "REDACTED",
+      "src": "https://github.com/ibhagwan/fzf-lua"
+    },
+    "mason.nvim": {
+      "rev": "REDACTED",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
+    "mini.nvim": {
+      "rev": "REDACTED",
+      "src": "https://github.com/nvim-mini/mini.nvim"
+    },
+    "nvim-treesitter": {
+      "rev": "REDACTED",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "nvim-treesitter-context": {
+      "rev": "REDACTED",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter-context"
+    },
+    "oil.nvim": {
+      "rev": "REDACTED",
+      "src": "https://github.com/stevearc/oil.nvim"
+    },
+    "tokyonight.nvim": {
+      "rev": "REDACTED",
+      "src": "https://github.com/folke/tokyonight.nvim"
+    }
+  }
+}

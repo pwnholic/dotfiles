@@ -1,0 +1,12 @@
+# selene configuration.
+#
+# Run:  selene lua tests init.lua
+#
+# The Neovim standard library is provided by the `vim` std (selene knows it as
+# `vim`); `lua51` matches the LuaJIT runtime Neovim embeds.
+std = "lua51+vim"
+
+[lints]
+# `vim` API calls are intentionally dynamic in a few places (registry-driven
+# dispatch, `pcall` boundaries); keep the default lint set otherwise.
+mixed_table = "allow"

@@ -1,0 +1,87 @@
+--- @meta
+--
+-- Type declarations for the Neovim/libuv surface this configuration uses.
+--
+-- Why this file exists: `lua-language-server --check` (the mode used for CI and
+-- by `tests/run.sh` guidance) does **not** load `workspace.library`, so the
+-- types that normally come from `$VIMRUNTIME` and `${3rd}/luv/library` are
+-- unknown there. Declaring the used surface once keeps the static check
+-- meaningful (it still catches typos and wrong calls in this configuration)
+-- without hiding real diagnostics behind disabled lints.
+--
+-- The declarations are deliberately *structural subsets*: only fields this
+-- configuration actually touches are listed, so an editor session that also
+-- indexes `$VIMRUNTIME` keeps the authoritative definitions.
+--
+-- This directory is not on 'runtimepath' and contains no executable code.
+
+--- @class uv_timer_t
+--- @field start fun(self: uv_timer_t, timeout: integer, repeat: integer, callback: fun())
+--- @field stop fun(self: uv_timer_t)
+--- @field close fun(self: uv_timer_t)
+--- @field is_closing fun(self: uv_timer_t): boolean
+
+--- @class uv_fs_event_t
+--- @field start fun(self: uv_fs_event_t, path: string, flags: table, callback: fun(err: string?, filename: string?)): boolean?, string?
+--- @field stop fun(self: uv_fs_event_t)
+--- @field close fun(self: uv_fs_event_t)
+--- @field is_closing fun(self: uv_fs_event_t): boolean
+
+--- @class vim.SystemOpts
+--- @field text? boolean
+--- @field cwd? string
+--- @field env? table<string, string>
+--- @field clear_env? boolean
+--- @field timeout? integer
+
+--- @class vim.SystemObj
+--- @field pid integer
+--- @field wait fun(self: vim.SystemObj, timeout?: integer): { code: integer, stdout?: string, stderr?: string }
+--- @field kill fun(self: vim.SystemObj, signal?: integer)
+
+--- Arguments passed to a `nvim_create_user_command` callback.
+--- @class vim.api.keyset.create_user_command.command_args
+--- @field name string
+--- @field args string
+--- @field fargs string[]
+--- @field bang boolean
+--- @field count integer
+--- @field line1 integer
+--- @field line2 integer
+--- @field range integer
+--- @field mods string
+--- @field smods table
+--- @field reg string
+--- @field nargs string
+
+--- Filter accepted by `vim.lsp.get_clients()`.
+--- @class vim.lsp.ClientFilter
+--- @field bufnr? integer
+--- @field name? string
+--- @field id? integer
+
+--- Server configuration registered with `vim.lsp.config()`.
+--- @class vim.lsp.Config
+--- @field name string
+--- @field cmd? string[]|fun(dispatchers: table): table
+--- @field filetypes? string[]
+--- @field root_markers? string[]
+--- @field root_dir? string|fun(bufnr: integer, on_dir: fun(root_dir?: string))
+--- @field settings? table
+
+--- `vim.lsp.Client` as used by this configuration.
+--- @class vim.lsp.Client
+--- @field id integer
+--- @field name string
+--- @field bufnr? integer
+--- @field root_dir? string
+--- @field offset_encoding? string
+--- @field attached_buffers? table<integer, true>
+--- @field server_capabilities table
+--- @field commands? table<string, fun(cmd: table, ctx: table)>
+--- @field rpc? { pid?: integer }
+--- @field workspace_folders? { uri: string, name?: string }[]
+--- @field supports_method fun(self: vim.lsp.Client, method: string, bufnr?: integer): boolean
+--- @field request fun(self: vim.lsp.Client, method: string, params: table, handler?: fun(err: table?, result: any), bufnr?: integer)
+--- @field notify fun(self: vim.lsp.Client, method: string, params?: table, bufnr?: integer): boolean
+--- @field exec_cmd fun(self: vim.lsp.Client, cmd: table, context?: table, handler?: function)
