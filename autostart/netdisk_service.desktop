@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=netdisk_service
+Comment=netdisk_servicestartup script
+Exec=/home/pwnholic/Downloads/baidu/work/extracted/opt/Frameworks/netdisk_service --hidden
+StartupNotify=false
+Terminal=false

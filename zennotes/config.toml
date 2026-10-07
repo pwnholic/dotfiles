@@ -67,9 +67,9 @@ ignored_keys = []  # keys the app ignores entirely, by DOM key or code, e.g. ["K
 
 [appearance]
 pdf_export_use_theme = false  # true | false — export PDFs using the current theme instead of a clean light print theme
-theme_family = "github"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
+theme_family = "gruvbox"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
 theme_mode = "dark"  # light | dark | auto
-theme_id = "github-dark"  # resolved theme id; normally set automatically from family + mode
+theme_id = "dark-hard"  # resolved theme id; normally set automatically from family + mode
 dark_sidebar = true  # tint the sidebar darker than the canvas
 show_window_title_bar = false  # show the main window title bar and window controls
 show_sidebar_chevrons = true  # show disclosure arrows in the sidebar
@@ -100,6 +100,7 @@ calendar_show_week_numbers = true  # show ISO week numbers in the calendar
 tasks_view_mode = "kanban"  # list | calendar | kanban
 show_archived_tasks = false  # keep tasks from archived notes in the Tasks views
 kanban_group_by = "status"  # status | priority | folder (each note's own folder; see kanban_folder_root) | field:<key>
+kanban_card_sort = "manual"  # manual | due: cards in a Kanban column keep the order you drag them into, or follow their due dates
 kanban_folder_root = ""  # folder board: group by the children of this folder, e.g. "Projects" (deeper notes roll up, notes outside it share one column); "" = each note's own folder
 kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlog", "in_progress", "review", "done"]
 hidden_workflow_presets = []  # built-in workflow recipes hidden from the gallery, by id — e.g. ["reading-log"]
@@ -112,13 +113,14 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 [keymaps]
 
 # --- All actions (defaults shown; uncomment + edit to override) ---
+# A "(macOS: ...)" note marks an action whose Mac default differs.
 # Global
 # "global.searchNotes" = "Mod+P"  # Search notes
 # "global.searchNotesNonVim" = "Mod+F"  # Search notes in non-Vim mode
 # "global.commandPalette" = "Shift+Mod+P"  # Open command palette
 # "global.newQuickNote" = "Shift+Mod+N"  # New quick note
 # "global.newNoteHere" = "Mod+N"  # New note in current folder
-# "global.newNoteFromTemplate" = ""  # New note from template
+# "global.newNoteFromTemplate" = ""  # New note from template (macOS: "Alt+Mod+T")
 # "global.insertTemplate" = ""  # Insert template into current note
 # "global.openSettings" = "Mod+,"  # Open settings
 # "global.openFile" = "Mod+O"  # Open file
@@ -144,16 +146,16 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "global.zoomReset" = "Mod+0"  # Reset zoom
 # "global.historyBack" = "Alt+ArrowLeft"  # Go back in note history
 # "global.historyForward" = "Alt+ArrowRight"  # Go forward in note history
-# "global.toggleRecentNote" = "Mod+Tab"  # Switch to previous note
-# "tabs.select1" = "Alt+1"  # Go to tab 1
-# "tabs.select2" = "Alt+2"  # Go to tab 2
-# "tabs.select3" = "Alt+3"  # Go to tab 3
-# "tabs.select4" = "Alt+4"  # Go to tab 4
-# "tabs.select5" = "Alt+5"  # Go to tab 5
-# "tabs.select6" = "Alt+6"  # Go to tab 6
-# "tabs.select7" = "Alt+7"  # Go to tab 7
-# "tabs.select8" = "Alt+8"  # Go to tab 8
-# "tabs.select9" = "Alt+9"  # Go to tab 9
+# "global.toggleRecentNote" = "Mod+Tab"  # Switch to previous note (macOS: "Ctrl+Tab")
+# "tabs.select1" = "Alt+1"  # Go to tab 1 (macOS: "Ctrl+1")
+# "tabs.select2" = "Alt+2"  # Go to tab 2 (macOS: "Ctrl+2")
+# "tabs.select3" = "Alt+3"  # Go to tab 3 (macOS: "Ctrl+3")
+# "tabs.select4" = "Alt+4"  # Go to tab 4 (macOS: "Ctrl+4")
+# "tabs.select5" = "Alt+5"  # Go to tab 5 (macOS: "Ctrl+5")
+# "tabs.select6" = "Alt+6"  # Go to tab 6 (macOS: "Ctrl+6")
+# "tabs.select7" = "Alt+7"  # Go to tab 7 (macOS: "Ctrl+7")
+# "tabs.select8" = "Alt+8"  # Go to tab 8 (macOS: "Ctrl+8")
+# "tabs.select9" = "Alt+9"  # Go to tab 9 (macOS: "Ctrl+9")
 # Vim
 # "vim.leaderPrefix" = "Space"  # Leader key
 # "vim.leaderOpenBuffers" = "o"  # Leader: open buffers
@@ -194,10 +196,10 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "vim.hintMode" = "h"  # Leader: hint mode
 # "vim.goToDefinition" = "g d"  # Follow link at cursor
 # "vim.createNoteFromLink" = "g D"  # Create note for link at cursor
-# "vim.foldCurrent" = "z c"  # Fold heading at cursor
-# "vim.unfoldCurrent" = "z o"  # Unfold heading at cursor
-# "vim.foldAll" = "z M"  # Fold all headings
-# "vim.unfoldAll" = "z R"  # Unfold all headings
+# "vim.foldCurrent" = "z c"  # Fold heading or list item at cursor
+# "vim.unfoldCurrent" = "z o"  # Unfold heading or list item at cursor
+# "vim.foldAll" = "z M"  # Fold all headings and lists
+# "vim.unfoldAll" = "z R"  # Unfold all headings and lists
 # "vim.harperNext" = "] s"  # Next Harper suggestion
 # "vim.harperPrevious" = "[ s"  # Previous Harper suggestion
 # "vim.harperSuggest" = "z ="  # Harper suggestions at cursor
@@ -226,14 +228,14 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "tasks.moveTaskUp" = "K"  # Move task up
 # "tasks.moveTaskDown" = "J"  # Move task down
 # "tasks.savedFilters" = "F"  # Pick a saved Tasks filter
-# "editor.hopMarkerForward" = "Alt+]"  # Hop past next marker
-# "editor.hopMarkerBackward" = "Alt+["  # Hop before previous marker
-# "editor.foldHeading" = "Alt+Mod+F"  # Fold heading
-# "editor.unfoldHeading" = "Alt+Mod+U"  # Unfold heading
+# "editor.hopMarkerForward" = "Alt+]"  # Hop past next marker (macOS: "Ctrl+.")
+# "editor.hopMarkerBackward" = "Alt+["  # Hop before previous marker (macOS: "Ctrl+,")
+# "editor.foldHeading" = "Alt+Mod+F"  # Fold heading or list item
+# "editor.unfoldHeading" = "Alt+Mod+U"  # Unfold heading or list item
 # "editor.moveLineUp" = "Alt+ArrowUp"  # Move line up
 # "editor.moveLineDown" = "Alt+ArrowDown"  # Move line down
 # "editor.toggleCheckbox" = "Mod+L"  # Toggle checkbox
-# "editor.reflowParagraph" = "Alt+Q"  # Reflow paragraph
+# "editor.reflowParagraph" = "Alt+Q"  # Reflow paragraph (macOS: "Ctrl+Q")
 # "nav.localEx" = ":"  # Open local ex prompt
 # "nav.newQuickNote" = "n"  # New quick note from Quick Notes view
 # "nav.unarchive" = "u"  # Unarchive selected note

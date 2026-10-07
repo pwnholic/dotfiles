@@ -6,10 +6,9 @@
     "agent_servers": {
         "cline": {
             "default_config_options": {
-                "mode": "act",
                 "provider": "cline-pass",
                 "auto_approve": true,
-                "model": "cline-pass/deepseek-v4.1-flash"
+                "model": "stealth/space-bunny-alpha"
             },
             "type": "registry"
         },

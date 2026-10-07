@@ -1,4 +1,4 @@
-oauth_token = "cfoat_4BoFqDORFu46U20cm30l1jS2SnzjXZYExn2Y3repMgU.YkfDL3SXBreJJKEv3Bi_BBUeu9aQkeFE_0yX0fkfP0s"
-expiration_time = "2026-09-29T11:44:44.825Z"
-refresh_token = "cfort_0fkKQsljM-KzMKw1MJr6fBl2hGp2Xp-rerNCHF0_8dQ.FPhP6U0QvLFHvDGUIbod2U7rgSjhnbq1TUdMhEian-w"
+oauth_token = "cfoat_l9jTQ54LxgqZoeHPrjQ2ugq_u0LwJrC_jmcRETUhTG4.oVSrg5_Dp2i7YYUF-dfI5rVq3rC2mSLkg05iRDCT5d8"
+expiration_time = "2026-10-05T08:34:34.822Z"
+refresh_token = "cfort_T5KHIAUGNpB3jhSGc8ZBKIloaQNWXO1X3K1tCnx55cA.gMyG-ZsqT0rFi6eYDgBXWBAtOjjwVIElD5neVAM2btY"
 scopes = [ "user:read", "offline_access", "account:read", "workers:REDACTED", "workers_kv:REDACTED", "workers_routes:REDACTED", "workers_scripts:REDACTED", "workers_tail:read", "d1:REDACTED", "pages:REDACTED", "zone:read", "ssl_certs:REDACTED", "ai:REDACTED", "ai-search:REDACTED", "ai-search:run", "agent-memory:REDACTED", "queues:REDACTED", "pipelines:REDACTED", "secrets_store:REDACTED", "artifacts:REDACTED", "flagship:REDACTED", "containers:REDACTED", "cloudchamber:REDACTED", "connectivity:admin", "email_routing:REDACTED", "email_sending:REDACTED", "browser:REDACTED", "challenge-widgets.REDACTED" ]
