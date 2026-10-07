@@ -14,7 +14,7 @@ local M = {}
 --- Declaration order. Add a module here (and to `lua/plugins/`) to extend the
 --- configuration; nothing in `core/` needs to change.
 ---
---- `plugins.mini_statusline` / `plugins.mini_statuscolumn` are deliberately not
+--- `plugins.mini_statusline` is deliberately not
 --- listed: they configure modules of the *same* repository as `mini.nvim`, so
 --- they are applied from that spec's `config` hook (see `plugins/mini.lua`).
 local ORDER = {

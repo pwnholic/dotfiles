@@ -40,6 +40,21 @@ function M.configure()
     require("mini.icons").setup()
     require("mini.icons").mock_nvim_web_devicons()
 
+    -- Git/diff indicators in the statuscolumn: mini.diff places these signs, and
+    -- the statuscolumn renders them through `%s`. The icons come from
+    -- `defaults.git` (the same ones used for the statusline summary).
+    local git = require("core.defaults").get("git", {})
+    local signs = git.signs or {}
+    require("mini.diff").setup({
+        view = {
+            signs = {
+                add = signs.add or "│",
+                change = signs.change or "│",
+                delete = signs.delete or "│",
+            },
+        },
+    })
+
     -- Git/diff indicators in the statusline: mini.diff documents overriding
     -- `vim.b.minidiff_summary_string` on `User MiniDiffUpdated` for custom
     -- formatting; the counts live in `vim.b.minidiff_summary`.
@@ -73,9 +88,11 @@ function M.configure()
     -- (one repository = one load = one config).
     local ui = require("core.defaults").get("ui", {})
     require("mini.git").setup() -- branch for the statusline git section
-    require("mini.diff").setup() -- hunk summary for the statusline diff section
     require("plugins.mini_statusline").setup(ui.statusline)
-    require("plugins.mini_statuscolumn").setup(ui.statuscolumn)
+    -- `'statuscolumn'` is native now (core.statuscolumn): marks are per-line data
+    -- that mini.statuscolumn cannot render, and its pre-computed content buys us
+    -- nothing here.
+    require("core.statuscolumn").setup()
 
     require("mini.clue").setup({
         triggers = {

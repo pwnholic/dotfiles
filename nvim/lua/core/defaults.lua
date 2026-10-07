@@ -36,6 +36,8 @@ local BASE = {
         clipboard = "unnamedplus",
         cmdheight = 0,
         mouse = "nvi",
+        --- Non-zero so the `%C` (fold) item of `statuscolumn` is rendered.
+        foldcolumn = "1",
         breakindent = true,
         breakindentopt = "list:-1",
         number = true,
@@ -79,6 +81,10 @@ local BASE = {
         grepformat = "%f:%l:%c:%m",
         grepprg = "rg --vimgrep --smart-case",
         foldlevel = 99,
+        --- Treesitter folding: `:h vim.treesitter.foldexpr()` recommends exactly this
+        --- `foldexpr`, and the fold indicators of the statuscolumn come from it.
+        foldmethod = "expr",
+        foldexpr = "v:lua.vim.treesitter.foldexpr()",
         fillchars = { eob = " " },
         list = false,
         listchars = { tab = "» ", trail = "·", nbsp = "␣", extends = "›", precedes = "‹" },
@@ -114,7 +120,7 @@ local BASE = {
         clear_search = true,
     },
 
-    -- User interface (see `lua/plugins/mini_statusline.lua` / `mini_statuscolumn.lua`)
+    -- User interface (see `lua/plugins/mini_statusline.lua` / `core/statuscolumn.lua`)
     ui = {
         --- Statusline sections; `false` hides a section, `enabled = false` leaves
         --- 'statusline' untouched.
@@ -134,13 +140,20 @@ local BASE = {
         --- Sign/fold/number column (content spec of mini.statuscolumn).
         statuscolumn = {
             enabled = true,
-            --- Dim the column content in inactive windows.
-            dim = true,
-            --- Separator between the column and the buffer text, and the glyphs for
-            --- virtual/wrapped lines (literals: LuaJIT string escapes are 5.1-only).
-            separator = "▏",
-            virt = "•",
-            wrap = "↳",
+            --- Layout, modelled on snacks.nvim (LazyVim's statuscolumn):
+            --- `[left][right-aligned number + gap][right]`. The first component of
+            --- each side that exists on the line wins.
+            left = { "mark", "sign" },
+            right = { "fold", "git" },
+            --- Show a glyph for open folds too (the reference keeps this off).
+            folds_open = false,
+            --- Highlight group for mark letters (the reference links it to
+            --- `DiagnosticHint`).
+            mark_hl = "DiagnosticHint",
+            --- Highlight group for the closed-fold glyph.
+            fold_hl = "Folded",
+            --- Sign names treated as git (mini.diff uses `MiniDiffSign*`).
+            git_patterns = { "GitSign", "MiniDiffSign" },
         },
     },
 
@@ -380,6 +393,9 @@ local BASE = {
         added = " ", -- U+F0FE nf-fa-plus_square
         modified = " ", -- U+F044 nf-fa-pencil_square_o
         removed = " ", -- U+F1F8 nf-fa-trash_o
+        --- Characters for the *sign column* (mini.diff's `view.signs`); the icons
+        --- above are for the statusline summary.
+        signs = { add = "│", change = "│", delete = "│" }, -- U+2502
     },
 
     -- Clue window (see `lua/plugins/mini.lua`) -------------------------------
