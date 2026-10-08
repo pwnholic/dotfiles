@@ -36,8 +36,10 @@ local BASE = {
         clipboard = "unnamedplus",
         cmdheight = 0,
         mouse = "nvi",
-        --- Non-zero so the `%C` (fold) item of `statuscolumn` is rendered.
-        foldcolumn = "1",
+        --- The statuscolumn draws its own fold glyph, and a non-zero `foldcolumn`
+        --- adds Neovim's native fold column on top: its `fillchars.foldsep` is `│`,
+        --- which then sits next to the line numbers.
+        foldcolumn = "0",
         breakindent = true,
         breakindentopt = "list:-1",
         number = true,
@@ -147,11 +149,22 @@ local BASE = {
             right = { "fold", "git" },
             --- Show a glyph for open folds too (the reference keeps this off).
             folds_open = false,
+            --- Append how many lines the closed fold hides (`▸3`). Off by default,
+            --- like snacks: the count lives in the fold text, so the column only shows
+            --- the glyph. Turn on if you prefer it there instead.
+            fold_count = false,
+            --- Colour the fold glyph with the git sign's highlight when a line has both
+            --- (snacks' `folds.git_hl`).
+            git_hl = false,
             --- Highlight group for mark letters (the reference links it to
             --- `DiagnosticHint`).
             mark_hl = "DiagnosticHint",
             --- Highlight group for the closed-fold glyph.
             fold_hl = "Folded",
+            --- Upper bound (ms) for how long a cached sign map may be reused, so
+            --- signs placed without an event still show up quickly (lazy check, no
+            --- timer; snacks.nvim uses a 50 ms repeating timer for the same reason).
+            refresh_ms = 50,
             --- Sign names treated as git (mini.diff uses `MiniDiffSign*`).
             git_patterns = { "GitSign", "MiniDiffSign" },
         },
@@ -396,6 +409,44 @@ local BASE = {
         --- Characters for the *sign column* (mini.diff's `view.signs`); the icons
         --- above are for the statusline summary.
         signs = { add = "│", change = "│", delete = "│" }, -- U+2502
+        --- Place the signs ourselves from `MiniDiff.get_buf_data()`: that API tracks
+        --- and reports hunks here, but mini.diff does not place its own signs in this
+        --- setup, and a custom `statuscolumn` replaces the native sign column.
+        place_signs = true,
+        --- Debounce (ms) before mini.diff recomputes diff and visualization after a
+        --- text change. mini.diff's documented default is 200 ms, which is what makes
+        --- the signs feel delayed; 50 ms stays debounced but reads as instant.
+        delay_ms = 50,
+    },
+
+    -- Fold text (see `core/foldtext.lua`) -------------------------------------
+    fold = {
+        --- Custom fold text: `▸ first line ··· N lines` with the fold glyph, the
+        --- collapsed first line and the line count. `false` instead sets `'foldtext'`
+        --- to an empty string, which the docs describe as "the line is displayed
+        --- normally with highlighting and no line wrapping" -- full syntax highlighting
+        --- on the folded line, but then Neovim renders it itself and no count can be
+        --- added (Neovim highlights a custom fold text with `Folded` only, and
+        --- `%#group#` items inside foldtext are printed literally -- verified on a pty).
+        text = true,
+        --- Which line count to show: "hidden" (lines folded away, default) or "total"
+        --- (the whole fold, including its first line).
+        count = "hidden",
+        --- Word after the line count.
+        label = "lines",
+        --- Fill the rest of the width with `fillchars.fold` (highlighted `Folded`).
+        fill = true,
+        --- Character used for the fill; falls back to `fillchars.fold`, then `.`.
+        fill_char = ".",
+        --- Fold glyph before the first line: `false` for none, or a string.
+        icon = false,
+        --- Collapse whitespace in the first line of the fold.
+        trim = true,
+        --- Show `v:folddashes` (the fold level) before the first line.
+        dashes = false,
+        --- Text before the fold dashes and after the count.
+        prefix = "",
+        suffix = "",
     },
 
     -- Clue window (see `lua/plugins/mini.lua`) -------------------------------

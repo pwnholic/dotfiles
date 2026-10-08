@@ -163,11 +163,14 @@ vim.api.nvim_buf_set_lines(
 )
 vim.api.nvim_buf_set_mark(sc_buf, "m", 1, 0, {})
 defaults.values.ui.statuscolumn.mark_hl = "Special"
+-- The renderer snapshots its options in `reload()` (part of being fast).
+sc.reload()
 T.check(
     sc.line(sc_win, sc_buf, 1, { virtnum = 0, relnum = 0 }):find("%#Special#", 1, true) ~= nil,
     "the mark highlight group is configurable"
 )
 defaults.values.ui.statuscolumn.mark_hl = "DiagnosticHint"
+sc.reload()
 local sc_ns = vim.api.nvim_create_namespace("t08_statuscolumn")
 vim.diagnostic.set(
     sc_ns,
@@ -206,7 +209,73 @@ if folded_lnum then
         folded:find("%%#Folded#", 1, false) ~= nil,
         "closed fold shows the fold glyph: " .. folded
     )
+    T.check(
+        folded:find("%%#Folded#▸", 1, false) ~= nil,
+        "the fold glyph is shown only when the fold hides lines: " .. folded
+    )
+    defaults.values.ui.statuscolumn.fold_count = true
+    sc.reload()
+    T.check(
+        sc.line(sc_win, sc_buf, folded_lnum, { virtnum = 0, relnum = folded_lnum })
+            :find("%%#Folded#▸%d", 1, false) ~= nil,
+        "the count can be appended in the column too"
+    )
+    defaults.values.ui.statuscolumn.fold_count = false
+    sc.reload()
 end
+-- Fold text: the renderer is exercised explicitly (the configured default is the
+-- syntax-preserving empty `'foldtext'`). `foldtextresult()` is the documented way to
+-- read what a closed fold displays.
+defaults.values.fold.text = true
+require("core.foldtext").setup()
+vim.wo.foldmethod = "manual"
+vim.cmd("2,3fold")
+local fold_text = vim.fn.foldtextresult(2)
+T.check(fold_text ~= "", "a closed fold has text: " .. fold_text)
+T.check(fold_text:find("if x then", 1, true) ~= nil, "fold text shows the first line")
+T.check(
+    fold_text:find("1 lines", 1, true) ~= nil,
+    "fold text shows how many lines are folded away: " .. fold_text
+)
+defaults.values.fold.count = "total"
+require("core.foldtext").setup()
+T.check(
+    vim.fn.foldtextresult(2):find("2 lines", 1, true) ~= nil,
+    "the count can include the whole fold instead"
+)
+defaults.values.fold.count = "hidden"
+require("core.foldtext").setup()
+T.check(fold_text:find("..", 1, true) ~= nil, "fold text is filled with dots")
+defaults.values.fold.icon = "▸"
+require("core.foldtext").setup()
+T.check(vim.fn.foldtextresult(2):find("▸", 1, true) ~= nil, "the fold glyph can be enabled")
+defaults.values.fold.icon = false
+require("core.foldtext").setup()
+vim.cmd("2,3foldopen")
+vim.wo.foldmethod = "expr"
+defaults.values.fold.text = false
+require("core.foldtext").setup()
+T.equal(vim.o.foldtext, "", "the configured default keeps syntax highlighting")
+
+-- Git signs: `core.gitsign` places them itself (mini.diff computes the hunks here
+-- but does not place signs, and a custom statuscolumn replaces the sign column), and
+-- a `MiniDiffSign*` sign must render on the *right* side of the number.
+local gitsign = require("core.gitsign")
+gitsign.define()
+-- Line 5 is outside the closed fold: on a folded line the fold glyph legitimately
+-- wins the right-hand slot (fold is first in `right`), exactly like snacks.
+vim.fn.sign_place(0, gitsign.group, "MiniDiffSignAdd", sc_buf, { lnum = 5, priority = 5 })
+-- Signs placed without an event are picked up by the lazy TTL (`refresh_ms`).
+vim.wait(90, function()
+    return false
+end, 10)
+local git_line = sc.line(sc_win, sc_buf, 5, { virtnum = 0, relnum = 4 })
+T.check(
+    git_line:find("%#MiniDiffSignAdd#│", 1, true) ~= nil,
+    "git signs render on the right side: " .. git_line
+)
+vim.fn.sign_unplace(gitsign.group, { buffer = sc_buf })
+
 vim.wo[sc_win].foldmethod = "expr"
 vim.wo[sc_win].foldlevel = 99
 -- Disabling the UI modules leaves the options untouched.
