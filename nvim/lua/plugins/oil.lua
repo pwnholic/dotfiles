@@ -195,9 +195,9 @@ return {
             keymaps = {
                 ["g?"] = { "actions.show_help", mode = "n", desc = "Show Oil keymaps" },
                 ["<CR>"] = { "actions.select", desc = "Open file or directory" },
-                ["<C-s>"] = { "actions.select", opts = { vertical = true }, desc = "Open in vertical split" },
-                ["<C-h>"] = { "actions.select", opts = { horizontal = true }, desc = "Open in horizontal split" },
-                ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open in new tab" },
+                ["<A-s>"] = { "actions.select", opts = { vertical = true }, desc = "Open in vertical split" },
+                ["<A-h>"] = { "actions.select", opts = { horizontal = true }, desc = "Open in horizontal split" },
+                ["<A-t>"] = { "actions.select", opts = { tab = true }, desc = "Open in new tab" },
                 ["<C-p>"] = { "actions.preview", desc = "Preview entry" },
                 ["<C-c>"] = { "actions.close", mode = "n", desc = "Close Oil" },
                 ["q"] = { "actions.close", mode = "n", desc = "Close Oil" },

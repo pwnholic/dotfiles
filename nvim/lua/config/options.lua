@@ -26,3 +26,22 @@ opts.shiftwidth = 4
 opts.softtabstop = 4
 
 opts.confirm = false
+
+-- Cursor shapes per mode (`:h guicursor`): block everywhere except
+-- operator-pending (half bar) and replace/cmdline-replace (thin bar).
+-- Insert/command/visual blink ~1s so the cursor stays findable; the
+-- highlight is `Cursor`/`lCursor` (language-aware variant).
+opts.guicursor = {
+    "i-c-ci-ve:blinkoff500-blinkon500-block-Cursor/lCursor",
+    "n-v:block-Cursor/lCursor",
+    "o:hor50-Cursor/lCursor",
+    "r-cr:hor20-Cursor/lCursor",
+}
+
+-- `cursorline` comes from LazyVim; `cursorcolumn` is ours. Both are
+-- hidden while typing (see `user_cursorline_insert_toggle` in
+-- `lua/config/autocmds.lua`): with a blinking block cursor the current
+-- position is already obvious, and the extra row/column highlight is
+-- visual noise mid-keystroke.
+opts.cursorcolumn = true
+opts.cursorline = true
