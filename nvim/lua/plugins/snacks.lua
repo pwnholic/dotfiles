@@ -1,3 +1,5 @@
+-- Snacks modules config: picker layouts + indent guides.
+--
 -- Pickers for finding files / searching text: bottom "ivy" bar with the preview in the main
 -- window (the same layout LazyVim/snacks already uses for the `lines` source, see the screenshot
 -- of `M.lines` in lua/snacks/picker/config/sources.lua).
@@ -50,6 +52,15 @@ return {
                     lsp_outgoing_calls = { layout = { preview = "main", preset = "ivy" } },
                     lsp_symbols = { layout = { preview = "main", preset = "ivy" } },
                     lsp_workspace_symbols = { layout = { preview = "main", preset = "ivy" } },
+                },
+            },
+            indent = {
+                indent = {
+                    char = "▏",
+                },
+                scope = {
+                    char = "▏",
+                    underline = true,
                 },
             },
         },

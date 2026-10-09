@@ -22,6 +22,8 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     spec = {
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+        { "akinsho/bufferline.nvim", enabled = false },
+        { "folke/noice.nvim", enabled = false },
         { import = "plugins" },
     },
     defaults = { lazy = false, version = false },

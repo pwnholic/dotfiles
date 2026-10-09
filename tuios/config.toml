@@ -590,7 +590,7 @@ effect = 'random'
 
 [spotlight]
 follow = 'mouse'
-radius = 10
+radius = 6
 dim = 75
 edge = 'hard'
 shake = false
