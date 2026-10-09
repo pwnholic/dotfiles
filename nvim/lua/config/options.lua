@@ -24,3 +24,5 @@ opts.cmdheight = 0
 -- the `>>`/`<<` operators use 4 spaces (verified: with expandtab on, all three produce 4).
 opts.shiftwidth = 4
 opts.softtabstop = 4
+
+opts.confirm = false

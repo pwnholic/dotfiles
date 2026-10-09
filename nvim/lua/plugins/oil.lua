@@ -125,9 +125,6 @@ return {
             },
             columns = { "icon" },
             float = {
-                border = "rounded",
-                win_options = { winblend = 10 },
-                -- Title shows the browsed directory, truncated to fit.
                 get_win_title = function(winid)
                     local dir = oil_dir(vim.api.nvim_win_get_buf(winid)) or vim.fn.getcwd(winid)
                     local home = vim.fn.expand("~")
@@ -185,7 +182,7 @@ return {
             ssh = { border = vim.o.winborder },
             keymaps_help = { border = vim.o.winborder },
             delete_to_trash = true,
-            skip_confirm_for_simple_edits = false,
+            skip_confirm_for_simple_edits = true,
             prompt_save_on_select_new_entry = true,
             cleanup_delay_ms = 2000,
             lsp_file_methods = {
