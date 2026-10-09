@@ -17,6 +17,7 @@
   "markdown-preview.nvim": { "branch": "master", "commit": "REDACTED" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "REDACTED" },
   "mason.nvim": { "branch": "main", "commit": "REDACTED" },
+  "mini-git": { "branch": "main", "commit": "REDACTED" },
   "mini.ai": { "branch": "main", "commit": "REDACTED" },
   "mini.icons": { "branch": "main", "commit": "REDACTED" },
   "mini.pairs": { "branch": "main", "commit": "REDACTED" },
