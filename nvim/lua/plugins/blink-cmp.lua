@@ -152,6 +152,57 @@ local function ranked_kind_sort(a, b)
     return nil
 end
 
+-- Responsive completion menu + documentation windows.
+--
+-- What blink supports (from the source, not just the docs):
+--   * `draw.components.<name>.width.max` accepts a NUMBER or a FUNCTION
+--     (`completion/windows/render/text.lua`: `if type(width.max) ==
+--     'function' then max_width = width.max(context) end`). The function
+--     runs per render, so column budgets below measure the live split width
+--     and shrink on narrow splits.
+--   * `menu.min_width` / `documentation.window.{min,max}_width` are static
+--     numbers only, so they are set to small-screen-safe values; the menu
+--     width itself still grows with content via `update_size`
+--     (`lib/window/init.lua`: content width clamped by min/max).
+--   * Honest limit: no per-render hook exists for the window min/max, so a
+--     static `max_width` must cover the smallest screen you use. Values
+--     below are safe down to ~60-column splits.
+--
+-- Narrow-split behavior (< 80 cols): shorter label/detail budgets
+-- (`label` 60 -> 30, `label_description` 30 -> 12), `kind` text column
+-- hidden so icon + label own the row, doc window capped at ~45 cols.
+-- Wide splits keep the full detail.
+
+-- Width of the window showing the current buffer (the split the menu
+-- anchors to), falling back to full editor width when unavailable.
+---@return integer
+local function split_width()
+    local winid = vim.api.nvim_get_current_win()
+    if winid ~= nil and vim.api.nvim_win_is_valid(winid) then
+        return vim.api.nvim_win_get_width(winid)
+    end
+    return vim.o.columns
+end
+
+---@return boolean
+local function is_narrow()
+    return split_width() < 80
+end
+
+-- Budget for the `label` column: full 60 on wide splits, tight 30 when
+-- narrow so the menu never eats half the split.
+---@return integer
+local function label_budget()
+    return is_narrow() and 30 or 60
+end
+
+-- Budget for `label_description` (signature hints like `(as Into)`):
+-- hidden-ish when narrow, full detail when wide.
+---@return integer
+local function detail_budget()
+    return is_narrow() and 12 or 30
+end
+
 return {
     "saghen/blink.cmp",
     dependencies = {
@@ -162,6 +213,93 @@ return {
     end,
     ---@type blink.cmp.Config
     opts = {
+        completion = {
+            list = {
+                -- Caps rendered rows at 50: fewer items to sort (the Lua
+                -- `sorts` path), draw, and page through; upstream default
+                -- is 200.
+                max_items = 50,
+            },
+            menu = {
+                -- Small-screen-safe floor; content grows the window via
+                -- `update_size`, static min keeps tiny splits usable.
+                min_width = 15,
+                -- Cap rows so the menu never covers the whole split height.
+                max_height = 10,
+                -- Slight transparency so the float blends with TokyoNight
+                -- `bg_float` instead of a hard rectangle.
+                scrolloff = 2,
+                scrollbar = true,
+                draw = {
+                    align_to = "label",
+                    padding = 1,
+                    gap = 1,
+                    treesitter = { "lsp" },
+                    -- Icon + label only; the `kind` text column (e.g. the
+                    -- "Function"/"Variable" word) adds noise without
+                    -- information the icon doesn't already carry.
+                    columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
+                    components = {
+                        label = {
+                            -- Runtime accepts fun(ctx): integer here
+                            -- (`render/text.lua:16`), the `DrawWidth` EmmyLua
+                            -- type just hasn't caught up yet.
+                            ---@diagnostic disable-next-line: assign-type-mismatch
+                            width = { fill = true, max = label_budget },
+                        },
+                        label_description = {
+                            ---@diagnostic disable-next-line: assign-type-mismatch
+                            width = { max = detail_budget },
+                        },
+                    },
+                },
+            },
+            documentation = {
+                auto_show = true,
+                auto_show_delay_ms = 250,
+                update_delay_ms = 50,
+                treesitter_highlighting = true,
+                window = {
+                    -- Safe on ~60-col splits; the doc window sizes itself
+                    -- within these bounds via `get_direction_with_window_
+                    -- constraints`, preferring east/west of the menu.
+                    min_width = 10,
+                    max_width = 45,
+                    max_height = 20,
+                    desired_min_width = 30,
+                    desired_min_height = 10,
+                    scrollbar = true,
+                    direction_priority = {
+                        menu_north = { "e", "w", "n", "s" },
+                        menu_south = { "e", "w", "s", "n" },
+                    },
+                },
+            },
+            -- Inline preview of the selected item (dimmed virtual text
+            -- after the cursor). TokyoNight paints it via
+            -- `BlinkCmpGhostText`, so it blends with the theme.
+            ghost_text = {
+                enabled = true,
+                show_with_menu = true,
+                show_without_menu = true,
+                show_with_selection = true,
+                show_without_selection = false,
+            },
+        },
+        signature = {
+            enabled = true,
+            window = {
+                min_width = 10,
+                -- Narrower than docs: signatures are single-purpose rows.
+                max_width = 60,
+                max_height = 10,
+                scrollbar = false,
+            },
+        },
+        appearance = {
+            -- `mono` keeps Nerd Font icons cell-aligned in the grid.
+            nerd_font_variant = "mono",
+        },
         fuzzy = {
             -- Rust (frizbee/SIMD) with silent Lua fallback: unlocks typo
             -- resistance, proximity, frecency, and best-match guarantees.
@@ -196,8 +334,31 @@ return {
                 "label",
             },
         },
-        signature = {
-            enabled = true,
+        -- Cmdline-only overrides (resolved per mode via
+        -- `config.set(..., { mode = 'cmdline' })` upstream in `config/init.lua`):
+        -- label-only rows, no icons/kind text, small rounded float.
+        cmdline = {
+            completion = {
+                menu = {
+                    min_width = 15,
+                    max_height = 8,
+                    draw = {
+                        align_to = "label",
+                        padding = 1,
+                        gap = 1,
+                        treesitter = {},
+                        columns = { { "label" } },
+                    },
+                },
+                documentation = {
+                    auto_show = false,
+                },
+                -- No inline preview on `:`: the cmdline redraws the whole
+                -- line per keystroke and ghost text flickers there.
+                ghost_text = {
+                    enabled = false,
+                },
+            },
         },
     },
 }
