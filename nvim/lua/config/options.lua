@@ -43,5 +43,36 @@ opts.guicursor = {
 -- `lua/config/autocmds.lua`): with a blinking block cursor the current
 -- position is already obvious, and the extra row/column highlight is
 -- visual noise mid-keystroke.
+-- `cursorlineopt = "number"` keeps only the line number lit instead of
+-- the whole row, matching the flat aesthetic.
 opts.cursorcolumn = true
 opts.cursorline = true
+opts.cursorlineopt = "both"
+
+-- Small behaviour upgrades over LazyVim defaults:
+-- * `path:append("**")` -- `:find`/`gf` search recursively.
+-- * histogram diff + `indent-heuristic`/`linematch:60` -- moved lines
+--   read correctly instead of diff noise.
+-- * `foldopen:remove("block")` -- `{`/`}` jump over folds.
+-- * `formatoptions:append("nm")` -- recognise numbered lists (`n`),
+--   wrap multibyte text correctly (`m`); LazyVim already has `t` off
+--   and `r`/`o`/`c` on, so only these two are added.
+-- * `nrformats:append("blank")` -- `<C-a>`/`<C-x>` treat numbers as
+--   signed/unsigned based on preceding whitespace.
+-- * `tabclose = "uselast"` -- closing a tab returns to the last tab.
+-- * `mousemoveevent` -- lets hover/peek react to the mouse.
+opts.path:append("**")
+opts.diffopt:append({ "algorithm:histogram", "indent-heuristic", "linematch:60" })
+opts.foldopen:remove("block")
+opts.formatoptions:append("nm")
+opts.nrformats:append("blank")
+opts.tabclose = "uselast"
+opts.mousemoveevent = true
+
+-- Invisible characters: LazyVim shows tabs; here tabs stay blank and only
+-- trailing spaces (`trail`) and non-breakable spaces (`nbsp`) are marked.
+opts.listchars = {
+    tab = "  ",
+    trail = "·",
+    nbsp = "␣",
+}
