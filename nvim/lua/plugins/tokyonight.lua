@@ -44,6 +44,10 @@ return {
     "folke/tokyonight.nvim",
     opts = {
         style = "night",
+        styles = {
+            sidebars = "normal", -- style for sidebars, see below
+            floats = "normal", -- style for floating windows
+        },
         on_highlights = function(hl, c)
             -- core float + window edges (border grey, title chip blue)
             hl.FloatBorder = { fg = c.dark3, bg = c.none }
