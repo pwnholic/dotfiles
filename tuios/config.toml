@@ -114,24 +114,24 @@
 # ============================================================================
 
 [appearance]
-border_style = 'rounded'
-zen_mode = 'disabled'
+border_style = "normal"
+zen_mode = "disabled"
 links = 'all'
 hide_window_buttons = false
-window_button_style = 'dots'
-window_button_position = 'left'
+window_button_style = "dots"
+window_button_position = "right"
 hide_scrollbar = false
 scrollback_lines = 10000
 scroll_lines = 3
 kitty_placeholders = 'auto'
 auto_enter_terminal_on_focus = 'off'
 click_to_type = 'double'
-dockbar_position = 'top'
+dockbar_position = "top"
 preferred_shell = ''
-motion = 'full'
+motion = "full"
 modal_dim = 30
 whichkey_position = ''
-window_title_position = 'top'
+window_title_position = "top"
 hide_clock = false
 show_clock = false
 show_cpu = false
@@ -144,15 +144,15 @@ zoom_max_width = 0
 niri_reverse_scroll = false
 niri_scroll_cells = 8
 prefix_repeat_time = 500
-max_fps = 0
+max_fps = 120
 dock_workspace_tab_format = ''
-glyphs = 'default'
+glyphs = "default"
 gap = 0
 master_ratio = 50
 scroll_column_width = 55
 scroll_column_max = 90
 zoom_size = 95
-panel_padding = 2
+panel_padding = 3
 clock_format = '15:04:05'
 dim_unfocused = 0
 background = 'off'
@@ -160,9 +160,19 @@ pane_background = ''
 desktop_background = ''
 window_chrome_background = ''
 dock_background = ''
+whichkey_enabled = true
+shared_borders = false
+tiling_scheme = "smart_split"
+master_position = "left"
+session_border = false
+nvim_navigation = true
+session_colors = true
+dock_pill_caps = true
+dock_workspace_label_max = 10
+dock_compact = false
 
 [appearance.scrollbar]
-style = 'track'
+style = "track"
 thumb = ''
 track = ''
 tint = 'quiet'
@@ -181,7 +191,7 @@ flash_ms = 420
 flash_style = 'diagonal'
 
 [appearance.sidebar]
-enabled = true
+enabled = false
 position = 'right'
 width = 24
 workspaces = ''
@@ -594,6 +604,7 @@ radius = 6
 dim = 75
 edge = 'hard'
 shake = false
+enabled = false
 
 [dock]
 [dock.clock]
