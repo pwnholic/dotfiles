@@ -18,6 +18,16 @@ return {
             hl.BlinkCmpMenuBorder = { fg = c.dark3, bg = c.none }
             hl.BlinkCmpDocBorder = { fg = c.dark3, bg = c.none }
             hl.BlinkCmpSignatureHelpBorder = { fg = c.dark3, bg = c.none }
+            -- Completion text hierarchy: label brightest, detail dimmer,
+            -- description dimmest, source muted italic. `Detail`/`Description`
+            -- are `LabelDetail`/`LabelDescription` upstream (no bare groups).
+            hl.BlinkCmpLabelDetail = { fg = c.fg_dark, bg = c.none }
+            hl.BlinkCmpLabelDescription = { fg = c.comment, bg = c.none }
+            hl.BlinkCmpSource = { fg = c.dark5, bg = c.none, italic = true }
+            -- Generic kind fallback matches `KindDefault`; per-kind icons
+            -- keep their LspKind signal colors. Separator is chrome.
+            hl.BlinkCmpKind = { fg = c.fg_dark, bg = c.none }
+            hl.BlinkCmpDocSeparator = { fg = c.dark3, bg = c.none }
 
             hl.MasonNormal = { bg = c.none }
             hl.MasonHeader = { fg = c.dark3, bg = c.none }
