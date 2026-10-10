@@ -5,6 +5,9 @@
 local g, opts = vim.g, vim.opt
 
 g.lazyvim_blink_main = true
+-- AI completion off: blink ghost text + sidekick NES stay disabled.
+g.ai_cmp = false
+g.sidekick_nes = false
 g.lazyvim_python_lsp = "basedpyright"
 g.lazyvim_python_ruff = "ruff"
 g.lazyvim_rust_diagnostics = "rust-analyzer"

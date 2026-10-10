@@ -180,7 +180,8 @@ return {
                 },
             },
             ghost_text = {
-                enabled = true,
+                -- AI off (`vim.g.ai_cmp = false`): no inline suggestion text.
+                enabled = false,
                 show_with_menu = true,
                 show_without_menu = true,
                 show_with_selection = true,
