@@ -148,17 +148,19 @@ return {
                         end,
                     }
                 end,
-                -- Capped at 80% screen width.
+                -- Capped at 80% of the CURRENT window (not screen):
+                -- 80 cols overflows a narrow split.
                 ---@param _ integer?
                 ---@param bufnr integer?
                 float = function(_, bufnr)
+                    local win_w = buf_width(bufnr)
                     return {
                         border = vim.o.winborder,
                         source = "if_many",
                         header = "",
                         focusable = false,
                         severity_sort = true,
-                        max_width = math.min(80, math.floor(vim.o.columns * 0.8)),
+                        max_width = math.min(80, math.floor(win_w * 0.8)),
                         max_height = math.min(20, math.max(10, math.floor(vim.o.lines * 0.4))),
                         prefix = function(diagnostic, _, _)
                             return SEVERITY_ICON[diagnostic.severity] or "●",

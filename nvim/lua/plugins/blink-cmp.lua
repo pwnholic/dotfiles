@@ -168,7 +168,9 @@ return {
                 treesitter_highlighting = true,
                 window = {
                     min_width = 10,
-                    max_width = 45,
+                    -- Screen-relative: 45 cols overflows a <80 split,
+                    -- so clamp to 80% of the CURRENT window.
+                    max_width = math.min(45, math.floor((vim.api.nvim_win_get_width(0) or 80) * 0.8)),
                     max_height = 20,
                     desired_min_width = 30,
                     desired_min_height = 10,
@@ -192,8 +194,8 @@ return {
             enabled = true,
             window = {
                 min_width = 10,
-                -- Narrower than docs: signatures are single-purpose rows.
-                max_width = 60,
+                -- Same clamp as docs: 60 cols is a full 60-col split.
+                max_width = math.min(60, math.floor((vim.api.nvim_win_get_width(0) or 80) * 0.8)),
                 max_height = 10,
                 scrollbar = false,
             },

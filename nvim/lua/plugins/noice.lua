@@ -94,7 +94,15 @@ return {
             ---@type NoiceConfigViews
             views = {
                 popup = { border = { style = vim.o.winborder } },
-                hover = { border = { style = vim.o.winborder } },
+                hover = {
+                    border = { style = vim.o.winborder },
+                    -- Cap to the current window: upstream `max_width = 120`
+                    -- overflows narrow splits (nui only truncates text,
+                    -- not the popup itself).
+                    size = {
+                        max_width = math.min(120, math.floor((vim.api.nvim_win_get_width(0) or 80) * 0.9)),
+                    },
+                },
                 cmdline_popup = { border = { style = vim.o.winborder } },
                 confirm = { border = { style = vim.o.winborder } },
             }, ---@see section on views

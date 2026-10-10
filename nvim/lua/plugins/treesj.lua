@@ -35,7 +35,9 @@ return {
     opts = {
         use_default_keymaps = false,
         check_syntax_error = true,
-        max_join_length = 120,
+        -- Join guard follows the current split: a joined line longer than
+        -- the window just re-wraps (no overflow, but unreadable).
+        max_join_length = math.max(80, math.floor((vim.api.nvim_win_get_width(0) or 120) * 0.9)),
         cursor_behavior = "hold",
         notify = true,
         dot_repeat = true,
