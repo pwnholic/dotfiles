@@ -2,8 +2,6 @@
 -- Collision scan 2026-10-09: all four keys free in core + extras.
 return {
     "Wansmer/treesj",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    event = "LazyFile",
     keys = {
         {
             "<leader>J",
