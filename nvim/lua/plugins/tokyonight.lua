@@ -95,7 +95,12 @@ return {
             hl.SnacksInputBorder = { fg = c.dark3, bg = c.none }
             hl.SnacksInputIcon = { fg = c.dark3 }
             hl.SnacksIndentScope = { fg = c.orange, nocombine = true }
-            hl.SnacksDashboardHeader = { fg = c.dark3 }
+            hl.SnacksDashboardHeader1 = { fg = c.blue }
+            hl.SnacksDashboardHeader2 = { fg = c.blue1 }
+            hl.SnacksDashboardHeader3 = { fg = c.teal }
+            hl.SnacksDashboardHeader4 = { fg = c.green }
+            hl.SnacksDashboardHeader5 = { fg = c.yellow }
+            hl.SnacksDashboardHeader6 = { fg = c.orange }
             hl.SnacksTitle = { fg = c.bg_dark, bg = c.blue, bold = true }
             hl.SnacksPickerTitle = { fg = c.bg_dark, bg = c.blue, bold = true }
             hl.SnacksPickerBoxTitle = { fg = c.bg_dark, bg = c.blue, bold = true }
