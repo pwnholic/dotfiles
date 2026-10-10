@@ -324,6 +324,7 @@ return {
             buf_options = {
                 buflisted = false,
                 bufhidden = "hide",
+                textwidth = 0,
             },
             win_options = {
                 number = false,
@@ -405,10 +406,11 @@ return {
                 autosave_changes = false,
             },
             constrain_cursor = "editable",
-            watch_for_changes = false,
+            watch_for_changes = true,
             keymaps = {
                 ["g?"] = { "actions.show_help", mode = "n", desc = "Show Oil keymaps" },
                 ["<CR>"] = { "actions.select", desc = "Open file or directory" },
+                ["="] = { "actions.select", desc = "Open file or directory" },
                 ["<A-s>"] = { "actions.select", opts = { vertical = true }, desc = "Open in vertical split" },
                 ["<A-h>"] = { "actions.select", opts = { horizontal = true }, desc = "Open in horizontal split" },
                 ["<A-t>"] = { "actions.select", opts = { tab = true }, desc = "Open in new tab" },
@@ -455,11 +457,50 @@ return {
                 ["gx"] = { "actions.open_external", desc = "Open with external application" },
                 ["g."] = { "actions.toggle_hidden", mode = "n", desc = "Toggle hidden files" },
                 ["g\\"] = { "actions.toggle_trash", mode = "n", desc = "Toggle Trash" },
-                ["gy"] = { "actions.yank_entry", desc = "Yank entry path" },
+                ["K"] = { "actions.preview", opts = { vertical = true }, mode = "n", desc = "Preview (toggle)" },
+                ["<C-k>"] = { "actions.preview", opts = { vertical = true }, mode = "n", desc = "Preview (toggle)" },
+                ["gh"] = { "actions.toggle_hidden", mode = "n", desc = "Toggle hidden files" },
+                ["<leader>y"] = { "actions.copy_to_system_clipboard", mode = "n", desc = "Copy to clipboard" },
+                ["<leader>p"] = { "actions.paste_from_system_clipboard", mode = "n", desc = "Paste from clipboard" },
+                ["gY"] = {
+                    function()
+                        local oil = require("oil")
+                        local entry, dir = oil.get_cursor_entry(), oil.get_current_dir()
+                        if not entry or not dir then
+                            return
+                        end
+                        local path = vim.fn.fnamemodify(vim.fs.joinpath(dir, entry.name), ":~")
+                        vim.fn.setreg('"', path)
+                        vim.fn.setreg(vim.v.register, path)
+                        vim.notify(("[oil] yanked '%s' to '%s'"):format(path, vim.v.register))
+                    end,
+                    mode = "n",
+                    desc = "Yank full path + notify",
+                },
+                ["go"] = {
+                    function()
+                        local oil = require("oil")
+                        local entry, dir = oil.get_cursor_entry(), oil.get_current_dir()
+                        if not entry or not dir then
+                            return
+                        end
+                        local path = vim.fs.joinpath(dir, entry.name)
+                        vim.ui.input({ prompt = "Open with: ", completion = "shellcmd" }, function(cmd)
+                            if cmd and cmd ~= "" then
+                                vim.system({ "sh", "-c", cmd .. " " .. vim.fn.shellescape(path) .. " &" })
+                            end
+                        end)
+                    end,
+                    mode = "n",
+                    desc = "Open with program",
+                },
             },
             use_default_keymaps = false,
             view_options = {
                 show_hidden = false,
+                is_always_hidden = function(name)
+                    return name == ".."
+                end,
                 natural_order = "fast",
                 case_insensitive = false,
                 sort = {
@@ -472,6 +513,25 @@ return {
         config = function(_, opts)
             register_custom_columns()
             require("oil").setup(opts)
+            -- Cursor lands on the file we came from; oil buffers stay unlisted.
+            local group = vim.api.nvim_create_augroup("user_oil_cursor", { clear = true })
+            vim.api.nvim_create_autocmd("BufEnter", {
+                group = group,
+                pattern = "oil://*",
+                desc = "Oil: cursor on alternate file, keep unlisted",
+                callback = function(args)
+                    vim.bo[args.buf].buflisted = false
+                    local alt = vim.fn.bufnr("#")
+                    if not vim.api.nvim_buf_is_valid(alt) then
+                        return
+                    end
+                    local parent, base = require("oil").get_buffer_parent_url(vim.api.nvim_buf_get_name(alt), true)
+                    if base then
+                        require("oil.view").set_last_cursor(parent, base)
+                        require("oil.view").maybe_set_cursor()
+                    end
+                end,
+            })
         end,
     },
 }

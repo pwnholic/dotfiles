@@ -38,6 +38,14 @@ return {
             hl.TreesitterContextLineNumberBottom = { bg = c.none, underline = true, sp = c.cyan }
 
             hl.OilPreview = { bg = c.none }
+            -- Mutation markers reuse stock diagnostic-style faces
+            -- (Oil stock already links Create/Delete); yank target is cyan.
+            hl.OilCopy = { fg = c.blue, bold = true }
+            hl.OilMove = { fg = c.yellow, bold = true }
+            hl.OilChange = { fg = c.yellow, bold = true }
+            hl.OilLinkTarget = { fg = c.cyan }
+            hl.OilSecurityContext = { fg = c.magenta }
+            hl.OilSecurityExtended = { fg = c.magenta }
 
             -- `ls`-style permissions; size/mtime reuse stock Number/String.
             hl.OilPermissionNone = { fg = c.dark3 }
