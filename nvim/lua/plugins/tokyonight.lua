@@ -75,6 +75,11 @@ return {
             hl.SnacksNotifierBorderInfo = { fg = c.blue2, bg = c.none }
             hl.SnacksNotifierBorderTrace = { fg = c.purple, bg = c.none }
             hl.SnacksNotifierBorderDebug = { fg = c.comment, bg = c.none }
+            hl.SnacksNotifierTitleError = { fg = c.bg_dark, bg = c.red1, bold = true }
+            hl.SnacksNotifierTitleWarn = { fg = c.bg_dark, bg = c.yellow, bold = true }
+            hl.SnacksNotifierTitleInfo = { fg = c.bg_dark, bg = c.blue2, bold = true }
+            hl.SnacksNotifierTitleTrace = { fg = c.bg_dark, bg = c.purple, bold = true }
+            hl.SnacksNotifierTitleDebug = { fg = c.bg_dark, bg = c.comment, bold = true }
             hl.SnacksPickerBorder = { fg = c.dark3, bg = c.none }
             hl.SnacksPickerInputBorder = { fg = c.dark3, bg = c.none }
             hl.SnacksInputBorder = { fg = c.dark3, bg = c.none }

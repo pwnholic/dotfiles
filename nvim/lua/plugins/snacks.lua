@@ -3,6 +3,11 @@ return {
         "folke/snacks.nvim",
         opts = function(_, opts)
             opts.picker = opts.picker or {}
+            -- Ivy titles centered (upstream ivy preset uses left).
+            opts.picker.layouts = vim.tbl_deep_extend("force", opts.picker.layouts or {}, {
+                ivy = { layout = { title_pos = "center" } },
+                ivy_split = { layout = { title_pos = "center" } },
+            })
             opts.picker.sources = vim.tbl_extend("force", opts.picker.sources or {}, {
                 -- file finding
                 files = { layout = { preview = "main", preset = "ivy" } },
