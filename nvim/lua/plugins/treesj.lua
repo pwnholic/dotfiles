@@ -1,14 +1,5 @@
--- TreeSJ: split/join code blocks via treesitter.
---
--- Default upstream keys (`<space>m/j/s`) collide with LazyVim: `<leader>s`
--- is the search group, `<leader>m` sits next to formatting prefixes. So
--- `use_default_keymaps = false` and the actions live under `<leader>J`
--- (capital-J: plain `J` joins lines, this joins/splits syntax nodes).
--- Collision scan 2026-10-09: no `<leader>J` anywhere in LazyVim core or
--- extras; `:TSJToggle/Split/Join` commands only exist inside treesj
--- itself. Trouble owns `<leader>cs`/`cS`, vtsls owns `<leader>cM` —
--- so split/join get `<leader>cJ`/`cK` and recursive gets `<leader>CK`
--- (all verified free 2026-10-09).
+-- TreeSJ under `<leader>J` (defaults collide with LazyVim search/format).
+-- Collision scan 2026-10-09: all four keys free in core + extras.
 return {
     "Wansmer/treesj",
     dependencies = { "nvim-treesitter/nvim-treesitter" },

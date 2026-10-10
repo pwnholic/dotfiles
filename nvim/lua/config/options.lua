@@ -12,25 +12,14 @@ g.lazyvim_rust_diagnostics = "rust-analyzer"
 opts.winborder = "single"
 opts.cmdheight = 0
 
--- Indentation: 4 spaces instead of LazyVim's 2.
---
--- LazyVim sets these as *global* options in `lazyvim/config/options.lua` (shiftwidth and tabstop
--- are both 2, expandtab is on), and this file is sourced after it, so a plain global assignment
--- here wins. LazyVim has no `vim.g` variable for indentation, so overriding the options is the
--- only supported route.
---
--- Nothing is forced per filetype: `tabstop` is left at 2 so that an existing tab still renders
--- with the width it has today, while `shiftwidth` and `softtabstop` at 4 make both `<Tab>` and
--- the `>>`/`<<` operators use 4 spaces (verified: with expandtab on, all three produce 4).
+-- 4 spaces (LazyVim default 2); `tabstop` stays 2 so existing tabs render unchanged.
 opts.shiftwidth = 4
+opts.tabstop = 4
 opts.softtabstop = 4
 
 opts.confirm = false
 
--- Cursor shapes per mode (`:h guicursor`): block everywhere except
--- operator-pending (half bar) and replace/cmdline-replace (thin bar).
--- Insert/command/visual blink ~1s so the cursor stays findable; the
--- highlight is `Cursor`/`lCursor` (language-aware variant).
+-- Block everywhere except operator-pending (half bar) and replace (thin bar); blink ~1s.
 opts.guicursor = {
     "i-c-ci-ve:blinkoff500-blinkon500-block-Cursor/lCursor",
     "n-v:block-Cursor/lCursor",
@@ -38,29 +27,11 @@ opts.guicursor = {
     "r-cr:hor20-Cursor/lCursor",
 }
 
--- `cursorline` comes from LazyVim; `cursorcolumn` is ours. Both are
--- hidden while typing (see `user_cursorline_insert_toggle` in
--- `lua/config/autocmds.lua`): with a blinking block cursor the current
--- position is already obvious, and the extra row/column highlight is
--- visual noise mid-keystroke.
--- `cursorlineopt = "number"` keeps only the line number lit instead of
--- the whole row, matching the flat aesthetic.
+-- Hidden while typing (see autocmds toggle); `number` keeps only the gutter lit.
 opts.cursorcolumn = true
 opts.cursorline = true
 opts.cursorlineopt = "both"
 
--- Small behaviour upgrades over LazyVim defaults:
--- * `path:append("**")` -- `:find`/`gf` search recursively.
--- * histogram diff + `indent-heuristic`/`linematch:60` -- moved lines
---   read correctly instead of diff noise.
--- * `foldopen:remove("block")` -- `{`/`}` jump over folds.
--- * `formatoptions:append("nm")` -- recognise numbered lists (`n`),
---   wrap multibyte text correctly (`m`); LazyVim already has `t` off
---   and `r`/`o`/`c` on, so only these two are added.
--- * `nrformats:append("blank")` -- `<C-a>`/`<C-x>` treat numbers as
---   signed/unsigned based on preceding whitespace.
--- * `tabclose = "uselast"` -- closing a tab returns to the last tab.
--- * `mousemoveevent` -- lets hover/peek react to the mouse.
 opts.path:append("**")
 opts.diffopt:append({ "algorithm:histogram", "indent-heuristic", "linematch:60" })
 opts.foldopen:remove("block")
@@ -69,8 +40,7 @@ opts.nrformats:append("blank")
 opts.tabclose = "uselast"
 opts.mousemoveevent = true
 
--- Invisible characters: LazyVim shows tabs; here tabs stay blank and only
--- trailing spaces (`trail`) and non-breakable spaces (`nbsp`) are marked.
+-- Tabs blank; only trailing/non-breakable spaces marked.
 opts.listchars = {
     tab = "  ",
     trail = "·",
