@@ -7,7 +7,6 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
--- One group for everything quieted while typing: cursor guides + LSP chrome.
 local typing_group = vim.api.nvim_create_augroup("user_lsp_insert_toggle", { clear = true })
 
 -- Restored on InsertLeave only if previously on (manual `:set off` stays off).

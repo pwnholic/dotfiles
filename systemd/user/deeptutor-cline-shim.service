@@ -1,0 +1,15 @@
+[Unit]
+Description=DeepTutor Cline gateway unwrap shim (muse-spark)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/.local/share/deeptutor/data/user/cline-shim/server.py
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

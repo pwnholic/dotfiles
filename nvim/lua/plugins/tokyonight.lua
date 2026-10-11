@@ -37,9 +37,14 @@ return {
             hl.LspInlayHint = { fg = c.comment, bg = c.none, underline = true, sp = c.teal, italic = true }
             hl.LspCodeLens = { fg = c.comment, bg = c.none, italic = true }
             hl.LspCodeLensSeparator = { fg = c.dark3, bg = c.none }
-            hl.LspReferenceText = { bg = c.none, underline = true }
-            hl.LspReferenceRead = { bg = c.none, underline = true }
-            hl.LspReferenceWrite = { bg = c.none, underline = true }
+
+            -- -- Base washes; the `config` re-tint below keeps these in sync
+            -- -- with the symbol kind under the cursor.
+            -- local ref_util = require("tokyonight.util")
+            -- hl.LspReferenceText = { bg = ref_util.blend_bg(c.fg_dark, 0.25) }
+            -- hl.LspReferenceRead = { bg = ref_util.blend_bg(c.blue, 0.25) }
+            -- hl.LspReferenceWrite = { bg = ref_util.blend_bg(c.yellow, 0.25) }
+
             hl.LspFloatBorder = { fg = c.dark3, bg = c.none }
             hl.LspInfoBorder = { fg = c.dark3, bg = c.none }
 

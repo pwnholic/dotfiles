@@ -49,3 +49,9 @@ opts.listchars = {
     trail = "·",
     nbsp = "␣",
 }
+
+-- Saved folds: `mkview` on leave, `loadview` on enter. `silent!` covers
+-- first-open (no view yet) and unnamed/special buffers. `folds` only in
+-- `viewoptions` so cursor/curdir stay session-owned (persistence.nvim
+-- restores those via `sessionoptions`, no overlap).
+opts.viewoptions = { "folds" }

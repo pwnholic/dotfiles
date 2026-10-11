@@ -35,7 +35,7 @@ return {
             -- Indent keeps base `enabled = true`; only chars overridden.
             opts.indent = opts.indent or {}
             opts.indent.indent = { char = "▏" }
-            opts.indent.scope = { char = "▏", underline = true }
+            opts.indent.scope = { char = "▏", underline = false }
             -- Dashboard: assign preset fields directly to keep base `pick` fn.
             opts.dashboard = opts.dashboard or {}
             -- Content width matches header (50 cols): header fills the slot
