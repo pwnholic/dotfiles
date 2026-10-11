@@ -249,6 +249,8 @@ local function harpoon_menu()
                     ["<c-x>"] = { "harpoon_delete", mode = { "n", "i" } },
                     ["<A-j>"] = { "harpoon_move_down", mode = { "n", "i" } },
                     ["<A-k>"] = { "harpoon_move_up", mode = { "n", "i" } },
+                    ["<c-s>"] = { "edit_split", mode = { "n", "i" } },
+                    ["<c-v>"] = { "edit_vsplit", mode = { "n", "i" } },
                 },
             },
             list = {
@@ -261,6 +263,8 @@ local function harpoon_menu()
                     ["D"] = "harpoon_clear",
                     ["Y"] = "harpoon_yank",
                     ["a"] = "harpoon_add_here",
+                    ["<c-s>"] = "edit_split",
+                    ["<c-v>"] = "edit_vsplit",
                 },
             },
         },
