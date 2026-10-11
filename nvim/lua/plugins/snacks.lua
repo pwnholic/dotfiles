@@ -1,6 +1,307 @@
+-- Harpoon-via-picker (Primeagen-style marks, no harpoon.nvim).
+-- State: per-project file list in stdpath("data")/harpoon-picker.json.
+-- Menu: ivy picker with file preview; <CR> jumps, splits via <C-s>/<C-v>.
+local HARPOON_MAX = 32
+
+---@return string state file path
+local function harpoon_state_path()
+    return vim.fs.joinpath(vim.fn.stdpath("data"), "harpoon-picker.json")
+end
+
+---@return table<string, string[]> root -> paths
+local function harpoon_read_all()
+    local path = harpoon_state_path()
+    if vim.fn.filereadable(path) ~= 1 then
+        return {}
+    end
+    local ok, lines = pcall(vim.fn.readfile, path)
+    if not ok or not lines then
+        return {}
+    end
+    local ok2, data = pcall(vim.json.decode, table.concat(lines, "\n"))
+    if not ok2 or type(data) ~= "table" then
+        return {}
+    end
+    return data
+end
+
+---@param data table<string, string[]>
+local function harpoon_write_all(data)
+    local ok, text = pcall(vim.json.encode, data)
+    if not ok then
+        return
+    end
+    pcall(vim.fn.writefile, vim.split(text, "\n"), harpoon_state_path())
+end
+
+---@return string[] paths for the current project root (dead entries dropped)
+local function harpoon_list()
+    local all = harpoon_read_all()
+    local list = all[LazyVim.root()]
+    if type(list) ~= "table" then
+        return {}
+    end
+    local kept = {}
+    for _, p in ipairs(list) do
+        if type(p) == "string" and vim.fn.filereadable(p) == 1 then
+            kept[#kept + 1] = p
+        end
+    end
+    return kept
+end
+
+---@param list string[]
+local function harpoon_save(list)
+    local all = harpoon_read_all()
+    all[LazyVim.root()] = list
+    harpoon_write_all(all)
+end
+
+---@param path string
+---@param silent? boolean
+---@return integer? slot index
+local function harpoon_add_path(path, silent)
+    if path == "" or vim.fn.filereadable(path) ~= 1 then
+        if not silent then
+            Snacks.notify.warn("Not a readable file, skipped", { title = "Harpoon" })
+        end
+        return nil
+    end
+    local list = harpoon_list()
+    local idx = vim.iter(ipairs(list)):find(function(_, p)
+        return p == path
+    end)
+    if idx then
+        if not silent then
+            Snacks.notify.info(
+                ("Already [%d/%d] %s"):format(idx, #list, vim.fn.fnamemodify(path, ":~")),
+                { title = "Harpoon" }
+            )
+        end
+        return idx
+    end
+    if #list >= HARPOON_MAX then
+        Snacks.notify.warn(("Harpoon full (%d), delete one first"):format(HARPOON_MAX), { title = "Harpoon" })
+        return nil
+    end
+    list[#list + 1] = path
+    harpoon_save(list)
+    if not silent then
+        Snacks.notify.info(("[%d/%d] %s"):format(#list, #list, vim.fn.fnamemodify(path, ":~")), { title = "Harpoon" })
+    end
+    return #list
+end
+
+local function harpoon_add_current()
+    local buf = vim.api.nvim_get_current_buf()
+    if vim.bo[buf].buftype ~= "" then
+        Snacks.notify.warn("Not a file buffer, skipped", { title = "Harpoon" })
+        return
+    end
+    harpoon_add_path(vim.api.nvim_buf_get_name(buf))
+end
+
+---@param i integer 1-based slot
+local function harpoon_select(i)
+    local list = harpoon_list()
+    local path = list[i]
+    if not path then
+        Snacks.notify.warn(("Slot %d is empty (%d marks)"):format(i, #list), { title = "Harpoon" })
+        return
+    end
+    vim.cmd.edit(vim.fn.fnameescape(path))
+end
+
+---@param delta integer +1 next, -1 prev (wraps)
+local function harpoon_nav(delta)
+    local list = harpoon_list()
+    if #list == 0 then
+        Snacks.notify.warn("Harpoon list is empty", { title = "Harpoon" })
+        return
+    end
+    local cur = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+    local idx = vim.iter(ipairs(list)):find(function(_, p)
+        return p == cur
+    end)
+    if not idx then
+        idx = delta > 0 and 1 or #list
+    else
+        idx = (idx - 1 + delta) % #list + 1
+    end
+    vim.cmd.edit(vim.fn.fnameescape(list[idx]))
+end
+
+---@param picker snacks.Picker
+local function harpoon_delete(picker)
+    local items = picker:selected({ fallback = true })
+    if #items == 0 then
+        return
+    end
+    local drop = {}
+    for _, it in ipairs(items) do
+        if it.file then
+            drop[it.file] = true
+        end
+    end
+    local list, kept = harpoon_list(), {}
+    for _, p in ipairs(list) do
+        if not drop[p] then
+            kept[#kept + 1] = p
+        end
+    end
+    if #kept == #list then
+        return
+    end
+    harpoon_save(kept)
+    Snacks.notify.info(("Deleted %d, %d left"):format(#list - #kept, #kept), { title = "Harpoon" })
+    picker:refresh()
+end
+
+-- Reorder without closing: cursor follows the moved item via set_target
+-- (kept across refresh; same contract as the list `target` doc).
+---@param delta integer -1 up, +1 down
+---@return fun(picker: snacks.Picker)
+local function harpoon_move(delta)
+    return function(picker)
+        local cur = picker:current()
+        if not cur or not cur.file then
+            return
+        end
+        local list = harpoon_list()
+        local idx = vim.iter(ipairs(list)):find(function(_, p)
+            return p == cur.file
+        end)
+        if not idx then
+            return
+        end
+        local j = idx + delta
+        if j < 1 or j > #list then
+            return
+        end
+        list[idx], list[j] = list[j], list[idx]
+        harpoon_save(list)
+        picker.list:set_target(j)
+        picker:refresh()
+    end
+end
+
+---@param picker snacks.Picker
+local function harpoon_yank(picker)
+    local cur = picker:current()
+    if cur and cur.file then
+        vim.fn.setreg('"', cur.file)
+        vim.fn.setreg("+", cur.file)
+        Snacks.notify.info(vim.fn.fnamemodify(cur.file, ":~"), { title = "Harpoon yanked" })
+    end
+end
+
+-- `a` inside the menu pins the file behind the picker (`picker.main`),
+-- not the picker buffer itself.
+---@param picker snacks.Picker
+local function harpoon_add_here(picker)
+    local buf = vim.api.nvim_win_get_buf(picker.main)
+    local name = vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_name(buf) or ""
+    if harpoon_add_path(name, true) then
+        picker:refresh()
+    end
+end
+
+---@param picker snacks.Picker
+local function harpoon_clear(picker)
+    local list = harpoon_list()
+    if #list == 0 then
+        return
+    end
+    if vim.fn.confirm(("Clear all %d harpoon marks?"):format(#list), "&Yes\n&No", 2) == 1 then
+        harpoon_save({})
+        picker:refresh()
+    end
+end
+
+local function harpoon_menu()
+    local root = LazyVim.root()
+    Snacks.picker.pick({
+        source = "harpoon",
+        title = "Harpoon",
+        cwd = root,
+        layout = { preview = "main", preset = "ivy" },
+        sort = { fields = { "idx" } },
+        format = "file",
+        show_empty = true,
+        finder = function()
+            local items = {}
+            for i, path in ipairs(harpoon_list()) do
+                items[#items + 1] = { file = path, text = path, label = ("%d."):format(i) }
+            end
+            return items
+        end,
+        actions = {
+            harpoon_delete = harpoon_delete,
+            harpoon_move_up = harpoon_move(-1),
+            harpoon_move_down = harpoon_move(1),
+            harpoon_yank = harpoon_yank,
+            harpoon_add_here = harpoon_add_here,
+            harpoon_clear = harpoon_clear,
+        },
+        win = {
+            input = {
+                keys = {
+                    ["<c-x>"] = { "harpoon_delete", mode = { "n", "i" } },
+                    ["<A-j>"] = { "harpoon_move_down", mode = { "n", "i" } },
+                    ["<A-k>"] = { "harpoon_move_up", mode = { "n", "i" } },
+                },
+            },
+            list = {
+                keys = {
+                    ["dd"] = "harpoon_delete",
+                    ["J"] = "harpoon_move_down",
+                    ["K"] = "harpoon_move_up",
+                    ["<A-j>"] = "harpoon_move_down",
+                    ["<A-k>"] = "harpoon_move_up",
+                    ["D"] = "harpoon_clear",
+                    ["Y"] = "harpoon_yank",
+                    ["a"] = "harpoon_add_here",
+                },
+            },
+        },
+    })
+end
+
+-- Prev/next live outside the `<leader>h` prefix: `hp`/`hn` under it would
+-- force a `timeoutlen` wait on every quick-menu open. `[h`/`]h` is taken
+-- by gitsigns (buffer-local, wins in tracked files), so leader brackets.
+local harpoon_keys = {
+    { "<leader>H", harpoon_add_current, desc = "Harpoon File" },
+    { "<leader>h", harpoon_menu, desc = "Harpoon Quick Menu" },
+    {
+        "<leader>[",
+        function()
+            harpoon_nav(-1)
+        end,
+        desc = "Harpoon Prev",
+    },
+    {
+        "<leader>]",
+        function()
+            harpoon_nav(1)
+        end,
+        desc = "Harpoon Next",
+    },
+}
+for i = 1, 9 do
+    harpoon_keys[#harpoon_keys + 1] = {
+        "<leader>" .. i,
+        function()
+            harpoon_select(i)
+        end,
+        desc = "Harpoon to File " .. i,
+    }
+end
+
 return {
     {
         "folke/snacks.nvim",
+        keys = harpoon_keys,
         opts = function(_, opts)
             opts.picker = opts.picker or {}
             -- Ivy titles centered (upstream ivy preset uses left).
@@ -8,30 +309,36 @@ return {
             -- (`M._values` -> `Util.merge`, force behavior), and this fn
             -- receives the merged base as `opts`.
             opts.picker.layouts = opts.picker.layouts or {}
-            opts.picker.layouts.ivy = opts.picker.layouts.ivy or {}
-            opts.picker.layouts.ivy.layout = opts.picker.layouts.ivy.layout or {}
-            opts.picker.layouts.ivy.layout.title_pos = "center"
-            opts.picker.layouts.ivy_split = opts.picker.layouts.ivy_split or {}
-            opts.picker.layouts.ivy_split.layout = opts.picker.layouts.ivy_split.layout or {}
-            opts.picker.layouts.ivy_split.layout.title_pos = "center"
+            -- Ivy titles centered (upstream ivy preset uses left).
+            for _, name in ipairs({ "ivy", "ivy_split" }) do
+                opts.picker.layouts[name] = opts.picker.layouts[name] or {}
+                opts.picker.layouts[name].layout = opts.picker.layouts[name].layout or {}
+                opts.picker.layouts[name].layout.title_pos = "center"
+            end
             -- Sources merge key-wise by lazy.nvim; direct assign keeps base keys.
             opts.picker.sources = opts.picker.sources or {}
-            opts.picker.sources.files = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.git_files = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.grep = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.git_grep = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.grep_word = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.grep_buffers = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lines = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_definitions = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_declarations = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_references = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_implementations = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_type_definitions = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_incoming_calls = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_outgoing_calls = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_symbols = { layout = { preview = "main", preset = "ivy" } }
-            opts.picker.sources.lsp_workspace_symbols = { layout = { preview = "main", preset = "ivy" } }
+            for _, name in ipairs({
+                "files",
+                "git_files",
+                "grep",
+                "git_grep",
+                "grep_word",
+                "grep_buffers",
+                "lines",
+                "lsp_definitions",
+                "lsp_declarations",
+                "lsp_references",
+                "lsp_implementations",
+                "lsp_type_definitions",
+                "lsp_incoming_calls",
+                "lsp_outgoing_calls",
+                "lsp_symbols",
+                "lsp_workspace_symbols",
+                "diagnostics",
+                "diagnostics_buffer",
+            }) do
+                opts.picker.sources[name] = { layout = { preview = "main", preset = "ivy" } }
+            end
             -- Indent keeps base `enabled = true`; only chars overridden.
             opts.indent = opts.indent or {}
             opts.indent.indent = { char = "▏" }

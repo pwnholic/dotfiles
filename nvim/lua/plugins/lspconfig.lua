@@ -1,6 +1,6 @@
 -- Diagnostic display via lspconfig `opts.diagnostics` (NOT bare
 -- `vim.diagnostic.config` in options.lua: LazyVim's LSP setup overwrites
--- that). WARN+ inline, HINT/INFO signs only, responsive to split width.
+-- that). All severities inline, responsive to split width.
 
 local SEVERITY_HL = {
     [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
@@ -115,8 +115,8 @@ return {
                         -- Hidden on cursor line (virtual_lines owns it).
                         current_line = false,
                         hl_mode = "combine",
-                        -- ERROR-only below 80 cols.
-                        severity = { min = compact and vim.diagnostic.severity.ERROR or vim.diagnostic.severity.WARN },
+                        -- ERROR-only below 80 cols; full detail otherwise.
+                        severity = compact and { min = vim.diagnostic.severity.ERROR } or nil,
                         prefix = function(diagnostic)
                             return SEVERITY_ICON[diagnostic.severity] or "●"
                         end,
@@ -135,7 +135,6 @@ return {
                     local width = buf_width(bufnr)
                     return {
                         current_line = true,
-                        severity = { min = vim.diagnostic.severity.WARN },
                         format = function(diagnostic)
                             local icon = SEVERITY_ICON[diagnostic.severity] or "●"
                             local src = (width >= 100 and diagnostic.source) and (" (" .. diagnostic.source .. ")")
