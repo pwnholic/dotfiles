@@ -14,12 +14,12 @@ local function harpoon_read_all()
     if vim.fn.filereadable(path) ~= 1 then
         return {}
     end
-    local ok, lines = pcall(vim.fn.readfile, path)
-    if not ok or not lines then
+    local ok_lines, lines = pcall(vim.fn.readfile, path)
+    if not ok_lines or not lines then
         return {}
     end
-    local ok2, data = pcall(vim.json.decode, table.concat(lines, "\n"))
-    if not ok2 or type(data) ~= "table" then
+    local ok_data, data = pcall(vim.json.decode, table.concat(lines, "\n"))
+    if not ok_data or type(data) ~= "table" then
         return {}
     end
     return data
@@ -288,6 +288,15 @@ local harpoon_keys = {
         desc = "Harpoon Next",
     },
 }
+for i = 1, 9 do
+    harpoon_keys[#harpoon_keys + 1] = {
+        "<leader>" .. i,
+        function()
+            harpoon_select(i)
+        end,
+        desc = ("Jump to File %d"):format(i),
+    }
+end
 
 return {
     {
