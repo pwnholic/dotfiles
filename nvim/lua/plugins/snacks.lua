@@ -288,15 +288,6 @@ local harpoon_keys = {
         desc = "Harpoon Next",
     },
 }
-for i = 1, 9 do
-    harpoon_keys[#harpoon_keys + 1] = {
-        "<leader>" .. i,
-        function()
-            harpoon_select(i)
-        end,
-        desc = "Harpoon to File " .. i,
-    }
-end
 
 return {
     {
