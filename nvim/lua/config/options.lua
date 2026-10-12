@@ -16,6 +16,7 @@ opts.winborder = "single"
 opts.cmdheight = 0
 
 -- 4 spaces (LazyVim default 2); `tabstop` stays 2 so existing tabs render unchanged.
+opts.expandtab = true
 opts.shiftwidth = 4
 opts.tabstop = 4
 opts.softtabstop = 4

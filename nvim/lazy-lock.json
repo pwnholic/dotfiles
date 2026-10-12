@@ -5,6 +5,7 @@
   "blink.lib": { "branch": "main", "commit": "REDACTED" },
   "bufferline.nvim": { "branch": "main", "commit": "REDACTED" },
   "catppuccin": { "branch": "main", "commit": "REDACTED" },
+  "clangd_extensions.nvim": { "branch": "main", "commit": "REDACTED" },
   "conform.nvim": { "branch": "master", "commit": "REDACTED" },
   "crates.nvim": { "branch": "main", "commit": "REDACTED" },
   "flash.nvim": { "branch": "main", "commit": "REDACTED" },

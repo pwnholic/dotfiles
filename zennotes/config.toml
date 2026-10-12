@@ -67,9 +67,9 @@ ignored_keys = []  # keys the app ignores entirely, by DOM key or code, e.g. ["K
 
 [appearance]
 pdf_export_use_theme = false  # true | false — export PDFs using the current theme instead of a clean light print theme
-theme_family = "gruvbox"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
+theme_family = "apple"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
 theme_mode = "dark"  # light | dark | auto
-theme_id = "dark-hard"  # resolved theme id; normally set automatically from family + mode
+theme_id = "apple-dark"  # resolved theme id; normally set automatically from family + mode
 dark_sidebar = true  # tint the sidebar darker than the canvas
 show_window_title_bar = false  # show the main window title bar and window controls
 show_sidebar_chevrons = true  # show disclosure arrows in the sidebar
