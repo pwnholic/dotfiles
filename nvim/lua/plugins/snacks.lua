@@ -349,10 +349,6 @@ return {
             opts.indent.scope = { char = "▏", underline = false }
             -- Dashboard: assign preset fields directly to keep base `pick` fn.
             opts.dashboard = opts.dashboard or {}
-            -- Content width matches header (50 cols): header fills the slot
-            -- edge-to-edge, so centering is a single outer offset instead of
-            -- outer + inner padding stacking two floor() roundings.
-            opts.dashboard.width = 50
             opts.dashboard.preset = opts.dashboard.preset or {}
             -- Content width matches header (50 cols): header fills the slot
             -- edge-to-edge, so centering is a single outer offset instead of
@@ -380,34 +376,70 @@ return {
                 { icon = " ", key = "s", desc = "Restore Session", section = "session" },
                 { icon = " ", key = "q", desc = "Quit", action = ":qa" },
             }
-            -- Each Text needs trailing \n (except last): `D:block` only
-            -- splits rows on newline, otherwise all lines merge into one row.
-            opts.dashboard.preset.header = {
+
+            local headers = {
                 {
-                    "██████╗  ██╗ ███████╗ ███╗   ███╗ ██╗ ██╗      ██╗       █████╗  ██╗  ██╗\n",
-                    hl = "SnacksDashboardHeader1",
+                    "███████╗████████╗ █████╗ ██╗   ██╗    ███████╗ ██████╗  ██████╗██╗   ██╗███████╗███████╗██████╗",
+                    "██╔════╝╚══██╔══╝██╔══██╗╚██╗ ██╔╝    ██╔════╝██╔═══██╗██╔════╝██║   ██║██╔════╝██╔════╝██╔══██",
+                    "███████╗   ██║   ███████║ ╚████╔╝     █████╗  ██║   ██║██║     ██║   ██║███████╗█████╗  ██║  ██",
+                    "╚════██║   ██║   ██╔══██║  ╚██╔╝      ██╔══╝  ██║   ██║██║     ██║   ██║╚════██║██╔══╝  ██║  ██",
+                    "███████║   ██║   ██║  ██║   ██║       ██║     ╚██████╔╝╚██████╗╚██████╔╝███████║███████╗██████╔",
+                    "╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝       ╚═╝      ╚═════╝  ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚═════╝",
                 },
                 {
-                    "██╔══██╗ ██║ ██╔════╝ ████╗ ████║ ██║ ██║      ██║      ██╔══██╗ ██║  ██║\n",
-                    hl = "SnacksDashboardHeader2",
+                    "██████╗ ██╗███████╗███╗   ███╗██╗██╗     ██╗      █████╗ ██╗  ██",
+                    "██╔══██╗██║██╔════╝████╗ ████║██║██║     ██║     ██╔══██╗██║  ██",
+                    "██████╔╝██║███████╗██╔████╔██║██║██║     ██║     ███████║███████",
+                    "██╔══██╗██║╚════██║██║╚██╔╝██║██║██║     ██║     ██╔══██║██╔══██",
+                    "██████╔╝██║███████║██║ ╚═╝ ██║██║███████╗███████╗██║  ██║██║  ██",
+                    "╚═════╝ ╚═╝╚══════╝╚═╝     ╚═╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═",
                 },
                 {
-                    "██████╔╝ ██║ ███████╗ ██╔████╔██║ ██║ ██║      ██║      ███████║ ███████║\n",
-                    hl = "SnacksDashboardHeader3",
+                    "██╗     ██╗   ██╗██╗  ██╗    ███╗   ███╗███████╗███╗   ██╗████████╗██╗███████",
+                    "██║     ██║   ██║╚██╗██╔╝    ████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██║██╔════",
+                    "██║     ██║   ██║ ╚███╔╝     ██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ██║███████",
+                    "██║     ██║   ██║ ██╔██╗     ██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ██║╚════██",
+                    "███████╗╚██████╔╝██╔╝ ██╗    ██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ██║███████",
+                    "╚══════╝ ╚═════╝ ╚═╝  ╚═╝    ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝╚══════",
                 },
                 {
-                    "██╔══██╗ ██║ ╚════██║ ██║╚██╔╝██║ ██║ ██║      ██║      ██╔══██║ ██╔══██║\n",
-                    hl = "SnacksDashboardHeader4",
-                },
-                {
-                    "██████╔╝ ██║ ███████║ ██║ ╚═╝ ██║ ██║ ███████╗ ███████╗ ██║  ██║ ██║  ██║\n",
-                    hl = "SnacksDashboardHeader5",
-                },
-                {
-                    "╚═════╝  ╚═╝ ╚══════╝ ╚═╝     ╚═╝ ╚═╝ ╚══════╝ ╚══════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝\n",
-                    hl = "SnacksDashboardHeader6",
+                    "██████╗ ███████╗███╗   ███╗ ██████╗ ██╗  ██╗    ██████╗ ███████╗██╗   ██",
+                    "██╔══██╗██╔════╝████╗ ████║██╔═══██╗██║ ██╔╝    ██╔══██╗██╔════╝██║   ██",
+                    "██████╔╝█████╗  ██╔████╔██║██║   ██║█████╔╝     ██║  ██║█████╗  ██║   ██",
+                    "██╔══██╗██╔══╝  ██║╚██╔╝██║██║   ██║██╔═██╗     ██║  ██║██╔══╝  ╚██╗ ██╔",
+                    "██║  ██║███████╗██║ ╚═╝ ██║╚██████╔╝██║  ██╗    ██████╔╝███████╗ ╚████╔╝",
+                    "╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝    ╚═════╝ ╚══════╝  ╚═══╝",
                 },
             }
+
+            -- Random banner per startup: pick one raw header, then pair
+            -- each of its 6 lines with SnacksDashboardHeader1..6.
+            -- `D:block` splits rows on `\n`, so every line (except the
+            -- last) needs the trailing newline or rows merge into one.
+            -- LuaJIT seeds `math.random` identically every launch, so
+            -- reseed from time+pid or all 4 headers still rotate to the
+            -- same one on every startup.
+            math.randomseed(vim.uv.hrtime() + vim.fn.getpid())
+            local picked = headers[math.random(#headers)]
+            opts.dashboard.preset.header = vim.iter(picked)
+                :enumerate()
+                :map(function(i, line)
+                    local text = line
+                    if i < 6 then
+                        text = line .. "\n"
+                    end
+                    return { text, hl = "SnacksDashboardHeader" .. i }
+                end)
+                :totable()
+            -- Content width follows the widest picked header (display
+            -- cols), clamped to the window so narrow splits don't clip:
+            -- header fills the slot edge-to-edge, so centering is a single
+            -- outer offset instead of outer + inner padding stacking two
+            -- floor() roundings.
+            local picked_width = vim.iter(picked):fold(0, function(acc, line)
+                return math.max(acc, vim.api.nvim_strwidth(line))
+            end)
+            opts.dashboard.width = math.min(picked_width, math.max(20, vim.api.nvim_win_get_width(0) - 4))
         end,
     },
 }
