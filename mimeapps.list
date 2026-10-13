@@ -1,5 +1,6 @@
 [Added Associations]
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
+x-scheme-handler/ton=org.telegram.desktop.desktop;
 
 [Default Applications]
 inode/directory=org.kde.dolphin.desktop;
@@ -9,3 +10,4 @@ x-scheme-handler/https=firefox.desktop;
 x-scheme-handler/tonsite=org.telegram.desktop.desktop
 x-scheme-handler/tabularis=tabularis-handler.desktop
 x-scheme-handler/baiduyunguanjia=baidunetdisk.desktop
+x-scheme-handler/ton=org.telegram.desktop.desktop

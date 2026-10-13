@@ -196,7 +196,7 @@ local function folders_in_oil()
             local cwd = LazyVim.root()
             local proc = require("snacks.picker.source.proc").proc({
                 cmd = fd,
-                args = { "--type", "d", "--color", "never", "-E", ".git", "." },
+                args = { "--type", "d", "--color", "never", "-E", ".git", "--no-require-git", "." },
                 cwd = cwd,
                 notify = false,
                 ---@param item snacks.picker.finder.Item

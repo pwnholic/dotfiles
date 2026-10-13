@@ -321,11 +321,20 @@ return {
             end
             -- Sources merge key-wise by lazy.nvim; direct assign keeps base keys.
             opts.picker.sources = opts.picker.sources or {}
+            -- `fd` only respects .gitignore inside a git repo; scratch
+            -- dirs like learning-eino are not repos, so apply ignore files
+            -- regardless of git presence. Extra args append after base args
+            -- (get_cmd does `vim.list_extend(args, opts.args or {})`).
+            -- `rg` (grep source) already honors .gitignore without a repo,
+            -- so it needs no flag.
+            local fd_no_git = { "--no-require-git" }
+            for _, name in ipairs({ "files" }) do
+                opts.picker.sources[name] = { layout = { preview = "main", preset = "ivy" }, args = fd_no_git }
+            end
             for _, name in ipairs({
-                "files",
                 "git_files",
-                "grep",
                 "git_grep",
+                "grep",
                 "grep_word",
                 "grep_buffers",
                 "lines",
