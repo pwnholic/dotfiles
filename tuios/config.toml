@@ -604,7 +604,7 @@ radius = 6
 dim = 75
 edge = 'hard'
 shake = false
-enabled = false
+enabled = true
 
 [dock]
 [dock.clock]

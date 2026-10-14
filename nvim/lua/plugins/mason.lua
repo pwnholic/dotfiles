@@ -12,6 +12,8 @@ return {
                 "golangci-lint",
                 "shellcheck",
                 "oxlint",
+
+                "delve",
             }
         end,
     },

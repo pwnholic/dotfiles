@@ -84,6 +84,14 @@ return {
                 [vim.diagnostic.severity.INFO] = LazyVim.config.icons.diagnostics.Info,
             }
 
+            opts.codelens = {
+                enabled = false,
+            }
+
+            opts.inlay_hints = {
+                enabled = false,
+                exclude = {},
+            }
             ---@type vim.diagnostic.Opts
             opts.diagnostics = {
                 underline = {

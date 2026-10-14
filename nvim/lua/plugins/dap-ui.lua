@@ -45,6 +45,7 @@
 --     `open()`/`close()`; only `VimResized` forces `reset = true`.
 local SIDEBAR_RATIO = 0.25
 local SIDEBAR_MIN_COLS = 20
+local SIDEBAR_SIZES = { 0.30, 0.20, 0.25, 0.25 }
 local TRAY_RATIO = 0.25
 local TRAY_MAX_LINES = 8
 local RESIZE_DEBOUNCE_MS = 200
@@ -75,7 +76,7 @@ local function reset_open_layouts(layouts)
                 for _, win_state in ipairs(layout.win_states) do
                     win_state.init_size = nil
                 end
-                for i, s in ipairs({ 0.30, 0.20, 0.25, 0.25 }) do
+                for i, s in ipairs(SIDEBAR_SIZES) do
                     if layout.win_states[i] then
                         layout.win_states[i].init_size = s
                     end
@@ -88,16 +89,19 @@ local function reset_open_layouts(layouts)
     end
 end
 
+local function sidebar_elements()
+    local elems = {}
+    for i, id in ipairs({ "scopes", "breakpoints", "stacks", "watches" }) do
+        elems[i] = { id = id, size = SIDEBAR_SIZES[i] }
+    end
+    return elems
+end
+
 local function responsive_layouts()
     if vim.o.columns < (SIDEBAR_MIN_COLS / SIDEBAR_RATIO) then
         return {
             {
-                elements = {
-                    { id = "scopes", size = 0.30 },
-                    { id = "breakpoints", size = 0.20 },
-                    { id = "stacks", size = 0.25 },
-                    { id = "watches", size = 0.25 },
-                },
+                elements = sidebar_elements(),
                 size = SIDEBAR_MIN_COLS,
                 position = "right",
             },
@@ -110,12 +114,7 @@ local function responsive_layouts()
     end
     return {
         {
-            elements = {
-                { id = "scopes", size = 0.30 },
-                { id = "breakpoints", size = 0.20 },
-                { id = "stacks", size = 0.25 },
-                { id = "watches", size = 0.25 },
-            },
+            elements = sidebar_elements(),
             size = SIDEBAR_RATIO,
             position = "right",
         },
