@@ -1,9 +1,36 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "codebase-memory-mcp": {"command":["/home/pwnholic/.local/bin/codebase-memory-mcp"],"type":"local"}
+    "codebase-memory-mcp": {
+      "command": ["/home/pwnholic/.local/bin/codebase-memory-mcp"],
+      "type": "local",
+    },
+    "zennotes": {
+      "type": "local",
+      "command": [
+        "/opt/zennotes-bin/ZenNotes",
+        "/opt/zennotes-bin/resources/app.asar/out/main/mcp.js",
+      ],
+      "environment": {
+        "ELECTRON_RUN_AS_NODE": "1",
+      },
+    },
+    "mcp-atlassian": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "mcp-atlassian==0.23.1",
+        "mcp-atlassian",
+        "--env-file",
+        "/home/pwnholic/.pi/agent/secrets/atlassian.env",
+        "--toolsets",
+        "jira_issues,jira_fields,jira_comments,jira_transitions,jira_projects,jira_agile,jira_links,jira_development,jira_metrics,jira_attachments,jira_users,jira_watchers,jira_worklog,jira_project_analysis",
+      ],
+    },
   },
-  "plugins": [
-    "@tarquinen/opencode-dcp@latest"
-  ]
+  "plugins": ["@tarquinen/opencode-dcp@latest", "billion-context"],
+  "compaction": {
+    "auto": false,
+  },
 }
