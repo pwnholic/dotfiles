@@ -15,6 +15,10 @@
         "ELECTRON_RUN_AS_NODE": "1",
       },
     },
+    "rea": {
+      "type": "local",
+      "command": ["npx", "rea-agents", "mcp"],
+    },
     "mcp-atlassian": {
       "type": "local",
       "command": [

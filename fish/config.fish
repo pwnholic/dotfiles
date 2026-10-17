@@ -17,12 +17,12 @@ set -gx SUDO_EDITOR nvim
 set -gx GOPATH $HOME/.local/share/go
 set -gx CRG_EMBEDDING_MODEL Qwen/Qwen3-Embedding-0.6B
 set -gx TYPESAFE_API_KEY apikey_20d05901a452874a62ac10adb83d5e1a6c_ac51dff896147d9022ba4d50a2ebc4cc2bac8920559de8be6930b1062ac79e04
+set -gx GMGN_API_KEY gmgn_e165dbec6e830aa02b68e9138e4085f4
 set -gx SYSTEM_ONE_BASE_URL https://api.typesafe.ai
 set -gx SYSTEM_ONE_API_KEY $TYPESAFE_API_KEY
 set -gx SYSTEM_ONE_MODEL jev-latest
 
 set -gx DEEPTUTOR_HOME $HOME/.local/share/deeptutor
-
 
 # zvec-grep (zg) — hybrid workspace search for agents
 # Docs: `zg help environment` | https://github.com/zvec-ai/zvec-grep
@@ -40,7 +40,6 @@ set -gx ZVEC_GREP_INDEX_EMBEDDING_CONCURRENCY 8
 #   ZVEC_GREP_EMBEDDING=local/qwen3-embedding-0.6b   # default: local/potion-code-16m-v2
 #   ZVEC_GREP_HOME / ZVEC_GREP_MODEL_CACHE / ZVEC_GREP_ENDPOINT
 # Secrets stay out of this file: ZVEC_GREP_API_KEY, ZVEC_GREP_SERVER_TOKEN(_FILE)
-
 
 set -gx TWITTER_AUTH_TOKEN de374c48067f9cbb87ccb97565cfe1c2608c1541
 set -gx TWITTER_CT0 d8fc0c7abf8129c55d996958a35234ad8f1eec65b19b9dacafc401c70366db3033807005b2367c59f19f957474154bb9a27840fc7cf10426d3bd92fe3961e47df9ec140f891c62590c0da472f27a53c2

@@ -5,6 +5,9 @@
         "biome": true,
     },
     "agent_servers": {
+        "opencode": {
+            "type": "registry"
+        },
         "cline": {
             "default_config_options": {
                 "mode": "act",
