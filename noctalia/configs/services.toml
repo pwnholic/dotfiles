@@ -9,10 +9,13 @@ disk_poll_seconds = 10.0
 
 [audio]
 enable_overdrive = true
-enable_sounds = true
+enable_sounds = true          # master toggle for shell sounds (plugins unaffected)
+enable_volume_sounds = true
+enable_notification_sounds = true
+enable_power_sounds = true
+enable_screenshot_sounds = true
 sound_volume = 0.5
-volume_change_sound = ""
-notification_sound = ""
+sound_theme = "freedesktop"
 
 [battery]
 warning_threshold = 20

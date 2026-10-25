@@ -2,7 +2,6 @@
 enabled = true
 position = "right"
 active_monitor_only = false
-monitors = []
 
 icon_size = 40
 main_axis_padding = 14

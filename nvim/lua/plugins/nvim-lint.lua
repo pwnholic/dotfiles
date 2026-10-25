@@ -256,19 +256,18 @@ return {
             if ok_mr then
                 mr:on("package:install:success", function(pkg)
                     vim.schedule(function()
-                        for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-                            if vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted then
-                                local ft = vim.bo[bufnr].filetype
-                                if ft ~= "" then
-                                    for _, name in ipairs(lint._resolve_linter_by_ft(ft)) do
-                                        if MASON_PKG[name] == pkg.name then
-                                            lint_buffer(bufnr)
-                                            break
-                                        end
-                                    end
-                                end
-                            end
-                        end
+                        vim.iter(vim.api.nvim_list_bufs())
+                            :filter(function(bufnr)
+                                return vim.api.nvim_buf_is_valid(bufnr)
+                                    and vim.bo[bufnr].buflisted
+                                    and vim.bo[bufnr].filetype ~= ""
+                            end)
+                            :filter(function(bufnr)
+                                return vim.iter(lint._resolve_linter_by_ft(vim.bo[bufnr].filetype)):any(function(name)
+                                    return MASON_PKG[name] == pkg.name
+                                end)
+                            end)
+                            :each(lint_buffer)
                     end)
                 end)
             end

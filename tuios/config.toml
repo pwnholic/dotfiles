@@ -136,7 +136,7 @@ hide_clock = false
 show_clock = false
 show_cpu = false
 show_ram = false
-theme = ''
+theme = "tokyonight"
 border_focused_color = ''
 border_unfocused_color = ''
 window_title_format = ''
@@ -604,7 +604,7 @@ radius = 6
 dim = 75
 edge = 'hard'
 shake = false
-enabled = true
+enabled = false
 
 [dock]
 [dock.clock]

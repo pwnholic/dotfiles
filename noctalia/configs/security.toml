@@ -1,24 +1,42 @@
 [lockscreen]
 enabled = true
 lock_before_suspend = true
+grace_period_seconds = 0
 fingerprint = true
 allow_empty_password = false
 blurred_desktop = false
 blur_intensity = 0.3
 tint_intensity = 0.35
+transition = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
+transition_duration = 1500
+edge_smoothness = 0.3
 wallpaper = "/home/pwnholic/Pictures/Wallpapers/wallhaven-2136g6.jpg"
 monitors = []
 
 [lockscreen_widgets]
 enabled = true
+schema_version = 2
+widget_order = [
+  "lockscreen-login-box@DP-1",
+  "lockscreen-login-box@HDMI-A-1",
+  "lockscreen-login-box@eDP-1",
+  "clock_main",
+]
+
+[lockscreen_widgets.grid]
+cell_size = 16
+major_interval = 4
+visible = true
 
 [lockscreen_widgets.widget.clock_main]
 type = "clock"
+output = "eDP-1"
 cx = 960.0
 cy = 300.0
 box_width = 0.0
 box_height = 0.0
 rotation = 0.0
+enabled = true
 
 [lockscreen_widgets.widget.clock_main.settings]
 clock_style = "digital"
@@ -27,3 +45,84 @@ color = "on_surface"
 shadow = true
 background = false
 center_text = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
+type = "login_box"
+output = "DP-1"
+cx = 960.0
+cy = 898.0
+box_width = 810.0
+box_height = 196.0
+rotation = 0.0
+enabled = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+layout = "regular"
+show_caps_lock = true
+show_keyboard_layout = true
+show_login_button = true
+show_media = true
+show_password_reveal = true
+show_session_buttons = true
+show_unlock_hint = true
+show_weather = true
+center_password_text = false
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0
+
+[lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1"]
+type = "login_box"
+output = "HDMI-A-1"
+cx = 960.0
+cy = 898.0
+box_width = 810.0
+box_height = 196.0
+rotation = 0.0
+enabled = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
+layout = "regular"
+show_caps_lock = true
+show_keyboard_layout = true
+show_login_button = true
+show_media = true
+show_password_reveal = true
+show_session_buttons = true
+show_unlock_hint = true
+show_weather = true
+center_password_text = false
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0
+
+[lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+type = "login_box"
+output = "eDP-1"
+cx = 960.0
+cy = 1018.0
+box_width = 810.0
+box_height = 196.0
+rotation = 0.0
+enabled = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+layout = "regular"
+show_caps_lock = true
+show_keyboard_layout = true
+show_login_button = true
+show_media = true
+show_password_reveal = true
+show_session_buttons = true
+show_unlock_hint = true
+show_weather = true
+center_password_text = false
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0

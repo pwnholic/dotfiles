@@ -1,5 +1,5 @@
 [plugins]
-auto_update = false
+auto_update = "all"           # "all" | "official" | "none" (boolean form no longer accepted)
 enabled = [
   "yuuto/arch-updater",
   "noctalia/wallhaven",
@@ -9,14 +9,14 @@ enabled = [
 [plugin_settings."yuuto/arch-updater"]
 aur_helper = "paru"
 auto_check_hours = 6
+check_arch_news = false
+flatpak_enabled = false
 panel_placement = "floating"
 
 [widget.arch-updater]
 type = "yuuto/arch-updater:widget"
 glyph = "package"
 show_count = true
-check_arch_news = false
-flatpak_enabled = false
 hide_on_empty = true
 
 [plugin_settings."noctalia/wallhaven"]

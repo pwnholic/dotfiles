@@ -7,23 +7,29 @@ button_borders = true
 input_borders = true
 popup_borders = true
 card_borders = false
+show_close_buttons = true
 popup_shadows = true
 font_family = "Iosevka Nerd Font"
 lang = ""
 time_format = "{:%H:%M}"
 date_format = "%A, %x"
+offline_mode = false
 external_ip_enabled = false
 telemetry_enabled = false
 setup_wizard_enabled = true
 polkit_agent = true
 password_style = "default"
+readline_shortcuts = false
 avatar_path = "~/Pictures/avatar.png"
 settings_show_advanced = true
+settings_expand_all_groups = false
 settings_window_translucent = false
 show_location = false
 launch_apps_as_systemd_services = true
+launch_apps_custom_command = ""
 screen_time_enabled = false
 app_icon_colorize = false
+app_icon_color = "on_surface"
 clipboard_enabled = true
 clipboard_keep_from_closed_apps = true
 clipboard_history_max_entries = 100
@@ -47,8 +53,11 @@ alpha = 0.6
 [shell.panel]
 transparency_mode = "solid"
 borders = true
+border_color = "outline"
+border_width = 1.0
 shadow = true
 list_item_background = false
+wallpaper_show_names = true
 floating_layer = "overlay"
 launcher_placement = "floating"
 clipboard_placement = "floating"
@@ -68,11 +77,22 @@ open_near_click_wallpaper = false
 open_near_click_session = false
 
 [shell.launcher]
+layout = "full"
+width = 760
+search_position = "bottom"
+default_view = "recent"
 categories = true
+category_icons_only = false
+show_settings_button = true
+show_session_button = true
 show_icons = true
+show_app_origin_indicator = true
 compact = false
 app_grid = false
+show_app_actions = false
+track_usage = true
 sort_by_usage = true
+pinned = []
 fetch_exchange_rates = false # privacy
 provider_prefix = "/"
 auto_paste = "auto"
@@ -138,11 +158,52 @@ copy_to_clipboard = true
 freeze_screen = true
 confirm_region = false
 remember_last_region = false
+region_modifier = "none"
 show_cursor = false
+annotate = false
+skip_annotate_on_copy_save = false
+close_on_copy = true
+close_on_save = true
 pipe_to_command = false
+pipe_command = ""
+
+[shell.window_switcher]
+style = "carousel"
+mru = false
+show_caption = true
+show_count = true
+show_app_icon = true
+show_all_outputs = true
+current_workspace_only = false
+
+[shell.session]
+grid = false
+grid_columns = 3
+show_shortcuts = true
+
+[[shell.session.actions]]
+action = "lock"
+shortcut = "1"
+
+[[shell.session.actions]]
+action = "logout"
+shortcut = "2"
+
+[[shell.session.actions]]
+action = "lock_and_suspend"
+shortcut = "3"
+
+[[shell.session.actions]]
+action = "reboot"
+shortcut = "4"
+
+[[shell.session.actions]]
+action = "shutdown"
+shortcut = "5"
+variant = "destructive"
 
 [shell.greeter_sync]
-auto_sync = false ## login greater form
+auto_sync = false
 
 [osd]
 position = "bottom_center"

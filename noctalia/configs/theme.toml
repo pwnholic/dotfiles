@@ -1,5 +1,10 @@
 [theme]
-mode = "dark"
-source = "custom"
-custom_palette = "aurora"
+mode = "dark"                 # dark | light | auto
+shell_mode = "follow"         # follow | dark | light | auto
+source = "custom"             # builtin | wallpaper | community | custom
+builtin = "Noctalia"
+community_palette = "Oxocarbon"
+custom_palette = "aurora"     # ~/.config/noctalia/palettes/aurora.json
+wallpaper_scheme = "m3-content"
 pure_black_dark = false
+sync_color_scheme = true
