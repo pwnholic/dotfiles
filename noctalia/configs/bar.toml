@@ -19,7 +19,7 @@ scale = 1.0
 font_weight = 500
 capsule = true
 capsule_foreground = "on_surface"
-capsule_border = "outline"
+capsule_border = "outline_variant"
 capsule_thickness = 0.86
 capsule_radius = 0.0
 capsule_padding = 10
@@ -242,7 +242,7 @@ icon_color = "primary"
 [widget.privacy]
 hide_inactive = true
 active_color = "primary"
-inactive_color = "outline"
+inactive_color = "outline_variant"
 color = "error"
 icon_color = "error"
 

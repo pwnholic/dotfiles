@@ -1,0 +1,11 @@
+# Language settings file for Wireshark 4.7.4.
+#
+# This file is regenerated each time Wireshark is quit.
+# So be careful, if you want to make manual changes here.
+
+
+####### Language options ########
+
+# The language used for displaying application text
+# A string
+ui_language.language: en

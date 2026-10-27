@@ -1,0 +1,136 @@
+# Common recent settings file for Wireshark 4.7.4.
+#
+# This file is regenerated each time Wireshark is quit
+# and when changing configuration profile.
+# So be careful, if you want to make manual changes here.
+
+######## Recent capture files (latest last), cannot be altered through command line ########
+
+
+######## Recent capture filters (latest first), cannot be altered through command line ########
+
+
+######## Recent display filters (latest last), cannot be altered through command line ########
+
+
+######## Recent remote hosts (latest first), cannot be altered through command line ########
+
+
+# Main window geometry.
+# Decimal numbers.
+gui.geometry_main_x: 1920
+gui.geometry_main_y: 0
+gui.geometry_main_width: 947
+gui.geometry_main_height: 569
+
+# Main window maximized.
+# true or false (case-insensitive).
+gui.geometry_main_maximized: true
+
+# Main window geometry state.
+# Hex byte string.
+gui.geometry_main: 01d9d0cb00030000000007800000000000000b3200000238000007800000000000000b320000023800000000020000000780000007800000000000000b3200000238
+
+# Leftalign Action Buttons.
+# true or false (case-insensitive).
+gui.geometry_leftalign_actions: false
+
+# Last used Configuration Profile.
+gui.last_used_profile: Default
+
+# Number of packets or events to check for automatic profile switching.
+# Decimal number. Zero disables switching.
+#gui.profile_switch_check_count: 1000
+
+# Warn if running with elevated permissions (e.g. as root).
+# true or false (case-insensitive).
+privs.warn_if_elevated: true
+
+# Warn if Wireshark is unable to capture.
+# true or false (case-insensitive).
+sys.warn_if_no_capture: false
+
+# Find packet search in.
+# One of: PACKET_LIST, PACKET_DETAILS, PACKET_BYTES
+gui.search_in: PACKET_LIST
+
+# Find packet character set.
+# One of: NARROW_AND_WIDE, NARROW, WIDE
+gui.search_char_set: NARROW_AND_WIDE
+
+# Find packet case sensitive search.
+# true or false (case-insensitive).
+gui.search_case_sensitive: false
+
+# Find packet search reverse direction.
+# true or false (case-insensitive).
+gui.search_reverse_dir: false
+
+# Find packet search multiple occurrences.
+# true or false (case-insensitive).
+gui.search_multiple_occurs: false
+
+# Find packet search type.
+# One of: DISPLAY_FILTER, HEX_VALUE, STRING, REGEX
+gui.search_type: DISPLAY_FILTER
+
+# Welcome page sidebar Learn section visible.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.learn_visible: true
+
+# Welcome page sidebar Tips section visible.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.tips_visible: true
+
+# Welcome page sidebar Tips event slides.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.tips_events: true
+
+# Welcome page sidebar Tips sponsorship slides.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.tips_sponsorship: true
+
+# Welcome page sidebar Tips tip-of-the-day slides.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.tips_tips: true
+
+# Welcome page sidebar Tips auto advance slides.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.tips_auto_advance: true
+
+# Welcome page sidebar Tips slide auto-advance interval in seconds.
+gui.welcome_page.sidebar.tips_interval: 8
+
+# Active theme (directory name under resources/themes).
+gui.theme_name: wireshark
+
+# Appearance mode.
+# One of: system, light, dark
+gui.color_scheme: dark
+
+# Welcome page sidebar Tips slides test.
+# true or false (case-insensitive).
+gui.welcome_page.sidebar.tips_slides_test: false
+
+# Geometry and maximized state of PreferencesDialog window.
+# Decimal integers.
+gui.geom.PreferencesDialog.x: 1920
+gui.geom.PreferencesDialog.y: 0
+gui.geom.PreferencesDialog.width: 1916
+gui.geom.PreferencesDialog.height: 1160
+# true or false (case-insensitive).
+gui.geom.PreferencesDialog.maximized: false
+# Qt Geometry State (hex byte string).
+gui.geom.PreferencesDialog.qt_geometry: 01d9d0cb00030000000007800000000000000efb00000487000007800000000000000b2b000002da00000000020000000780000007800000000000000efb00000487
+
+# Custom colors.
+# List of custom colors selected in Qt color picker.
+gui.custom_colors: 
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff",
+	"ffffffff", "ffffffff"

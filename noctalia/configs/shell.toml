@@ -53,7 +53,7 @@ alpha = 0.6
 [shell.panel]
 transparency_mode = "solid"
 borders = true
-border_color = "outline"
+border_color = "outline_variant"
 border_width = 1.0
 shadow = true
 list_item_background = false

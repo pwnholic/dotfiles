@@ -3,21 +3,21 @@
 #
 # Holds your portable preferences (theme, editor, vim, keymaps, …) so you can
 # sync them across machines with git, stow, chezmoi, and friends. Managed by
-# ZenNotes but safe to hand-edit — changes apply live, no restart needed.
+# ZenNotes but safe to hand-edit: changes apply live, no restart needed.
 #
 # Every available option is listed below with its current value; the inline
-# comment shows the allowed values. Edit a value to customize it — ZenNotes
+# comment shows the allowed values. Edit a value to customize it. ZenNotes
 # keeps this list complete, so a removed option reappears with its default.
 # Note: comments you add yourself may be dropped when the app rewrites the file.
 
 config_version = 1
 
 [vim]
-enabled = true  # true | false — CodeMirror Vim bindings
+enabled = true  # true | false: CodeMirror Vim bindings
 insert_escape = "jk"  # key sequence to leave insert mode, e.g. "jk"; empty disables
 yank_to_clipboard = true  # sync the system clipboard with Vim yank/delete/change and p/P paste
 block_ime_in_normal_mode = true  # keep the OS input method (a CJK IME) from composing in normal and visual mode, so hjkl stay motions
-wrapped_line_motions = "logical"  # display | logical — how $, I, A and dependent operators treat soft-wrapped lines
+wrapped_line_motions = "logical"  # display | logical: how $, I, A and dependent operators treat soft-wrapped lines
 which_key_hints = true  # show the leader-key hint overlay (Vim only)
 which_key_hint_mode = "sticky"  # timed | sticky
 which_key_hint_timeout_ms = 2000  # how long timed hints stay visible (ms)
@@ -26,6 +26,7 @@ which_key_hint_timeout_ms = 2000  # how long timed hints stay visible (ms)
 backend = "auto"  # auto | builtin | ripgrep | fzf
 ripgrep_path = "/usr/bin/rg"  # absolute path to ripgrep; empty = look on $PATH
 fzf_path = "/usr/bin/fzf"  # absolute path to fzf; empty = look on $PATH
+tagged_blocks = true  # with a #tag in Search notes, list the tagged blocks under each note
 
 [editor]
 live_preview = false  # hide markdown syntax on inactive lines
@@ -44,17 +45,18 @@ math_font_scale = 100  # math size as a percentage (50-200); scales $…$ and $$
 line_height = 1.8  # line-height multiplier
 tab_size = 4  # tab width in columns, from 1 through 8
 list_indent_guides = true  # vertical guide lines at each nested list level
-scroll_off = 8  # vim scrolloff — lines kept above/below the cursor (0 = off)
+link_popover_on_hover = true  # resting the pointer on a [[wikilink]] opens the link popover
+scroll_off = 8  # vim scrolloff: lines kept above/below the cursor (0 = off)
 time_format = "24h"  # clock format for the @time macro (12h or 24h)
 preview_max_width = 920  # max reading width for the preview (px)
 editor_max_width = 920  # max width of the editor column (px)
-completed_task_style = "gray-strikethrough"  # none | strikethrough | gray | gray-strikethrough — style checked-task text
+completed_task_style = "gray-strikethrough"  # none | strikethrough | gray | gray-strikethrough: style checked-task text
 math_renderer = "katex"  # katex | typst: typesetter for $…$ / $$…$$ math
-typst_tag_preambles = false  # true | false — prepend Typst definitions from notes in a `typst` folder, chosen by a note's tags
+typst_tag_preambles = false  # true | false: prepend Typst definitions from notes in a `typst` folder, chosen by a note's tags
 harper_enabled = true  # true | false: grammar and spelling with Harper, checked on this device
 harper_dialect = "american"  # american | british | australian | canadian | indian
 loose_math_delimiters = false  # render $$…$$ display math even with text before/after the fences
-default_view_mode = "preview"  # edit | split | preview — the mode a note opens in before it has a remembered one
+default_view_mode = "preview"  # edit | split | preview: the mode a note opens in before it has a remembered one
 keep_view_mode_across_notes = true  # true = stay in the current Edit / Split / Preview mode when opening another note; false = each note reopens in its own last mode
 persist_undo_history = true  # true = keep each note's undo history between launches, like Vim's undofile (stored with the app, never in the vault; holds deleted text; desktop only)
 line_number_mode = "relative"  # off | absolute | relative
@@ -66,7 +68,7 @@ external_application_schemes = []  # application links enabled for opening, e.g.
 ignored_keys = []  # keys the app ignores entirely, by DOM key or code, e.g. ["KanaMode"] for the no-op a Kanata/QMK tap-hold layer sends with every keystroke
 
 [appearance]
-pdf_export_use_theme = false  # true | false — export PDFs using the current theme instead of a clean light print theme
+pdf_export_use_theme = false  # true | false: export PDFs using the current theme instead of a clean light print theme
 theme_family = "apple"  # apple | gruvbox | catppuccin | github | solarized | one | nord | tokyo-night | kanagawa | black-metal | custom
 theme_mode = "dark"  # light | dark | auto
 theme_id = "apple-dark"  # resolved theme id; normally set automatically from family + mode
@@ -101,9 +103,16 @@ tasks_view_mode = "kanban"  # list | calendar | kanban
 show_archived_tasks = false  # keep tasks from archived notes in the Tasks views
 kanban_group_by = "status"  # status | priority | folder (each note's own folder; see kanban_folder_root) | field:<key>
 kanban_card_sort = "manual"  # manual | due: cards in a Kanban column keep the order you drag them into, or follow their due dates
+tasks_list_order = "note"  # note | priority: each Tasks list group keeps its notes' line order, or puts high priority first
 kanban_folder_root = ""  # folder board: group by the children of this folder, e.g. "Projects" (deeper notes roll up, notes outside it share one column); "" = each note's own folder
-kanban_statuses = []  # custom-status Kanban columns, in order — e.g. ["backlog", "in_progress", "review", "done"]
-hidden_workflow_presets = []  # built-in workflow recipes hidden from the gallery, by id — e.g. ["reading-log"]
+kanban_statuses = []  # custom-status Kanban columns in order, e.g. ["backlog", "in_progress", "review", "done"]
+hidden_workflow_presets = []  # built-in workflow recipe ids hidden from the gallery, e.g. ["reading-log"]
+
+[mcp]
+review_agent_edits = true  # keep what a note said before an assistant edits it through MCP, so you can review the change
+
+[privacy]
+usage_count = true  # send an anonymous count when ZenNotes installs or updates: version, OS, architecture, install kind; no identifier
 
 # Keymap overrides. Add or uncomment "<action.id>" = "<binding>" lines.
 # Binding syntax: "Mod+P" = Cmd/Ctrl+P, "Shift+Mod+K", "Ctrl+W", "Space",
@@ -156,6 +165,8 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "tabs.select7" = "Alt+7"  # Go to tab 7 (macOS: "Ctrl+7")
 # "tabs.select8" = "Alt+8"  # Go to tab 8 (macOS: "Ctrl+8")
 # "tabs.select9" = "Alt+9"  # Go to tab 9 (macOS: "Ctrl+9")
+# "tabs.next" = "Mod+PageDown"  # Next tab (macOS: "Alt+Mod+ArrowRight")
+# "tabs.previous" = "Mod+PageUp"  # Previous tab (macOS: "Alt+Mod+ArrowLeft")
 # Vim
 # "vim.leaderPrefix" = "Space"  # Leader key
 # "vim.leaderOpenBuffers" = "o"  # Leader: open buffers
@@ -174,12 +185,14 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "vim.leaderToggleFavorite" = "s"  # Leader note action: toggle favorite
 # "vim.leaderTableToDatabase" = "d"  # Leader note action: convert table to database
 # "vim.leaderQuickCapture" = "q"  # Leader: open quick capture
+# "vim.leaderHideToTray" = "b"  # Leader: hide window to tray
 # "vim.leaderTemplatePicker" = "t"  # Leader: new from template
 # "vim.leaderInsertTemplate" = "i"  # Leader: insert template into note
 # "vim.leaderDailyNote" = "d"  # Leader: today's daily note
 # "vim.leaderWeeklyNote" = "w"  # Leader: this week's note
 # "vim.leaderMonthlyNote" = "m"  # Leader: this month's note
 # "vim.leaderCalendar" = "c"  # Leader: toggle calendar
+# "vim.leaderUnresolvedLinks" = "u"  # Leader: unresolved links
 # "vim.panePrefix" = "Ctrl+W"  # Pane command prefix
 # "vim.paneFocusLeft" = "h"  # Pane: focus left
 # "vim.paneFocusDown" = "j"  # Pane: focus down
@@ -196,6 +209,7 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "vim.hintMode" = "h"  # Leader: hint mode
 # "vim.goToDefinition" = "g d"  # Follow link at cursor
 # "vim.createNoteFromLink" = "g D"  # Create note for link at cursor
+# "vim.linkPopover" = "K"  # Link popover for link at cursor
 # "vim.foldCurrent" = "z c"  # Fold heading or list item at cursor
 # "vim.unfoldCurrent" = "z o"  # Unfold heading or list item at cursor
 # "vim.foldAll" = "z M"  # Fold all headings and lists
@@ -205,6 +219,10 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "vim.harperSuggest" = "z ="  # Harper suggestions at cursor
 # "vim.harperAddWord" = "z g"  # Add word to Harper dictionary
 # "vim.harperIgnore" = "z G"  # Ignore Harper suggestion
+# "vim.reviewNextChange" = "] c"  # Next change to review
+# "vim.reviewPreviousChange" = "[ c"  # Previous change to review
+# "vim.reviewAcceptChange" = "d p"  # Accept change
+# "vim.reviewRejectChange" = "d o"  # Reject change
 # Navigation
 # "nav.moveDown" = "j"  # Move selection down
 # "nav.moveUp" = "k"  # Move selection up
@@ -228,6 +246,8 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "tasks.moveTaskUp" = "K"  # Move task up
 # "tasks.moveTaskDown" = "J"  # Move task down
 # "tasks.savedFilters" = "F"  # Pick a saved Tasks filter
+# "tags.nextNote" = "}"  # Next note in Tags view
+# "tags.previousNote" = "{"  # Previous note in Tags view
 # "editor.hopMarkerForward" = "Alt+]"  # Hop past next marker (macOS: "Ctrl+.")
 # "editor.hopMarkerBackward" = "Alt+["  # Hop before previous marker (macOS: "Ctrl+,")
 # "editor.foldHeading" = "Alt+Mod+F"  # Fold heading or list item
@@ -236,6 +256,11 @@ hidden_workflow_presets = []  # built-in workflow recipes hidden from the galler
 # "editor.moveLineDown" = "Alt+ArrowDown"  # Move line down
 # "editor.toggleCheckbox" = "Mod+L"  # Toggle checkbox
 # "editor.reflowParagraph" = "Alt+Q"  # Reflow paragraph (macOS: "Ctrl+Q")
+# "editor.linkPopover" = "Shift+Mod+K"  # Open link popover
+# "editor.reviewNextChange" = "Alt+Mod+ArrowDown"  # Next change to review
+# "editor.reviewPreviousChange" = "Alt+Mod+ArrowUp"  # Previous change to review
+# "editor.reviewAcceptChange" = "Shift+Mod+Enter"  # Accept change
+# "editor.reviewRejectChange" = "Shift+Mod+Backspace"  # Reject change
 # "nav.localEx" = ":"  # Open local ex prompt
 # "nav.newQuickNote" = "n"  # New quick note from Quick Notes view
 # "nav.unarchive" = "u"  # Unarchive selected note
@@ -252,7 +277,7 @@ trash = "Trash"
 # Example: "status:todo" = "To Do"
 [kanban_column_titles]
 
-# Enabled CSS overrides — list the filenames you want active.
+# Enabled CSS overrides. List the filenames you want active.
 # Example: "focus.css" = "on"
 [overrides]
 
