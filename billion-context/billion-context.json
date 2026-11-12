@@ -1,4 +1,9 @@
 {
+  "pi": {
+    "subagents": {
+      "forceEnable": true
+    }
+  },
   "providers": {
   }
 }

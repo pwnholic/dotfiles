@@ -81,7 +81,9 @@ for index = 1, S.workspaces.count do
 	})
 end
 
-hl.workspace_rule({
-	workspace = "special",
-	on_created_empty = "[float] " .. S.apps.terminal,
-})
+-- Scratchpad: spawn a floating terminal when the special workspace is created empty.
+hl.on("workspace.created", function(workspace)
+	if workspace and workspace.special and workspace.is_empty then
+		hl.exec_cmd(S.apps.terminal, { float = true })
+	end
+end)

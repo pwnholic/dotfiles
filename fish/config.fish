@@ -21,6 +21,8 @@ set -gx GMGN_API_KEY gmgn_e165dbec6e830aa02b68e9138e4085f4
 set -gx SYSTEM_ONE_BASE_URL https://api.typesafe.ai
 set -gx SYSTEM_ONE_API_KEY $TYPESAFE_API_KEY
 set -gx SYSTEM_ONE_MODEL jev-latest
+set -gx SURPLUS_API_KEY inf_f0490bf536fc4b108b316e833b81affe
+set -gx PI_CODING_AGENT_DIR $HOME/.config/pi/agent
 
 set -gx DEEPTUTOR_HOME $HOME/.local/share/deeptutor
 

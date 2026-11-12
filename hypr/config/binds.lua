@@ -92,7 +92,7 @@ bind(main_mod .. " + G", hl.dsp.group.toggle())
 bind(main_mod .. " + SHIFT + G", hl.dsp.window.move({ out_of_group = true }))
 bind("CONTROL + Tab", hl.dsp.group.next(), { allow_input_capture = true })
 bind("CONTROL + SHIFT + Tab", hl.dsp.group.prev(), { allow_input_capture = true })
-bind(main_mod .. " + ALT + G", hl.dsp.group.lock_active())
+bind(main_mod .. " + ALT + G", hl.dsp.group.lock())
 
 -- Resize submap
 bind(main_mod .. " + R", hl.dsp.submap("resize"))
