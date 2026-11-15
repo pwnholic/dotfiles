@@ -21,7 +21,7 @@ set -gx GMGN_API_KEY gmgn_e165dbec6e830aa02b68e9138e4085f4
 set -gx SYSTEM_ONE_BASE_URL https://api.typesafe.ai
 set -gx SYSTEM_ONE_API_KEY $TYPESAFE_API_KEY
 set -gx SYSTEM_ONE_MODEL jev-latest
-set -gx SURPLUS_API_KEY inf_f0490bf536fc4b108b316e833b81affe
+set -gx SURPLUS_API_KEY inf_2af553216a2e463b9cd39f3c40707055
 set -gx PI_CODING_AGENT_DIR $HOME/.config/pi/agent
 
 set -gx DEEPTUTOR_HOME $HOME/.local/share/deeptutor
@@ -127,6 +127,9 @@ if status is-interactive
     abbr --add v nvim
     abbr --add nv nvim
     abbr --add vimdiff nvim -d
+
+    alias ytm='mpv --no-video --ytdl-format="bestaudio[protocol*=m3u8]/bestaudio/best" --ytdl-raw-options="yes-playlist="'
+    alias paru-sync='paru -Syyu && limine-enroll-config && limine-update'
 
     function multicd --description 'Expand ... into cd ../..'
         echo cd (string repeat -n (math (string length -- $argv[1]) - 1) ../)

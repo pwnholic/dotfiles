@@ -115,4 +115,7 @@
       },
     },
   },
+  "context_servers": {
+    "codebase-memory-mcp": {"command":"/home/pwnholic/.local/bin/codebase-memory-mcp","args":[]}
+  },
 }

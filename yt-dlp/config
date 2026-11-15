@@ -1,0 +1,2 @@
+# Enable yt-dlp EJS challenge-solver components (required for YouTube nsig since 2026.x)
+--remote-components ejs:github

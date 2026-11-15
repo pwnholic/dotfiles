@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "appearance": {
+    "theme_mode": "dark",
+    "app_icon": "simple",
+    "color_scheme": null,
+    "window_opacity": null,
+    "mac_glass": "blur",
+    "sidebar_shade": "dark",
+    "tab_bar_shade": "light",
+    "terminal_shade": "light",
+    "sidebar_thread_icons": "badge",
+    "sidebar_thread_status": "pixels",
+    "agents_status": "pixels",
+    "window_tabs": "show",
+    "window_tabs_pinned": false,
+    "server_placement": "own_space"
+  },
+  "terminal": {
+    "overlay_scrollbar": true,
+    "split_animation": true,
+    "font_size": null,
+    "font_family": null,
+    "remote_pane_resize_mode": "auto",
+    "scroll_mode": "smooth",
+    "selection_style": "rounded",
+    "copy_on_select": true,
+    "right_click": "menu",
+    "paste_confirmation": false,
+    "copy_effect": "off",
+    "focus_follows_mouse": false,
+    "text_contrast": "off",
+    "cursor_blink": "off",
+    "cursor_shape": "block",
+    "bottom_quote_enabled": false,
+    "bottom_quote_mode": "timed",
+    "bottom_quote_interval_minutes": null,
+    "bottom_quote_font_size": null,
+    "default_shell": null
+  },
+  "chrome": {
+    "settings_font_size": null,
+    "settings_font_weight": null,
+    "home_font_size": null,
+    "sidebar_font_size": null,
+    "right_sidebar_font_size": null,
+    "workspace_sidebar_width": null,
+    "library_width": null,
+    "workspace_sidebar_hover_reveal": null,
+    "right_sidebar_markdown_preview_rendered": null,
+    "right_sidebar_width": null,
+    "remember_right_sidebar": null,
+    "right_sidebar_shown": null,
+    "right_sidebar_file_preview_width": null,
+    "right_sidebar_note_pane_width": null,
+    "right_sidebar_note_pane_expanded": null,
+    "right_sidebar_open_with_app": null,
+    "right_sidebar_custom_open_with_apps": [],
+    "tab_font_size": null,
+    "pane_header_font_size": null,
+    "workspace_sidebar_hidden_statuses": [],
+    "right_sidebar_files_enabled": null,
+    "right_sidebar_notes_enabled": null,
+    "right_sidebar_snippets_enabled": null,
+    "snippets_plugin_enabled": null,
+    "agent_panel_enabled": null,
+    "agent_status_display": {
+      "description": true,
+      "reason": true,
+      "progress": true,
+      "subtasks": true
+    },
+    "dynamic_status_enabled": null,
+    "task_tools_off": [],
+    "agents_panel_view": {
+      "hidden_statuses": [],
+      "hidden_machines": [],
+      "group_by": "",
+      "sort_by": ""
+    },
+    "plugin_panels": [],
+    "plugin_extended_widths": {},
+    "remote_hosts_inspector_width": null
+  },
+  "developer": {
+    "developer_mode": false,
+    "force_fallback_context_menu": false
+  },
+  "onboarding": {
+    "seen_version": 1,
+    "language": "system",
+    "show_left_sidebar_by_default": true
+  },
+  "localization": {
+    "language": "system"
+  },
+  "compatibility": {
+    "source_path": null,
+    "selected_fields": [],
+    "last_imported_at": null
+  },
+  "window": {
+    "restore_main_window_frame": true,
+    "main_renderer": null,
+    "main_window_placement": null
+  },
+  "workspaces": {
+    "remote_sftp_idle_minutes": 15,
+    "remote_download_directory": "",
+    "remote_drop_destination": "",
+    "notification_sounds_enabled": true,
+    "system_notifications_enabled": true,
+    "notification_sound_moments": {
+      "finished": true,
+      "needs_input": true,
+      "error": true
+    },
+    "system_notification_moments": {
+      "finished": true,
+      "needs_input": true,
+      "error": true
+    },
+    "dock_badge_enabled": true,
+    "dock_badge_moments": {
+      "finished": true,
+      "needs_input": true,
+      "error": true
+    },
+    "remote_update_keeps_sessions": true,
+    "update_download_source": "auto",
+    "check_for_updates": null,
+    "update_check_interval_seconds": null,
+    "local_sessions_via_mux": true
+  },
+  "command_palette": {
+    "hotkey": "cmdshiftp",
+    "rows": 0,
+    "font_size": null,
+    "search_penetrates_groups": true
+  },
+  "keymap": {
+    "keys": []
+  },
+  "web": {
+    "link_ttl_secs": 28800,
+    "reachable": false,
+    "relay": false
+  },
+  "tab_icons": {
+    "cards": []
+  },
+  "sharing": {
+    "enabled": false
+  },
+  "agents": {
+    "server_terminals": "off",
+    "reverse_access_minutes": 30
+  },
+  "accessibility": {
+    "show_button_shapes": false
+  }
+}
