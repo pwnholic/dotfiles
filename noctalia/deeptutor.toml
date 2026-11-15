@@ -13,5 +13,5 @@ color = "primary"
 icon_color = "primary"
 
 [widget.deeptutor.actions]
-left = 'exec /home/pwnholic/.local/bin/deeptutor start --detach && /usr/bin/noctalia msg notification-show DeepTutor "DeepTutor started"'
-right = 'exec /home/pwnholic/.local/bin/deeptutor stop && /usr/bin/noctalia msg notification-show DeepTutor "DeepTutor stopped"'
+left = 'exec DEEPTUTOR_HOME="$HOME/.local/share/deeptutor" $HOME/.local/bin/deeptutor start --detach && /usr/bin/noctalia msg notification-show DeepTutor "DeepTutor started"'
+right = 'exec DEEPTUTOR_HOME="$HOME/.local/share/deeptutor" $HOME/.local/bin/deeptutor stop && /usr/bin/noctalia msg notification-show DeepTutor "DeepTutor stopped"'
