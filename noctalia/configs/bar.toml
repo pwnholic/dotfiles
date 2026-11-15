@@ -33,6 +33,7 @@ end = [
   "group:network",
   "group:updates",
   "group:status",
+  "deeptutor",
   "tray",
   "control-center",
 ]

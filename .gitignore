@@ -65,3 +65,5 @@ ghc/ghci_history
 pdf-metadata-editor/log.txt
 systemd/user/default.target.wants/
 chromium/
+
+LearnHarness/
