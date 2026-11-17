@@ -1,0 +1,17 @@
+{
+  "lsp": {
+    "luau-lsp": {
+      "settings": {
+        "platform": {
+          "type": "standard"
+        },
+        "sourcemap": {
+          "enabled": false
+        },
+        "definitions": [
+          "/home/pwnholic/.config/noctalia/noctalia.d.luau"
+        ]
+      }
+    }
+  }
+}

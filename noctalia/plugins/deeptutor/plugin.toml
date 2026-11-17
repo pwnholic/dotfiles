@@ -1,0 +1,12 @@
+id = "pwnholic/deeptutor"
+name = "DeepTutor"
+version = "1.0.0"
+plugin_api = 24
+author = "pwnholic"
+license = "MIT"
+icon = "brain"
+description = "Start, stop, and monitor DeepTutor."
+
+[[widget]]
+id = "deeptutor"
+entry = "widget.luau"

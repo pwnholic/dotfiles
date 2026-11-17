@@ -73,7 +73,15 @@ widget_spacing = 8
 
 [[bar.default.capsule_group]]
 id = "status"
-members = ["notifications", "privacy", "caffeine", "nightlight", "theme_mode", "wallhaven", "recorder"]
+members = [
+  "notifications",
+  "privacy",
+  "caffeine",
+  "nightlight",
+  "theme_mode",
+  "wallhaven",
+  "recorder",
+]
 foreground = "on_surface"
 border = "secondary"
 padding = 10.0
@@ -99,7 +107,7 @@ widget_spacing = 8
 
 [[bar.default.capsule_group]]
 id = "system"
-members = ["cpu", "temp", "gpu", "gpu_temp","ram"]
+members = ["cpu", "temp", "gpu", "gpu_temp", "ram"]
 foreground = "on_surface"
 border = "primary"
 padding = 10.0
@@ -168,6 +176,12 @@ title_scroll = "on_hover"
 [widget.media.actions]
 back = "media previous"
 forward = "media next"
+
+[widget.deeptutor]
+type = "pwnholic/deeptutor:deeptutor"
+capsule_border = "primary"
+color = "tertiary"
+icon_color = "tertiary"
 
 [widget.tray]
 capsule_border = "secondary"

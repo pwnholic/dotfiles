@@ -23,6 +23,8 @@ set -gx SYSTEM_ONE_API_KEY $TYPESAFE_API_KEY
 set -gx SYSTEM_ONE_MODEL jev-latest
 set -gx SURPLUS_API_KEY inf_2af553216a2e463b9cd39f3c40707055
 set -gx PI_CODING_AGENT_DIR $HOME/.config/pi/agent
+set -gx EXA_API_KEY 626ccca8-97ec-4cc1-b7dc-5d67c4147f20
+set -gx TAVILY_API_KEY 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
 
 set -gx DEEPTUTOR_HOME $HOME/.local/share/deeptutor
 
@@ -142,3 +144,6 @@ if status is-interactive
     end
     fish_user_key_bindings
 end
+
+# Added by codebase-memory-mcp install
+fish_add_path /home/pwnholic/.local/bin
