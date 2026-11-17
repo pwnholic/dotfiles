@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Toggle DeepTutor and clean up its leftover server processes."""
+"""Toggle DeepTutor and Bili, and clean up leftover server processes."""
 
 import fcntl
 import json
@@ -44,6 +44,7 @@ DEEPTUTOR_HOME: Path = get_runtime_home(
 RUNTIME_DIR: Path = DEEPTUTOR_HOME.joinpath("data", "user", "runtime")
 STATE_FILE: Path = RUNTIME_DIR.joinpath("launcher.json")
 BILI_PID_FILE: Path = RUNTIME_DIR.joinpath("bili.pid")
+BILI_EXECUTABLE: Path = Path.home().joinpath(".local", "bin", "bili")
 WEB_RUNTIME_DIR: Path = RUNTIME_DIR.joinpath("web")
 LOCK_FILE: Path = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")).joinpath(
     f"deeptutor-{os.getuid()}.lock"
@@ -331,7 +332,7 @@ def start_bili() -> tuple[bool, str]:
     try:
         BILI_PID_FILE.unlink(missing_ok=True)
         process: subprocess.Popen[bytes] = subprocess.Popen(
-            ["bili"],
+            [str(BILI_EXECUTABLE)],
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -416,10 +417,14 @@ def main(action: str) -> int:
         running.add(launcher)
 
     if action == "status":
+        bili_pid: int | None = read_bili_pid()
+        bili_status: str = (
+            f"Bili running (PID {bili_pid})" if bili_pid is not None else "Bili stopped"
+        )
         if running:
-            print(f"running ({len(running)} managed processes)")
+            print(f"running ({len(running)} managed processes); {bili_status}")
         else:
-            print("stopped")
+            print(f"stopped; {bili_status}")
         return 0
 
     if running and action != "start":
@@ -510,8 +515,10 @@ if __name__ == "__main__":
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            print("Another DeepTutor operation is still running.", file=sys.stderr)
-            raise SystemExit(0)
+            details: str = "Another DeepTutor and Bili operation is still running."
+            notify("DeepTutor busy", details)
+            print(details, file=sys.stderr)
+            raise SystemExit(1)
         except OSError as error:
             print(f"Unable to lock DeepTutor operation: {error}", file=sys.stderr)
             raise SystemExit(1) from None
