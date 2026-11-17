@@ -43,6 +43,7 @@ DEEPTUTOR_HOME: Path = get_runtime_home(
 )
 RUNTIME_DIR: Path = DEEPTUTOR_HOME.joinpath("data", "user", "runtime")
 STATE_FILE: Path = RUNTIME_DIR.joinpath("launcher.json")
+BILI_PID_FILE: Path = RUNTIME_DIR.joinpath("bili.pid")
 WEB_RUNTIME_DIR: Path = RUNTIME_DIR.joinpath("web")
 LOCK_FILE: Path = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")).joinpath(
     f"deeptutor-{os.getuid()}.lock"
@@ -307,6 +308,73 @@ def backup_vault() -> tuple[bool, str]:
     return True, "Vault has no new changes; existing commits pushed."
 
 
+def read_bili_pid() -> int | None:
+    """Return the recorded Bili PID only when it still belongs to Bili."""
+    try:
+        pid: int = int(BILI_PID_FILE.read_text(encoding="ascii").strip())
+    except (OSError, ValueError):
+        return None
+    if pid <= 1:
+        return None
+    process: ProcessInfo | None = read_process(pid)
+    if process is None or not any(Path(arg).name == "bili" for arg in process.args):
+        return None
+    return pid
+
+
+def start_bili() -> tuple[bool, str]:
+    """Start Bili detached and remember its PID for the matching stop."""
+    existing_pid: int | None = read_bili_pid()
+    if existing_pid is not None:
+        return True, f"Bili is already running (PID {existing_pid})."
+
+    try:
+        BILI_PID_FILE.unlink(missing_ok=True)
+        process: subprocess.Popen[bytes] = subprocess.Popen(
+            ["bili"],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            close_fds=True,
+            start_new_session=True,
+        )
+        BILI_PID_FILE.parent.mkdir(parents=True, exist_ok=True)
+        BILI_PID_FILE.write_text(f"{process.pid}\n", encoding="ascii")
+    except OSError as error:
+        return False, f"Unable to start Bili: {error}"
+
+    time.sleep(0.2)
+    if process.poll() is not None:
+        try:
+            BILI_PID_FILE.unlink(missing_ok=True)
+        except OSError:
+            pass
+        return False, f"Bili exited immediately with code {process.returncode}."
+    return True, f"Bili started (PID {process.pid})."
+
+
+def stop_bili() -> tuple[bool, str]:
+    """Stop only the Bili process tree previously started by this script."""
+    pid: int | None = read_bili_pid()
+    if pid is None:
+        try:
+            BILI_PID_FILE.unlink(missing_ok=True)
+        except OSError as error:
+            return False, f"Unable to remove Bili's stale PID file: {error}"
+        return True, "Bili is already stopped."
+
+    killed: int
+    remaining: list[int]
+    killed, remaining = force_cleanup({pid})
+    if remaining:
+        return False, f"Unable to stop Bili PIDs: {', '.join(map(str, remaining))}"
+    try:
+        BILI_PID_FILE.unlink(missing_ok=True)
+    except OSError as error:
+        return False, f"Bili stopped, but its PID file could not be removed: {error}"
+    return True, f"Bili stopped ({killed} process(es) terminated)."
+
+
 def start_deeptutor() -> tuple[bool, str]:
     """Start Web through the same launcher module used by the CLI."""
 
@@ -372,25 +440,43 @@ def main(action: str) -> int:
         remaining: list[int]
         output: str
         killed, remaining, output = stop_deeptutor(launcher)
+        if output:
+            print(output, file=sys.stderr)
+
+        bili_stopped: bool
+        bili_output: str
+        bili_stopped, bili_output = stop_bili()
+        notify("Bili" if bili_stopped else "Bili failed to stop", bili_output)
+        if not bili_stopped:
+            print(bili_output, file=sys.stderr)
+
         if remaining:
             details: str = f"Unable to kill PIDs: {', '.join(map(str, remaining))}"
             notify("DeepTutor stop incomplete", details)
             print(details, file=sys.stderr)
             return 1
-        if output:
-            print(output, file=sys.stderr)
         message: str = "DeepTutor stopped."
         if killed:
             message += f" Auto-killed {killed} leftover process(es)."
         notify("DeepTutor", message)
-        return 0
+        return 0 if bili_stopped else 1
 
     if action == "stop":
+        bili_stopped, bili_output = stop_bili()
+        notify("Bili" if bili_stopped else "Bili failed to stop", bili_output)
+        if not bili_stopped:
+            print(bili_output, file=sys.stderr)
         notify("DeepTutor", "DeepTutor is already stopped.")
-        return 0
+        return 0 if bili_stopped else 1
     if running:
+        bili_started: bool
+        bili_output: str
+        bili_started, bili_output = start_bili()
+        notify("Bili" if bili_started else "Bili failed to start", bili_output)
+        if not bili_started:
+            print(bili_output, file=sys.stderr)
         notify("DeepTutor", f"DeepTutor is already running ({len(running)} processes).")
-        return 0
+        return 0 if bili_started else 1
 
     success: bool
     success, output = start_deeptutor()
@@ -399,6 +485,12 @@ def main(action: str) -> int:
         print(output, file=sys.stderr)
         return 1
     notify("DeepTutor", "Launcher started; the frontend is getting ready.")
+    bili_started, bili_output = start_bili()
+    notify("Bili" if bili_started else "Bili failed to start", bili_output)
+    if not bili_started:
+        print(bili_output, file=sys.stderr)
+        return 1
+    print(bili_output)
     return 0
 
 

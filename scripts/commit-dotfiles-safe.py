@@ -36,6 +36,62 @@ RESTORE_TOKEN_ASSIGNMENT = re.compile(
     re.IGNORECASE,
 )
 
+# detect-secrets only scans quoted values for unknown filetypes (e.g. *.fish,
+# *.conf), so unquoted fish/shell assignments like ``set -gx API_KEY abc`` are
+# never flagged. Catch them directly instead.
+SECRET_ASSIGNMENT = re.compile(
+    r"^(?P<lead>\s*(?:export\s+|set\s+(?:-\S+\s+)*))"
+    r"(?P<name>[A-Za-z_][A-Za-z0-9_.]*)(?P<tail>.*)$"
+)
+SECRET_NAME_SEGMENT = re.compile(
+    r"(?:^|[_.-])(?:API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY|"
+    r"AUTH[_-]?TOKEN|TOKEN|SECRET|PASSWORD|PASSWD|PASSPHRASE|CREDENTIALS?)"
+    r"(?=$|[_.-])"
+)
+SKIPPABLE_VALUES = {
+    "true", "false", "none", "null", "nil", "default", "empty", "unset",
+    "0", "1", "[]", "{}", "", REDACTED,
+}
+
+
+def _skippable_value(value: str) -> bool:
+    stripped = value.strip()
+    if not stripped or stripped == REDACTED:
+        return True
+    if stripped[0] in "$([{~/":
+        return True
+    if stripped.startswith(("http://", "https://")):
+        return True
+    return stripped.lower() in SKIPPABLE_VALUES
+
+
+def redact_secret_assignment(line: str) -> str | None:
+    """Return the line with an unquoted secret value REDACTED, or None."""
+    m = SECRET_ASSIGNMENT.match(line)
+    if not m or not SECRET_NAME_SEGMENT.search(m.group("name")):
+        return None
+    lead, name, tail = m.group("lead"), m.group("name"), m.group("tail").strip()
+    if not tail:
+        return None
+    if tail.startswith(("=", ":")):
+        op, rest = tail[:1], tail[1:].lstrip()
+        quote = rest[:1] if rest[:1] in "\"'" else ""
+        if quote:
+            end = rest.find(quote, 1)
+            if end == -1:
+                return None
+            value, after = rest[1:end], rest[end + 1:]
+            if _skippable_value(value):
+                return None
+            return f"{lead}{name}{op} {quote}{REDACTED}{quote}{after}"
+        value, _, after = rest.partition(" ")
+        if _skippable_value(value):
+            return None
+        return f"{lead}{name}{op} {REDACTED}" + (f" {after}" if after else "")
+    if _skippable_value(tail):
+        return None
+    return f"{lead}{name} {REDACTED}"
+
 TRACKED_JUNK_PREFIXES = ("go/telemetry/local/",)
 TRACKED_JUNK_FILES = {"pgcli/history", "pgcli/log"}
 
@@ -98,7 +154,8 @@ def detect_and_redact(path: str, data: bytes) -> tuple[bytes, list[str]]:
 
     # scan_file() intentionally stops after the first line containing a
     # finding. Re-scan after masking each finding so later lines are covered.
-    with tempfile.NamedTemporaryFile(suffix=suffix) as candidate:
+    with default_settings():
+      with tempfile.NamedTemporaryFile(suffix=suffix) as candidate:
         for _ in range(256):
             candidate.seek(0)
             candidate.truncate()
@@ -163,6 +220,12 @@ def detect_and_redact(path: str, data: bytes) -> tuple[bytes, list[str]]:
     for line in text.splitlines(keepends=True):
         if not line.lstrip().startswith(("#", ";", "//")):
             line = RESTORE_TOKEN_ASSIGNMENT.sub(restore_replacement, line)
+            body = line.rstrip("\r\n")
+            eol = line[len(body):]
+            redacted_line = redact_secret_assignment(body)
+            if redacted_line is not None and redacted_line + eol != line:
+                findings.append("unquoted secret assignment")
+                line = redacted_line + eol
         lines.append(line)
     return "".join(lines).encode("utf-8"), findings
 
