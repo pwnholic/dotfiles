@@ -24,18 +24,17 @@ capsule_thickness = 0.86
 capsule_radius = 0.0
 capsule_padding = 10
 capsule_opacity = 1.0
-start = ["launcher", "workspaces", "taskbar"]
+start = ["workspaces", "taskbar"]
 center = ["media", "clock"]
 end = [
+  "deeptutor",
   "group:audio",
   "group:power",
   "group:system",
   "group:network",
   "group:updates",
-  "group:status",
-  "deeptutor",
   "tray",
-  "control-center",
+  "group:status",
 ]
 
 [bar.default.dead_zone.actions]
@@ -141,10 +140,6 @@ urgent_color = "error"
 color = "primary"
 icon_color = "primary"
 
-[widget.launcher]
-capsule_border = "primary"
-color = "primary"
-icon_color = "primary"
 
 [widget.taskbar]
 pinned = []
@@ -192,11 +187,6 @@ detached_panel = true
 drawer = true
 drawer_columns = 4
 drawer_item_size = 20.0
-
-[widget.control-center]
-capsule_border = "primary"
-color = "primary"
-icon_color = "primary"
 
 [widget.network]
 show_label = false

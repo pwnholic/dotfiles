@@ -92,7 +92,7 @@ show_app_actions = false
 track_usage = true
 sort_by_usage = true
 pinned = []
-fetch_exchange_rates = false # privacy
+fetch_exchange_rates = false     # privacy
 provider_prefix = "/"
 auto_paste = "auto"
 
@@ -132,14 +132,13 @@ delay_ms = 300
 action = "none"
 
 [hot_corners.top_right]
-action = "control-center"
+action = "none"
 
 [hot_corners.bottom_left]
-action = "launcher"
+action = "none"
 
 [hot_corners.bottom_right]
-action = "command"
-command = "noctalia msg session lock"
+action = "none"
 
 [shell.mpris]
 blacklist = []
