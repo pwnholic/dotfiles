@@ -1,9 +1,72 @@
 {
+  "host": "127.0.0.1",
+  "port": 8787,
+  "log": true,
+  "debug": false,
+  "passthrough": false,
+  "maskHosts": true,
+  "imageRescale": false,
+  "subagentSplit": true,
+  "personaSplit": true,
+  "affinitySimhash": true,
+  "resumeInheritance": true,
+  "forkAdoption": true,
   "pi": {
+    "commands": true,
     "subagents": {
-      "forceEnable": true
+      "enabled": true,
+      "forceEnable": true,
+      "thinkingLevel": "high"
     }
   },
-  "providers": {
-  }
+  "persist": {
+    "enabled": true,
+    "zstd": false,
+    "tailTokens": 32768
+  },
+  "compress": {
+    "maxContextLimit": "85%",
+    "emergencyThresholdPercent": "95%",
+    "nudgeGrowthTokens": 50000,
+    "minPressureBenefitTokens": 20000,
+    "requireUsageSampleForPressure": true,
+    "nudgeModelDecided": true,
+    "preserveRecentMessages": 8,
+    "preserveRecentTokens": 20000,
+    "minCompressRangeChars": 10000,
+    "maxSummaryLength": 40000,
+    "tiers": false,
+    "protectedLatestTools": ["TodoWrite", "todo_list", "update_plan"],
+    "protectedTools": ["skill/*"],
+    "preserveRecentTools": ["read"],
+    "reconcile": "repair",
+    "absorb": {
+      "enabled": false
+    },
+    "ccr": {
+      "enabled": true,
+      "minToolTokens": 12000,
+      "maxHeadChars": 128
+    },
+    "search": {
+      "planAware": true
+    },
+    "rules": true,
+    "reasoning": {
+      "drop": true,
+      "threshold": 2048
+    },
+    "reasoningGuard": {
+      "enabled": true,
+      "maxContinue": 3,
+      "maxTierN": 12,
+      "debugLog": false
+    },
+    "outputSteering": {
+      "enabled": false
+    },
+    "visibilityMarkers": true,
+    "messageTimestamps": true
+  },
+  "providers": {}
 }

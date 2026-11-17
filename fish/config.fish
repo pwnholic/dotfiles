@@ -26,7 +26,7 @@ set -gx PI_CODING_AGENT_DIR $HOME/.config/pi/agent
 set -gx EXA_API_KEY 626ccca8-97ec-4cc1-b7dc-5d67c4147f20
 set -gx TAVILY_API_KEY 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
 
-set -gx DEEPTUTOR_HOME $HOME/.local/share/deeptutor
+set -gx DEEPTUTOR_HOME $HOME/Vault/deeptutor
 
 # zvec-grep (zg) — hybrid workspace search for agents
 # Docs: `zg help environment` | https://github.com/zvec-ai/zvec-grep
