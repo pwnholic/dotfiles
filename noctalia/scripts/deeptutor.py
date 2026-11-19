@@ -24,7 +24,6 @@ sys.path[:] = [
 
 try:
     from deeptutor.modules.catalog import require_module
-    from deeptutor.runtime.home import get_runtime_home
     from deeptutor.runtime.launcher import start as start_web
     from deeptutor.runtime.launcher import stop as stop_web
 except ImportError as error:
@@ -35,20 +34,13 @@ except ImportError as error:
     )
     raise SystemExit(1) from None
 
-DEEPTUTOR_HOME: Path = get_runtime_home(
-    os.environ.get(
-        "DEEPTUTOR_HOME",
-        str(Path.home().joinpath(".local", "share", "deeptutor")),
-    )
-)
-RUNTIME_DIR: Path = DEEPTUTOR_HOME.joinpath("data", "user", "runtime")
-STATE_FILE: Path = RUNTIME_DIR.joinpath("launcher.json")
-BILI_PID_FILE: Path = RUNTIME_DIR.joinpath("bili.pid")
 BILI_EXECUTABLE: Path = Path.home().joinpath(".local", "bin", "bili")
-WEB_RUNTIME_DIR: Path = RUNTIME_DIR.joinpath("web")
 LOCK_FILE: Path = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")).joinpath(
     f"deeptutor-{os.getuid()}.lock"
 )
+WORKSPACE_POINTER_FILE: Path = Path(
+    os.environ.get("XDG_STATE_HOME", str(Path.home().joinpath(".local", "state")))
+).joinpath("deeptutor-control", "workspace-home")
 VAULT_DIR: Path = Path.home().joinpath("Vault")
 GIT_TIMEOUT_SECONDS: int = 120
 USAGE: str = "Usage: deeptutor [toggle|start|stop|status]"
@@ -155,6 +147,86 @@ def all_processes() -> ProcessMap:
         except OSError:
             continue
     return processes
+
+
+def read_workspace_pointer() -> Path | None:
+    """Return the remembered workspace home, or None when unavailable."""
+    try:
+        raw: str = WORKSPACE_POINTER_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+    if not raw:
+        return None
+    try:
+        return Path(raw).expanduser().resolve()
+    except (OSError, RuntimeError):
+        return None
+
+
+def write_workspace_pointer(home: Path) -> None:
+    """Remember the resolved workspace home for later calls."""
+    try:
+        WORKSPACE_POINTER_FILE.parent.mkdir(parents=True, exist_ok=True)
+        WORKSPACE_POINTER_FILE.write_text(f"{home}\n", encoding="utf-8")
+    except OSError:
+        # Best-effort only; resolution still works without persistence.
+        pass
+
+
+def resolve_workspace_home() -> Path:
+    """Pick the workspace where DeepTutor runs, remembering the choice.
+
+    The bar widget runs without DEEPTUTOR_HOME in its environment, so relying
+    on that variable alone would point status checks at a different workspace
+    than the one the launcher was started with. A single live workspace wins,
+    and the choice is persisted so later start/stop calls from any environment
+    keep using the same workspace.
+    """
+    env_default: Path = Path(
+        os.environ.get(
+            "DEEPTUTOR_HOME",
+            str(Path.home().joinpath(".local", "share", "deeptutor")),
+        )
+    ).expanduser().resolve()
+    persisted: Path | None = read_workspace_pointer()
+
+    homes: list[Path] = []
+    for process in all_processes().values():
+        if not process.home:
+            continue
+        joined_args: str = " ".join(process.args)
+        if not any(
+            marker in joined_args
+            for marker in ("deeptutor_cli.main", "deeptutor.api.main:app")
+        ):
+            continue
+        try:
+            home: Path = Path(process.home).expanduser().resolve()
+        except (OSError, RuntimeError):
+            continue
+        if home not in homes:
+            homes.append(home)
+
+    if len(homes) == 1:
+        write_workspace_pointer(homes[0])
+        return homes[0]
+    if homes:
+        # More than one live workspace: keep the remembered one when it is
+        # among them, otherwise settle on the first one found.
+        if persisted is not None and persisted in homes:
+            return persisted
+        write_workspace_pointer(homes[0])
+        return homes[0]
+    if persisted is not None:
+        return persisted
+    return env_default
+
+
+DEEPTUTOR_HOME: Path = resolve_workspace_home()
+RUNTIME_DIR: Path = DEEPTUTOR_HOME.joinpath("data", "user", "runtime")
+STATE_FILE: Path = RUNTIME_DIR.joinpath("launcher.json")
+BILI_PID_FILE: Path = RUNTIME_DIR.joinpath("bili.pid")
+WEB_RUNTIME_DIR: Path = RUNTIME_DIR.joinpath("web")
 
 
 def launcher_pid(processes: ProcessMap | None = None) -> int | None:
@@ -277,16 +349,22 @@ def git_error(step: str, result: subprocess.CompletedProcess[str]) -> str:
     return f"{message}\n{output}" if output else message
 
 
-def backup_vault() -> tuple[bool, str]:
-    """Commit every non-ignored Vault change and push the current branch."""
+def backup_vault() -> tuple[bool, bool, str]:
+    """Commit Vault changes, then try to push the current branch.
+
+    Returns (committed, pushed, output). Only a failure to commit locally is
+    fatal for a stop: the working tree would otherwise lose its history.
+    A failed push keeps the commit and merely warns, so an offline machine
+    can still stop DeepTutor.
+    """
     try:
         result: subprocess.CompletedProcess[str] = run_git(["add", "--all"])
         if result.returncode != 0:
-            return False, git_error("staging", result)
+            return False, False, git_error("staging", result)
 
         result = run_git(["diff", "--cached", "--name-only"])
         if result.returncode != 0:
-            return False, git_error("change detection", result)
+            return False, False, git_error("change detection", result)
         changed_files: list[str] = [path for path in result.stdout.splitlines() if path]
         has_changes: bool = bool(changed_files)
         if has_changes:
@@ -296,17 +374,17 @@ def backup_vault() -> tuple[bool, str]:
             commit_message: str = f"{', '.join(changed_files)} | {timestamp}"
             result = run_git(["commit", "-m", commit_message])
             if result.returncode != 0:
-                return False, git_error("commit", result)
+                return False, False, git_error("commit", result)
 
         result = run_git(["push", "--set-upstream", "origin", "HEAD"])
         if result.returncode != 0:
-            return False, git_error("push", result)
+            return True, False, git_error("push", result)
     except (OSError, subprocess.TimeoutExpired) as error:
-        return False, f"Vault backup could not run: {error}"
+        return False, False, f"Vault backup could not run: {error}"
 
     if has_changes:
-        return True, "Vault changes committed and pushed."
-    return True, "Vault has no new changes; existing commits pushed."
+        return True, True, "Vault changes committed and pushed."
+    return True, True, "Vault has no new changes; existing commits pushed."
 
 
 def read_bili_pid() -> int | None:
@@ -428,18 +506,23 @@ def main(action: str) -> int:
         return 0
 
     if running and action != "start":
-        backed_up: bool
+        committed: bool
+        pushed: bool
         backup_output: str
-        backed_up, backup_output = backup_vault()
-        if not backed_up:
+        committed, pushed, backup_output = backup_vault()
+        if not committed:
             details: str = (
                 f"{backup_output}\nDeepTutor stop cancelled; it is still running."
             )
             notify("Vault backup failed", details)
             print(details, file=sys.stderr)
             return 1
-        print(backup_output)
-        notify("Vault backup", backup_output)
+        if not pushed:
+            notify("Vault push failed", backup_output)
+            print(backup_output, file=sys.stderr)
+        else:
+            print(backup_output)
+            notify("Vault backup", backup_output)
 
         killed: int
         remaining: list[int]

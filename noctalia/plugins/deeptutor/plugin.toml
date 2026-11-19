@@ -1,6 +1,6 @@
 id = "pwnholic/deeptutor"
 name = "DeepTutor + Bili"
-version = "1.1.0"
+version = "1.2.0"
 plugin_api = 24
 author = "pwnholic"
 license = "MIT"

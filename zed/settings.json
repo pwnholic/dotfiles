@@ -1,5 +1,17 @@
 {
+  "agent": {
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
   "agent_servers": {
+    "opencode-v2": {
+      "default_config_options": {
+        "effort": "max",
+        "model": "surplus/kimi-k3.1-pro"
+      },
+      "type": "registry"
+    },
     "pi-acp": { "type": "registry" },
   },
   "icon_theme": "Base Charmed Icons",
@@ -75,6 +87,7 @@
     },
   },
   "git_panel": {
+    "dock": "left",
     "file_icons": true,
     "status_style": "label_color",
   },

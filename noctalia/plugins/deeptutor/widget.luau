@@ -2,6 +2,7 @@
 
 local RUNNING_COLOR = "primary"
 local PARTIAL_COLOR = "warning"
+local CHECKING_COLOR = "secondary"
 local STOPPED_COLOR = "error"
 local SERVICE_NAME = "DeepTutor + Bili"
 local PROJECT_DIR = noctalia.expandPath("~/.config/noctalia/scripts")
@@ -18,7 +19,10 @@ end
 
 local function render(state, status)
 	serviceState = state
-	local color = state == "running" and RUNNING_COLOR or state == "partial" and PARTIAL_COLOR or STOPPED_COLOR
+	local color = state == "running" and RUNNING_COLOR
+		or state == "partial" and PARTIAL_COLOR
+		or state == "checking" and CHECKING_COLOR
+		or STOPPED_COLOR
 	local leftClick = isOn() and "Stop " .. SERVICE_NAME or "Start " .. SERVICE_NAME
 	local rightClick = isOn() and "Stop and clean up " .. SERVICE_NAME
 		or state == "stopped" and "Unavailable while off"
@@ -49,7 +53,7 @@ local function describeFailure(result)
 		return "Status check timed out"
 	end
 
-	local output = (result.stderr ~= "" and result.stderr or result.stdout):gsub("%s+$", "")
+	local output = ((result.stderr or "") ~= "" and result.stderr or result.stdout or ""):gsub("%s+$", "")
 	if output ~= "" then
 		return output
 	end
@@ -68,8 +72,8 @@ local function checkStatus()
 			return
 		end
 		statusPending = false
-		local status = result.stdout:gsub("^%s+", ""):gsub("%s+$", "")
-		if result.exitCode ~= 0 then
+		local status = (result.stdout or ""):gsub("^%s+", ""):gsub("%s+$", "")
+		if (result.exitCode or -1) ~= 0 then
 			render("error", describeFailure(result))
 			return
 		end
@@ -118,8 +122,8 @@ local function runAction(action)
 		actionPending = false
 		if result.timedOut then
 			noctalia.notifyError(SERVICE_NAME, "The " .. action .. " operation timed out.")
-		elseif result.exitCode ~= 0 then
-			local output = result.stderr ~= "" and result.stderr or result.stdout
+		elseif (result.exitCode or -1) ~= 0 then
+			local output = (result.stderr ~= "" and result.stderr or result.stdout) or ""
 			local message = output:gsub("^%s+", ""):gsub("%s+$", "")
 			if #message > 500 then
 				message = message:sub(-500)

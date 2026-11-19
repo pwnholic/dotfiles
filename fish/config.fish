@@ -62,6 +62,7 @@ fish_add_path --global $HOME/.local/share/solana/install/active_release/bin
 fish_add_path --global $HOME/.avm/bin
 fish_add_path --global $HOME/.pdtm/go/bin
 fish_add_path --global $HOME/.elan/bin
+fish_add_path --global $HOME/.config/pi/agent/bin
 
 if status is-interactive
     set -g fish_greeting
@@ -145,6 +146,3 @@ if status is-interactive
     end
     fish_user_key_bindings
 end
-
-# Added by codebase-memory-mcp install
-fish_add_path /home/pwnholic/.local/bin
