@@ -1,11 +1,11 @@
 id = "pwnholic/deeptutor"
-name = "DeepTutor + Bili"
-version = "1.2.0"
+name = "DeepTutor"
+version = "1.3.0"
 plugin_api = 24
 author = "pwnholic"
 license = "MIT"
 icon = "brain"
-description = "Start, stop, and monitor DeepTutor with Bili."
+description = "Start, stop, and monitor DeepTutor."
 
 [[widget]]
 id = "deeptutor"

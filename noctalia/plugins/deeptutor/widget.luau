@@ -1,10 +1,9 @@
 --!nonstrict
 
 local RUNNING_COLOR = "primary"
-local PARTIAL_COLOR = "warning"
 local CHECKING_COLOR = "secondary"
 local STOPPED_COLOR = "error"
-local SERVICE_NAME = "DeepTutor + Bili"
+local SERVICE_NAME = "DeepTutor"
 local PROJECT_DIR = noctalia.expandPath("~/.config/noctalia/scripts")
 local SCRIPT_PATH = PROJECT_DIR .. "/deeptutor.py"
 
@@ -14,13 +13,12 @@ local disposed = false
 local serviceState = "checking"
 
 local function isOn()
-	return serviceState == "running" or serviceState == "partial"
+	return serviceState == "running"
 end
 
 local function render(state, status)
 	serviceState = state
 	local color = state == "running" and RUNNING_COLOR
-		or state == "partial" and PARTIAL_COLOR
 		or state == "checking" and CHECKING_COLOR
 		or STOPPED_COLOR
 	local leftClick = isOn() and "Stop " .. SERVICE_NAME or "Start " .. SERVICE_NAME
@@ -78,11 +76,7 @@ local function checkStatus()
 			return
 		end
 
-		local deeptutorRunning = status:match("^running") ~= nil
-		local biliRunning = status:match("Bili running") ~= nil
-		local state = (deeptutorRunning and biliRunning) and "running"
-			or (deeptutorRunning or biliRunning) and "partial"
-			or "stopped"
+		local state = status:match("^running") ~= nil and "running" or "stopped"
 		render(state, status)
 	end)
 
@@ -100,7 +94,7 @@ local function runAction(action)
 		noctalia.notifyError(SERVICE_NAME, "Another operation is still running. Please wait.")
 		return
 	end
-	if serviceState ~= "running" and serviceState ~= "partial" and serviceState ~= "stopped" then
+	if serviceState ~= "running" and serviceState ~= "stopped" then
 		noctalia.notifyError(SERVICE_NAME, "Wait for a successful status check before continuing.")
 		return
 	end

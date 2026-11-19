@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Toggle DeepTutor and Bili, and clean up leftover server processes."""
+"""Toggle DeepTutor and clean up leftover server processes."""
 
 import fcntl
 import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -34,7 +35,6 @@ except ImportError as error:
     )
     raise SystemExit(1) from None
 
-BILI_EXECUTABLE: Path = Path.home().joinpath(".local", "bin", "bili")
 LOCK_FILE: Path = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")).joinpath(
     f"deeptutor-{os.getuid()}.lock"
 )
@@ -43,6 +43,11 @@ WORKSPACE_POINTER_FILE: Path = Path(
 ).joinpath("deeptutor-control", "workspace-home")
 VAULT_DIR: Path = Path.home().joinpath("Vault")
 GIT_TIMEOUT_SECONDS: int = 120
+NODE_FALLBACK_DIRS: tuple[Path, ...] = (
+    Path.home().joinpath(".local", "share", "pi-node", "current", "bin"),
+    Path.home().joinpath(".local", "bin"),
+    Path("/usr/local/bin"),
+)
 USAGE: str = "Usage: deeptutor [toggle|start|stop|status]"
 
 
@@ -182,12 +187,16 @@ def resolve_workspace_home() -> Path:
     and the choice is persisted so later start/stop calls from any environment
     keep using the same workspace.
     """
-    env_default: Path = Path(
-        os.environ.get(
-            "DEEPTUTOR_HOME",
-            str(Path.home().joinpath(".local", "share", "deeptutor")),
+    env_default: Path = (
+        Path(
+            os.environ.get(
+                "DEEPTUTOR_HOME",
+                str(Path.home().joinpath(".local", "share", "deeptutor")),
+            )
         )
-    ).expanduser().resolve()
+        .expanduser()
+        .resolve()
+    )
     persisted: Path | None = read_workspace_pointer()
 
     homes: list[Path] = []
@@ -225,7 +234,6 @@ def resolve_workspace_home() -> Path:
 DEEPTUTOR_HOME: Path = resolve_workspace_home()
 RUNTIME_DIR: Path = DEEPTUTOR_HOME.joinpath("data", "user", "runtime")
 STATE_FILE: Path = RUNTIME_DIR.joinpath("launcher.json")
-BILI_PID_FILE: Path = RUNTIME_DIR.joinpath("bili.pid")
 WEB_RUNTIME_DIR: Path = RUNTIME_DIR.joinpath("web")
 
 
@@ -387,77 +395,50 @@ def backup_vault() -> tuple[bool, bool, str]:
     return True, True, "Vault has no new changes; existing commits pushed."
 
 
-def read_bili_pid() -> int | None:
-    """Return the recorded Bili PID only when it still belongs to Bili."""
+def node_is_usable(node: str) -> bool:
+    """Check that a Node.js binary can actually execute."""
     try:
-        pid: int = int(BILI_PID_FILE.read_text(encoding="ascii").strip())
-    except (OSError, ValueError):
-        return None
-    if pid <= 1:
-        return None
-    process: ProcessInfo | None = read_process(pid)
-    if process is None or not any(Path(arg).name == "bili" for arg in process.args):
-        return None
-    return pid
-
-
-def start_bili() -> tuple[bool, str]:
-    """Start Bili detached and remember its PID for the matching stop."""
-    existing_pid: int | None = read_bili_pid()
-    if existing_pid is not None:
-        return True, f"Bili is already running (PID {existing_pid})."
-
-    try:
-        BILI_PID_FILE.unlink(missing_ok=True)
-        process: subprocess.Popen[bytes] = subprocess.Popen(
-            [str(BILI_EXECUTABLE)],
+        result: subprocess.CompletedProcess[bytes] = subprocess.run(
+            [node, "--version"],
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            close_fds=True,
-            start_new_session=True,
+            check=False,
+            timeout=10,
         )
-        BILI_PID_FILE.parent.mkdir(parents=True, exist_ok=True)
-        BILI_PID_FILE.write_text(f"{process.pid}\n", encoding="ascii")
-    except OSError as error:
-        return False, f"Unable to start Bili: {error}"
-
-    time.sleep(0.2)
-    if process.poll() is not None:
-        try:
-            BILI_PID_FILE.unlink(missing_ok=True)
-        except OSError:
-            pass
-        return False, f"Bili exited immediately with code {process.returncode}."
-    return True, f"Bili started (PID {process.pid})."
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return result.returncode == 0
 
 
-def stop_bili() -> tuple[bool, str]:
-    """Stop only the Bili process tree previously started by this script."""
-    pid: int | None = read_bili_pid()
-    if pid is None:
-        try:
-            BILI_PID_FILE.unlink(missing_ok=True)
-        except OSError as error:
-            return False, f"Unable to remove Bili's stale PID file: {error}"
-        return True, "Bili is already stopped."
+def ensure_working_node() -> str | None:
+    """Prepend a working Node.js to PATH when the default one is broken.
 
-    killed: int
-    remaining: list[int]
-    killed, remaining = force_cleanup({pid})
-    if remaining:
-        return False, f"Unable to stop Bili PIDs: {', '.join(map(str, remaining))}"
-    try:
-        BILI_PID_FILE.unlink(missing_ok=True)
-    except OSError as error:
-        return False, f"Bili stopped, but its PID file could not be removed: {error}"
-    return True, f"Bili stopped ({killed} process(es) terminated)."
+    The bar widget runs with a minimal system PATH, so a broken system Node
+    (for example after a shared-library upgrade) would otherwise make the
+    frontend exit immediately and take the backend down with it. Returns an
+    error message when no usable Node.js can be found.
+    """
+    current: str | None = shutil.which("node")
+    if current is not None and node_is_usable(current):
+        return None
+    for directory in NODE_FALLBACK_DIRS:
+        candidate: Path = directory.joinpath("node")
+        if candidate.is_file() and node_is_usable(str(candidate)):
+            os.environ["PATH"] = (
+                f"{directory}{os.pathsep}{os.environ.get('PATH', '')}"
+            )
+            return None
+    return "No working Node.js found; repair or install Node.js first."
 
 
 def start_deeptutor() -> tuple[bool, str]:
     """Start Web through the same launcher module used by the CLI."""
 
     def launch() -> None:
+        node_error: str | None = ensure_working_node()
+        if node_error is not None:
+            raise RuntimeError(node_error)
         require_module("server")
         require_module("web")
         start_web(home=DEEPTUTOR_HOME, detach=True)
@@ -495,14 +476,10 @@ def main(action: str) -> int:
         running.add(launcher)
 
     if action == "status":
-        bili_pid: int | None = read_bili_pid()
-        bili_status: str = (
-            f"Bili running (PID {bili_pid})" if bili_pid is not None else "Bili stopped"
-        )
         if running:
-            print(f"running ({len(running)} managed processes); {bili_status}")
+            print(f"running ({len(running)} managed processes)")
         else:
-            print(f"stopped; {bili_status}")
+            print("stopped")
         return 0
 
     if running and action != "start":
@@ -531,13 +508,6 @@ def main(action: str) -> int:
         if output:
             print(output, file=sys.stderr)
 
-        bili_stopped: bool
-        bili_output: str
-        bili_stopped, bili_output = stop_bili()
-        notify("Bili" if bili_stopped else "Bili failed to stop", bili_output)
-        if not bili_stopped:
-            print(bili_output, file=sys.stderr)
-
         if remaining:
             details: str = f"Unable to kill PIDs: {', '.join(map(str, remaining))}"
             notify("DeepTutor stop incomplete", details)
@@ -547,24 +517,14 @@ def main(action: str) -> int:
         if killed:
             message += f" Auto-killed {killed} leftover process(es)."
         notify("DeepTutor", message)
-        return 0 if bili_stopped else 1
+        return 0
 
     if action == "stop":
-        bili_stopped, bili_output = stop_bili()
-        notify("Bili" if bili_stopped else "Bili failed to stop", bili_output)
-        if not bili_stopped:
-            print(bili_output, file=sys.stderr)
         notify("DeepTutor", "DeepTutor is already stopped.")
-        return 0 if bili_stopped else 1
+        return 0
     if running:
-        bili_started: bool
-        bili_output: str
-        bili_started, bili_output = start_bili()
-        notify("Bili" if bili_started else "Bili failed to start", bili_output)
-        if not bili_started:
-            print(bili_output, file=sys.stderr)
         notify("DeepTutor", f"DeepTutor is already running ({len(running)} processes).")
-        return 0 if bili_started else 1
+        return 0
 
     success: bool
     success, output = start_deeptutor()
@@ -573,12 +533,7 @@ def main(action: str) -> int:
         print(output, file=sys.stderr)
         return 1
     notify("DeepTutor", "Launcher started; the frontend is getting ready.")
-    bili_started, bili_output = start_bili()
-    notify("Bili" if bili_started else "Bili failed to start", bili_output)
-    if not bili_started:
-        print(bili_output, file=sys.stderr)
-        return 1
-    print(bili_output)
+    print("DeepTutor launcher started.")
     return 0
 
 
@@ -598,7 +553,7 @@ if __name__ == "__main__":
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            details: str = "Another DeepTutor and Bili operation is still running."
+            details: str = "Another DeepTutor operation is still running."
             notify("DeepTutor busy", details)
             print(details, file=sys.stderr)
             raise SystemExit(1)
