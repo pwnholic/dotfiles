@@ -1,4 +1,29 @@
 {
+  "language_models": {
+    "openai_compatible": {
+      "Surplus Intelligence": {
+        "api_url": "https://api.surplusintelligence.ai/v1",
+        "available_models": [
+          {
+            "name": "Qwen 4 Max",
+            "max_tokens": 1000000,
+            "max_output_tokens": 32000,
+            "max_completion_tokens": 128000,
+            "reasoning_effort": "max",
+            "capabilities": {
+              "tools": true,
+              "images": true,
+              "parallel_tool_calls": true,
+              "prompt_cache_key": true,
+              "chat_completions": true,
+              "interleaved_reasoning": true,
+              "max_tokens_parameter": true
+            }
+          }
+        ]
+      }
+    }
+  },
   "agent": {
     "dock": "right",
     "favorite_models": [],
@@ -12,7 +37,10 @@
       },
       "type": "registry"
     },
-    "pi-acp": { "type": "registry" },
+    "pi-acp": { "default_config_options": {
+                     "model": "surplus/qwen4-max"
+                },
+                "type": "registry" },
   },
   "icon_theme": "Base Charmed Icons",
   "theme": "Catppuccin Mocha",
@@ -129,6 +157,13 @@
     },
   },
   "context_servers": {
+    "mcp-server-exa-search": {
+      "enabled": true,
+      "remote": false,
+      "settings": {
+        "exa_api_key": "626ccca8-97ec-4cc1-b7dc-5d67c4147f20"
+      }
+    },
     "codebase-memory-mcp": {"command":"/home/pwnholic/.local/bin/codebase-memory-mcp","args":[]}
   },
 }

@@ -425,9 +425,7 @@ def ensure_working_node() -> str | None:
     for directory in NODE_FALLBACK_DIRS:
         candidate: Path = directory.joinpath("node")
         if candidate.is_file() and node_is_usable(str(candidate)):
-            os.environ["PATH"] = (
-                f"{directory}{os.pathsep}{os.environ.get('PATH', '')}"
-            )
+            os.environ["PATH"] = f"{directory}{os.pathsep}{os.environ.get('PATH', '')}"
             return None
     return "No working Node.js found; repair or install Node.js first."
 

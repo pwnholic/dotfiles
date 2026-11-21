@@ -990,8 +990,5 @@
       ],
       "type": "local"
     }
-  },
-  "plugins": [
-    "/home/pwnholic/.config/opencode/plugins/billion-context"
-  ]
+  }
 }
